@@ -42,8 +42,41 @@ function chromeVersion(userAgent: string): number | null {
     return null
 }
 
+function os(userAgent: string): string {
+    // https://wicg.github.io/ua-client-hints/#sec-ch-ua-platform
+    let OS = '';
+    let OSArray = {
+        Windows: false,
+        macOS: false,
+        Linux: false,
+        iPhone: false,
+        iPod: false,
+        iPad: false,
+        Android: false
+    };
+
+    userAgent = userAgent.toLowerCase();
+
+    OSArray['Windows'] = userAgent.includes('win32') || userAgent.includes('win64') || userAgent.includes('windows');
+    OSArray['macOS'] = userAgent.includes('macintosh') || userAgent.includes('mac68k') || userAgent.includes('macppc') || userAgent.includes('macintosh');
+    OSArray['Linux'] = userAgent.includes('linux');
+    OSArray['iPhone'] = userAgent.includes('iphone');
+    OSArray['iPod'] = userAgent.includes('ipod');
+    OSArray['iPad'] = userAgent.includes('ipad');
+    OSArray['Android'] = userAgent.includes('android');
+
+    for (let i in OSArray) {
+        if (OSArray[i]) {
+            OS = i;
+        }
+    }
+
+    return OS;
+}
+
 export const UserAgentHelper = {
     isMobile,
     browserType,
     chromeVersion,
+    os,
 }

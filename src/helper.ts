@@ -36,6 +36,22 @@ function inWindow() {
     return process.platform == 'win32';
 }
 
+async function waitFor<T>(func: () => T, timeout): Promise<T | null> {
+    let startTime = new Date().getTime()
+    for (; ;) {
+        const result: T = await func()
+        if (result) {
+            return result
+        }
+
+        if (new Date().getTime() - startTime > timeout) {
+            return null
+        }
+
+        await sleep(100)
+    }
+}
+
 export const helper = {
     sleep,
     rd: _rd,
@@ -43,4 +59,5 @@ export const helper = {
     inMac,
     inLinux,
     inWindow,
+    waitFor,
 }
