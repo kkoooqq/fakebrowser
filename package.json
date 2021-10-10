@@ -1,0 +1,29 @@
+{
+  "name": "fakebrowser",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kkoooqq/fakebrowser.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "LGPLv3",
+  "bugs": {
+    "url": "https://github.com/kkoooqq/fakebrowser/issues"
+  },
+  "homepage": "https://github.com/kkoooqq/fakebrowser#readme",
+  "dependencies": {
+    "font-list": "^1.4.0",
+    "puppeteer": "^10.4.0",
+    "puppeteer-extra": "^3.2.3",
+    "puppeteer-extra-plugin": "^3.2.0"
+  },
+  "devDependencies": {
+    "typescript": "^4.4.3"
+  }
+}
