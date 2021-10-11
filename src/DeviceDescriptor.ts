@@ -235,13 +235,20 @@ export default class DeviceDescriptorHelper {
             if (e.window.innerHeight > e.window.innerWidth) {
                 return false
             }
+
+            // No plugins and mineType information, remove
+            // noinspection RedundantIfStatementJS
+            if (!e.plugins || !e.plugins.mimeTypes.length || !e.plugins.plugins.length) {
+                return false
+            }
+
+            // Ordinary PC computers should not have touch screens
+            if (e.navigator.maxTouchPoints != 0) {
+                return false
+            }
         }
 
         if (e.window.screenX != 0 || e.window.screenY != 0) {
-            return false
-        }
-
-        if (e.navigator.maxTouchPoints != 0) {
             return false
         }
 
@@ -269,12 +276,6 @@ export default class DeviceDescriptorHelper {
 
         // Chrome-Lighthouse
         if (e.navigator.userAgent.toLowerCase().includes('chrome-lighthouse')) {
-            return false
-        }
-
-        // No plugins and mineType information, remove
-        // noinspection RedundantIfStatementJS
-        if (!e.plugins || !e.plugins.mimeTypes.length || !e.plugins.plugins.length) {
             return false
         }
 
