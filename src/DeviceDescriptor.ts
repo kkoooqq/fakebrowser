@@ -1,5 +1,5 @@
 import * as crypto from "crypto";
-import {UserAgentHelper} from "./UserAgentHelper";
+import {UserAgentHelper} from "./UserAgentHelper.js";
 
 export enum FontExistTypes {
     FontNotExists,

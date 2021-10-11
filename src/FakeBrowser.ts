@@ -1,6 +1,6 @@
 import {Browser, BrowserConnectOptions, BrowserLaunchArgumentOptions, LaunchOptions} from "puppeteer";
-import Driver, {InterceptWorkerTypes, LaunchParameters, ProxyServer} from "./Driver";
-import {FakeDeviceDescriptor} from "./DeviceDescriptor";
+import Driver, {InterceptWorkerTypes, LaunchParameters, ProxyServer} from "./Driver.js";
+import {FakeDeviceDescriptor} from "./DeviceDescriptor.js";
 import {strict as assert} from 'assert';
 import {PuppeteerExtra} from "puppeteer-extra";
 
