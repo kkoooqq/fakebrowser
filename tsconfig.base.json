@@ -1,13 +1,13 @@
 {
   "compileOnSave": true,
   "compilerOptions": {
-    "target": "ES2019",
-    "esModuleInterop": true,
+    "target": "ES2018",
+    "allowJs": true,
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "resolveJsonModule": true,
+    "inlineSourceMap": true,
     "noImplicitThis": true,
     "noUnusedLocals": true,
     "stripInternal": true,

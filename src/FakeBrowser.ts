@@ -57,7 +57,7 @@ export class FakeBrowserBuilder {
     }
 }
 
-export class FakeBrowser extends Browser {
+export class FakeBrowser {
     static Builder = FakeBrowserBuilder
 
     _browser: Browser

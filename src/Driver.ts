@@ -1,13 +1,11 @@
 import {addExtra, PuppeteerExtra} from "puppeteer-extra";
 import {Browser, BrowserConnectOptions, BrowserLaunchArgumentOptions, LaunchOptions} from "puppeteer";
 import DeviceDescriptorHelper, {FakeDeviceDescriptor} from "./DeviceDescriptor.js";
-import { strict as assert } from 'assert';
+import {strict as assert} from 'assert';
 import * as path from "path";
 import {UserAgentHelper} from "./UserAgentHelper.js";
 import * as fs from "fs-extra";
-
-const pReflect = require('p-reflect')
-const pidtree = require('pidtree')
+import pidtree = require('pidtree');
 
 // chromium startup parameters
 // https://peter.sh/experiments/chromium-command-line-switches/
@@ -249,7 +247,7 @@ export default class Driver {
     }
 
     private static async getPids(pid) {
-        const {value: pids = []} = await pReflect(pidtree(pid))
+        const pids = await pidtree(pid)
         return pids.includes(pid) ? pids : [...pids, pid]
     }
 

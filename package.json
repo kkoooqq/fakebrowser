@@ -6,9 +6,10 @@
   "scripts": {
     "clean-lib": "rimraf lib",
     "build": "npm run tsc",
-    "tsc": "npm run clean-lib && tsc --version && npm run tsc-cjs && npm run tsc-esm",
+    "tsc": "npm run clean-lib && tsc --version && npm run tsc-cjs",
     "tsc-cjs": "tsc -b src/tsconfig.cjs.json",
-    "tsc-esm": "tsc -b src/tsconfig.esm.json"
+    "dev": "cross-env ets && cross-env NODE_ENV=local midway-bin dev --port=7311 --ts",
+    "postbuild": "cpy --cwd=src --parents device-hub ../lib/cjs/fakebrowser"
   },
   "repository": {
     "type": "git",
@@ -20,7 +21,6 @@
   "bugs": {
     "url": "https://github.com/kkoooqq/fakebrowser/issues"
   },
-  "type": "module",
   "homepage": "https://github.com/kkoooqq/fakebrowser#readme",
   "dependencies": {
     "font-list": "^1.4.0",
@@ -34,6 +34,8 @@
     "uuid": "^8.3.2"
   },
   "devDependencies": {
+    "cpy-cli": "^3.1.1",
+    "cross-env": "^7.0.3",
     "typescript": "^4.4.3"
   }
 }
