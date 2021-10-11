@@ -1,11 +1,18 @@
 import * as crypto from "crypto";
 import {UserAgentHelper} from "./UserAgentHelper";
 
+export enum FontExistTypes {
+    FontNotExists,
+    FontExists,
+    BaseFont,
+}
+
 /**
  * Source information for browser fingerprint.
  * Includes plugins, gpu, fonts, webgl, etc.
+ *
  * How do we get this information?
- * Use dumpDeviceDescriptor.js to collect fingerprints.
+ * Use dumpDD.js to collect fingerprints.
  */
 export interface DeviceDescriptor {
     plugins: {
@@ -24,7 +31,7 @@ export interface DeviceDescriptor {
     },
     allFonts: Array<{
         name: string,
-        exists: number,
+        exists: FontExistTypes,
     }>,
     gpu: {
         vendor: string,

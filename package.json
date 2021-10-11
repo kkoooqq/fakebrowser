@@ -19,9 +19,13 @@
   "homepage": "https://github.com/kkoooqq/fakebrowser#readme",
   "dependencies": {
     "font-list": "^1.4.0",
+    "p-reflect": "^3.0.0",
+    "p-retry": "^4.6.1",
+    "pidtree": "^0.5.0",
     "puppeteer": "^10.4.0",
     "puppeteer-extra": "^3.2.3",
-    "puppeteer-extra-plugin": "^3.2.0"
+    "puppeteer-extra-plugin": "^3.2.0",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "typescript": "^4.4.3"
