@@ -4,7 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "clean-lib": "rimraf lib",
+    "build": "npm run tsc",
+    "tsc": "npm run clean-lib && tsc --version && npm run tsc-cjs && npm run tsc-esm",
+    "tsc-cjs": "tsc -b src/tsconfig.cjs.json",
+    "tsc-esm": "tsc -b src/tsconfig.esm.json"
   },
   "repository": {
     "type": "git",
@@ -16,6 +20,7 @@
   "bugs": {
     "url": "https://github.com/kkoooqq/fakebrowser/issues"
   },
+  "type": "module",
   "homepage": "https://github.com/kkoooqq/fakebrowser#readme",
   "dependencies": {
     "font-list": "^1.4.0",
