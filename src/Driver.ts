@@ -4,6 +4,7 @@ import DeviceDescriptorHelper, {FakeDeviceDescriptor} from "./DeviceDescriptor";
 import * as assert from "assert";
 import * as path from "path";
 import {UserAgentHelper} from "./UserAgentHelper";
+import * as fs from "fs-extra";
 
 const pReflect = require('p-reflect')
 const pidtree = require('pidtree')
@@ -203,6 +204,8 @@ export default class Driver {
 
         const deviceUUID = DeviceDescriptorHelper.deviceUUID(launchParameters.fakeDevice)
         const userDataDir = path.resolve(launchParameters.userDataDir, `./${deviceUUID}`)
+
+        fs.mkdirSync(userDataDir) // throw exception
 
         args.push(
             `--user-data-dir=${userDataDir}`
