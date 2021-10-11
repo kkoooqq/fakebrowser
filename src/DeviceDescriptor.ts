@@ -1,3 +1,12 @@
+import * as crypto from "crypto";
+import {UserAgentHelper} from "./UserAgentHelper";
+
+/**
+ * Source information for browser fingerprint.
+ * Includes plugins, gpu, fonts, webgl, etc.
+ * How do we get this information?
+ * Use dumpDeviceDescriptor.js to collect fingerprints.
+ */
 export interface DeviceDescriptor {
     plugins: {
         mimeTypes: Array<{
@@ -173,6 +182,9 @@ export interface DeviceDescriptor {
     },
 }
 
+/**
+ * We simplify the font information into family, style, weight, size
+ */
 export interface FontDescriptor {
     fontFamily: string,
     fontStyle: string,
@@ -189,5 +201,87 @@ export interface FakeFont {
 export interface FakeDeviceDescriptor extends DeviceDescriptor {
     canvasSalt: Array<number>,
     fakeFonts: Array<FakeFont>,
+}
 
+export default class DeviceDescriptorHelper {
+
+    /**
+     * Check device descriptor legal based on attributes
+     * @param e
+     */
+    static isLegal(e: DeviceDescriptor): boolean {
+        if (!e) {
+            return false
+        }
+
+        if (!e.navigator) {
+            return false
+        }
+
+        if (!UserAgentHelper.isMobile(e.navigator.userAgent)) {
+            // If not mobile phone, but screen is too small, filter it out
+            if (e.window.innerWidth < 1200 || e.window.innerHeight < 540) {
+                return false
+            }
+
+            // Screen height greater than width, remove it
+            if (e.window.innerHeight > e.window.innerWidth) {
+                return false
+            }
+        }
+
+        if (e.window.screenX != 0 || e.window.screenY != 0) {
+            return false
+        }
+
+        if (e.navigator.maxTouchPoints != 0) {
+            return false
+        }
+
+        // Only chrome browser is allowed
+        if (!e.navigator.userAgent.toLowerCase().includes('chrome')) {
+            return false
+        }
+
+        // chrome os
+        if (e.navigator.userAgent.toLowerCase().includes('cros')) {
+            return false
+        }
+
+        // Googlebot
+        if (e.navigator.userAgent.toLowerCase().includes('googlebot')) {
+            return false
+        }
+        if (e.navigator.userAgent.toLowerCase().includes('adsbot-google')) {
+            return false
+        }
+
+        if (e.navigator.userAgent.toLowerCase().includes('mediapartners')) {
+            return false
+        }
+
+        // Chrome-Lighthouse
+        if (e.navigator.userAgent.toLowerCase().includes('chrome-lighthouse')) {
+            return false
+        }
+
+        // No plugins and mineType information, remove
+        // noinspection RedundantIfStatementJS
+        if (!e.plugins || !e.plugins.mimeTypes.length || !e.plugins.plugins.length) {
+            return false
+        }
+
+        return true
+    }
+
+    /**
+     * Calculate browser UUID
+     * We simply use DeviceDescriptor JSON string and take MD5.
+     * @param e
+     */
+    static deviceUUID(e: DeviceDescriptor): string {
+        return crypto.createHash('md5')
+            .update(JSON.stringify(e))
+            .digest("hex")
+    }
 }
