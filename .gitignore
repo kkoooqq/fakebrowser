@@ -108,3 +108,6 @@ dist
 
 # idea files
 .idea
+
+# build dest path
+lib

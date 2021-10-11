@@ -1,7 +1,7 @@
-import {addExtra} from "puppeteer-extra";
+import {addExtra, PuppeteerExtra} from "puppeteer-extra";
 import {Browser, BrowserConnectOptions, BrowserLaunchArgumentOptions, LaunchOptions} from "puppeteer";
 import DeviceDescriptorHelper, {FakeDeviceDescriptor} from "./DeviceDescriptor";
-import * as assert from "assert";
+import { strict as assert } from 'assert';
 import * as path from "path";
 import {UserAgentHelper} from "./UserAgentHelper";
 import * as fs from "fs-extra";
@@ -115,12 +115,12 @@ export interface LaunchParameters {
     proxy?: ProxyServer,
 }
 
-export const kDefaultTimeout = 15 * 1000
+export const DefaultTimeout = 15 * 1000
 
-export const kDefaultOptions = {
+export const DefaultLaunchOptions = {
     headless: true,
     devtools: false,
-    timeout: kDefaultTimeout,
+    timeout: DefaultTimeout,
 }
 
 export default class Driver {
@@ -132,8 +132,13 @@ export default class Driver {
      */
     static async launch(
         launchParameters: LaunchParameters,
-        options: LaunchOptions & BrowserLaunchArgumentOptions & BrowserConnectOptions = kDefaultOptions
-    ): Promise<Browser> {
+        options: LaunchOptions & BrowserLaunchArgumentOptions & BrowserConnectOptions = DefaultLaunchOptions
+    ): Promise<{
+        browser: Browser,
+        pptr: PuppeteerExtra
+    }> {
+
+        // fakeDevice must be set
         const fakeDevice: FakeDeviceDescriptor = launchParameters.fakeDevice
         assert(fakeDevice)
 
@@ -205,7 +210,7 @@ export default class Driver {
         const deviceUUID = DeviceDescriptorHelper.deviceUUID(launchParameters.fakeDevice)
         const userDataDir = path.resolve(launchParameters.userDataDir, `./${deviceUUID}`)
 
-        fs.mkdirSync(userDataDir) // throw exception
+        fs.mkdirSync(userDataDir, {recursive: true}) // throw exception
 
         args.push(
             `--user-data-dir=${userDataDir}`
@@ -240,10 +245,10 @@ export default class Driver {
         // noinspection UnnecessaryLocalVariableJS
         const browser: Browser = await pptr.launch(options)
 
-        return browser
+        return {browser, pptr}
     }
 
-    static async getPids(pid) {
+    private static async getPids(pid) {
         const {value: pids = []} = await pReflect(pidtree(pid))
         return pids.includes(pid) ? pids : [...pids, pid]
     }
