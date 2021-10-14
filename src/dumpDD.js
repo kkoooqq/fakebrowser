@@ -549,7 +549,7 @@ window['__$dd'] = async function () {
                         lang: e.lang,
                         localService: e.localService,
                         name: e.name,
-                        voiceURI: voice.voiceURI,
+                        voiceURI: e.voiceURI,
                     }));
 
                     return resolve(voices);
