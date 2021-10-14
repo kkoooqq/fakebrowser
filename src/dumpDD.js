@@ -187,6 +187,7 @@ window['__$dd'] = async function () {
         for (let n = 0; n < extraFonts.length; n++) {
             const font = extraFonts[n];
 
+            let exists = 0;
             for (const baseFont of baseFonts) {
                 const span = document.createElement('span');
                 span.innerHTML = 'mmmmmmmmmmlli';
@@ -198,10 +199,7 @@ window['__$dd'] = async function () {
                     span.offsetWidth !== baseWidth[baseFont]
                     || span.offsetHeight !== baseHeight[baseFont];
 
-                dd.allFonts.push({
-                    name: font,
-                    exists: sizeNotTheSame ? 1 : 0,
-                });
+                exists = sizeNotTheSame ? 1 : 0;
 
                 document.body.removeChild(span);
 
@@ -209,6 +207,11 @@ window['__$dd'] = async function () {
                     break;
                 }
             }
+
+            dd.allFonts.push({
+                name: font,
+                exists: exists,
+            });
         }
     }
 
