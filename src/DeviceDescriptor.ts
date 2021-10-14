@@ -286,6 +286,11 @@ export default class DeviceDescriptorHelper {
             return false
         }
 
+        // voices
+        if (!e.voices || !e.voices.length) {
+            return false
+        }
+
         return true
     }
 
