@@ -23,6 +23,10 @@
  * @returns {Promise<string>}
  */
 window['__$dd'] = async function () {
+    function sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
     // device descriptor
     const dd = {
         plugins: {},
@@ -518,16 +522,58 @@ window['__$dd'] = async function () {
     // TODO: RTCRtpSender.getCapabilities
 
     // window.speechSynthesis.getVoices
-    const voices = window.speechSynthesis.getVoices();
-    for (let voice of voices) {
-        dd.voices.push({
-            default: voice.default,
-            lang: voice.lang,
-            localService: voice.localService,
-            name: voice.name,
-            voiceURI: voice.voiceURI,
+    function dumpVoices() {
+        return new Promise(async resolve => {
+            try {
+                const win = window;
+                const supported = 'speechSynthesis' in win;
+                supported && speechSynthesis.getVoices(); // warm up
+                await new Promise(setTimeout).catch(e => {
+                });
+
+                if (!supported) {
+                    return resolve();
+                }
+
+                let success = false;
+                const getVoices = () => {
+                    const data = win.speechSynthesis.getVoices();
+                    if (!data || !data.length) {
+                        return;
+                    }
+
+                    success = true;
+
+                    const voices = data.map(e => ({
+                        default: e.default,
+                        lang: e.lang,
+                        localService: e.localService,
+                        name: e.name,
+                        voiceURI: voice.voiceURI,
+                    }));
+
+                    return resolve(voices);
+                };
+
+                getVoices();
+                win.speechSynthesis.onvoiceschanged = getVoices; // Chrome support
+
+                // handle pending resolve
+                const wait = 1000;
+                setTimeout(() => {
+                    if (success) {
+                        return;
+                    }
+
+                    return resolve();
+                }, wait);
+            } catch (error) {
+                return resolve();
+            }
         });
     }
+
+    dd.voices = await dumpVoices();
 
     // default ComputedStyle
     const frame = document.createElement('iframe');
