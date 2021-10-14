@@ -38,6 +38,7 @@ window['__$dd'] = async function () {
         mediaDevices: [],
         defaultCS: {},
         battery: {},
+        voices: [],
     };
 
     // plugins
@@ -515,7 +516,18 @@ window['__$dd'] = async function () {
     await dumpRTC();
 
     // TODO: RTCRtpSender.getCapabilities
-    // TODO: window.speechSynthesis.getVoices
+
+    // window.speechSynthesis.getVoices
+    const voices = window.speechSynthesis.getVoices();
+    for (let voice of voices) {
+        dd.voices.push({
+            default: voice.default,
+            lang: voice.lang,
+            localService: voice.localService,
+            name: voice.name,
+            voiceURI: voice.voiceURI,
+        });
+    }
 
     // default ComputedStyle
     const frame = document.createElement('iframe');

@@ -187,6 +187,13 @@ export interface DeviceDescriptor {
         dischargingTime: number,
         level: number,
     },
+    "voices": Array<{
+        default: boolean,
+        lang: string,
+        localService: boolean,
+        name: string,
+        voiceURI: string,
+    }>,
 }
 
 /**
