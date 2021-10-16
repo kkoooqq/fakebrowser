@@ -171,9 +171,12 @@ export interface DeviceDescriptor {
             }
         }>
     },
-    "mediaCanPlayTypes": Array<{
-        "mediaType": string,
-        "r": string,
+    mimeTypes: Array<{
+        mimeType: string,
+        audioPlayType: string,
+        videoPlayType: string,
+        mediaSource: boolean,
+        mediaRecorder: boolean,
     }>,
     "mediaDevices": Array<{
         "deviceId": string,
@@ -288,6 +291,11 @@ export default class DeviceDescriptorHelper {
 
         // voices
         if (!e.voices || !e.voices.length) {
+            return false
+        }
+
+        // mimeTypes
+        if (!e.mimeTypes || !e.mimeTypes.length) {
             return false
         }
 

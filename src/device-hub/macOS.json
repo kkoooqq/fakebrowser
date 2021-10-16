@@ -12077,7 +12077,7 @@
             }
         ]
     },
-    "mediaCanPlayTypes": [
+    "mimeTypes": [
         {
             "mediaType": "video/x-m4v; codecs=\"avc1.42AC23\"",
             "r": "maybe"
