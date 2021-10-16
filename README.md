@@ -34,7 +34,7 @@ Based on [puppeteer-extra-plugin-stealth](https://github.com/berstend/puppeteer-
 These pages use many fingerprinting techniques to detect if the browser is crawler software.
 Results of running FakeBrowser on CentOS 7, Chrome headless mode, using socks5 for proxy:
 
-| Test page | Notes | Result |
+| Test page | Notes | Result <img width=120 /> |
 | - | - | - |
 | [fingerprintjs](https://fingerprintjs.github.io/fingerprintjs/) | Basic fingerprint detection sites that are easy to bypass. | - |
 | [creepjs](https://abrahamjuliot.github.io/creepjs/) | Contains a lot of very advanced detection methods, bypassing it took me a lot of time, but he provides source code, thanks to the author. It uses Worker, ServiceWorker to detect at the same time, and FakeBrowser is perfectly bypassed. | ![](doc/test-score-creepjs.jpg) |
