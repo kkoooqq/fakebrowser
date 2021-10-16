@@ -19,29 +19,71 @@ class Plugin extends PuppeteerExtraPlugin {
     }
 
     mainFunction = (utils, opts) => {
-        const canPlayType = {
-            // Intercept certain requests
-            apply: function (target, ctx, args) {
-                if (!args || !args.length) {
-                    return target.apply(ctx, args);
-                }
-
-                const type = args[0];
-                const mediaCanPlayType = opts.data.find(e => e.mediaType === type);
-                if (mediaCanPlayType) {
-                    return mediaCanPlayType.r;
-                }
-
-                return target.apply(ctx, args);
-            },
-        };
-
-        /* global HTMLMediaElement */
         utils.replaceWithProxy(
             HTMLMediaElement.prototype,
             'canPlayType',
-            canPlayType,
+            {
+                apply: function (target, thisArg, args) {
+                    if (!args || !args.length) {
+                        return target.apply(thisArg, args);
+                    }
+
+                    const type = args[0];
+                    const mimeType = opts.data.find(e => e.mimeType === type);
+                    if (mimeType) {
+                        if (thisArg instanceof HTMLVideoElement) {
+                            return mimeType.videoPlayType;
+                        } else if (thisArg instanceof HTMLAudioElement) {
+                            return mimeType.audioPlayType;
+                        }
+                    }
+
+                    return target.apply(thisArg, args);
+                },
+            },
         );
+
+        utils.replaceWithProxy(
+            MediaSource,
+            'isTypeSupported',
+            {
+                apply: function (target, thisArg, args) {
+                    if (!args || !args.length) {
+                        return target.apply(thisArg, args);
+                    }
+
+                    const type = args[0];
+                    const mimeType = opts.data.find(e => e.mimeType === type);
+                    if (mimeType) {
+                        return mimeType.mediaSource;
+                    }
+
+                    return target.apply(thisArg, args);
+                },
+            },
+        );
+
+        if ('undefined' !== typeof MediaRecorder) {
+            utils.replaceWithProxy(
+                MediaRecorder,
+                'isTypeSupported',
+                {
+                    apply: function (target, thisArg, args) {
+                        if (!args || !args.length) {
+                            return target.apply(thisArg, args);
+                        }
+
+                        const type = args[0];
+                        const mimeType = opts.data.find(e => e.mimeType === type);
+                        if (mimeType) {
+                            return mimeType.mediaRecorder;
+                        }
+
+                        return target.apply(thisArg, args);
+                    },
+                },
+            );
+        }
     };
 
 }
