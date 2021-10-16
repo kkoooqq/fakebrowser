@@ -23,9 +23,27 @@
  * @returns {Promise<string>}
  */
 window['__$dd'] = async function () {
-    function sleep(ms) {
+    const sleep = (ms) => {
         return new Promise(resolve => setTimeout(resolve, ms));
-    }
+    };
+
+    const smoothForeach = (arr, steps, cb) => {
+        return new Promise((resolve) => {
+            let n = 0;
+            const x = setInterval(async () => {
+                const max = n + steps;
+                for (; n < max; ++n) {
+                    if (n >= arr.length) {
+                        clearInterval(x);
+                        resolve();
+                        break;
+                    }
+
+                    await cb(arr[n]);
+                }
+            }, 10);
+        });
+    };
 
     // device descriptor
     const dd = {
@@ -184,45 +202,33 @@ window['__$dd'] = async function () {
             document.body.removeChild(span);
         }
 
-        await (new Promise((resolve, reject) => {
-            let n = 0;
-            let x = setInterval(() => {
-                const font = extraFonts[n];
+        await smoothForeach(extraFonts, 20, (font) => {
+            let exists = 0;
+            for (const baseFont of baseFonts) {
+                const span = document.createElement('span');
+                span.innerHTML = 'mmmmmmmmmmlli';
+                span.style.fontSize = '72px';
+                span.style.fontFamily = font + ',' + baseFont;
+                document.body.appendChild(span);
 
-                let exists = 0;
-                for (const baseFont of baseFonts) {
-                    const span = document.createElement('span');
-                    span.innerHTML = 'mmmmmmmmmmlli';
-                    span.style.fontSize = '72px';
-                    span.style.fontFamily = extraFonts[n] + ',' + baseFont;
-                    document.body.appendChild(span);
+                const sizeNotTheSame =
+                    span.offsetWidth !== baseWidth[baseFont]
+                    || span.offsetHeight !== baseHeight[baseFont];
 
-                    const sizeNotTheSame =
-                        span.offsetWidth !== baseWidth[baseFont]
-                        || span.offsetHeight !== baseHeight[baseFont];
+                exists = sizeNotTheSame ? 1 : 0;
 
-                    exists = sizeNotTheSame ? 1 : 0;
+                document.body.removeChild(span);
 
-                    document.body.removeChild(span);
-
-                    if (sizeNotTheSame) {
-                        break;
-                    }
+                if (sizeNotTheSame) {
+                    break;
                 }
+            }
 
-                dd.allFonts.push({
-                    name: font,
-                    exists: exists,
-                });
-
-                ++n;
-
-                if (n >= extraFonts.length) {
-                    clearInterval(x);
-                    resolve();
-                }
-            }, 5);
-        }));
+            dd.allFonts.push({
+                name: font,
+                exists: exists,
+            });
+        });
     };
 
     await dumpAllFonts();
@@ -424,31 +430,20 @@ window['__$dd'] = async function () {
         const audioEl = new Audio();
         const isMediaRecorderSupported = 'MediaRecorder' in window;
 
-        await (new Promise((resolve, reject) => {
-            let n = 0;
-            let x = setInterval(() => {
-                const type = mimeTypes[n];
-                try {
-                    const data = {
-                        mimeType: type,
-                        audioPlayType: audioEl.canPlayType(type),
-                        videoPlayType: videoEl.canPlayType(type),
-                        mediaSource: MediaSource.isTypeSupported(type),
-                        mediaRecorder: isMediaRecorderSupported ? MediaRecorder.isTypeSupported(type) : false,
-                    };
+        await smoothForeach(mimeTypes, 20, (type) => {
+            try {
+                const data = {
+                    mimeType: type,
+                    audioPlayType: audioEl.canPlayType(type),
+                    videoPlayType: videoEl.canPlayType(type),
+                    mediaSource: MediaSource.isTypeSupported(type),
+                    mediaRecorder: isMediaRecorderSupported ? MediaRecorder.isTypeSupported(type) : false,
+                };
 
-                    result.push(data);
-                } catch (_) {
-                }
-
-                ++n;
-
-                if (n >= mimeTypes.length) {
-                    clearInterval(x);
-                    resolve();
-                }
-            }, 5);
-        }));
+                result.push(data);
+            } catch (_) {
+            }
+        })
 
         return result;
     };
