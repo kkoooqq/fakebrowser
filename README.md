@@ -42,7 +42,7 @@ Results of running FakeBrowser on CentOS 7, Chrome headless mode, using socks5 f
 | [amiunique](https://amiunique.org/fp) | - | ![](doc/test-score-amiunique.jpg) |
 | [browser-fingerprinting](https://niespodd.github.io/browser-fingerprinting) | This author is also working on anti-anti-bot systems, and I learned lots of knowledge from his repository, thank you very much! | ![](doc/test-score-niespodd.jpg) |
 | [coveryourtracks](https://coveryourtracks.eff.org/) | This site detects if your canvas/webgl fingerprint is stable by refreshing the page to check if you are a real environment. In fact, simply adding noise to canvas is not enough, undrawn rectangular areas are easily detected if they have noise. FakeBrowser uses an edge detection method that only adds noise to drawn edges of text, circles, ellipses. | ![](doc/test-score-coveryourtracks.jpg) |
-| [f.vision](http://f.vision/) | - | - |
+| [f.vision](http://f.vision/) | - | ![](doc/test-score-f.vision.jpg) |
 | [recaptcha-test](https://antcpt.com/eng/information/demo-form/recaptcha-3-test-score.html) | Detects how many points your browser scores in reCaptcha. | - |
 | [deviceinfo](https://www.deviceinfo.me) | - | - |
 | [hackability](https://portswigger-labs.net/hackability/) | - | - |
