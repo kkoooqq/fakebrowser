@@ -8,4 +8,24 @@
 
 -----
 
-### FakeBrowser
+# Fake browser, headless browser, all for bots.
+
+* **Basic version:**
+Based on puppeteer and [puppeteer-extra-plugin-stealth](https://github.com/berstend/puppeteer-extra/tree/master/packages/puppeteer-extra-plugin-stealth), uses javascript hooks to modify properties and provides a simple api to make your web bot undetectable.
+* **Advanced version:**
+Based on Chromium, recompiled to complete the simulation more thoroughly.
+
+---
+
+Reverse engineering is not easy, and I would appreciate if you could give a ⭐!
+
+---
+
+### Bot / Fingerprint detection pages
+
+These pages use many fingerprinting techniques to detect if the browser is crawler software.
+
+| Test page | Notes | Result |
+| - | - | - |
+| https://fingerprintjs.github.io/fingerprintjs/ | Basic fingerprint detection sites that are easy to bypass. | - |
+
