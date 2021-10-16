@@ -36,17 +36,17 @@ Results of running FakeBrowser on CentOS 7, Chrome headless mode, using socks5 f
 
 | Test page | Notes | Result |
 | - | - | - |
-| https://fingerprintjs.github.io/fingerprintjs/ | Basic fingerprint detection sites that are easy to bypass. | - |
-| https://abrahamjuliot.github.io/creepjs/ | Contains a lot of very advanced detection methods, bypassing it took me a lot of time, but he provides source code, thanks to the author. It uses Worker, ServiceWorker to detect at the same time, and FakeBrowser is perfectly bypassed. | ![](doc/test-score-creepjs.jpg) |
-| https://pixelscan.net | JS code is obfuscated and can only be restored through the AST tree. The vulnerability is the detection process submits results to server, and we can reverse their analysis process based on the results. It detects if the browser font matches the system in UserAgent. FakeBrowser emulates fonts in 4 ways to bypass the detection perfectly. | ![](doc/test-score-pixelscan.jpg) |
-| https://amiunique.org/fp | - | - |
-| https://niespodd.github.io/browser-fingerprinting | This author is also working on anti-anti-bot systems, and I learned lots of knowledge from his repository, thank you very much! | - |
-| https://coveryourtracks.eff.org/ | This site detects if your canvas/webgl fingerprint is stable by refreshing the page to check if you are a real environment. In fact, simply adding noise to canvas is not enough, undrawn rectangular areas are easily detected if they have noise. FakeBrowser uses an edge detection method that only adds noise to drawn edges of text, circles, ellipses. | - |
-| http://f.vision/ | - | - |
-| https://antcpt.com/eng/information/demo-form/recaptcha-3-test-score.html | Detects how many points your browser scores in reCaptcha. | - |
-| https://www.deviceinfo.me | - | - |
-| https://portswigger-labs.net/hackability/ | - | - |
-| https://bot.sannysoft.com/ | - | - |
-| https://bot.incolumitas.com | - | - |
-| http://antoinevastel.com/bots | - | - |
-| https://browserleaks.com | - | - |
+| [fingerprintjs](https://fingerprintjs.github.io/fingerprintjs/) | Basic fingerprint detection sites that are easy to bypass. | - |
+| [creepjs](https://abrahamjuliot.github.io/creepjs/) | Contains a lot of very advanced detection methods, bypassing it took me a lot of time, but he provides source code, thanks to the author. It uses Worker, ServiceWorker to detect at the same time, and FakeBrowser is perfectly bypassed. | ![](doc/test-score-creepjs.jpg) |
+| [pixelscan](https://pixelscan.net) | JS code is obfuscated and can only be restored through the AST tree. The vulnerability is the detection process submits results to server, and we can reverse their analysis process based on the results. It detects if the browser font matches the system in UserAgent. FakeBrowser emulates fonts in 4 ways to bypass the detection perfectly. | ![](doc/test-score-pixelscan.jpg) |
+| [amiunique](https://amiunique.org/fp) | - | - |
+| [browser-fingerprinting](https://niespodd.github.io/browser-fingerprinting) | This author is also working on anti-anti-bot systems, and I learned lots of knowledge from his repository, thank you very much! | - |
+| [coveryourtracks](https://coveryourtracks.eff.org/) | This site detects if your canvas/webgl fingerprint is stable by refreshing the page to check if you are a real environment. In fact, simply adding noise to canvas is not enough, undrawn rectangular areas are easily detected if they have noise. FakeBrowser uses an edge detection method that only adds noise to drawn edges of text, circles, ellipses. | - |
+| [f.vision](http://f.vision/) | - | - |
+| [recaptcha-test](https://antcpt.com/eng/information/demo-form/recaptcha-3-test-score.html) | Detects how many points your browser scores in reCaptcha. | - |
+| [deviceinfo](https://www.deviceinfo.me) | - | - |
+| [hackability](https://portswigger-labs.net/hackability/) | - | - |
+| [sannysoft](https://bot.sannysoft.com/) | - | - |
+| [incolumitas](https://bot.incolumitas.com) | - | - |
+| [antoinevastel](http://antoinevastel.com/bots) | - | - |
+| [browserleaks](https://browserleaks.com) | - | - |
