@@ -37,7 +37,7 @@ Results of running FakeBrowser on CentOS 7, Chrome headless mode, using socks5 f
 | Test page | Notes | Result |
 | - | - | - |
 | [fingerprintjs](https://fingerprintjs.github.io/fingerprintjs/) | Basic fingerprint detection sites that are easy to bypass. | - |
-| [creepjs](https://abrahamjuliot.github.io/creepjs/) | Contains a lot of very advanced detection methods, bypassing it took me a lot of time, but he provides source code, thanks to the author. It uses Worker, ServiceWorker to detect at the same time, and FakeBrowser is perfectly bypassed. | <img src='doc/test-score-creepjs.jpg' style='width: 300px !important' />|
+| [creepjs](https://abrahamjuliot.github.io/creepjs/) | Contains a lot of very advanced detection methods, bypassing it took me a lot of time, but he provides source code, thanks to the author. It uses Worker, ServiceWorker to detect at the same time, and FakeBrowser is perfectly bypassed. | ![](doc/test-score-creepjs.jpg) <img style='width: 400px !important; height: 1px;' /> |
 | [pixelscan](https://pixelscan.net) | JS code is obfuscated and can only be restored through the AST tree. The vulnerability is the detection process submits results to server, and we can reverse their analysis process based on the results. It detects if the browser font matches the system in UserAgent. FakeBrowser emulates fonts in 4 ways to bypass the detection perfectly. | ![](doc/test-score-pixelscan.jpg) |
 | [amiunique](https://amiunique.org/fp) | - | - |
 | [browser-fingerprinting](https://niespodd.github.io/browser-fingerprinting) | This author is also working on anti-anti-bot systems, and I learned lots of knowledge from his repository, thank you very much! | - |
