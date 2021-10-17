@@ -23,7 +23,7 @@ Reverse engineering is not easy, and I would appreciate if you could give a ⭐!
 
 ## Technical details
 
-Based on [puppeteer-extra-plugin-stealth](https://github.com/berstend/puppeteer-extra/tree/master/packages/puppeteer-extra-plugin-stealth), adding lots of evasions to bypass anti-robot checks, providing toolkits to help bot simulate operation of real users.
+Based on [puppeteer-extra](https://github.com/berstend/puppeteer-extra/), adding lots of evasions to bypass anti-robot checks, providing toolkits to help bot simulate operation of real users.
 
 ![](doc/fakebrowser-demo.gif)
 
