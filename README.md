@@ -37,7 +37,7 @@ Captcha recognition from my another open source project: [anti-captcha](https://
 
 These pages use many fingerprinting techniques to detect if the browser is crawler software.
 
-Results of running FakeBrowser on CentOS 7, Chrome headless mode, using socks5 for proxy:
+Results of running FakeBrowser on **CentOS 7**, **Headless Chrome 93.0.4577.82**, **Socks5 proxy** under AWS VPS:
 
 
 | Test page | Notes | Result |
