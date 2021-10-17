@@ -29,7 +29,7 @@ Tiktok automatic login demo:
 
 ![](doc/fakebrowser-demo.gif)
 
-Captcha recognition from my other open source project: [anti-captcha](https://github.com/kkoooqq/anti-captcha)
+Captcha recognition from my another open source project: [anti-captcha](https://github.com/kkoooqq/anti-captcha)
 
 -----
 
