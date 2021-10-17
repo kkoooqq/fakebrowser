@@ -11,7 +11,7 @@
 # Fake browser, headless browser, all for bots.
 
 * **Basic version:**
-Based on puppeteer, uses javascript hooks to modify properties and provides a simple api to make your web bot undetectable.
+Based on puppeteer, uses JavaScript hooks to modify properties and provides a simple api to make your web bot undetectable.
 * **Advanced version:**
 Based on Chromium, recompiled to complete the simulation more thoroughly.
 
@@ -29,12 +29,16 @@ Tiktok automatic login demo:
 
 ![](doc/fakebrowser-demo.gif)
 
+Captcha recognition from my other open source project: [anti-captcha](https://github.com/kkoooqq/anti-captcha)
+
 -----
 
 ### Bot / Fingerprint detection pages
 
 These pages use many fingerprinting techniques to detect if the browser is crawler software.
+
 Results of running FakeBrowser on CentOS 7, Chrome headless mode, using socks5 for proxy:
+
 
 | Test page | Notes | Result |
 | - | - | - |
