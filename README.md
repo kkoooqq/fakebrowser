@@ -25,7 +25,7 @@ Reverse engineering is not easy, and I would appreciate if you could give a ⭐!
 
 Based on [puppeteer-extra](https://github.com/berstend/puppeteer-extra/), adding lots of evasions to bypass anti-robot checks, providing toolkits to help bot simulate operation of real users.
 
-FakeBrowset automatic login demo:
+FakeBrowser automatic login demo:
 
 ![](doc/fakebrowser-demo.gif)
 
