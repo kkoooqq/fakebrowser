@@ -570,6 +570,31 @@ utils.mockWithProxy = (obj, propName, pseudoTarget, handler) => {
     return true;
 };
 
+utils.mockGetterWithProxy = (obj, propName, pseudoTarget, handler) => {
+    if (!handler.get) {
+        handler.get = (target, property, receiver) => {
+            if (property === 'name') {
+                return propName;
+            }
+
+            if (property === 'length') {
+                return 0;
+            }
+
+            return utils.cache.Reflect.get(target, property, receiver);
+        };
+    }
+
+    const proxyObj = pseudoTarget
+        ? utils.newProxyInstance(pseudoTarget, utils.stripProxyFromErrors(handler))
+        : utils.stripProxyFromErrors(handler);
+
+    utils.replaceProperty(obj, propName, {get: proxyObj});
+    utils.patchToString(proxyObj);
+
+    return true;
+};
+
 /**
  * All-in-one method to create a new JS Proxy with stealth tweaks.
  *
@@ -764,7 +789,7 @@ utils.markCtxOperator = (context, operatorName) => {
  * @returns {{context: *, ctxIndex: number}|{context: null, ctxIndex: number}}
  */
 utils.findCtxIndex = (canvas) => {
-    const contextIds = ['2d', 'webgl', 'webgl2', 'bitmaprenderer'];
+    const contextIds = ['2d', 'webgl', 'experimental-webgl', 'webgl2', 'experimental-webgl2', 'bitmaprenderer'];
     for (let contextId of contextIds) {
         let context = null;
 
