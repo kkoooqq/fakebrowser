@@ -203,7 +203,7 @@ class Plugin extends PuppeteerExtraPlugin {
                 const fake_r = data.webgl.shaderPrecisionFormats.find(e => e.shaderType === r.shaderType && e.precisionType === r.precisionType);
                 let result = fake_r ? fake_r.r.precision : r.precision;
 
-                console.log('!!!h00k ShaderPrecisionFormat precision:' + r.precision + ' to:' + result);
+                // console.log('!!!h00k ShaderPrecisionFormat precision:' + r.precision + ' to:' + result);
 
                 return result;
             },
@@ -216,7 +216,7 @@ class Plugin extends PuppeteerExtraPlugin {
                 const fake_r = data.webgl.shaderPrecisionFormats.find(e => e.shaderType === r.shaderType && e.precisionType === r.precisionType);
                 let result = fake_r ? fake_r.r.rangeMin : r.rangeMin;
 
-                console.log('!!!h00k ShaderPrecisionFormat rangeMin:' + r.rangeMin + ' to:' + result);
+                // console.log('!!!h00k ShaderPrecisionFormat rangeMin:' + r.rangeMin + ' to:' + result);
 
                 return result;
             },
@@ -229,7 +229,7 @@ class Plugin extends PuppeteerExtraPlugin {
                 const fake_r = data.webgl.shaderPrecisionFormats.find(e => e.shaderType === r.shaderType && e.precisionType === r.precisionType);
                 let result = fake_r ? fake_r.r.rangeMax : r.rangeMax;
 
-                console.log('!!!h00k ShaderPrecisionFormat rangeMax:' + r.rangeMax + ' to:' + result);
+                // console.log('!!!h00k ShaderPrecisionFormat rangeMax:' + r.rangeMax + ' to:' + result);
 
                 return result;
             },
