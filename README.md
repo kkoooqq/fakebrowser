@@ -46,7 +46,7 @@ Results of running FakeBrowser on CentOS 7, Chrome headless mode, using socks5 f
 | [recaptcha-test](https://antcpt.com/eng/information/demo-form/recaptcha-3-test-score.html) | Detects how many points your browser scores in reCaptcha. | ![](doc/test-score-recaptcha.jpg) |
 | [deviceinfo](https://www.deviceinfo.me) | - | - |
 | [hackability](https://portswigger-labs.net/hackability/) | - | - |
-| [sannysoft](https://bot.sannysoft.com/) | - | - |
-| [incolumitas](https://bot.incolumitas.com) | - | - |
-| [antoinevastel](http://antoinevastel.com/bots) | - | - |
+| [sannysoft](https://bot.sannysoft.com/) | No pressure to bypass. | ![](doc/test-score-sannysoft.jpg) |
+| [incolumitas](https://bot.incolumitas.com) | This guy also collects lots of bot detection methods, and his blog contains advanced methods for proxy/VPN detection, recommended following. BTW: He uses puppeteer-extra-plugin-strealth's code bugs for bot detection, and there's nothing he can do if I fix those bugs. His test results are very unstable, with FakeBrowser often jumping between 0.8 and 1.0. Even a normal browser's score can drop to 0.5. | ![](doc/test-score-incolumitas.jpg) |
+| [antoinevastel](http://antoinevastel.com/bots) | Fingerprint detection page | - |
 | [browserleaks](https://browserleaks.com) | - | - |
