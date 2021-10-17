@@ -49,7 +49,7 @@ class Plugin extends PuppeteerExtraPlugin {
         const existsAlready = 'runtime' in window.chrome;
         // `chrome.runtime` is only exposed on secure origins
         const isNotSecure = !window.top.location.protocol.startsWith('https');
-        if (existsAlready || (isNotSecure && !runOnInsecureOrigins)) {
+        if (existsAlready || (isNotSecure && !opts.runOnInsecureOrigins)) {
             return; // Nothing to do here
         }
 
@@ -89,6 +89,18 @@ class Plugin extends PuppeteerExtraPlugin {
 
         /** Mock `chrome.runtime.sendMessage` */
         const sendMessageHandler = {
+            get: (target, property, receiver) => {
+                // I use Object.create as a prototype native function to disguise our js function
+                // However, Object.create contains two call parameters
+                // So we have to hook length and return 0
+                if (property === 'name') {
+                    return 'sendMessage';
+                } else if (property === 'length') {
+                    return 0;
+                }
+
+                return utils.cache.Reflect.get(target, property, receiver);
+            },
             apply: function (target, ctx, args) {
                 const [extensionId, options, responseCallback] = args || [];
 
@@ -146,6 +158,15 @@ class Plugin extends PuppeteerExtraPlugin {
          * @see https://developer.chrome.com/apps/runtime#method-connect
          */
         const connectHandler = {
+            get: (target, property, receiver) => {
+                if (property === 'name') {
+                    return 'connect';
+                } else if (property === 'length') {
+                    return 0;
+                }
+
+                return utils.cache.Reflect.get(target, property, receiver);
+            },
             apply: function (target, ctx, args) {
                 const [extensionId, connectInfo] = args || [];
 
@@ -257,6 +278,7 @@ class Plugin extends PuppeteerExtraPlugin {
                     throw new Error(`Attempting to use a disconnected port object`);
                 },
             };
+
             return response;
         }
     };
