@@ -64,7 +64,7 @@ class Plugin extends PuppeteerExtraPlugin {
                                 return undefined;
                             }
 
-                            let result = Reflect.get(target, key);
+                            let result = utils.cache.Reflect.get(target, key);
                             if (!result) {
                                 result = target[key];
                             }
@@ -132,7 +132,7 @@ class Plugin extends PuppeteerExtraPlugin {
                     {
                         // Make toString() native
                         get(target, key) {
-                            return Reflect.get(target, key);
+                            return utils.cache.Reflect.get(target, key);
                         },
                         apply: function (target, thisArg, args) {
                             const isIframe = args && args.length && `${args[0]}`.toLowerCase() === 'iframe';
