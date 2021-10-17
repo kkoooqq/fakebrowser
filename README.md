@@ -13,7 +13,7 @@
 * **Basic version:**
 Based on puppeteer, uses JavaScript hooks to modify properties and provides a simple api to make your web bot undetectable.
 * **Advanced version:**
-Based on Chromium, recompiled to complete the simulation more thoroughly.
+[fakechrome](https://github.com/kkoooqq/fakechrome) Based on Chromium, recompiled to complete the simulation more thoroughly.
 
 -----
 
