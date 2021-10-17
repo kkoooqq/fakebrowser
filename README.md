@@ -44,9 +44,9 @@ Results of running FakeBrowser on CentOS 7, Chrome headless mode, using socks5 f
 | [coveryourtracks](https://coveryourtracks.eff.org/) | This site detects if your canvas/webgl fingerprint is stable by refreshing the page to check if you are a real environment. In fact, simply adding noise to canvas is not enough, undrawn rectangular areas are easily detected if they have noise. FakeBrowser uses an edge detection method that only adds noise to drawn edges of text, circles, ellipses. | ![](doc/test-score-coveryourtracks.jpg) |
 | [f.vision](http://f.vision/) | - | ![](doc/test-score-f.vision.jpg) |
 | [recaptcha-test](https://antcpt.com/eng/information/demo-form/recaptcha-3-test-score.html) | Detects how many points your browser scores in reCaptcha. | ![](doc/test-score-recaptcha.jpg) |
-| [deviceinfo](https://www.deviceinfo.me) | - | - |
+| [deviceinfo](https://www.deviceinfo.me) | - | ![](doc/test-score-deviceinfo.jpg) |
 | [hackability](https://portswigger-labs.net/hackability/) | - | - |
 | [sannysoft](https://bot.sannysoft.com/) | No pressure to bypass. | ![](doc/test-score-sannysoft.jpg) |
 | [incolumitas](https://bot.incolumitas.com) | This guy also collects lots of bot detection methods, and his blog contains advanced methods for proxy/VPN detection, recommended following. BTW: He uses puppeteer-extra-plugin-strealth's code bugs for bot detection, and there's nothing he can do if I fix those bugs. His test results are very unstable, with FakeBrowser often jumping between 0.8 and 1.0. Even a normal browser's score can drop to 0.5. | ![](doc/test-score-incolumitas.jpg) |
 | [antoinevastel](http://antoinevastel.com/bots) | Fingerprint detection page | - |
-| [browserleaks](https://browserleaks.com) | - | - |
+| [browserleaks](https://browserleaks.com) | Everyone should know what this site is | ![](doc/test-score-browserleaks.jpg) |
