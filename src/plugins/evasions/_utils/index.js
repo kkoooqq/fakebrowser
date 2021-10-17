@@ -168,7 +168,7 @@ utils.hookObjectPrototype = () => {
             args[0] = utils.getProxyTarget(args[0]);
             args[1] = utils.getProxyTarget(args[1]);
 
-            return Reflect.apply(target, thisArg, args);
+            return utils.cache.Reflect.apply(target, thisArg, args);
         },
     });
 
@@ -202,7 +202,7 @@ utils.hookObjectPrototype = () => {
             }
 
             if (typeof ctx === 'undefined' || ctx === null) {
-                return target.call(ctx)
+                return target.call(ctx);
             }
 
             // Check if the toString protype of the context is the same as the global prototype,
@@ -231,7 +231,7 @@ utils.hookObjectPrototype = () => {
                 args[0] = utils.cache.Prototype.Function.prototype.toString;
             }
 
-            return Reflect.apply(target, thisArg, args);
+            return utils.cache.Reflect.apply(target, thisArg, args);
         },
     });
 
@@ -492,7 +492,7 @@ utils.replaceWithProxy = (obj, propName, handler) => {
             ...handler,
             // Make toString() native
             get(target, key) {
-                return Reflect.get(target, key);
+                return utils.cache.Reflect.get(target, key);
             },
         };
     }
@@ -556,7 +556,7 @@ utils.mockWithProxy = (obj, propName, pseudoTarget, handler) => {
                 return propName;
             }
 
-            return Reflect.get(target, property, receiver);
+            return utils.cache.Reflect.get(target, property, receiver);
         };
     }
 
