@@ -41,32 +41,35 @@ class Plugin extends PuppeteerExtraPlugin {
                 const json = JSON.stringify(mediaDevice);
                 mediaDevice.groupId = mediaDevice.groupId.substr(0, index) + to + mediaDevice.groupId.substr(index + 1);
 
-                const o = utils.cache.Prototype.Object.create(mediaDevice.kind.includes('output') ? MediaDeviceInfo.prototype : InputDeviceInfo.prototype, {
-                    deviceId: {
-                        value: mediaDevice.deviceId,
-                        writable: false,
-                        enumerable: false,
-                        configurable: true,
-                    },
-                    kind: {
-                        value: mediaDevice.kind,
-                        writable: false,
-                        enumerable: false,
-                        configurable: true,
-                    },
-                    label: {
-                        value: mediaDevice.label,
-                        writable: false,
-                        enumerable: false,
-                        configurable: true,
-                    },
-                    groupId: {
-                        value: mediaDevice.groupId,
-                        writable: false,
-                        enumerable: false,
-                        configurable: true,
-                    },
-                });
+                const o = utils.cache.Prototype.Object.create(
+                    mediaDevice.kind.includes('output')
+                        ? MediaDeviceInfo.prototype
+                        : InputDeviceInfo.prototype, {
+                        deviceId: {
+                            value: mediaDevice.deviceId,
+                            writable: false,
+                            enumerable: false,
+                            configurable: true,
+                        },
+                        kind: {
+                            value: mediaDevice.kind,
+                            writable: false,
+                            enumerable: false,
+                            configurable: true,
+                        },
+                        label: {
+                            value: mediaDevice.label,
+                            writable: false,
+                            enumerable: false,
+                            configurable: true,
+                        },
+                        groupId: {
+                            value: mediaDevice.groupId,
+                            writable: false,
+                            enumerable: false,
+                            configurable: true,
+                        },
+                    });
 
                 const blacklist = ['deviceId', 'kind', 'label', 'groupId', 'toJSON'];
                 utils.mockWithProxy(

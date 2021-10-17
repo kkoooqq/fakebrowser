@@ -21,7 +21,7 @@ class Plugin extends PuppeteerExtraPlugin {
                 apply(target, thisArgs, args) {
                     console.log(`hook window matchMedia ${args.join('|')}`);
 
-                    return Reflect.apply(target, thisArgs, args);
+                    return utils.cache.Reflect.apply(target, thisArgs, args);
                 },
             });
         });

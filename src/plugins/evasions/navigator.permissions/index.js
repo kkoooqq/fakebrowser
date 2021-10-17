@@ -200,7 +200,7 @@ class Plugin extends PuppeteerExtraPlugin {
                                 }, PermissionStatus.prototype));
 
                             default:
-                                Reflect.apply(...arguments).then(result => {
+                                utils.cache.Reflect.apply(...arguments).then(result => {
                                     console.log('!!! h00k permission:' + paramName + ' result state:' + result.state);
                                     return resolve(result);
                                 }).catch(ex => {
