@@ -33,42 +33,89 @@ class Plugin extends PuppeteerExtraPlugin {
                 }
             }
 
+            // window.speechSynthesis.getVoices()[0].__proto__.constructor returns 'Object'
+            _Object.defineProperty(SpeechSynthesisVoice.prototype, 'constructor', {
+                value: Object,
+            });
+
+            // hook
+            const props = ['default', 'lang', 'localService', 'name', 'voiceURI'];
             const voiceObjs = [];
+
+            // With the configuration, construct voices object and then we hook the properties with Proxy
             for (const voice of opts.voices) {
                 const voiceObj = new SpeechSynthesisVoice();
                 voiceObjs.push(voiceObj);
 
-                Object.setPrototypeOf(voiceObj, new Proxy(SpeechSynthesisVoice.prototype, {
-                    ownKeys(target) {
-                        return Reflect.ownKeys(target).filter(e => e !== 'constructor');
-                    },
-                }));
-
-                _Object.defineProperty(voiceObj.constructor, 'name', {
-                    value: 'Object',
+                // window.speechSynthesis.getVoices()[0].constructor returns 'Object'
+                _Object.defineProperty(voiceObj, 'constructor', {
+                    value: Object,
                 });
+
+                _Object.setPrototypeOf(
+                    voiceObj,
+                    new Proxy(
+                        SpeechSynthesisVoice.prototype,
+                        {
+                            ownKeys(target) {
+                                // 'constructor' not in the prototype of SpeechSynthesisVoice
+                                return Reflect.ownKeys(target).filter(
+                                    e => e !== 'constructor',
+                                );
+                            },
+                            get: (target, property, receiver) => {
+                                //
+                                if (property === '__proto__') {
+                                    return _Object.getPrototypeOf(voiceObj);
+                                }
+
+                                return utils.cache.Reflect.get(target, property, receiver);
+                            },
+                        },
+                    ),
+                );
 
                 utils.patchToString(voiceObj.constructor, 'function Object() { [native code] }');
             }
 
-            for (const prop of ['default', 'lang', 'localService', 'name', 'voiceURI']) {
+            for (const prop of props) {
                 utils.mockGetterWithProxy(
                     SpeechSynthesisVoice.prototype,
                     prop,
-                    utils.cache.Prototype.Object.create,
+                    _Object.create,
+                    {
+                        configurable: true,
+                        enumerable: true,
+                    },
                     {
                         apply: (target, thisArg, args) => {
+                            if (voiceObjs.map(e => _Object.getPrototypeOf(e)).includes(thisArg)) {
+
+                                // window.speechSynthesis.getVoices()[0].__proto__.default
+                                // throw TypeError
+
+                                if (props.includes(prop)) {
+                                    throw utils.patchError(new TypeError('Illegal invocation'), prop);
+                                } else {
+                                    return undefined;
+                                }
+                            }
+
                             return opts.voices[voiceObjs.indexOf(thisArg)][prop];
                         },
                     },
                 );
             }
 
-            utils.replaceWithProxy(_Object.getPrototypeOf(window.speechSynthesis), 'getVoices', {
-                apply(target, thisArg, args) {
-                    return voiceObjs;
+            utils.replaceWithProxy(
+                _Object.getPrototypeOf(window.speechSynthesis),
+                'getVoices',
+                {
+                    apply(target, thisArg, args) {
+                        return voiceObjs;
+                    },
                 },
-            });
+            );
         }
     };
 

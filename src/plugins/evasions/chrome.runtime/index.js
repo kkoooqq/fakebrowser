@@ -149,6 +149,7 @@ class Plugin extends PuppeteerExtraPlugin {
             window.chrome.runtime,
             'sendMessage',
             utils.cache.Prototype.Object.create, // We just need a native function
+            {},
             sendMessageHandler,
         );
 
@@ -246,6 +247,7 @@ class Plugin extends PuppeteerExtraPlugin {
             window.chrome.runtime,
             'connect',
             utils.cache.Prototype.Object.create,
+            {},
             connectHandler,
         );
 

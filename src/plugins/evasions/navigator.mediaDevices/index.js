@@ -76,6 +76,7 @@ class Plugin extends PuppeteerExtraPlugin {
                     o,
                     'toJSON',
                     window.alert,
+                    {},
                     {
                         apply(target, ctx, args) {
                             return json;
