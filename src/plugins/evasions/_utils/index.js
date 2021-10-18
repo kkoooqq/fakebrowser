@@ -368,10 +368,12 @@ utils.stripErrorWithAnchor = (err, anchor) => {
     if (anchorIndex === -1) {
         return err; // 404, anchor not found
     }
+
     // Strip everything from the top until we reach the anchor line (remove anchor line as well)
     // Note: We're keeping the 1st line (zero index) as it's unrelated (e.g. `TypeError`)
     stackArr.splice(1, anchorIndex);
     err.stack = stackArr.join('\n');
+
     return err;
 };
 
@@ -547,9 +549,10 @@ utils.replaceSetterWithProxy = (obj, propName, handler) => {
  * @param {object} obj - The object which has the property to replace
  * @param {string} propName - The name of the property to replace or create
  * @param {object} pseudoTarget - The JS Proxy target to use as a basis
+ * @param {object} descriptorOverrides Overwrite writable, enumerable, configurable, etc
  * @param {object} handler - The JS Proxy handler to use
  */
-utils.mockWithProxy = (obj, propName, pseudoTarget, handler) => {
+utils.mockWithProxy = (obj, propName, pseudoTarget, descriptorOverrides, handler) => {
     if (!handler.get) {
         handler.get = (target, property, receiver) => {
             if (property === 'name') {
@@ -564,13 +567,17 @@ utils.mockWithProxy = (obj, propName, pseudoTarget, handler) => {
         ? utils.newProxyInstance(pseudoTarget, utils.stripProxyFromErrors(handler))
         : utils.stripProxyFromErrors(handler);
 
-    utils.replaceProperty(obj, propName, {value: proxyObj});
+    utils.replaceProperty(obj, propName, {
+        ...descriptorOverrides,
+        value: proxyObj,
+    });
+
     utils.patchToString(proxyObj);
 
     return true;
 };
 
-utils.mockGetterWithProxy = (obj, propName, pseudoTarget, handler) => {
+utils.mockGetterWithProxy = (obj, propName, pseudoTarget, descriptorOverrides, handler) => {
     if (!handler.get) {
         handler.get = (target, property, receiver) => {
             if (property === 'name') {
@@ -589,8 +596,12 @@ utils.mockGetterWithProxy = (obj, propName, pseudoTarget, handler) => {
         ? utils.newProxyInstance(pseudoTarget, utils.stripProxyFromErrors(handler))
         : utils.stripProxyFromErrors(handler);
 
-    utils.replaceProperty(obj, propName, {get: proxyObj});
-    utils.patchToString(proxyObj);
+    utils.replaceProperty(obj, propName, {
+        ...descriptorOverrides,
+        get: proxyObj,
+    });
+
+    utils.patchToString(proxyObj, `function get ${propName}() { [native code] }`);
 
     return true;
 };
