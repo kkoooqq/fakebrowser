@@ -26,9 +26,9 @@ class Plugin extends PuppeteerExtraPlugin {
                         construct: function (target, args) {
                             // const obj = Object.create(_Worker.prototype);
 
-                                console.log(`worker is registered in the browser, ${args[0]}`);
-                                const scriptUrl = utils.getCurrentScriptPath();
-                                const workerUrl = args[0];
+                            console.log(`worker is registered in the browser, ${args[0]}`);
+                            const scriptUrl = utils.getCurrentScriptPath();
+                            const workerUrl = args[0];
 
                             args[0] = `http://127.0.0.1:7311/api/patchWorkerJsContent?uuid=${env.uuid}&scriptUrl=${encodeURIComponent(scriptUrl)}&workerUrl=${encodeURIComponent(workerUrl)}`;
 
