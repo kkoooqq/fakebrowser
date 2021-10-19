@@ -30,7 +30,7 @@ FakeBrowser automatic login demo:
 * Using [dumpDD.js](src/dumpDD.js) to collect fingerprint from real users.
 * Writing evasions based on [puppeteer-extra](https://github.com/berstend/puppeteer-extra) to simulate the above fingerprints and bypass anti-bot detection.
 * Provide toolkit API to simulate real user's mouse and keyboard operations.
-* Deploy to Linux and use Chrome/Edge browser in headless mode to **SAVE COST**. Reasons for not using Chromium: mp4 is not supported.
+* Deploy to Linux and use Chrome/Edge in headless mode to **SAVE COST**. Reasons for not using Chromium: no support MP4 and few users using it.
 * Captcha recognition from my another open source project: [anti-captcha](https://github.com/kkoooqq/anti-captcha).
 
 ----
