@@ -23,6 +23,7 @@
  * @returns {Promise<string>}
  */
 window['__$dd'] = async function () {
+    // noinspection JSUnusedLocalSymbols
     const sleep = (ms) => {
         return new Promise(resolve => setTimeout(resolve, ms));
     };
@@ -291,7 +292,7 @@ window['__$dd'] = async function () {
             'pageXOffset', 'pageYOffset',
             'Image', 'isSecureContext', 'devicePixelRatio', 'toolbar', 'locationbar', 'ActiveXObject', 'external',
             'mozRTCPeerConnection', 'postMessage', 'webkitRequestAnimationFrame', 'BluetoothUUID', 'netscape',
-            'localStorage', 'sessionStorage', 'indexDB',
+            'localStorage', 'sessionStorage', 'indexDB', 'BarcodeDetector',
         ]);
     }
 
@@ -443,7 +444,7 @@ window['__$dd'] = async function () {
                 result.push(data);
             } catch (_) {
             }
-        })
+        });
 
         return result;
     };
@@ -534,6 +535,8 @@ window['__$dd'] = async function () {
                 const win = window;
                 const supported = 'speechSynthesis' in win;
                 supported && speechSynthesis.getVoices(); // warm up
+
+                // noinspection JSCheckFunctionSignatures
                 await new Promise(setTimeout).catch(e => {
                 });
 
@@ -541,6 +544,7 @@ window['__$dd'] = async function () {
                     return resolve();
                 }
 
+                // inspired by https://github.com/abrahamjuliot/creepjs/blob/master/creep.js
                 let success = false;
                 const getVoices = () => {
                     const data = win.speechSynthesis.getVoices();
