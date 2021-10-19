@@ -57,4 +57,4 @@ Results of running FakeBrowser on **CentOS 7**, **Headless Chrome 93.0.4577.82**
 | [antoinevastel](http://antoinevastel.com/bots) | Fingerprint detection page | - |
 | [browserleaks](https://browserleaks.com) | Everyone should know what this site is | ![](doc/test-score-browserleaks.jpg) [🔍](doc/test-result-browserleaks.jpg) |
 | [morellian](https://plaperdr.github.io/morellian-canvas/Prototype/webpage/picassauth.html) | - | - |
-| vytal.io | - | - |
+| [vytal.io](https://vytal.io) | - | - |
