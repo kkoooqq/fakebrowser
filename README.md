@@ -15,23 +15,25 @@ Based on [puppeteer](https://github.com/puppeteer/puppeteer), uses JavaScript ho
 * **Advanced version:**
 [fakechrome](https://github.com/kkoooqq/fakechrome) recompiled Chromium to complete the simulation more thoroughly. 
 
------
+------
 
 Reverse engineering is not easy, and I would appreciate if you could give a ⭐!
 
------
+------
 
 ## Technical details
-
-Based on [puppeteer-extra](https://github.com/berstend/puppeteer-extra/), adding lots of evasions to bypass anti-robot checks, providing toolkits to help bot simulate operation of real users.
 
 FakeBrowser automatic login demo:
 
 ![](doc/fakebrowser-demo.gif)
 
-Captcha recognition from my another open source project: [anti-captcha](https://github.com/kkoooqq/anti-captcha)
+* Using [dumpDD.js](src/dumpDD.js) to collect fingerprint from real users.
+* Writing evasions based on [puppeteer-extra](https://github.com/berstend/puppeteer-extra) to simulate the above fingerprints and bypass anti-bot detection.
+* Provide toolkit API to simulate real user's mouse and keyboard operations.
+* Deploy to Linux and use Chrome/Edge browser in headless mode to **SAVE COST**. Reasons for not using Chromium: mp4 is not supported.
+* Captcha recognition from my another open source project: [anti-captcha](https://github.com/kkoooqq/anti-captcha).
 
------
+----
 
 ## 🐱 Bot / Fingerprint detection sites 
 
