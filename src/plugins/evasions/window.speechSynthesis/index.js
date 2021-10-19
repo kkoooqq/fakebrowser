@@ -47,11 +47,6 @@ class Plugin extends PuppeteerExtraPlugin {
                 const voiceObj = new SpeechSynthesisVoice();
                 voiceObjs.push(voiceObj);
 
-                // window.speechSynthesis.getVoices()[0].constructor returns 'Object'
-                _Object.defineProperty(voiceObj, 'constructor', {
-                    value: Object,
-                });
-
                 _Object.setPrototypeOf(
                     voiceObj,
                     new Proxy(
