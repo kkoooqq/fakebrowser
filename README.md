@@ -8,7 +8,7 @@
 
 -----
 
-# 🐭 Fake browser, headless browser, all for bots.
+# 🐭 Fake browser, headless browser, all for bots 🤖
 
 * **Basic version:**
 Based on [puppeteer](https://github.com/puppeteer/puppeteer), uses JavaScript hooks to modify properties and provides a simple api to make your web bot undetectable.
@@ -33,7 +33,7 @@ Captcha recognition from my another open source project: [anti-captcha](https://
 
 -----
 
-### Bot / Fingerprint detection sites 🐱
+## 🐱 Bot / Fingerprint detection sites 
 
 These pages use many fingerprinting techniques to detect if the browser is crawler software.
 
