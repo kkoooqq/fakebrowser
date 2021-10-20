@@ -30,7 +30,15 @@ class Plugin extends PuppeteerExtraPlugin {
                             const scriptUrl = utils.getCurrentScriptPath();
                             const workerUrl = args[0];
 
-                            args[0] = `http://127.0.0.1:7311/api/patchWorkerJsContent?uuid=${env.uuid}&scriptUrl=${encodeURIComponent(scriptUrl)}&workerUrl=${encodeURIComponent(workerUrl)}`;
+                            if (
+                                workerUrl
+                                && (
+                                    workerUrl.startsWith('http://')
+                                    || workerUrl.startsWith('https://')
+                                )
+                            ) {
+                                args[0] = `http://127.0.0.1:7311/api/patchWorkerJsContent?uuid=${env.uuid}&scriptUrl=${encodeURIComponent(scriptUrl)}&workerUrl=${encodeURIComponent(workerUrl)}`;
+                            }
 
                             return new desc.value(...args);
                         },
