@@ -25,12 +25,31 @@ class Plugin extends PuppeteerExtraPlugin {
         // TODO: If it is a charging state, the user's power should keep increasing to a certain time full.
         // It also needs to simulate the situation that the user has unplugged the power.
         if ('undefined' != typeof BatteryManager) {
-            utils.replaceGetterWithProxy(BatteryManager.prototype, 'charging', utils.makeHandler().getterValue(battery.charging));
-            utils.replaceGetterWithProxy(BatteryManager.prototype, 'chargingTime', utils.makeHandler().getterValue(!battery.chargingTime ? Infinity : battery.chargingTime));
-            utils.replaceGetterWithProxy(BatteryManager.prototype, 'dischargingTime', utils.makeHandler().getterValue(!battery.dischargingTime ? Infinity : battery.dischargingTime));
-            utils.replaceGetterWithProxy(BatteryManager.prototype, 'level', utils.makeHandler().getterValue(battery.level));
+            utils.replaceGetterWithProxy(
+                BatteryManager.prototype,
+                'charging',
+                utils.makeHandler().getterValue(battery.charging),
+            );
+
+            utils.replaceGetterWithProxy(
+                BatteryManager.prototype,
+                'chargingTime',
+                utils.makeHandler().getterValue(!battery.chargingTime ? Infinity : battery.chargingTime),
+            );
+
+            utils.replaceGetterWithProxy(
+                BatteryManager.prototype,
+                'dischargingTime',
+                utils.makeHandler().getterValue(!battery.dischargingTime ? Infinity : battery.dischargingTime),
+            );
+
+            utils.replaceGetterWithProxy(
+                BatteryManager.prototype,
+                'level',
+                utils.makeHandler().getterValue(battery.level),
+            );
         }
-    }
+    };
 }
 
 module.exports = function (pluginConfig) {
