@@ -798,7 +798,28 @@ utils.isUUID = (str) => {
     }
 
     return false;
-}
+};
+
+// utils.isSequence('haha')                 ===>  false
+// utils.isSequence([])                     ===>  true
+// utils.isSequence(new Int8Array())        ===>  true
+// utils.isSequence(new Set())              ===>  true
+utils.isSequence = (obj) => {
+    const _Object = utils.cache.Prototype.Object;
+    let desc = null;
+
+    for (;
+        obj && !!(desc = _Object.getOwnPropertyDescriptors(obj));
+    ) {
+        if (desc.forEach) {
+            return true;
+        }
+
+        obj = _Object.getPrototypeOf(obj);
+    }
+
+    return false;
+};
 
 utils.getCurrentScriptPath = () => {
     let a = {}, stack;
