@@ -821,6 +821,18 @@ utils.isSequence = (obj) => {
     return false;
 };
 
+utils.intersectionSet = (a, b) => {
+    return new Set([...a].filter(x => b.has(x)));
+};
+
+utils.unionSet = (a, b) => {
+    return new Set([...a, ...b]);
+};
+
+utils.differenceABSet = (a, b) => {
+    return new Set([...a].filter(x => !b.has(x)));
+};
+
 utils.getCurrentScriptPath = () => {
     let a = {}, stack;
     try {
