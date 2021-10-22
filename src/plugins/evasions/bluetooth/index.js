@@ -20,6 +20,7 @@ const withWorkerUtils = require('../_utils/withWorkerUtils');
 // "BluetoothRemoteGATTService"
 // "BluetoothUUID"
 
+// https://github.com/WebBluetoothCG/web-bluetooth
 // thanks to:
 // https://github.com/thegecko/webbluetooth/blob/master/src/helpers.ts#L257
 
@@ -408,7 +409,34 @@ class Plugin extends PuppeteerExtraPlugin {
                     return utils.cache.Reflect.get(target, property, receiver);
                 },
                 apply(target, thisArg, args) {
+                    if (args.length === 0) {
+                        throw utils.patchError(
+                            new TypeError(`Failed to execute 'getCharacteristic' on 'BluetoothUUID': 1 argument required, but only 0 present.`),
+                            'getCharacteristic',
+                        );
+                    }
 
+                    if ('number' === typeof args[0]) {
+                        return getCanonicalUUID(args[0]);
+                    }
+
+                    if ('string' === typeof args[0]) {
+                        // If it is a UUID string, construct a new string directly and return it.
+                        if (utils.isUUID(args[0])) {
+                            return '' + args[0];
+                        }
+
+                        // In the known Bluetooth Characteristic names：
+                        const alias = bluetoothCharacteristics[args[0]];
+                        if (alias) {
+                            return getCanonicalUUID(alias);
+                        }
+                    }
+
+                    throw utils.patchError(
+                        new TypeError(`Failed to execute 'getCharacteristic' on 'BluetoothUUID': Invalid Characteristic name: '1234'. It must be a valid UUID alias (e.g. 0x1234), UUID (lowercase hex characters e.g. '00001234-0000-1000-8000-00805f9b34fb'), or recognized standard name from https://www.bluetooth.com/specifications/gatt/characteristics e.g. 'aerobic_heart_rate_lower_limit'.`),
+                        'getCharacteristic',
+                    );
                 },
             },
         );
@@ -434,7 +462,34 @@ class Plugin extends PuppeteerExtraPlugin {
                     return utils.cache.Reflect.get(target, property, receiver);
                 },
                 apply(target, thisArg, args) {
+                    if (args.length === 0) {
+                        throw utils.patchError(
+                            new TypeError(`Failed to execute 'getDescriptor' on 'BluetoothUUID': 1 argument required, but only 0 present.`),
+                            'getDescriptor',
+                        );
+                    }
 
+                    if ('number' === typeof args[0]) {
+                        return getCanonicalUUID(args[0]);
+                    }
+
+                    if ('string' === typeof args[0]) {
+                        // If it is a UUID string, construct a new string directly and return it.
+                        if (utils.isUUID(args[0])) {
+                            return '' + args[0];
+                        }
+
+                        // In the known Bluetooth Descriptors names：
+                        const alias = bluetoothDescriptors[args[0]];
+                        if (alias) {
+                            return getCanonicalUUID(alias);
+                        }
+                    }
+
+                    throw utils.patchError(
+                        new TypeError(`Failed to execute 'getDescriptor' on 'BluetoothUUID': Invalid Descriptor name: 'characteristic_extended_properties'. It must be a valid UUID alias (e.g. 0x1234), UUID (lowercase hex characters e.g. '00001234-0000-1000-8000-00805f9b34fb'), or recognized standard name from https://www.bluetooth.com/specifications/gatt/descriptors e.g. 'gatt.characteristic_presentation_format'.`),
+                        'getDescriptor',
+                    );
                 },
             },
         );
