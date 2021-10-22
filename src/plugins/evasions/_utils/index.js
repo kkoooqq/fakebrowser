@@ -827,6 +827,10 @@ utils.isSequence = (obj) => {
 };
 
 utils.intersectionSet = (a, b) => {
+    if (b instanceof Array) {
+        b = new Set(b);
+    }
+
     return new Set([...a].filter(x => b.has(x)));
 };
 
@@ -835,6 +839,10 @@ utils.unionSet = (a, b) => {
 };
 
 utils.differenceABSet = (a, b) => {
+    if (b instanceof Array) {
+        b = new Set(b);
+    }
+
     return new Set([...a].filter(x => !b.has(x)));
 };
 

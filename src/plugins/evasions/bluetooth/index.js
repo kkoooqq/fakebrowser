@@ -630,11 +630,18 @@ class Plugin extends PuppeteerExtraPlugin {
                         // * filters[]: An array of BluetoothScanFilters. This filter consists of an array of BluetoothServiceUUIDs, a name parameter, and a namePrefix parameter.
                         // * optionalServices[]: An array of BluetoothServiceUUIDs.
                         // * acceptAllDevices: A boolean value indicating that the requesting script can accept all Bluetooth devices. The default is false.
+                        if (args.length === 0) {
+                            return reject(utils.patchError(
+                                new TypeError(`Failed to execute 'requestDevice' on 'Bluetooth': Either 'filters' should be present or 'acceptAllDevices' should be true, but not both.`),
+                                'requestDevice',
+                            ));
+                        }
+
                         const {
                             filters,
                             optionalServices,
                             acceptAllDevices,
-                        } = args;
+                        } = args[0];
 
                         if ('undefined' !== typeof filters) {
                             // After experimenting, the basic data type throws this exception.
@@ -690,9 +697,11 @@ class Plugin extends PuppeteerExtraPlugin {
                         for (const filter of filters) {
                             // The filter type can only be: services, name, namePrefix
                             const filterNames = _Object.keys(filter);
-                            if (!utils.intersectionSet(
-                                filterNames,
-                                ['services', 'name', 'namePrefix']).length
+                            if (
+                                !utils.intersectionSet(
+                                    filterNames,
+                                    ['services', 'name', 'namePrefix'],
+                                ).size
                             ) {
                                 return reject(utils.patchError(
                                     new TypeError(`Failed to execute 'requestDevice' on 'Bluetooth': A filter must restrict the devices in some way.`),
@@ -797,6 +806,17 @@ class Plugin extends PuppeteerExtraPlugin {
                             ));
                         });
                     });
+                },
+            },
+        );
+
+        const bluetooth = new Bluetooth();
+        utils.replaceGetterWithProxy(
+            Navigator.prototype,
+            'bluetooth',
+            {
+                apply(target, ctx, args) {
+                    return bluetooth;
                 },
             },
         );
