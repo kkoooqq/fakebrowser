@@ -11,6 +11,10 @@ const withWorkerUtils = require('../_utils/withWorkerUtils');
 // so the version number of the browser does not correspond to it.
 // We need to implement bluetooth class manually:
 //
+
+// We should strictly follow this definition and then insert the window to avoid detected by creepjs as being in wrong order
+// Just like he detects the position of chrome in window :D
+
 // "Bluetooth"
 // "BluetoothCharacteristicProperties"
 // "BluetoothDevice"
@@ -333,18 +337,46 @@ class Plugin extends PuppeteerExtraPlugin {
 
         // Define types
 
-        // ==============================================================================================
-        // BluetoothUUID
+        // "Bluetooth"
+        // "BluetoothCharacteristicProperties"
+        // "BluetoothDevice"
+        // "BluetoothRemoteGATTCharacteristic"
+        // "BluetoothRemoteGATTDescriptor"
+        // "BluetoothRemoteGATTServer"
+        // "BluetoothRemoteGATTService"
+        // "BluetoothUUID"
 
+        window.Bluetooth = function Bluetooth() {
+        };
+        window.BluetoothCharacteristicProperties = function BluetoothCharacteristicProperties() {
+        };
+        window.BluetoothDevice = function BluetoothDevice() {
+        };
+        window.BluetoothRemoteGATTCharacteristic = function BluetoothRemoteGATTCharacteristic() {
+        };
+        window.BluetoothRemoteGATTDescriptor = function BluetoothRemoteGATTDescriptor() {
+        };
+        window.BluetoothRemoteGATTServer = function BluetoothRemoteGATTServer() {
+        };
+        window.BluetoothRemoteGATTService = function BluetoothRemoteGATTService() {
+        };
         window.BluetoothUUID = function BluetoothUUID() {
         };
+
+        // ==============================================================================================
+        // BluetoothUUID
+        // BluetoothUUID.canonicalUUID
+        // BluetoothUUID.getCharacteristic
+        // BluetoothUUID.getDescriptor
+        // BluetoothUUID.getService
+        // BluetoothUUID.prototype.[Symbol.toStringTag]
 
         utils.patchToString(window.BluetoothUUID);
 
         Object.defineProperty(window.BluetoothUUID.prototype, Symbol.toStringTag, {
             configurable: true,
             enumerable: false,
-            writable: true,
+            writable: false,
             value: 'BluetoothUUID',
         });
 
@@ -549,16 +581,16 @@ class Plugin extends PuppeteerExtraPlugin {
 
         // ==============================================================================================
         // Bluetooth
-
-        window.Bluetooth = function Bluetooth() {
-        };
+        // Bluetooth.prototype.getAvailability
+        // Bluetooth.prototype.requestDevice
+        // Bluetooth.prototype.[Symbol.toStringTag]
 
         utils.patchToString(window.Bluetooth);
 
         Object.defineProperty(window.Bluetooth.prototype, Symbol.toStringTag, {
             configurable: true,
             enumerable: false,
-            writable: true,
+            writable: false,
             value: 'Bluetooth',
         });
 
@@ -820,6 +852,727 @@ class Plugin extends PuppeteerExtraPlugin {
                 },
             },
         );
+
+        // ==============================================================================================
+        // BluetoothDevice
+        // BluetoothDevice.prototype.get gatt
+        // BluetoothDevice.prototype.get id
+        // BluetoothDevice.prototype.get name
+        // BluetoothDevice.prototype.get ongattserverdisconnected
+        // BluetoothDevice.prototype.set ongattserverdisconnected
+        // BluetoothDevice.prototype.[Symbol.toStringTag]
+
+        // Several other classes are similar and we handle them in a unified way.
+        // Covenant:
+        // get default length is 0
+        // set default length is 1
+        // value default length is 0
+
+        /*
+
+        // dump props:
+
+        const classes = [
+            'BluetoothDevice',
+            'BluetoothRemoteGATTCharacteristic',
+            'BluetoothRemoteGATTDescriptor',
+            'BluetoothRemoteGATTServer',
+            'BluetoothRemoteGATTService',
+        ];
+
+        const map = [];
+
+        for (const cls of classes) {
+            const def = {
+                name: cls,
+                props: [],
+            };
+
+            map.push(def);
+
+            const props = Object.getOwnPropertyDescriptors(window[cls].prototype);
+            for (const prop in props) {
+                const desc = props[prop];
+                const propDef = {
+                    name: prop,
+                    descriptor: {
+                        configurable: desc.configurable,
+                        writable: desc.writable,
+                        enumerable: desc.enumerable,
+                    },
+                    visit: {},
+                };
+
+                if (desc.get) {
+                    propDef.visit.get = {length: desc.get.length, name: desc.get.name};
+                }
+
+                if (desc.set) {
+                    propDef.visit.set = {length: desc.set.length, name: desc.set.name};
+                }
+
+                if (desc.value) {
+                    propDef.visit.value = {length: desc.value.length, name: desc.value.name};
+                }
+
+                def.props.push(propDef);
+            }
+        }
+
+        console.log(JSON.stringify(map, null, 4));
+
+        */
+
+        const map = [
+            {
+                'name': 'BluetoothDevice',
+                'props': [
+                    {
+                        'name': 'id',
+                        'descriptor': {
+                            'configurable': true,
+                            'enumerable': true,
+                        },
+                        'visit': {
+                            'get': {
+                                'length': 0,
+                                'name': 'get id',
+                            },
+                        },
+                    },
+                    {
+                        'name': 'name',
+                        'descriptor': {
+                            'configurable': true,
+                            'enumerable': true,
+                        },
+                        'visit': {
+                            'get': {
+                                'length': 0,
+                                'name': 'get name',
+                            },
+                        },
+                    },
+                    {
+                        'name': 'gatt',
+                        'descriptor': {
+                            'configurable': true,
+                            'enumerable': true,
+                        },
+                        'visit': {
+                            'get': {
+                                'length': 0,
+                                'name': 'get gatt',
+                            },
+                        },
+                    },
+                    {
+                        'name': 'ongattserverdisconnected',
+                        'descriptor': {
+                            'configurable': true,
+                            'enumerable': true,
+                        },
+                        'visit': {
+                            'get': {
+                                'length': 0,
+                                'name': 'get ongattserverdisconnected',
+                            },
+                            'set': {
+                                'length': 1,
+                                'name': 'set ongattserverdisconnected',
+                            },
+                        },
+                    },
+                    {
+                        'name': 'constructor',
+                        'descriptor': {
+                            'configurable': true,
+                            'writable': true,
+                            'enumerable': false,
+                        },
+                        'visit': {
+                            'value': {
+                                'length': 0,
+                                'name': 'BluetoothDevice',
+                            },
+                        },
+                    },
+                ],
+            },
+            {
+                'name': 'BluetoothRemoteGATTCharacteristic',
+                'props': [
+                    {
+                        'name': 'service',
+                        'descriptor': {
+                            'configurable': true,
+                            'enumerable': true,
+                        },
+                        'visit': {
+                            'get': {
+                                'length': 0,
+                                'name': 'get service',
+                            },
+                        },
+                    },
+                    {
+                        'name': 'uuid',
+                        'descriptor': {
+                            'configurable': true,
+                            'enumerable': true,
+                        },
+                        'visit': {
+                            'get': {
+                                'length': 0,
+                                'name': 'get uuid',
+                            },
+                        },
+                    },
+                    {
+                        'name': 'properties',
+                        'descriptor': {
+                            'configurable': true,
+                            'enumerable': true,
+                        },
+                        'visit': {
+                            'get': {
+                                'length': 0,
+                                'name': 'get properties',
+                            },
+                        },
+                    },
+                    {
+                        'name': 'value',
+                        'descriptor': {
+                            'configurable': true,
+                            'enumerable': true,
+                        },
+                        'visit': {
+                            'get': {
+                                'length': 0,
+                                'name': 'get value',
+                            },
+                        },
+                    },
+                    {
+                        'name': 'oncharacteristicvaluechanged',
+                        'descriptor': {
+                            'configurable': true,
+                            'enumerable': true,
+                        },
+                        'visit': {
+                            'get': {
+                                'length': 0,
+                                'name': 'get oncharacteristicvaluechanged',
+                            },
+                            'set': {
+                                'length': 1,
+                                'name': 'set oncharacteristicvaluechanged',
+                            },
+                        },
+                    },
+                    {
+                        'name': 'getDescriptor',
+                        'descriptor': {
+                            'configurable': true,
+                            'writable': true,
+                            'enumerable': true,
+                        },
+                        'visit': {
+                            'value': {
+                                'length': 1,
+                                'name': 'getDescriptor',
+                            },
+                        },
+                    },
+                    {
+                        'name': 'getDescriptors',
+                        'descriptor': {
+                            'configurable': true,
+                            'writable': true,
+                            'enumerable': true,
+                        },
+                        'visit': {
+                            'value': {
+                                'length': 0,
+                                'name': 'getDescriptors',
+                            },
+                        },
+                    },
+                    {
+                        'name': 'readValue',
+                        'descriptor': {
+                            'configurable': true,
+                            'writable': true,
+                            'enumerable': true,
+                        },
+                        'visit': {
+                            'value': {
+                                'length': 0,
+                                'name': 'readValue',
+                            },
+                        },
+                    },
+                    {
+                        'name': 'startNotifications',
+                        'descriptor': {
+                            'configurable': true,
+                            'writable': true,
+                            'enumerable': true,
+                        },
+                        'visit': {
+                            'value': {
+                                'length': 0,
+                                'name': 'startNotifications',
+                            },
+                        },
+                    },
+                    {
+                        'name': 'stopNotifications',
+                        'descriptor': {
+                            'configurable': true,
+                            'writable': true,
+                            'enumerable': true,
+                        },
+                        'visit': {
+                            'value': {
+                                'length': 0,
+                                'name': 'stopNotifications',
+                            },
+                        },
+                    },
+                    {
+                        'name': 'writeValue',
+                        'descriptor': {
+                            'configurable': true,
+                            'writable': true,
+                            'enumerable': true,
+                        },
+                        'visit': {
+                            'value': {
+                                'length': 1,
+                                'name': 'writeValue',
+                            },
+                        },
+                    },
+                    {
+                        'name': 'writeValueWithResponse',
+                        'descriptor': {
+                            'configurable': true,
+                            'writable': true,
+                            'enumerable': true,
+                        },
+                        'visit': {
+                            'value': {
+                                'length': 1,
+                                'name': 'writeValueWithResponse',
+                            },
+                        },
+                    },
+                    {
+                        'name': 'writeValueWithoutResponse',
+                        'descriptor': {
+                            'configurable': true,
+                            'writable': true,
+                            'enumerable': true,
+                        },
+                        'visit': {
+                            'value': {
+                                'length': 1,
+                                'name': 'writeValueWithoutResponse',
+                            },
+                        },
+                    },
+                    {
+                        'name': 'constructor',
+                        'descriptor': {
+                            'configurable': true,
+                            'writable': true,
+                            'enumerable': false,
+                        },
+                        'visit': {
+                            'value': {
+                                'length': 0,
+                                'name': 'BluetoothRemoteGATTCharacteristic',
+                            },
+                        },
+                    },
+                ],
+            },
+            {
+                'name': 'BluetoothRemoteGATTDescriptor',
+                'props': [
+                    {
+                        'name': 'characteristic',
+                        'descriptor': {
+                            'configurable': true,
+                            'enumerable': true,
+                        },
+                        'visit': {
+                            'get': {
+                                'length': 0,
+                                'name': 'get characteristic',
+                            },
+                        },
+                    },
+                    {
+                        'name': 'uuid',
+                        'descriptor': {
+                            'configurable': true,
+                            'enumerable': true,
+                        },
+                        'visit': {
+                            'get': {
+                                'length': 0,
+                                'name': 'get uuid',
+                            },
+                        },
+                    },
+                    {
+                        'name': 'value',
+                        'descriptor': {
+                            'configurable': true,
+                            'enumerable': true,
+                        },
+                        'visit': {
+                            'get': {
+                                'length': 0,
+                                'name': 'get value',
+                            },
+                        },
+                    },
+                    {
+                        'name': 'readValue',
+                        'descriptor': {
+                            'configurable': true,
+                            'writable': true,
+                            'enumerable': true,
+                        },
+                        'visit': {
+                            'value': {
+                                'length': 0,
+                                'name': 'readValue',
+                            },
+                        },
+                    },
+                    {
+                        'name': 'writeValue',
+                        'descriptor': {
+                            'configurable': true,
+                            'writable': true,
+                            'enumerable': true,
+                        },
+                        'visit': {
+                            'value': {
+                                'length': 1,
+                                'name': 'writeValue',
+                            },
+                        },
+                    },
+                    {
+                        'name': 'constructor',
+                        'descriptor': {
+                            'configurable': true,
+                            'writable': true,
+                            'enumerable': false,
+                        },
+                        'visit': {
+                            'value': {
+                                'length': 0,
+                                'name': 'BluetoothRemoteGATTDescriptor',
+                            },
+                        },
+                    },
+                ],
+            },
+            {
+                'name': 'BluetoothRemoteGATTServer',
+                'props': [
+                    {
+                        'name': 'device',
+                        'descriptor': {
+                            'configurable': true,
+                            'enumerable': true,
+                        },
+                        'visit': {
+                            'get': {
+                                'length': 0,
+                                'name': 'get device',
+                            },
+                        },
+                    },
+                    {
+                        'name': 'connected',
+                        'descriptor': {
+                            'configurable': true,
+                            'enumerable': true,
+                        },
+                        'visit': {
+                            'get': {
+                                'length': 0,
+                                'name': 'get connected',
+                            },
+                        },
+                    },
+                    {
+                        'name': 'connect',
+                        'descriptor': {
+                            'configurable': true,
+                            'writable': true,
+                            'enumerable': true,
+                        },
+                        'visit': {
+                            'value': {
+                                'length': 0,
+                                'name': 'connect',
+                            },
+                        },
+                    },
+                    {
+                        'name': 'disconnect',
+                        'descriptor': {
+                            'configurable': true,
+                            'writable': true,
+                            'enumerable': true,
+                        },
+                        'visit': {
+                            'value': {
+                                'length': 0,
+                                'name': 'disconnect',
+                            },
+                        },
+                    },
+                    {
+                        'name': 'getPrimaryService',
+                        'descriptor': {
+                            'configurable': true,
+                            'writable': true,
+                            'enumerable': true,
+                        },
+                        'visit': {
+                            'value': {
+                                'length': 1,
+                                'name': 'getPrimaryService',
+                            },
+                        },
+                    },
+                    {
+                        'name': 'getPrimaryServices',
+                        'descriptor': {
+                            'configurable': true,
+                            'writable': true,
+                            'enumerable': true,
+                        },
+                        'visit': {
+                            'value': {
+                                'length': 0,
+                                'name': 'getPrimaryServices',
+                            },
+                        },
+                    },
+                    {
+                        'name': 'constructor',
+                        'descriptor': {
+                            'configurable': true,
+                            'writable': true,
+                            'enumerable': false,
+                        },
+                        'visit': {
+                            'value': {
+                                'length': 0,
+                                'name': 'BluetoothRemoteGATTServer',
+                            },
+                        },
+                    },
+                ],
+            },
+            {
+                'name': 'BluetoothRemoteGATTService',
+                'props': [
+                    {
+                        'name': 'device',
+                        'descriptor': {
+                            'configurable': true,
+                            'enumerable': true,
+                        },
+                        'visit': {
+                            'get': {
+                                'length': 0,
+                                'name': 'get device',
+                            },
+                        },
+                    },
+                    {
+                        'name': 'uuid',
+                        'descriptor': {
+                            'configurable': true,
+                            'enumerable': true,
+                        },
+                        'visit': {
+                            'get': {
+                                'length': 0,
+                                'name': 'get uuid',
+                            },
+                        },
+                    },
+                    {
+                        'name': 'isPrimary',
+                        'descriptor': {
+                            'configurable': true,
+                            'enumerable': true,
+                        },
+                        'visit': {
+                            'get': {
+                                'length': 0,
+                                'name': 'get isPrimary',
+                            },
+                        },
+                    },
+                    {
+                        'name': 'getCharacteristic',
+                        'descriptor': {
+                            'configurable': true,
+                            'writable': true,
+                            'enumerable': true,
+                        },
+                        'visit': {
+                            'value': {
+                                'length': 1,
+                                'name': 'getCharacteristic',
+                            },
+                        },
+                    },
+                    {
+                        'name': 'getCharacteristics',
+                        'descriptor': {
+                            'configurable': true,
+                            'writable': true,
+                            'enumerable': true,
+                        },
+                        'visit': {
+                            'value': {
+                                'length': 0,
+                                'name': 'getCharacteristics',
+                            },
+                        },
+                    },
+                    {
+                        'name': 'constructor',
+                        'descriptor': {
+                            'configurable': true,
+                            'writable': true,
+                            'enumerable': false,
+                        },
+                        'visit': {
+                            'value': {
+                                'length': 0,
+                                'name': 'BluetoothRemoteGATTService',
+                            },
+                        },
+                    },
+                ],
+            },
+        ];
+
+        for (const {name, props} of map) {
+            window[name] = function () {
+            };
+
+            utils.patchToString(window[name]);
+
+            Object.defineProperty(window[name].prototype, Symbol.toStringTag, {
+                configurable: true,
+                enumerable: false,
+                writable: false,
+                value: name,
+            });
+
+            for (const {name: propName, descriptor, visit} of props) {
+                if (visit.get) {
+                    utils.mockGetterWithProxy(
+                        window[name].prototype,
+                        propName,
+                        _Object.create,
+                        descriptor,
+                        {
+                            get: (target, property, receiver) => {
+                                if (property === 'name') {
+                                    return visit.get.name;
+                                }
+
+                                if (property === 'length') {
+                                    return visit.get.length;
+                                }
+
+                                return utils.cache.Reflect.get(target, property, receiver);
+                            },
+                            apply: (target, thisArg, args) => {
+                                throw utils.patchError(
+                                    new TypeError(`Illegal invocation`),
+                                    propName,
+                                );
+                            },
+                        },
+                    );
+                }
+
+                if (visit.value) {
+                    utils.mockWithProxy(
+                        window[name].prototype,
+                        propName,
+                        _Object.create,
+                        descriptor,
+                        {
+                            get: (target, property, receiver) => {
+                                if (property === 'name') {
+                                    return visit.value.name;
+                                }
+
+                                if (property === 'length') {
+                                    return visit.value.length;
+                                }
+
+                                return utils.cache.Reflect.get(target, property, receiver);
+                            },
+                            apply: (target, thisArg, args) => {
+                                throw utils.patchError(
+                                    new TypeError(`Illegal invocation`),
+                                    propName,
+                                );
+                            },
+                        },
+                    );
+                }
+
+                if (visit.set) {
+                    utils.mockSetterWithProxy(
+                        window[name].prototype,
+                        propName,
+                        _Object.create,
+                        descriptor,
+                        {
+                            get: (target, property, receiver) => {
+                                if (property === 'name') {
+                                    return visit.set.name;
+                                }
+
+                                if (property === 'length') {
+                                    return visit.set.length;
+                                }
+
+                                return utils.cache.Reflect.get(target, property, receiver);
+                            },
+                            apply: (target, thisArg, args) => {
+                                throw utils.patchError(
+                                    new TypeError(`Illegal invocation`),
+                                    propName,
+                                );
+                            },
+                        },
+                    );
+                }
+            }
+        }
     };
 
 }
