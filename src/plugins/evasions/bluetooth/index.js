@@ -346,22 +346,24 @@ class Plugin extends PuppeteerExtraPlugin {
         // "BluetoothRemoteGATTService"
         // "BluetoothUUID"
 
-        window.Bluetooth = function Bluetooth() {
+        let navigatorBluetoothSet = false;
+
+        const BluetoothPseudo = function () {
+            if (navigatorBluetoothSet) {
+                throw utils.patchError(new TypeError(`Illegal constructor`), 'construct');
+            }
         };
-        window.BluetoothCharacteristicProperties = function BluetoothCharacteristicProperties() {
-        };
-        window.BluetoothDevice = function BluetoothDevice() {
-        };
-        window.BluetoothRemoteGATTCharacteristic = function BluetoothRemoteGATTCharacteristic() {
-        };
-        window.BluetoothRemoteGATTDescriptor = function BluetoothRemoteGATTDescriptor() {
-        };
-        window.BluetoothRemoteGATTServer = function BluetoothRemoteGATTServer() {
-        };
-        window.BluetoothRemoteGATTService = function BluetoothRemoteGATTService() {
-        };
-        window.BluetoothUUID = function BluetoothUUID() {
-        };
+
+        const fakeBluetoothInstance = new BluetoothPseudo();
+
+        utils.fakeNativeClass(window, 'Bluetooth', BluetoothPseudo, EventTarget);
+        utils.fakeNativeClass(window, 'BluetoothCharacteristicProperties', null, null);
+        utils.fakeNativeClass(window, 'BluetoothDevice', null, EventTarget);
+        utils.fakeNativeClass(window, 'BluetoothRemoteGATTCharacteristic', null, EventTarget);
+        utils.fakeNativeClass(window, 'BluetoothRemoteGATTDescriptor', null, null);
+        utils.fakeNativeClass(window, 'BluetoothRemoteGATTServer', null, null);
+        utils.fakeNativeClass(window, 'BluetoothRemoteGATTService', null, null);
+        utils.fakeNativeClass(window, 'BluetoothUUID', null, null);
 
         // ==============================================================================================
         // BluetoothUUID
@@ -370,15 +372,6 @@ class Plugin extends PuppeteerExtraPlugin {
         // BluetoothUUID.getDescriptor
         // BluetoothUUID.getService
         // BluetoothUUID.prototype.[Symbol.toStringTag]
-
-        utils.patchToString(window.BluetoothUUID);
-
-        Object.defineProperty(window.BluetoothUUID.prototype, Symbol.toStringTag, {
-            configurable: true,
-            enumerable: false,
-            writable: false,
-            value: 'BluetoothUUID',
-        });
 
         utils.mockWithProxy(
             window.BluetoothUUID,
@@ -584,15 +577,6 @@ class Plugin extends PuppeteerExtraPlugin {
         // Bluetooth.prototype.getAvailability
         // Bluetooth.prototype.requestDevice
         // Bluetooth.prototype.[Symbol.toStringTag]
-
-        utils.patchToString(window.Bluetooth);
-
-        Object.defineProperty(window.Bluetooth.prototype, Symbol.toStringTag, {
-            configurable: true,
-            enumerable: false,
-            writable: false,
-            value: 'Bluetooth',
-        });
 
         utils.mockWithProxy(
             window.Bluetooth.prototype,
@@ -842,16 +826,17 @@ class Plugin extends PuppeteerExtraPlugin {
             },
         );
 
-        const bluetooth = new Bluetooth();
         utils.replaceGetterWithProxy(
             Navigator.prototype,
             'bluetooth',
             {
                 apply(target, ctx, args) {
-                    return bluetooth;
+                    return fakeBluetoothInstance;
                 },
             },
         );
+
+        navigatorBluetoothSet = true;
 
         // ==============================================================================================
         // BluetoothDevice
@@ -892,6 +877,10 @@ class Plugin extends PuppeteerExtraPlugin {
 
             const props = Object.getOwnPropertyDescriptors(window[cls].prototype);
             for (const prop in props) {
+                if (prop === 'constructor') {
+                    continue;
+                }
+
                 const desc = props[prop];
                 const propDef = {
                     name: prop,
@@ -980,20 +969,6 @@ class Plugin extends PuppeteerExtraPlugin {
                             'set': {
                                 'length': 1,
                                 'name': 'set ongattserverdisconnected',
-                            },
-                        },
-                    },
-                    {
-                        'name': 'constructor',
-                        'descriptor': {
-                            'configurable': true,
-                            'writable': true,
-                            'enumerable': false,
-                        },
-                        'visit': {
-                            'value': {
-                                'length': 0,
-                                'name': 'BluetoothDevice',
                             },
                         },
                     },
@@ -1183,20 +1158,6 @@ class Plugin extends PuppeteerExtraPlugin {
                             },
                         },
                     },
-                    {
-                        'name': 'constructor',
-                        'descriptor': {
-                            'configurable': true,
-                            'writable': true,
-                            'enumerable': false,
-                        },
-                        'visit': {
-                            'value': {
-                                'length': 0,
-                                'name': 'BluetoothRemoteGATTCharacteristic',
-                            },
-                        },
-                    },
                 ],
             },
             {
@@ -1266,20 +1227,6 @@ class Plugin extends PuppeteerExtraPlugin {
                             'value': {
                                 'length': 1,
                                 'name': 'writeValue',
-                            },
-                        },
-                    },
-                    {
-                        'name': 'constructor',
-                        'descriptor': {
-                            'configurable': true,
-                            'writable': true,
-                            'enumerable': false,
-                        },
-                        'visit': {
-                            'value': {
-                                'length': 0,
-                                'name': 'BluetoothRemoteGATTDescriptor',
                             },
                         },
                     },
@@ -1370,20 +1317,6 @@ class Plugin extends PuppeteerExtraPlugin {
                             },
                         },
                     },
-                    {
-                        'name': 'constructor',
-                        'descriptor': {
-                            'configurable': true,
-                            'writable': true,
-                            'enumerable': false,
-                        },
-                        'visit': {
-                            'value': {
-                                'length': 0,
-                                'name': 'BluetoothRemoteGATTServer',
-                            },
-                        },
-                    },
                 ],
             },
             {
@@ -1456,37 +1389,11 @@ class Plugin extends PuppeteerExtraPlugin {
                             },
                         },
                     },
-                    {
-                        'name': 'constructor',
-                        'descriptor': {
-                            'configurable': true,
-                            'writable': true,
-                            'enumerable': false,
-                        },
-                        'visit': {
-                            'value': {
-                                'length': 0,
-                                'name': 'BluetoothRemoteGATTService',
-                            },
-                        },
-                    },
                 ],
             },
         ];
 
         for (const {name, props} of map) {
-            window[name] = function () {
-            };
-
-            utils.patchToString(window[name]);
-
-            Object.defineProperty(window[name].prototype, Symbol.toStringTag, {
-                configurable: true,
-                enumerable: false,
-                writable: false,
-                value: name,
-            });
-
             for (const {name: propName, descriptor, visit} of props) {
                 if (visit.get) {
                     utils.mockGetterWithProxy(

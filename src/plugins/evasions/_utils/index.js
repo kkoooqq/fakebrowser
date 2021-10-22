@@ -897,13 +897,57 @@ utils.getCurrentScriptPath = () => {
     return absPath[0] || '';
 };
 
+utils.fakeNativeClass = (
+    root,
+    name,
+    pseudoTarget,
+    parentClass,
+) => {
+    const _Object = utils.cache.Prototype.Object;
+
+    root[name] = new Proxy(
+        pseudoTarget || function () {
+            throw utils.patchError(new TypeError(`Illegal constructor`), 'construct');
+        },
+        {
+            construct(target, args) {
+                throw utils.patchError(new TypeError(`Illegal constructor`), 'construct');
+            },
+        },
+    );
+
+    _Object.defineProperty(root[name], 'name', {
+        configurable: true,
+        enumerable: false,
+        writable: false,
+        value: name,
+    });
+
+    _Object.defineProperty(root[name], 'prototype', {
+        configurable: false,
+        enumerable: false,
+        writable: false,
+        value: root[name].prototype,
+    });
+
+    utils.patchToString(root[name], `function ${name}() { [native code] }`);
+    utils.patchToString(root[name].prototype.constructor, `function ${name}() { [native code] }`);
+
+    _Object.defineProperty(root[name].prototype, Symbol.toStringTag, {
+        configurable: true,
+        enumerable: false,
+        writable: false,
+        value: name,
+    });
+};
+
 /**
  * The context is saved when the canvas.getContext is created.
  * @param context
  * @param operatorName
  * @returns {number}
  */
-utils.markCtxOperator = (context, operatorName) => {
+utils.markRenderingContextOperator = (context, operatorName) => {
     const result = utils.variables.ctxWithOperators.findIndex(e => e.ctx === context);
 
     if (result >= 0) {
@@ -921,7 +965,7 @@ utils.markCtxOperator = (context, operatorName) => {
  * @param canvas
  * @returns {{context: *, ctxIndex: number}|{context: null, ctxIndex: number}}
  */
-utils.findCtxIndex = (canvas) => {
+utils.findRenderingContextIndex = (canvas) => {
     const contextIds = ['2d', 'webgl', 'experimental-webgl', 'webgl2', 'experimental-webgl2', 'bitmaprenderer'];
     for (let contextId of contextIds) {
         let context = null;
