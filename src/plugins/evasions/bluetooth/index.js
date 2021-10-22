@@ -515,7 +515,34 @@ class Plugin extends PuppeteerExtraPlugin {
                     return utils.cache.Reflect.get(target, property, receiver);
                 },
                 apply(target, thisArg, args) {
+                    if (args.length === 0) {
+                        throw utils.patchError(
+                            new TypeError(`Failed to execute 'getService' on 'BluetoothUUID': 1 argument required, but only 0 present.`),
+                            'getService',
+                        );
+                    }
 
+                    if ('number' === typeof args[0]) {
+                        return getCanonicalUUID(args[0]);
+                    }
+
+                    if ('string' === typeof args[0]) {
+                        // If it is a UUID string, construct a new string directly and return it.
+                        if (utils.isUUID(args[0])) {
+                            return '' + args[0];
+                        }
+
+                        // In the known Bluetooth Services names：
+                        const alias = bluetoothServices[args[0]];
+                        if (alias) {
+                            return getCanonicalUUID(alias);
+                        }
+                    }
+
+                    throw utils.patchError(
+                        new TypeError(`Failed to execute 'getService' on 'BluetoothUUID': Invalid Service name: 'a'. It must be a valid UUID alias (e.g. 0x1234), UUID (lowercase hex characters e.g. '00001234-0000-1000-8000-00805f9b34fb'), or recognized standard name from https://www.bluetooth.com/specifications/gatt/services e.g. 'alert_notification'.`),
+                        'getService',
+                    );
                 },
             },
         );
