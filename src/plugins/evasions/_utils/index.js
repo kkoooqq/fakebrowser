@@ -760,6 +760,11 @@ utils.sleep = (ms) => {
     return new Promise(resolve => setTimeout(resolve, ms));
 };
 
+utils.random = (a, b) => {
+    const c = b - a + 1;
+    return Math.floor(Math.random() * c + a);
+};
+
 utils.isHex = (str) => {
     try {
         if (str && 'string' === typeof str) {

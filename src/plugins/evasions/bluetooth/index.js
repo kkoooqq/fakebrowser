@@ -584,6 +584,7 @@ class Plugin extends PuppeteerExtraPlugin {
                 },
                 apply(target, thisArg, args) {
                     if (thisArg === window.Bluetooth.prototype) {
+                        // Want to call it directly from window.Bluetooth.prototype.getAvailability()? No way!
                         return Promise.reject(utils.patchError(
                             new TypeError(`Failed to execute 'getAvailability' on 'Bluetooth': Illegal invocation`),
                             'getAvailability',
@@ -616,25 +617,186 @@ class Plugin extends PuppeteerExtraPlugin {
                     return utils.cache.Reflect.get(target, property, receiver);
                 },
                 apply(target, thisArg, args) {
-                    if (thisArg === window.Bluetooth.prototype) {
-                        return Promise.reject(utils.patchError(
-                            new TypeError(`Failed to execute 'requestDevice' on 'Bluetooth': Illegal invocation`),
-                            'requestDevice',
-                        ));
-                    }
+                    return new Promise((resolve, reject) => {
+                        if (thisArg === window.Bluetooth.prototype) {
+                            // Want to call it directly from window.Bluetooth.prototype.requestDevice()? No way!
+                            return reject(utils.patchError(
+                                new TypeError(`Failed to execute 'requestDevice' on 'Bluetooth': Illegal invocation`),
+                                'requestDevice',
+                            ));
+                        }
 
-                    const {filters, optionalServices, acceptAllDevices} = args;
-                    if (
-                        ((!filters || filters.length === 0) && !acceptAllDevices)
-                        || (filters && acceptAllDevices)
-                    ) {
-                        return Promise.reject(utils.patchError(
-                            new TypeError(`Failed to execute 'requestDevice' on 'Bluetooth': Either 'filters' should be present or 'acceptAllDevices' should be true, but not both.`),
-                            'requestDevice',
-                        ));
-                    }
+                        // https://developer.mozilla.org/en-US/docs/Web/API/Bluetooth/requestDevice
+                        // * filters[]: An array of BluetoothScanFilters. This filter consists of an array of BluetoothServiceUUIDs, a name parameter, and a namePrefix parameter.
+                        // * optionalServices[]: An array of BluetoothServiceUUIDs.
+                        // * acceptAllDevices: A boolean value indicating that the requesting script can accept all Bluetooth devices. The default is false.
+                        const {
+                            filters,
+                            optionalServices,
+                            acceptAllDevices,
+                        } = args;
 
-                    return Promise.resolve(true);
+                        if ('undefined' !== typeof filters) {
+                            // After experimenting, the basic data type throws this exception.
+                            if (
+                                filters === null
+                                || 'number' === typeof filters
+                                || 'boolean' === typeof filters
+                                || 'string' === typeof filters
+                                || 'symbol' === typeof filters
+                                || 'bigint' === typeof filters
+                            ) {
+                                return reject(utils.patchError(
+                                    new TypeError(`Failed to execute 'requestDevice' on 'Bluetooth': Failed to read the 'filters' property from 'RequestDeviceOptions': The provided value cannot be converted to a sequence.`),
+                                    'requestDevice',
+                                ));
+                            }
+
+                            if ('function' !== typeof filters[Symbol.iterator]) {
+                                return reject(utils.patchError(
+                                    new TypeError(`Failed to execute 'requestDevice' on 'Bluetooth': Failed to read the 'filters' property from 'RequestDeviceOptions': The object must have a callable @@iterator property.`),
+                                    'requestDevice',
+                                ));
+                            }
+
+                            if (!utils.isSequence(filters)) {
+                                return reject(utils.patchError(
+                                    new TypeError(`Failed to execute 'requestDevice' on 'Bluetooth': Failed to read the 'filters' property from 'RequestDeviceOptions': The provided value cannot be converted to a sequence.`),
+                                    'requestDevice',
+                                ));
+                            }
+                        }
+
+                        if (
+                            // filters and acceptAllDevices cannot have values at the same time.
+                            (('undefined' === typeof filters) && !acceptAllDevices)
+                            // !! Here we can't check filters.length.
+                            // According to experiments, filters is considered by chrome to have a value if it is an empty array.
+                            || (('undefined' !== typeof filters) /* && filters.length */ && acceptAllDevices)
+                        ) {
+                            return reject(utils.patchError(
+                                new TypeError(`Failed to execute 'requestDevice' on 'Bluetooth': Either 'filters' should be present or 'acceptAllDevices' should be true, but not both.`),
+                                'requestDevice',
+                            ));
+                        }
+
+                        if (!filters.length) {
+                            return reject(utils.patchError(
+                                new TypeError(`Failed to execute 'requestDevice' on 'Bluetooth': 'filters' member must be non-empty to find any devices.`),
+                                'requestDevice',
+                            ));
+                        }
+
+                        for (const filter of filters) {
+                            // The filter type can only be: services, name, namePrefix
+                            const filterNames = _Object.keys(filter);
+                            if (!utils.intersectionSet(
+                                filterNames,
+                                ['services', 'name', 'namePrefix']).length
+                            ) {
+                                return reject(utils.patchError(
+                                    new TypeError(`Failed to execute 'requestDevice' on 'Bluetooth': A filter must restrict the devices in some way.`),
+                                    'requestDevice',
+                                ));
+                            }
+
+                            for (const key in filter) {
+                                const value = filter[key];
+
+                                if (
+                                    key === 'services'
+                                    && 'undefined' !== typeof value
+                                ) {
+                                    const serviceValues = value;
+
+                                    if (
+                                        serviceValues === null
+                                        || 'number' === typeof serviceValues
+                                        || 'boolean' === typeof serviceValues
+                                        || 'string' === typeof serviceValues
+                                        || 'symbol' === typeof serviceValues
+                                        || 'bigint' === typeof serviceValues
+                                    ) {
+                                        return reject(utils.patchError(
+                                            new TypeError(`Failed to execute 'requestDevice' on 'Bluetooth': Failed to read the 'filters' property from 'RequestDeviceOptions': Failed to read the 'services' property from 'BluetoothLEScanFilterInit': The provided value cannot be converted to a sequence.`),
+                                            'requestDevice',
+                                        ));
+                                    }
+
+                                    if ('function' !== typeof serviceValues[Symbol.iterator]) {
+                                        return reject(utils.patchError(
+                                            new TypeError(`Failed to execute 'requestDevice' on 'Bluetooth': Failed to read the 'filters' property from 'RequestDeviceOptions': Failed to read the 'services' property from 'BluetoothLEScanFilterInit': The object must have a callable @@iterator property.`),
+                                            'requestDevice',
+                                        ));
+                                    }
+
+                                    if (!utils.isSequence(serviceValues)) {
+                                        return reject(utils.patchError(
+                                            new TypeError(`Failed to execute 'requestDevice' on 'Bluetooth': Failed to read the 'filters' property from 'RequestDeviceOptions': Failed to read the 'services' property from 'BluetoothLEScanFilterInit': The provided value cannot be converted to a sequence.`),
+                                            'requestDevice',
+                                        ));
+                                    }
+
+                                    if (!serviceValues.length) {
+                                        return reject(utils.patchError(
+                                            new TypeError(`Failed to execute 'requestDevice' on 'Bluetooth': 'services', if present, must contain at least one service.`),
+                                            'requestDevice',
+                                        ));
+                                    }
+
+                                    // Check if each item of serviceValues is legal
+                                    for (const serviceValue of serviceValues) {
+                                        if ('symbol' === typeof serviceValue) {
+                                            return reject(utils.patchError(
+                                                new TypeError(`Cannot convert a Symbol value to a string`),
+                                                'requestDevice',
+                                            ));
+                                        }
+
+                                        if ('number' === typeof serviceValue) {
+                                            continue;
+                                        }
+
+                                        if ('string' === typeof serviceValue) {
+                                            // If it is a UUID string, construct a new string directly and return it.
+                                            if (utils.isUUID(serviceValue)) {
+                                                continue;
+                                            }
+
+                                            // In the known Bluetooth Services names：
+                                            const alias = bluetoothServices[serviceValue];
+                                            if (alias) {
+                                                continue;
+                                            }
+                                        }
+
+                                        let invalidServiceName;
+                                        if (serviceValue === null) {
+                                            invalidServiceName = 'null';
+                                        } else if (serviceValue === undefined) {
+                                            invalidServiceName = 'undefined';
+                                        } else {
+                                            invalidServiceName = serviceValue.toString();
+                                        }
+
+                                        return reject(utils.patchError(
+                                            new TypeError(`Failed to execute 'requestDevice' on 'Bluetooth': Invalid Service name: '${invalidServiceName}'. It must be a valid UUID alias (e.g. 0x1234), UUID (lowercase hex characters e.g. '00001234-0000-1000-8000-00805f9b34fb'), or recognized standard name from https://www.bluetooth.com/specifications/gatt/services e.g. 'alert_notification'.`),
+                                            'requestDevice',
+                                        ));
+                                    }
+                                }
+                            }
+                        }
+
+                        // All checks are done and we need to wait a few seconds to simulate user rejection.
+                        const sleepMs = utils.random(1500, 5000);
+                        utils.sleep(sleepMs).then(() => {
+                            reject(utils.patchError(
+                                new DOMException(`User cancelled the requestDevice() chooser.`),
+                                'requestDevice',
+                            ));
+                        });
+                    });
                 },
             },
         );
