@@ -289,15 +289,19 @@ utils.patchError = (err, trap) => {
     const stripWithAnchor = (stack, anchor) => {
         const stackArr = stack.split('\n');
         anchor = anchor || `at Object.newHandler.<computed> [as ${trap}] `; // Known first Proxy line in chromium
+
         const anchorIndex = stackArr.findIndex(line =>
             line.trim().startsWith(anchor),
         );
+
         if (anchorIndex === -1) {
             return false; // 404, anchor not found
         }
+
         // Strip everything from the top until we reach the anchor line
         // Note: We're keeping the 1st line (zero index) as it's unrelated (e.g. `TypeError`)
         stackArr.splice(1, anchorIndex);
+
         return stackArr.join('\n');
     };
 
@@ -306,6 +310,7 @@ utils.patchError = (err, trap) => {
         'at Object.toString (',
         'at Function.toString (',
     );
+
     if ((err.stack || '').includes('at Function.toString (')) {
         err.stack = stripWithBlacklist(err.stack, false);
 
@@ -335,6 +340,7 @@ utils.stripProxyFromErrors = (handler = {}) => {
             if (_Object.getPrototypeOf(target) === _Object.getPrototypeOf(proto)) {
                 throw new TypeError('Cyclic __proto__ value');
             }
+
             return Reflect.setPrototypeOf(target, proto);
         },
     };
@@ -365,6 +371,7 @@ utils.stripProxyFromErrors = (handler = {}) => {
 utils.stripErrorWithAnchor = (err, anchor) => {
     const stackArr = err.stack.split('\n');
     const anchorIndex = stackArr.findIndex(line => line.trim().startsWith(anchor));
+
     if (anchorIndex === -1) {
         return err; // 404, anchor not found
     }
@@ -752,6 +759,46 @@ utils.makeHandler = () => ({
 utils.sleep = (ms) => {
     return new Promise(resolve => setTimeout(resolve, ms));
 };
+
+utils.isHex = (str) => {
+    try {
+        if (str && 'string' === typeof str) {
+            if (str.startsWith('0x')) {
+                str = str.substr(2);
+            }
+
+            return /^[A-F0-9]+$/i.test(str);
+        }
+    } catch (_) {
+    }
+
+    return false;
+};
+
+utils.isInt = (str) => {
+    try {
+        const isHex = utils.isHex(str);
+        if (isHex) {
+            return true;
+        }
+
+        return ('' + parseInt(str)) === ('' + str);
+    } catch (_) {
+    }
+
+    return false;
+};
+
+utils.isUUID = (str) => {
+    try {
+        if ('string' === typeof str) {
+            return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(str);
+        }
+    } catch (_) {
+    }
+
+    return false;
+}
 
 utils.getCurrentScriptPath = () => {
     let a = {}, stack;
