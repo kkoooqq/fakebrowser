@@ -588,7 +588,7 @@ utils.mockGetterWithProxy = (obj, propName, pseudoTarget, descriptorOverrides, h
     if (!handler.get) {
         handler.get = (target, property, receiver) => {
             if (property === 'name') {
-                return propName;
+                return `get ${propName}`;
             }
 
             if (property === 'length') {
@@ -609,6 +609,35 @@ utils.mockGetterWithProxy = (obj, propName, pseudoTarget, descriptorOverrides, h
     });
 
     utils.patchToString(proxyObj, `function get ${propName}() { [native code] }`);
+
+    return true;
+};
+
+utils.mockSetterWithProxy = (obj, propName, pseudoTarget, descriptorOverrides, handler) => {
+    if (!handler.get) {
+        handler.get = (target, property, receiver) => {
+            if (property === 'name') {
+                return `set ${propName}`;
+            }
+
+            if (property === 'length') {
+                return 1;
+            }
+
+            return utils.cache.Reflect.get(target, property, receiver);
+        };
+    }
+
+    const proxyObj = pseudoTarget
+        ? utils.newProxyInstance(pseudoTarget, utils.stripProxyFromErrors(handler))
+        : utils.stripProxyFromErrors(handler);
+
+    utils.replaceProperty(obj, propName, {
+        ...descriptorOverrides,
+        set: proxyObj,
+    });
+
+    utils.patchToString(proxyObj, `function set ${propName}() { [native code] }`);
 
     return true;
 };
