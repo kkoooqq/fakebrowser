@@ -56,7 +56,7 @@ Results of running FakeBrowser on **CentOS 7**, **Headless Chrome 93.0.4577.82**
 | [hackability](https://portswigger-labs.net/hackability/) | - | - |
 | [sannysoft](https://bot.sannysoft.com/) | No pressure to bypass. | ![](doc/test-score-sannysoft.jpg) [🔍](doc/test-result-sannysoft.jpg) |
 | [incolumitas](https://bot.incolumitas.com) | This guy also collects lots of bot detection methods, and his blog contains advanced methods for proxy/VPN detection, recommended following. BTW: He uses puppeteer-extra-plugin-strealth's code bugs for bot detection, and there's nothing he can do if I fix those bugs. His test results are very unstable, with FakeBrowser often jumping between 0.8 and 1.0. Even a normal browser's score can drop to 0.5. | ![](doc/test-score-incolumitas.jpg) [🔍](doc/test-result-incolumitas.png) |
-| [antoinevastel](http://antoinevastel.com/bots) | Fingerprint detection page | - |
+| [antoinevastel](http://antoinevastel.com/bots) | Fingerprint detection page | ![](doc/test-score-antoinevastel.jpg) [🔍](doc/test-result-antoinevastel.jpg) |
 | [browserleaks](https://browserleaks.com) | Everyone should know what this site is | ![](doc/test-score-browserleaks.jpg) [🔍](doc/test-result-browserleaks.jpg) |
-| [morellian](https://plaperdr.github.io/morellian-canvas/Prototype/webpage/picassauth.html) | - | - |
-| [vytal.io](https://vytal.io) | - | - |
+| [morellian](https://plaperdr.github.io/morellian-canvas/Prototype/webpage/picassauth.html) | - | ![](doc/test-score-morellian.jpg) [🔍](doc/test-result-morellian.jpg) |
+| [vytal.io](https://vytal.io) | - | ![](doc/test-score-vytal.io.jpg) [🔍](doc/test-result-vytal.io.png) |
