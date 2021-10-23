@@ -34,7 +34,7 @@ export const defaultLaunchArgs = [
     '--enable-webgl',
     '--prerender-from-omnibox=disabled',
     '--enable-web-bluetooth',
-    '--enable-experimental-web-platform-features', // Make Chrome for Linux support Bluetooth. eg: navigator.bluetooth, window.BluetoothUUID
+    // '--enable-experimental-web-platform-features', // Make Chrome for Linux support Bluetooth. eg: navigator.bluetooth, window.BluetoothUUID
     '--ignore-certificate-errors',
     '--ignore-certificate-errors-spki-list',
     '--disable-web-security',
