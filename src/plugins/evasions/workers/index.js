@@ -17,6 +17,7 @@ class Plugin extends PuppeteerExtraPlugin {
         await withUtils(page).evaluateOnNewDocument(
             (utils, env) => {
                 if ('undefined' !== typeof Worker) {
+                    // noinspection UnnecessaryLocalVariableJS
                     const _Worker = Worker;
                     const desc = Object.getOwnPropertyDescriptor(
                         _Worker.prototype, 'constructor',
@@ -24,20 +25,32 @@ class Plugin extends PuppeteerExtraPlugin {
 
                     utils.replaceWithProxy('undefined' === typeof window ? globalThis : window, 'Worker', {
                         construct: function (target, args) {
-                            // const obj = Object.create(_Worker.prototype);
-
                             console.log(`worker is registered in the browser, ${args[0]}`);
-                            const scriptUrl = utils.getCurrentScriptPath();
+                            const relUrl = window.location.href;
                             const workerUrl = args[0];
 
-                            if (
-                                workerUrl
-                                && (
-                                    workerUrl.startsWith('http://')
-                                    || workerUrl.startsWith('https://')
-                                )
-                            ) {
-                                args[0] = `http://127.0.0.1:7311/api/patchWorkerJsContent?uuid=${env.uuid}&scriptUrl=${encodeURIComponent(scriptUrl)}&workerUrl=${encodeURIComponent(workerUrl)}`;
+                            // fix: The worker's relative path is relative to the current page path.
+                            // reference: https://github.com/shehua/Alice/blob/master/w3c/html5-web-workers.md
+
+                            // noinspection LoopStatementThatDoesntLoopJS
+                            for (; ;) {
+                                if (!workerUrl) {
+                                    break;
+                                }
+
+                                if (
+                                    workerUrl.includes('://') &&
+                                    !(
+                                        workerUrl.startsWith('http://')
+                                        || workerUrl.startsWith('https://')
+                                    )
+                                ) {
+                                    break;
+                                }
+
+                                args[0] = `http://127.0.0.1:7311/api/patchWorkerJsContent?uuid=${env.uuid}&relUrl=${encodeURIComponent(relUrl)}&workerUrl=${encodeURIComponent(workerUrl)}`;
+
+                                break;
                             }
 
                             return new desc.value(...args);
