@@ -52,6 +52,10 @@ class Plugin extends PuppeteerExtraPlugin {
     // }
 
     mainFunction = (utils, opts) => {
+        if ('undefined' !== typeof window.Bluetooth) {
+            return;
+        }
+
         const _Object = utils.cache.Prototype.Object;
 
         /**
@@ -830,13 +834,21 @@ class Plugin extends PuppeteerExtraPlugin {
 
         const eventTarget = new EventTarget();
 
+        // noinspection JSUndefinedPropertyAssignment
         fakeBluetoothInstance.addEventListener = eventTarget.addEventListener.bind(eventTarget);
+        // noinspection JSUndefinedPropertyAssignment
         fakeBluetoothInstance.dispatchEvent = eventTarget.dispatchEvent.bind(eventTarget);
+        // noinspection JSUndefinedPropertyAssignment
         fakeBluetoothInstance.removeEventListener = eventTarget.removeEventListener.bind(eventTarget);
 
-        utils.replaceGetterWithProxy(
+        utils.mockGetterWithProxy(
             Navigator.prototype,
             'bluetooth',
+            _Object.create,
+            {
+                configurable: true,
+                enumerable: true,
+            },
             {
                 apply(target, ctx, args) {
                     return new Proxy(
