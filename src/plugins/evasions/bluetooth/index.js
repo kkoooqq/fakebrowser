@@ -26,7 +26,7 @@ const withWorkerUtils = require('../_utils/withWorkerUtils');
 
 // https://github.com/WebBluetoothCG/web-bluetooth
 // thanks to:
-// https://github.com/thegecko/webbluetooth/blob/master/src/helpers.ts#L257
+// https://github.com/thegecko/webbluetooth/blob/master/src/helpers.ts
 
 class Plugin extends PuppeteerExtraPlugin {
     constructor(opts = {}) {
@@ -346,24 +346,24 @@ class Plugin extends PuppeteerExtraPlugin {
         // "BluetoothRemoteGATTService"
         // "BluetoothUUID"
 
-        let navigatorBluetoothSet = false;
+        let navigatorBluetoothHasSet = false;
 
         const BluetoothPseudo = function () {
-            if (navigatorBluetoothSet) {
+            if (navigatorBluetoothHasSet) {
                 throw utils.patchError(new TypeError(`Illegal constructor`), 'construct');
             }
         };
 
         const fakeBluetoothInstance = new BluetoothPseudo();
 
-        utils.fakeNativeClass(window, 'Bluetooth', BluetoothPseudo, EventTarget);
-        utils.fakeNativeClass(window, 'BluetoothCharacteristicProperties', null, null);
-        utils.fakeNativeClass(window, 'BluetoothDevice', null, EventTarget);
-        utils.fakeNativeClass(window, 'BluetoothRemoteGATTCharacteristic', null, EventTarget);
-        utils.fakeNativeClass(window, 'BluetoothRemoteGATTDescriptor', null, null);
-        utils.fakeNativeClass(window, 'BluetoothRemoteGATTServer', null, null);
-        utils.fakeNativeClass(window, 'BluetoothRemoteGATTService', null, null);
-        utils.fakeNativeClass(window, 'BluetoothUUID', null, null);
+        utils.makePseudoClass(window, 'Bluetooth', BluetoothPseudo, EventTarget);
+        utils.makePseudoClass(window, 'BluetoothCharacteristicProperties', null, null);
+        utils.makePseudoClass(window, 'BluetoothDevice', null, EventTarget);
+        utils.makePseudoClass(window, 'BluetoothRemoteGATTCharacteristic', null, EventTarget);
+        utils.makePseudoClass(window, 'BluetoothRemoteGATTDescriptor', null, null);
+        utils.makePseudoClass(window, 'BluetoothRemoteGATTServer', null, null);
+        utils.makePseudoClass(window, 'BluetoothRemoteGATTService', null, null);
+        utils.makePseudoClass(window, 'BluetoothUUID', null, null);
 
         // ==============================================================================================
         // BluetoothUUID
@@ -826,17 +826,43 @@ class Plugin extends PuppeteerExtraPlugin {
             },
         );
 
+        // We have to implement the three methods inherited from EventTarget :(
+
+        const eventTarget = new EventTarget();
+
+        fakeBluetoothInstance.addEventListener = eventTarget.addEventListener.bind(eventTarget);
+        fakeBluetoothInstance.dispatchEvent = eventTarget.dispatchEvent.bind(eventTarget);
+        fakeBluetoothInstance.removeEventListener = eventTarget.removeEventListener.bind(eventTarget);
+
         utils.replaceGetterWithProxy(
             Navigator.prototype,
             'bluetooth',
             {
                 apply(target, ctx, args) {
-                    return fakeBluetoothInstance;
+                    return new Proxy(
+                        fakeBluetoothInstance, {
+                            getOwnPropertyDescriptor: (target, propertyKey) => {
+                                if (['addEventListener', 'dispatchEvent', 'removeEventListener'].includes(propertyKey)) {
+                                    return undefined;
+                                }
+
+                                return Reflect.getOwnPropertyDescriptor(target, propertyKey);
+                            },
+                            ownKeys: (target) => {
+                                let result = Reflect.ownKeys(target);
+                                result = Array.from(
+                                    utils.differenceABSet(result, ['addEventListener', 'dispatchEvent', 'removeEventListener']),
+                                );
+
+                                return result;
+                            },
+                        },
+                    );
                 },
             },
         );
 
-        navigatorBluetoothSet = true;
+        navigatorBluetoothHasSet = true;
 
         // ==============================================================================================
         // BluetoothDevice
