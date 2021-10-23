@@ -39,13 +39,13 @@ FakeBrowser automatic login demo:
 
 These pages use many fingerprinting techniques to detect if the browser is crawler software.
 
-Results of running FakeBrowser on **CentOS 7**, **Headless Chrome 93.0.4577.82**, **Socks5 proxy** under AWS VPS:
+Results of running FakeBrowser on **CentOS 7.9**, **Headless Chrome 93.0.4577.82**, **Socks5 proxy** under AWS VPS:
 
 
 | Test page | Notes | Result |
 | - | - | - |
-| [fingerprintjs](https://fingerprintjs.github.io/fingerprintjs/) | Basic fingerprint detection sites that are easy to bypass. | - |
-| [creepjs](https://abrahamjuliot.github.io/creepjs/) | Contains lots of advanced detection methods, bypassing it took me a lot of time, but he provides source code, thanks to the author. It uses Worker, ServiceWorker to detect at the same time, and FakeBrowser is perfectly bypassed. | ![](doc/test-score-creepjs.jpg) <img style='width: 500px !important; height: 1px;' />[🔍](doc/test-result-creepjs.png) |
+| [fingerprintjs pro](https://fingerprintjs.github.io/fingerprintjs/) | The basic fingerprint detection is easy to bypass. Even with the pro version, FakeBrowser is able to cheat easily. | ![](doc/test-score-fingerprintjs.jpg) <img style='width: 450px !important; height: 1px;' />[🔍](doc/test-result-fingerprintjs.png) |
+| [creepjs](https://abrahamjuliot.github.io/creepjs/) | Contains lots of advanced detection methods, bypassing it took me a lot of time, but he provides source code, thanks to the author. It uses Worker, ServiceWorker to detect at the same time, and FakeBrowser is perfectly bypassed. | ![](doc/test-score-creepjs.jpg) [🔍](doc/test-result-creepjs.png) |
 | [pixelscan](https://pixelscan.net) | JS code is obfuscated and can only be restored through the AST tree. The vulnerability is the detection process submits results to server, and we can reverse their analysis process based on the results. It detects if the browser font matches the system in UserAgent. FakeBrowser emulates fonts in 4 ways to bypass the detection perfectly. | ![](doc/test-score-pixelscan.jpg) [🔍](doc/test-result-pixelscan.png) |
 | [amiunique](https://amiunique.org/fp) | - | ![](doc/test-score-amiunique.jpg) [🔍](doc/test-result-amiunique.jpg) |
 | [browser-fingerprinting](https://niespodd.github.io/browser-fingerprinting) | This author is also working on anti-anti-bot systems, and I learned lots of knowledge from his repository, thank you very much! | ![](doc/test-score-niespodd.jpg) [🔍](doc/test-result-niespodd.jpg) |
