@@ -897,7 +897,7 @@ utils.getCurrentScriptPath = () => {
     return absPath[0] || '';
 };
 
-utils.fakeNativeClass = (
+utils.makePseudoClass = (
     root,
     name,
     pseudoTarget,
@@ -905,7 +905,7 @@ utils.fakeNativeClass = (
 ) => {
     const _Object = utils.cache.Prototype.Object;
 
-    root[name] = new Proxy(
+    const result = new Proxy(
         pseudoTarget || function () {
             throw utils.patchError(new TypeError(`Illegal constructor`), 'construct');
         },
@@ -916,29 +916,37 @@ utils.fakeNativeClass = (
         },
     );
 
-    _Object.defineProperty(root[name], 'name', {
+    root[name] = result;
+
+    _Object.defineProperty(result, 'name', {
         configurable: true,
         enumerable: false,
         writable: false,
         value: name,
     });
 
-    _Object.defineProperty(root[name], 'prototype', {
+    _Object.defineProperty(result, 'prototype', {
         configurable: false,
         enumerable: false,
         writable: false,
-        value: root[name].prototype,
+        value: result.prototype,
     });
 
-    utils.patchToString(root[name], `function ${name}() { [native code] }`);
-    utils.patchToString(root[name].prototype.constructor, `function ${name}() { [native code] }`);
+    utils.patchToString(result, `function ${name}() { [native code] }`);
+    utils.patchToString(result.prototype.constructor, `function ${name}() { [native code] }`);
 
-    _Object.defineProperty(root[name].prototype, Symbol.toStringTag, {
+    _Object.defineProperty(result.prototype, Symbol.toStringTag, {
         configurable: true,
         enumerable: false,
         writable: false,
         value: name,
     });
+
+    if (parentClass && parentClass.prototype) {
+        _Object.setPrototypeOf(result.prototype, parentClass.prototype);
+    }
+
+    return result;
 };
 
 /**
