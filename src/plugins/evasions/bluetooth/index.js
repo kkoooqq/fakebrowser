@@ -463,7 +463,7 @@ class Plugin extends PuppeteerExtraPlugin {
                     }
 
                     throw utils.patchError(
-                        new TypeError(`Failed to execute 'getCharacteristic' on 'BluetoothUUID': Invalid Characteristic name: '1234'. It must be a valid UUID alias (e.g. 0x1234), UUID (lowercase hex characters e.g. '00001234-0000-1000-8000-00805f9b34fb'), or recognized standard name from https://www.bluetooth.com/specifications/gatt/characteristics e.g. 'aerobic_heart_rate_lower_limit'.`),
+                        new TypeError(`Failed to execute 'getCharacteristic' on 'BluetoothUUID': Invalid Characteristic name: '${args[0]}'. It must be a valid UUID alias (e.g. 0x1234), UUID (lowercase hex characters e.g. '00001234-0000-1000-8000-00805f9b34fb'), or recognized standard name from https://www.bluetooth.com/specifications/gatt/characteristics e.g. 'aerobic_heart_rate_lower_limit'.`),
                         'getCharacteristic',
                     );
                 },
@@ -516,7 +516,7 @@ class Plugin extends PuppeteerExtraPlugin {
                     }
 
                     throw utils.patchError(
-                        new TypeError(`Failed to execute 'getDescriptor' on 'BluetoothUUID': Invalid Descriptor name: 'characteristic_extended_properties'. It must be a valid UUID alias (e.g. 0x1234), UUID (lowercase hex characters e.g. '00001234-0000-1000-8000-00805f9b34fb'), or recognized standard name from https://www.bluetooth.com/specifications/gatt/descriptors e.g. 'gatt.characteristic_presentation_format'.`),
+                        new TypeError(`Failed to execute 'getDescriptor' on 'BluetoothUUID': Invalid Descriptor name: '${args[0]}'. It must be a valid UUID alias (e.g. 0x1234), UUID (lowercase hex characters e.g. '00001234-0000-1000-8000-00805f9b34fb'), or recognized standard name from https://www.bluetooth.com/specifications/gatt/descriptors e.g. 'gatt.characteristic_presentation_format'.`),
                         'getDescriptor',
                     );
                 },
@@ -569,7 +569,7 @@ class Plugin extends PuppeteerExtraPlugin {
                     }
 
                     throw utils.patchError(
-                        new TypeError(`Failed to execute 'getService' on 'BluetoothUUID': Invalid Service name: 'a'. It must be a valid UUID alias (e.g. 0x1234), UUID (lowercase hex characters e.g. '00001234-0000-1000-8000-00805f9b34fb'), or recognized standard name from https://www.bluetooth.com/specifications/gatt/services e.g. 'alert_notification'.`),
+                        new TypeError(`Failed to execute 'getService' on 'BluetoothUUID': Invalid Service name: '${args[0]}'. It must be a valid UUID alias (e.g. 0x1234), UUID (lowercase hex characters e.g. '00001234-0000-1000-8000-00805f9b34fb'), or recognized standard name from https://www.bluetooth.com/specifications/gatt/services e.g. 'alert_notification'.`),
                         'getService',
                     );
                 },
@@ -841,6 +841,8 @@ class Plugin extends PuppeteerExtraPlugin {
         // noinspection JSUndefinedPropertyAssignment
         fakeBluetoothInstance.removeEventListener = eventTarget.removeEventListener.bind(eventTarget);
 
+        const eventTargetFuncNames = ['addEventListener', 'dispatchEvent', 'removeEventListener'];
+
         utils.mockGetterWithProxy(
             Navigator.prototype,
             'bluetooth',
@@ -854,7 +856,7 @@ class Plugin extends PuppeteerExtraPlugin {
                     return new Proxy(
                         fakeBluetoothInstance, {
                             getOwnPropertyDescriptor: (target, propertyKey) => {
-                                if (['addEventListener', 'dispatchEvent', 'removeEventListener'].includes(propertyKey)) {
+                                if (eventTargetFuncNames.includes(propertyKey)) {
                                     return undefined;
                                 }
 
@@ -863,7 +865,7 @@ class Plugin extends PuppeteerExtraPlugin {
                             ownKeys: (target) => {
                                 let result = Reflect.ownKeys(target);
                                 result = Array.from(
-                                    utils.differenceABSet(result, ['addEventListener', 'dispatchEvent', 'removeEventListener']),
+                                    utils.differenceABSet(result, eventTargetFuncNames),
                                 );
 
                                 return result;
@@ -1518,6 +1520,10 @@ class Plugin extends PuppeteerExtraPlugin {
                 }
             }
         }
+
+        // end for
+
+        // ===========================================
     };
 
 }
