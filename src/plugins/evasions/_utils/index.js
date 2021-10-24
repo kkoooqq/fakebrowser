@@ -43,7 +43,11 @@ utils.preloadCache = () => {
         // Used in our proxies
         Reflect: {
             get: Reflect.get.bind(Reflect),
+            set: Reflect.set.bind(Reflect),
             apply: Reflect.apply.bind(Reflect),
+            ownsKey: Reflect.ownKeys.bind(Reflect),
+            getOwnPropertyDescriptor: Reflect.getOwnPropertyDescriptor.bind(Reflect),
+            setPrototypeOf: Reflect.setPrototypeOf.bind(Reflect),
         },
         // Used in `makeNativeString`
         nativeToStringStr: Function.toString + '', // => `function toString() { [native code] }`
@@ -341,7 +345,7 @@ utils.stripProxyFromErrors = (handler = {}) => {
                 throw new TypeError('Cyclic __proto__ value');
             }
 
-            return Reflect.setPrototypeOf(target, proto);
+            return utils.cache.Reflect.setPrototypeOf(target, proto);
         },
     };
 

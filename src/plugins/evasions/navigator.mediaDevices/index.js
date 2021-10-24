@@ -98,7 +98,7 @@ class Plugin extends PuppeteerExtraPlugin {
                             return undefined;
                         }
 
-                        return Reflect.getOwnPropertyDescriptor(target, prop);
+                        return utils.cache.Reflect.getOwnPropertyDescriptor(target, prop);
                     },
                 });
 

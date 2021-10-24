@@ -62,13 +62,14 @@ module.exports.generateMagicArray = (utils, fns) =>
             const blacklist = [..._Object.keys(data), 'length', 'enabledPlugin'];
             return utils.newProxyInstance(obj, {
                 ownKeys(target) {
-                    return Reflect.ownKeys(target).filter(k => !blacklist.includes(k));
+                    return utils.cache.Reflect.ownKeys(target).filter(k => !blacklist.includes(k));
                 },
                 getOwnPropertyDescriptor(target, prop) {
                     if (blacklist.includes(prop)) {
                         return undefined;
                     }
-                    return Reflect.getOwnPropertyDescriptor(target, prop);
+
+                    return utils.cache.Reflect.getOwnPropertyDescriptor(target, prop);
                 },
             });
         };
@@ -159,7 +160,7 @@ module.exports.generateMagicArray = (utils, fns) =>
                     magicArrayObAttributeValues.refresh = value;
                 }
 
-                return Reflect.set(target, key, value);
+                return utils.cache.Reflect.set(target, key, value);
             },
             ownKeys(target) {
                 // There are a couple of quirks where the original property demonstrates "magical" behavior that makes no sense
@@ -180,7 +181,7 @@ module.exports.generateMagicArray = (utils, fns) =>
                     return undefined;
                 }
 
-                return Reflect.getOwnPropertyDescriptor(target, prop);
+                return utils.cache.Reflect.getOwnPropertyDescriptor(target, prop);
             },
         });
 

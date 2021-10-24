@@ -860,10 +860,10 @@ class Plugin extends PuppeteerExtraPlugin {
                                     return undefined;
                                 }
 
-                                return Reflect.getOwnPropertyDescriptor(target, propertyKey);
+                                return utils.cache.Reflect.getOwnPropertyDescriptor(target, propertyKey);
                             },
                             ownKeys: (target) => {
-                                let result = Reflect.ownKeys(target);
+                                let result = utils.cache.Reflect.ownKeys(target);
                                 result = Array.from(
                                     utils.differenceABSet(result, eventTargetFuncNames),
                                 );
