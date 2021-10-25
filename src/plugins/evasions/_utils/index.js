@@ -14,7 +14,7 @@ const utils = {};
 utils.init = () => {
     utils.preloadCache();
     utils.preloadEnv();
-    utils.preloadVariables();
+    utils.preloadGlobalVariables();
     utils.hookObjectPrototype();
 };
 
@@ -45,7 +45,7 @@ utils.preloadCache = () => {
             get: Reflect.get.bind(Reflect),
             set: Reflect.set.bind(Reflect),
             apply: Reflect.apply.bind(Reflect),
-            ownsKey: Reflect.ownKeys.bind(Reflect),
+            ownKeys: Reflect.ownKeys.bind(Reflect),
             getOwnPropertyDescriptor: Reflect.getOwnPropertyDescriptor.bind(Reflect),
             setPrototypeOf: Reflect.setPrototypeOf.bind(Reflect),
         },
@@ -118,7 +118,7 @@ utils.preloadCache = () => {
     }
 };
 
-utils.preloadVariables = () => {
+utils.preloadGlobalVariables = () => {
     if (utils.variables) {
         return;
     }
@@ -132,7 +132,7 @@ utils.preloadVariables = () => {
         proxies: [],
         toStringPatchObjs: [],
         toStringRedirectObjs: [],
-        ctxWithOperators: [],
+        renderingContextWithOperators: [],
     };
 };
 
@@ -177,52 +177,54 @@ utils.hookObjectPrototype = () => {
     });
 
     // Function.prototype toString
-    const toStringProxy = utils.newProxyInstance(Function.prototype.toString, utils.stripProxyFromErrors({
-        apply: function (target, ctx) {
-            // This fixes e.g. `HTMLMediaElement.prototype.canPlayType.toString + ""`
-            if (ctx === Function.prototype.toString) {
-                return utils.makeNativeString('toString');
-            }
+    const toStringProxy = utils.newProxyInstance(
+        Function.prototype.toString,
+        utils.stripProxyFromErrors({
+            apply: function (target, thisArg) {
+                // This fixes e.g. `HTMLMediaElement.prototype.canPlayType.toString + ""`
+                if (thisArg === Function.prototype.toString) {
+                    return utils.makeNativeString('toString');
+                }
 
-            // toStringPatch
-            const toStringPatchObj = utils.variables.toStringPatchObjs.find(e => e.obj === ctx);
-            if (toStringPatchObj) {
-                // `toString` targeted at our proxied Object detected
-                // We either return the optional string verbatim or derive the most desired result automatically
-                return toStringPatchObj.str || utils.makeNativeString(toStringPatchObj.obj.name);
-            }
+                // toStringPatch
+                const toStringPatchObj = utils.variables.toStringPatchObjs.find(e => e.obj === thisArg);
+                if (toStringPatchObj) {
+                    // `toString` targeted at our proxied Object detected
+                    // We either return the optional string verbatim or derive the most desired result automatically
+                    return toStringPatchObj.str || utils.makeNativeString(toStringPatchObj.obj.name);
+                }
 
-            // toStringRedirect
-            const toStringRedirectObj = utils.variables.toStringRedirectObjs.find(e => e.proxyObj === ctx);
-            if (toStringRedirectObj) {
-                const {proxyObj, originalObj} = toStringRedirectObj;
-                const fallback = () =>
-                    originalObj && originalObj.name
-                        ? utils.makeNativeString(originalObj.name)
-                        : utils.makeNativeString(proxyObj.name);
+                // toStringRedirect
+                const toStringRedirectObj = utils.variables.toStringRedirectObjs.find(e => e.proxyObj === thisArg);
+                if (toStringRedirectObj) {
+                    const {proxyObj, originalObj} = toStringRedirectObj;
+                    const fallback = () =>
+                        originalObj && originalObj.name
+                            ? utils.makeNativeString(originalObj.name)
+                            : utils.makeNativeString(proxyObj.name);
 
-                // Return the toString representation of our original object if possible
-                return originalObj + '' || fallback();
-            }
+                    // Return the toString representation of our original object if possible
+                    return originalObj + '' || fallback();
+                }
 
-            if (typeof ctx === 'undefined' || ctx === null) {
-                return target.call(ctx);
-            }
+                if (typeof thisArg === 'undefined' || thisArg === null) {
+                    return target.call(thisArg);
+                }
 
-            // Check if the toString protype of the context is the same as the global prototype,
-            // if not indicates that we are doing a check across different windows., e.g. the iframeWithdirect` test case
-            const hasSameProto = _Object.getPrototypeOf(
-                Function.prototype.toString,
-            ).isPrototypeOf(ctx.toString); // eslint-disable-line no-prototype-builtins
+                // Check if the toString protype of the context is the same as the global prototype,
+                // if not indicates that we are doing a check across different windows., e.g. the iframeWithdirect` test case
+                const hasSameProto = _Object.getPrototypeOf(
+                    Function.prototype.toString,
+                ).isPrototypeOf(thisArg.toString); // eslint-disable-line no-prototype-builtins
 
-            if (!hasSameProto) {
-                // Pass the call on to the local Function.prototype.toString instead
-                return ctx.toString();
-            }
+                if (!hasSameProto) {
+                    // Pass the call on to the local Function.prototype.toString instead
+                    return thisArg.toString();
+                }
 
-            return target.call(ctx);
-        },
-    }));
+                return target.call(thisArg);
+            },
+        }));
 
     utils.replaceProperty(Function.prototype, 'toString', {
         value: toStringProxy,
@@ -780,7 +782,7 @@ utils.materializeFns = (fnStrObj = {hello: '() => \'world\''}) => {
 utils.makeHandler = () => ({
     // Used by simple `navigator` getter evasions
     getterValue: value => ({
-        apply(target, ctx, args) {
+        apply(target, thisArg, args) {
             // Let's fetch the value first, to trigger and escalate potential errors
             // Illegal invocations like `navigator.__proto__.vendor` will throw here
             utils.cache.Reflect.apply(...arguments);
@@ -960,10 +962,10 @@ utils.makePseudoClass = (
  * @returns {number}
  */
 utils.markRenderingContextOperator = (context, operatorName) => {
-    const result = utils.variables.ctxWithOperators.findIndex(e => e.ctx === context);
+    const result = utils.variables.renderingContextWithOperators.findIndex(e => e.context === context);
 
     if (result >= 0) {
-        const operators = utils.variables.ctxWithOperators[result];
+        const operators = utils.variables.renderingContextWithOperators[result];
         if (operators) {
             operators.operators[operatorName] = true;
         }
@@ -975,10 +977,16 @@ utils.markRenderingContextOperator = (context, operatorName) => {
 /**
  * Find the context created by the external based on the canvas
  * @param canvas
- * @returns {{context: *, ctxIndex: number}|{context: null, ctxIndex: number}}
+ * @returns {{context: *, contextIndex: number}|{context: null, contextIndex: number}}
  */
 utils.findRenderingContextIndex = (canvas) => {
-    const contextIds = ['2d', 'webgl', 'experimental-webgl', 'webgl2', 'experimental-webgl2', 'bitmaprenderer'];
+    const contextIds = [
+        '2d',
+        'webgl', 'experimental-webgl',
+        'webgl2', 'experimental-webgl2',
+        'bitmaprenderer',
+    ];
+
     for (let contextId of contextIds) {
         let context = null;
 
@@ -988,14 +996,14 @@ utils.findRenderingContextIndex = (canvas) => {
             context = utils.cache.Prototype.HTMLCanvasElement.prototype.getContext.call(canvas, contextId);
         }
 
-        const ctxIndex = utils.variables.ctxWithOperators.findIndex(e => e.ctx === context);
+        const contextIndex = utils.variables.renderingContextWithOperators.findIndex(e => e.context === context);
 
-        if (ctxIndex >= 0) {
-            return {context, ctxIndex};
+        if (contextIndex >= 0) {
+            return {context, contextIndex};
         }
     }
 
-    return {context: null, ctxIndex: -1};
+    return {context: null, contextIndex: -1};
 };
 
 
