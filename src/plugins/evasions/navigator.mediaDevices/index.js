@@ -78,13 +78,13 @@ class Plugin extends PuppeteerExtraPlugin {
                     window.alert,
                     {},
                     {
-                        apply(target, ctx, args) {
+                        apply(target, thisArg, args) {
                             return json;
                         },
                     });
 
                 utils.replaceObjPathWithProxy('InputDeviceInfo.prototype.getCapabilities', {
-                    apply(target, ctx, args) {
+                    apply(target, thisArg, args) {
                         return {};
                     },
                 });
@@ -109,7 +109,7 @@ class Plugin extends PuppeteerExtraPlugin {
             }
 
             utils.replaceWithProxy(MediaDevices.prototype, 'enumerateDevices', {
-                apply(target, ctx, args) {
+                apply(target, thisArg, args) {
                     return Promise.resolve(tempMediaDeviceObjs.map(e => e.p));
                 },
             });

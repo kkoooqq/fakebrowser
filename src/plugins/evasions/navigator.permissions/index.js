@@ -58,7 +58,7 @@ class Plugin extends PuppeteerExtraPlugin {
             // storage-access -> new Error('TypeError: Failed to execute 'query' on 'Permissions': The Storage Access API is not enabled.')
 
             const handler = {
-                apply(target, ctx, args) {
+                apply(target, thisArg, args) {
                     const param = (args || [])[0];
                     const paramName = param && param.name;
 
@@ -220,7 +220,7 @@ class Plugin extends PuppeteerExtraPlugin {
         // whereas in headless it's "prompt"
         if (!isSecure) {
             const handler = {
-                apply(target, ctx, args) {
+                apply(target, thisArg, args) {
                     const param = (args || [])[0];
 
                     const isNotifications =

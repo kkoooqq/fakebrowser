@@ -10,7 +10,7 @@ module.exports.generateFunctionMocks = utils => (
 ) => ({
     /** Returns the MimeType object with the specified index. */
     item: utils.createProxy(proto.item, {
-        apply(target, ctx, args) {
+        apply(target, thisArg, args) {
             if (!args.length) {
                 throw new TypeError(
                     `Failed to execute 'item' on '${
@@ -29,7 +29,7 @@ module.exports.generateFunctionMocks = utils => (
     }),
     /** Returns the MimeType object with the specified name. */
     namedItem: utils.createProxy(proto.namedItem, {
-        apply(target, ctx, args) {
+        apply(target, thisArg, args) {
             if (!args.length) {
                 throw new TypeError(
                     `Failed to execute 'namedItem' on '${
@@ -43,7 +43,7 @@ module.exports.generateFunctionMocks = utils => (
     /** Does nothing and shall return nothing */
     refresh: proto.refresh
         ? utils.createProxy(proto.refresh, {
-            apply(target, ctx, args) {
+            apply(target, thisArg, args) {
                 return undefined;
             },
         })

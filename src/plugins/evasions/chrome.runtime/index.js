@@ -101,7 +101,7 @@ class Plugin extends PuppeteerExtraPlugin {
 
                 return utils.cache.Reflect.get(target, property, receiver);
             },
-            apply: function (target, ctx, args) {
+            apply: function (target, thisArg, args) {
                 const [extensionId, options, responseCallback] = args || [];
 
                 // Define custom errors
@@ -168,7 +168,7 @@ class Plugin extends PuppeteerExtraPlugin {
 
                 return utils.cache.Reflect.get(target, property, receiver);
             },
-            apply: function (target, ctx, args) {
+            apply: function (target, thisArg, args) {
                 const [extensionId, connectInfo] = args || [];
 
                 // Define custom errors

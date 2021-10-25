@@ -852,7 +852,7 @@ class Plugin extends PuppeteerExtraPlugin {
                 enumerable: true,
             },
             {
-                apply(target, ctx, args) {
+                apply(target, thisArg, args) {
                     return new Proxy(
                         fakeBluetoothInstance, {
                             getOwnPropertyDescriptor: (target, propertyKey) => {
