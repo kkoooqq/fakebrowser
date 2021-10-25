@@ -1,3 +1,5 @@
+// noinspection JSUnusedLocalSymbols,JSUnusedGlobalSymbols
+
 /**
  * A set of shared utility functions specifically for the purpose of modifying native browser APIs without leaving traces.
  *
@@ -412,6 +414,7 @@ utils.replaceProperty = (obj, propName, descriptorOverrides = {}) => {
     const descriptors = _Object.getOwnPropertyDescriptor(obj, propName) || {};
 
     if (propName !== 'toString') {
+        // noinspection JSUnusedLocalSymbols
         for (const [key, value] of _Object.entries(descriptorOverrides)) {
             if (descriptors[key]) {
                 utils.redirectToString(descriptorOverrides[key], descriptors[key]);
@@ -751,6 +754,7 @@ utils.stringifyFns = (fnObj = {hello: () => 'world'}) => {
         }, {});
     }
 
+    // noinspection JSUnusedLocalSymbols
     return (Object.fromEntries || fromEntries)(
         Object.entries(fnObj)
             .filter(([key, value]) => typeof value === 'function')
@@ -916,6 +920,7 @@ utils.makePseudoClass = (
             throw utils.patchError(new TypeError(`Illegal constructor`), 'construct');
         },
         {
+            // noinspection JSUnusedLocalSymbols
             construct(target, args) {
                 throw utils.patchError(new TypeError(`Illegal constructor`), 'construct');
             },
