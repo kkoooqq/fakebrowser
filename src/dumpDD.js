@@ -45,7 +45,7 @@ window['__$dd'] = async () => {
 
                     await cb(arr[n]);
                 }
-            }, 10);
+            }, 30);
         });
     };
 
@@ -138,7 +138,7 @@ window['__$dd'] = async () => {
             document.body.removeChild(span);
         }
 
-        await smoothForeach(extraFonts, 20, (font) => {
+        await smoothForeach(extraFonts, 15, (font) => {
             let exists = 0;
             for (const baseFont of baseFonts) {
                 const span = document.createElement('span');
@@ -369,7 +369,7 @@ window['__$dd'] = async () => {
         const audioEl = new Audio();
         const isMediaRecorderSupported = 'MediaRecorder' in window;
 
-        await smoothForeach(mimeTypes, 20, (type) => {
+        await smoothForeach(mimeTypes, 15, (type) => {
             try {
                 const data = {
                     mimeType: type,
