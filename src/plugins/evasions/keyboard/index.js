@@ -30,6 +30,20 @@ class Plugin extends PuppeteerExtraPlugin {
     }
 
     mainFunction = (utils, opts) => {
+        if (
+            opts.keyboard
+            && 'undefined' !== typeof KeyboardLayoutMap
+        ) {
+            utils.replaceWithProxy(KeyboardLayoutMap.prototype, 'get', {
+                apply(target, thisArg, args) {
+                    if (args && args.length) {
+                        return opts.keyboard[args[0]];
+                    }
+
+                    return utils.cache.Reflect.apply(target, thisArg, args);
+                },
+            });
+        }
     };
 
 }

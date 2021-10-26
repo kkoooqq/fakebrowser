@@ -36,9 +36,9 @@ class Plugin extends PuppeteerExtraPlugin {
                         } else if (thisArg instanceof HTMLAudioElement) {
                             return mimeType.audioPlayType;
                         }
+                    } else {
+                        return '';
                     }
-
-                    return target.apply(thisArg, args);
                 },
             },
         );
@@ -56,9 +56,9 @@ class Plugin extends PuppeteerExtraPlugin {
                     const mimeType = opts.data.find(e => e.mimeType === type);
                     if (mimeType) {
                         return mimeType.mediaSource;
+                    } else {
+                        return false;
                     }
-
-                    return target.apply(thisArg, args);
                 },
             },
         );
@@ -77,9 +77,9 @@ class Plugin extends PuppeteerExtraPlugin {
                         const mimeType = opts.data.find(e => e.mimeType === type);
                         if (mimeType) {
                             return mimeType.mediaRecorder;
+                        } else {
+                            return false;
                         }
-
-                        return target.apply(thisArg, args);
                     },
                 },
             );
