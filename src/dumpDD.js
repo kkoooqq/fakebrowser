@@ -457,8 +457,8 @@ window['__$dd'] = async () => {
 
                     rtc.createDataChannel('');
                     setTimeout(function () {
-                        resolve('');
-                    }, 500);
+                        resolve(result);
+                    }, 2000);
 
                     let offer = rtc.createOffer();
 
@@ -476,8 +476,6 @@ window['__$dd'] = async () => {
                                 candidate: event.candidate.candidate,
                                 reg: regResult,
                             });
-
-                            regResult && regResult[0].match(reg2) && resolve(regResult[0]);
                         }
                     };
                 } else resolve(result);
