@@ -10,7 +10,7 @@ class Plugin extends PuppeteerExtraPlugin {
     }
 
     get name() {
-        return 'evasions/canvas2d.fingerprint';
+        return 'evasions/canvas.fingerprint';
     }
 
     mainFunction = (utils, opts) => {
