@@ -197,6 +197,9 @@ export interface DeviceDescriptor {
         name: string,
         voiceURI: string,
     }>,
+    "windowVersion": Array<string>,
+    "htmlElementVersion": Array<string>,
+    "keyboard": Record<string, string>,
 }
 
 /**
