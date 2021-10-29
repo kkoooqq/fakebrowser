@@ -28,10 +28,14 @@ class Plugin extends PuppeteerExtraPlugin {
             // We can replace it with Object.create to construct the object.
 
             class SpeechSynthesisVoice extends Object {
-                get [Symbol.toStringTag]() {
-                    return 'SpeechSynthesisVoice';
-                }
             }
+
+            _Object.defineProperty(SpeechSynthesisVoice.prototype, Symbol.toStringTag, {
+                configurable: true,
+                enumerable: false,
+                writable: false,
+                value: 'SpeechSynthesisVoice',
+            });
 
             // window.speechSynthesis.getVoices()[0].__proto__.constructor returns 'Object'
             _Object.defineProperty(SpeechSynthesisVoice.prototype, 'constructor', {
