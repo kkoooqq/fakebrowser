@@ -132,8 +132,8 @@ export default class Driver {
         launchParams: LaunchParameters,
         options: FakeBrowserLaunchOptions = kDefaultLaunchOptions
     ): Promise<{
-        browser: Browser,
-        pptr: PuppeteerExtra,
+        vanillaBrowser: Browser,
+        pptrExtra: PuppeteerExtra,
         options: FakeBrowserLaunchOptions
     }> {
         // args
@@ -240,7 +240,7 @@ export default class Driver {
         // noinspection UnnecessaryLocalVariableJS
         const browser: Browser = await pptr.launch(options)
 
-        return {browser, pptr, options}
+        return {vanillaBrowser: browser, pptrExtra: pptr, options}
     }
 
     private static async getPids(pid: string | number) {

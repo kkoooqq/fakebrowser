@@ -1,10 +1,11 @@
-import {Browser} from "puppeteer";
+import {Browser, CDPSession, Target} from "puppeteer";
 import Driver, {FakeBrowserLaunchOptions, LaunchParameters, ProxyServer} from "./Driver.js";
 import DeviceDescriptorHelper, {DeviceDescriptor, FakeDeviceDescriptor} from "./DeviceDescriptor.js";
 import {strict as assert} from 'assert';
 import {PuppeteerExtra} from "puppeteer-extra";
 import * as fs from "fs-extra";
 import * as path from "path";
+import {PptrPatcher} from "./PptrPatcher";
 
 const kWindowsDD = require('./device-hub/Windows.json')
 const kFakeDDFileName = '__fakebrowser_fakeDD.json'
@@ -64,7 +65,7 @@ class FakeBrowserBuilder {
 
 class FakeBrowserLauncher {
 
-    static _browserInstances: Array<FakeBrowser> = []
+    static _fakeBrowserInstances: Array<FakeBrowser> = []
     static _checkerIntervalId: NodeJS.Timer | null = null
 
     private static checkOptionsLegal(options?: FakeBrowserLaunchOptions) {
@@ -72,7 +73,7 @@ class FakeBrowserLauncher {
             return
         }
 
-        // These args are set by FakeBrowser and cannot be set externally: These values cannot be set externally:
+        // These args are set by FakeBrowser and cannot be set externally:
         const externalCannotSetArgs = [
             '--user-data-dir',
             '--lang',
@@ -81,7 +82,7 @@ class FakeBrowserLauncher {
         ]
 
         if (options.args.filter(e => externalCannotSetArgs.includes(e.toLocaleLowerCase().split('=')[0])).length > 0) {
-            throw new TypeError(`${externalCannotSetArgs} cannot not be set in options.args`)
+            throw new TypeError(`${externalCannotSetArgs} cannot be set in options.args`)
         }
     }
 
@@ -137,32 +138,32 @@ class FakeBrowserLauncher {
         const uuid = DeviceDescriptorHelper.deviceUUID(launchParams.fakeDeviceDesc)
 
         const {
-            browser,
-            pptr
+            vanillaBrowser,
+            pptrExtra
         } = await Driver.launch(uuid, launchParams, options)
 
         const result = new FakeBrowser(
             launchParams,
-            browser,
-            pptr,
+            vanillaBrowser,
+            pptrExtra,
             launchTime,
             launchParams.maxSurvivalTime,
             uuid
         )
 
         // Manage surviving browsers and kill them if they time out
-        this._browserInstances.push(result)
+        this._fakeBrowserInstances.push(result)
 
         if (!this._checkerIntervalId) {
             this._checkerIntervalId = setInterval(async () => {
-                const killTheseBrowsers = this._browserInstances.filter(
+                const killThese = this._fakeBrowserInstances.filter(
                     e =>
                         (e.launchParams.maxSurvivalTime > 0)
                         && (new Date().getTime() > e.launchTime + e.launchParams.maxSurvivalTime)
                 )
 
                 const p: Array<Promise<void>> = []
-                for (const fb of killTheseBrowsers) {
+                for (const fb of killThese) {
                     p.push(this.shutdown(fb))
                 }
 
@@ -174,16 +175,16 @@ class FakeBrowserLauncher {
     }
 
     static getBrowserWithUUID(uuid: string): FakeBrowser | undefined {
-        return this._browserInstances.find(e => e.uuid === uuid)
+        return this._fakeBrowserInstances.find(e => e.uuid === uuid)
     }
 
     static async shutdown(fb: FakeBrowser) {
         await Driver.shutdown(fb.vanillaBrowser)
 
-        const browserIndex = this._browserInstances.indexOf(fb)
+        const browserIndex = this._fakeBrowserInstances.indexOf(fb)
         assert(browserIndex >= 0)
 
-        this._browserInstances.splice(browserIndex, 1)
+        this._fakeBrowserInstances.splice(browserIndex, 1)
     }
 }
 
@@ -235,7 +236,32 @@ export class FakeBrowser {
         this._pptrExtra = pptrExtra
         this._launchTime = launchTime
         this._uuid = uuid
+
+        vanillaBrowser.on('targetcreated', this.onTargetCreated)
     }
 
+    private async onTargetCreated(target: Target) {
+        console.log('targetcreated type:', target.type(), target.url())
+
+        const cdpSession = await target.createCDPSession()
+        await this.interceptWorker(target, cdpSession);
+    }
+
+    private async interceptWorker(target: Target, client: CDPSession) {
+        if (client) {
+            if (
+                target.type() === 'service_worker'
+                || target.type() === 'other' && (target.url().startsWith('http'))
+            ) {
+                // FIXME: Worker & SharedWorker does not work with this way
+                console.log('intercept', target.url())
+                const injectJs: string = await PptrPatcher.evasionsCode(this.pptrExtra)
+
+                await client.send('Runtime.evaluate', {
+                    expression: injectJs
+                })
+            }
+        }
+    }
 }
 
