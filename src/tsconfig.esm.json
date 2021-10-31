@@ -2,7 +2,7 @@
   "extends": "../tsconfig.base.json",
   "compilerOptions": {
     "composite": true,
-    "outDir": "../lib/esm/fakebrowser",
+    "outDir": "../dist/esm",
     "module": "esnext"
   }
 }

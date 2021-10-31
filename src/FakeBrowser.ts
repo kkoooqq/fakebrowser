@@ -17,7 +17,7 @@ import {PptrPatcher} from "./PptrPatcher";
 import {UserAgentHelper} from "./UserAgentHelper";
 import express = require("express");
 
-const kWindowsDD = require('./device-hub/Windows.json')
+const kWindowsDD = require(path.resolve(__dirname, '../../device-hub/Windows.json'))
 const kFakeDDFileName = '__fakebrowser_fakeDD.json'
 const kBrowserMaxSurvivalTime = 60 * 1000 * 10
 const kDefaultReferers = ["https://www.google.com", "https://www.bing.com"]

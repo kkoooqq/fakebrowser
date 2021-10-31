@@ -1,22 +1,38 @@
 {
   "name": "fakebrowser",
-  "version": "0.0.1",
+  "version": "0.0.15",
   "description": "",
-  "main": "index.js",
+  "main": "dist/cjs/FakeBrowser.js",
   "scripts": {
-    "clean-lib": "rimraf lib",
+    "clean-dist": "rimraf dist",
     "build": "npm run tsc",
-    "tsc": "npm run clean-lib && npm run tsc-cjs",
+    "tsc": "npm run clean-dist && npm run tsc-cjs",
     "tsc-cjs": "tsc -b src/tsconfig.cjs.json",
     "dev": "cross-env ets && cross-env NODE_ENV=local midway-bin dev --port=7311 --ts",
-    "postbuild": "cpy --cwd=src --parents device-hub ../lib/cjs/fakebrowser && cpy --cwd=src --parents plugins ../lib/cjs/fakebrowser"
+    "postbuild": "cpy --cwd=src --parents plugins ../dist/cjs"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/kkoooqq/fakebrowser.git"
   },
-  "keywords": [],
-  "author": "simonygeek",
+  "keywords": [
+    "bot",
+    "crawler",
+    "automation",
+    "headless",
+    "puppeteer",
+    "puppeteer-extra",
+    "puppeteer-extra-plugin",
+    "puppeteer-extra-plugin-stealth",
+    "scrapy",
+    "fingerprint",
+    "stealth",
+    "anti-bot",
+    "ua",
+    "user-agent",
+    "chrome"
+  ],
+  "author": "kkoooqqq",
   "license": "LGPLv3",
   "bugs": {
     "url": "https://github.com/kkoooqq/fakebrowser/issues"

@@ -1,13 +1,3 @@
-
-     _______      _            ______                                          
-    (_______)    | |          (____  \                                         
-    _____  ____  | |  _  ____  ____)  )  ____  ___   _ _ _   ___   ____   ____
-    |  ___)/ _  || | / )/ _  )|  __  (  / ___)/ _ \ | | | | /___) / _  ) / ___)
-    | |   ( ( | || |< (( (/ / | |__)  )| |   | |_| || | | ||___ |( (/ / | |    
-    |_|    \_||_||_| \_)\____)|______/ |_|    \___/  \____|(___/  \____)|_|
-
------
-
 # 🐭 Fake browser, headless browser, all for bots 🤖
 
 * **Basic version:**
@@ -43,7 +33,7 @@ Results of running FakeBrowser on **CentOS 7.9**, **Headless Chrome 93.0.4577.82
 
 
 | Test page | Notes | Result |
-| - | - | - |
+| ------ | ------ | ------ |
 | [fingerprintjs](https://fingerprintjs.github.io/fingerprintjs/) | The basic fingerprint detection is easy to bypass. Even with the [pro version](https://fingerprintjs.com/demo/), FakeBrowser is able to cheat easily. | ![](doc/test-score-fingerprintjs.jpg) <img style='width: 450px !important; height: 1px;' />[🔍](doc/test-result-fingerprintjs.png) |
 | [creepjs](https://abrahamjuliot.github.io/creepjs/) | Contains lots of advanced detection methods, bypassing it took me a lot of time, but he provides source code, thanks to the author. It uses Worker, ServiceWorker to detect at the same time, and FakeBrowser is perfectly bypassed. | ![](doc/test-score-creepjs.jpg) [🔍](doc/test-result-creepjs.png) |
 | [pixelscan](https://pixelscan.net) | JS code is obfuscated and can only be restored through the AST tree. The vulnerability is the detection process submits results to server, and we can reverse their analysis process based on the results. It detects if the browser font matches the system in UserAgent. FakeBrowser emulates fonts in 4 ways to bypass the detection perfectly. | ![](doc/test-score-pixelscan.jpg) [🔍](doc/test-result-pixelscan.png) |

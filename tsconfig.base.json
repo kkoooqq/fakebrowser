@@ -19,10 +19,10 @@
       "./typings",
       "./node_modules/@types"
     ],
-    "outDir": "lib"
+    "outDir": "dist"
   },
   "exclude": [
-    "lib",
+    "dist",
     "node_modules",
     "src/test"
   ]
