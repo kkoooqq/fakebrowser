@@ -34,6 +34,7 @@
     "puppeteer": "^10.4.0",
     "puppeteer-extra": "^3.2.3",
     "puppeteer-extra-plugin": "^3.2.0",
+    "puppeteer-extra-plugin-user-preferences": "^2.3.1",
     "url-toolkit": "^2.2.3"
   },
   "devDependencies": {

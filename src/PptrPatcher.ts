@@ -8,6 +8,7 @@ import {PuppeteerExtra} from "puppeteer-extra";
 import {LaunchParameters} from "./Driver";
 import {helper} from "./helper";
 import axios from "axios";
+import {FakeBrowser} from "./FakeBrowser";
 
 export class PptrPatcher {
 
@@ -26,7 +27,6 @@ export class PptrPatcher {
         await this.patchWindowMatchMedia(uuid, pptr, launchParams)
         await this.pathWebdriver(uuid, pptr, launchParams)
         await this.pathSourceUrl(uuid, pptr, launchParams)
-        await this.patchSession(uuid, pptr, launchParams)
         await this.patchPluginsMineTypes(uuid, pptr, launchParams)
         await this.patchWebGL(uuid, pptr, launchParams)
         await this.patchMimeTypes(uuid, pptr, launchParams)
@@ -55,6 +55,7 @@ export class PptrPatcher {
         const plugin = Plugin({
             env: {
                 uuid: uuid,
+                internalHttpServerPort: FakeBrowser.globalConfig.internalHttpServerPort
             }
         })
 
@@ -133,15 +134,6 @@ export class PptrPatcher {
         const Plugin = require(path.resolve(__dirname, './plugins/evasions/sourceurl'))
         const plugin = Plugin()
         pptr.use(plugin)
-    }
-
-    private static patchSession(
-        uuid: string,
-        pptr: PuppeteerExtra,
-        launchParams: LaunchParameters,
-    ) {
-        const {SessionPlugin} = require('puppeteer-extra-plugin-session')
-        pptr.use(new SessionPlugin())
     }
 
     private static patchPluginsMineTypes(
@@ -343,6 +335,7 @@ export class PptrPatcher {
         const plugin = Plugin({
             env: {
                 uuid: uuid,
+                internalHttpServerPort: FakeBrowser.globalConfig.internalHttpServerPort
             }
         })
 

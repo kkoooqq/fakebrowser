@@ -4,7 +4,6 @@ const {PuppeteerExtraPlugin} = require('puppeteer-extra-plugin');
 
 const withUtils = require('../_utils/withUtils');
 
-const STATIC_DATA = require('../chrome.runtime/staticData.json');
 const withWorkerUtils = require('../_utils/withWorkerUtils');
 
 /**
@@ -30,11 +29,10 @@ class Plugin extends PuppeteerExtraPlugin {
     async onPageCreated(page) {
         await withUtils(page).evaluateOnNewDocument(this.mainFunction, {
             opts: this.opts,
-            STATIC_DATA,
         });
     }
 
-    mainFunction = (utils, {opts, STATIC_DATA}) => {
+    mainFunction = (utils, {opts}) => {
         const _Object = utils.cache.Prototype.Object;
 
         try {
