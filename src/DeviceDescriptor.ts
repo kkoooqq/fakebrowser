@@ -1,7 +1,8 @@
 import * as crypto from 'crypto'
-import {UserAgentHelper} from './UserAgentHelper.js'
 import * as _ from 'lodash'
 import {strict as assert} from 'assert'
+
+import {UserAgentHelper} from './UserAgentHelper.js'
 import {helper} from "./helper";
 
 export enum FontExistTypes {
@@ -203,6 +204,14 @@ export interface DeviceDescriptor {
     "windowVersion": Array<string>,
     "htmlElementVersion": Array<string>,
     "keyboard": Record<string, string>,
+}
+
+export type ChromeUACHHeaders = {
+    'Accept-Language'?: string,
+    // 'referer': referers[sh.rd(0, referers.length - 1)],
+    'sec-ch-ua'?: string,
+    'sec-ch-ua-mobile'?: string,
+    'sec-ch-ua-platform'?: string,
 }
 
 /**

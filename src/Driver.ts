@@ -99,6 +99,8 @@ export interface ProxyServer {
     password?: string,
 }
 
+export type VanillaLaunchOptions = LaunchOptions & BrowserLaunchArgumentOptions & BrowserConnectOptions
+
 export interface LaunchParameters {
     deviceDesc: DeviceDescriptor,
     fakeDeviceDesc?: FakeDeviceDescriptor,
@@ -107,6 +109,7 @@ export interface LaunchParameters {
     maxSurvivalTime: number,
     proxy?: ProxyServer,
     log?: boolean,
+    launchOptions: VanillaLaunchOptions,
 }
 
 export const kDefaultTimeout = 15 * 1000
@@ -117,36 +120,35 @@ export const kDefaultLaunchOptions = {
     timeout: kDefaultTimeout,
 }
 
-export type FakeBrowserLaunchOptions = LaunchOptions & BrowserLaunchArgumentOptions & BrowserConnectOptions
-
 export default class Driver {
 
     /**
      * Launch browser
      * @param uuid
      * @param launchParams
-     * @param options
      */
     static async launch(
         uuid: string,
         launchParams: LaunchParameters,
-        options: FakeBrowserLaunchOptions = kDefaultLaunchOptions
     ): Promise<{
         vanillaBrowser: Browser,
         pptrExtra: PuppeteerExtra,
-        options: FakeBrowserLaunchOptions
     }> {
+        if (!launchParams.launchOptions || Object.keys(launchParams.launchOptions).length === 0) {
+            launchParams.launchOptions = kDefaultLaunchOptions
+        }
+
         // args
         const args = [
             ...kDefaultLaunchArgs,
-            ...(options.args || []),
+            ...(launchParams.launchOptions.args || []),
         ]
 
         const fakeDeviceDesc = launchParams.fakeDeviceDesc
         assert(!!fakeDeviceDesc)
 
         // Modify default options
-        options = {
+        launchParams.launchOptions = {
             ignoreHTTPSErrors: true,
             ignoreDefaultArgs: [
                 '--enable-automation',
@@ -164,17 +166,17 @@ export default class Driver {
                 hasTouch: UserAgentHelper.isMobile(fakeDeviceDesc.navigator.userAgent),
                 isLandscape: false,
             },
-            ...options,
+            ...launchParams.launchOptions,
             args,
         }
 
         // headless
-        let headless = options.headless
+        let headless = launchParams.launchOptions.headless
         if ('undefined' === typeof headless) {
             headless = true
         }
 
-        if (options.devtools) {
+        if (launchParams.launchOptions.devtools) {
             headless = false
         }
 
@@ -238,9 +240,9 @@ export default class Driver {
         )
 
         // noinspection UnnecessaryLocalVariableJS
-        const browser: Browser = await pptr.launch(options)
+        const browser: Browser = await pptr.launch(launchParams.launchOptions)
 
-        return {vanillaBrowser: browser, pptrExtra: pptr, options}
+        return {vanillaBrowser: browser, pptrExtra: pptr}
     }
 
     private static async getPids(pid: string | number) {

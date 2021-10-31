@@ -1,22 +1,25 @@
 import * as fs from "fs-extra";
 import * as path from "path";
+import * as URLToolkit from 'url-toolkit'
 
-import {Browser, CDPSession, Target} from "puppeteer";
+import axios from "axios";
+import {Express} from "express";
+import {Agent} from "https";
+
+import {Browser, CDPSession, Page, Target, WebWorker} from "puppeteer";
 import {strict as assert} from 'assert';
 import {PuppeteerExtra} from "puppeteer-extra";
-import {PptrPatcher} from "./PptrPatcher";
 
-import Driver, {FakeBrowserLaunchOptions, LaunchParameters, ProxyServer} from "./Driver.js";
-import DeviceDescriptorHelper, {DeviceDescriptor, FakeDeviceDescriptor} from "./DeviceDescriptor.js";
-import {Express} from "express";
+import Driver, {LaunchParameters, ProxyServer, VanillaLaunchOptions} from "./Driver.js";
+import DeviceDescriptorHelper, {ChromeUACHHeaders, DeviceDescriptor, FakeDeviceDescriptor} from "./DeviceDescriptor.js";
+import {PptrPatcher} from "./PptrPatcher";
+import {UserAgentHelper} from "./UserAgentHelper";
 import express = require("express");
-import {Agent} from "https";
-import * as URLToolkit from 'url-toolkit'
-import axios from "axios";
 
 const kWindowsDD = require('./device-hub/Windows.json')
 const kFakeDDFileName = '__fakebrowser_fakeDD.json'
 const kBrowserMaxSurvivalTime = 60 * 1000 * 10
+const kDefaultReferers = ["https://www.google.com", "https://www.bing.com"]
 const kInternalHttpServerPort = 7311
 
 class FakeBrowserBuilder {
@@ -28,6 +31,7 @@ class FakeBrowserBuilder {
             deviceDesc: kWindowsDD,
             userDataDir: "",
             maxSurvivalTime: FakeBrowser.globalConfig.defaultBrowserMaxSurvivalTime,
+            launchOptions: {}
         }
     }
 
@@ -65,8 +69,13 @@ class FakeBrowserBuilder {
         return this
     }
 
-    async launch(options?: FakeBrowserLaunchOptions): Promise<FakeBrowser> {
-        const result = FakeBrowserLauncher.launch(this._launchParams, options)
+    vanillaLaunchOptions(value: VanillaLaunchOptions) {
+        this._launchParams.launchOptions = value
+        return this
+    }
+
+    async launch(): Promise<FakeBrowser> {
+        const result = FakeBrowserLauncher.launch(this._launchParams)
         return result
     }
 }
@@ -77,7 +86,7 @@ class FakeBrowserLauncher {
     static _checkerIntervalId: NodeJS.Timer | null = null
     static _app: Express | null = null
 
-    private static checkOptionsLegal(options?: FakeBrowserLaunchOptions) {
+    private static checkOptionsLegal(options?: VanillaLaunchOptions) {
         if (!options || !options.args || !options.args.length) {
             return
         }
@@ -131,16 +140,13 @@ class FakeBrowserLauncher {
         launchParams.fakeDeviceDesc = fakeDeviceDesc
     }
 
-    static async launch(
-        launchParams: LaunchParameters
-        , options?: FakeBrowserLaunchOptions
-    ): Promise<FakeBrowser> {
+    static async launch(launchParams: LaunchParameters): Promise<FakeBrowser> {
         this.bootBrowserSurvivalChecker();
         this.bootInternalHTTPServer()
 
         // deviceDesc, userDataDir cannot be empty
         this.checkLaunchParamsLegal(launchParams)
-        this.checkOptionsLegal(options)
+        this.checkOptionsLegal(launchParams.launchOptions)
 
         this.prepareFakeDeviceDesc(launchParams)
 
@@ -152,7 +158,7 @@ class FakeBrowserLauncher {
         const {
             vanillaBrowser,
             pptrExtra
-        } = await Driver.launch(uuid, launchParams, options)
+        } = await Driver.launch(uuid, launchParams)
 
         const result = new FakeBrowser(
             launchParams,
@@ -256,7 +262,8 @@ export class FakeBrowser {
 
     static readonly globalConfig = {
         defaultBrowserMaxSurvivalTime: kBrowserMaxSurvivalTime,
-        internalHttpServerPort: kInternalHttpServerPort
+        defaultReferers: kDefaultReferers,
+        internalHttpServerPort: kInternalHttpServerPort,
     }
 
     private readonly _launchParams: LaunchParameters
@@ -264,6 +271,7 @@ export class FakeBrowser {
     private readonly _pptrExtra: PuppeteerExtra
     private readonly _launchTime: number
     private readonly _uuid: string
+    private readonly _workerUrls: Array<string>
 
     get launchParams(): LaunchParameters {
         return this._launchParams
@@ -302,32 +310,123 @@ export class FakeBrowser {
         this._pptrExtra = pptrExtra
         this._launchTime = launchTime
         this._uuid = uuid
+        this._workerUrls = []
 
-        vanillaBrowser.on('targetcreated', this.onTargetCreated)
+        vanillaBrowser.on('targetcreated', this.onTargetCreated.bind(this))
+
+        // browser.pages()[0] will not fire onTargetCreated, so we need to inject it manually.
+        vanillaBrowser.pages().then(async (pages) => {
+            for (const page of pages) {
+                await this.interceptPage(page)
+            }
+        })
     }
 
     private async onTargetCreated(target: Target) {
         console.log('targetcreated type:', target.type(), target.url())
 
-        const cdpSession = await target.createCDPSession()
-        await this.interceptWorker(target, cdpSession);
+        const targetType = target.type()
+
+        if (
+            targetType === 'service_worker'
+            || targetType === 'other' && (target.url().startsWith('http'))
+        ) {
+            const cdpSession = await target.createCDPSession()
+            await this.interceptWorker(target, cdpSession);
+        } else if (targetType === 'page') {
+            await this.interceptPage((await target.page())!)
+        }
     }
 
     private async interceptWorker(target: Target, client: CDPSession) {
-        if (client) {
-            if (
-                target.type() === 'service_worker'
-                || target.type() === 'other' && (target.url().startsWith('http'))
-            ) {
-                // FIXME: Worker & SharedWorker does not work with this way
-                console.log('intercept', target.url())
-                const injectJs: string = await PptrPatcher.evasionsCode(this.pptrExtra)
+        assert(!!client)
 
-                await client.send('Runtime.evaluate', {
-                    expression: injectJs
-                })
-            }
+        // FIXME: Worker & SharedWorker does not work with this way
+        console.log('intercept', target.url())
+        const injectJs: string = await PptrPatcher.evasionsCode(this.pptrExtra)
+
+        await client.send('Runtime.evaluate', {
+            expression: injectJs
+        })
+    }
+
+    private async interceptPage(page: Page) {
+        let cdpSession: CDPSession | null = null
+
+        const fakeDD = this._launchParams.fakeDeviceDesc
+        assert(fakeDD)
+
+        // if there is an account password that proxy needs to log in
+        if (
+            this._launchParams.proxy &&
+            this._launchParams.proxy.username &&
+            this._launchParams.proxy.password
+        ) {
+            await page.authenticate({
+                username: this._launchParams.proxy.username,
+                password: this._launchParams.proxy.password,
+            });
         }
+
+        // cdp
+        try {
+            await page['_client'].send('ServiceWorker.setForceUpdateOnPageLoad', {forceUpdateOnPageLoad: true})
+        } catch (ex: any) {
+            console.warn('ServiceWorker.setForceUpdateOnPageLoad exception', ex)
+        }
+
+        // intercept worker
+        const target = page.target()
+        cdpSession = await target.createCDPSession()
+        // await this.interceptWorker(target, cdpSession);
+
+        page.on('workercreated', (worker: WebWorker) => {
+            console.log(`worker created ${worker.url()}`)
+            this._workerUrls.push(worker.url())
+        })
+
+        page.on('workerdestroyed', async (worker: WebWorker) => {
+            console.log(`worker destroyed ${worker.url()}`)
+        })
+
+        // set additional request headers
+        let langs = fakeDD.navigator.languages
+            ? fakeDD.navigator.languages.join(',')
+            : fakeDD.navigator.language
+
+        if (langs && langs.length) {
+            langs += ';q=0.9'
+        }
+
+        // FIXME: read version from the launched browser
+        const chromeVersion = UserAgentHelper.chromeMajorVersion(fakeDD.navigator.userAgent)
+        const os = UserAgentHelper.os(fakeDD.navigator.userAgent)
+
+        assert(chromeVersion)
+        assert(os)
+
+        // FIXME: As soon as add a referer get the error
+        const extraHTTPHeaders: ChromeUACHHeaders = {
+            'Accept-Language': langs ?? '',
+            // 'referer': FakeBrowser.globalConfig.defaultReferers[sh.rd(0, referers.length - 1)],
+            'sec-ch-ua':
+                this._launchParams.launchOptions.executablePath && this._launchParams.launchOptions.executablePath.toLowerCase().includes('edge')
+                    ? `"Microsoft Edge";v="${chromeVersion}", " Not;A Brand";v="99", "Chromium";v="${chromeVersion}"`
+                    : `"Google Chrome";v="${chromeVersion}", " Not;A Brand";v="99", "Chromium";v="${chromeVersion}"`,
+            'sec-ch-ua-mobile': '?0',
+            // 'sec-fetch-site': 'cross-site',
+        }
+
+        if (chromeVersion >= 93) {
+            extraHTTPHeaders['sec-ch-ua-platform'] = `"${os}"`
+        }
+
+        await page.setExtraHTTPHeaders(extraHTTPHeaders)
+
+        console.log('use deviceParams', fakeDD.navigator.userAgent)
+        await page.setUserAgent(fakeDD.navigator.userAgent)
+
+        return {page, cdpSession};
     }
 }
 
