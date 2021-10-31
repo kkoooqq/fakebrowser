@@ -36,7 +36,7 @@ function inWindow() {
     return process.platform == 'win32';
 }
 
-async function waitFor<T>(func: () => T, timeout): Promise<T | null> {
+async function waitFor<T>(func: () => T, timeout: number): Promise<T | null> {
     let startTime = new Date().getTime()
     for (; ;) {
         const result: T = await func()

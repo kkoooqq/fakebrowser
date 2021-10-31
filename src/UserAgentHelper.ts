@@ -9,12 +9,14 @@ function isMobile(ua: string): boolean {
     }
 }
 
-function browserType(userAgent: string): string {
+export type BrowserTypes = 'IE' | 'Chrome' | 'Firefox' | 'Opera' | 'Safari' | 'Edge' | 'QQBrowser' | 'WeixinBrowser'
+
+function browserType(userAgent: string): BrowserTypes | null {
     userAgent = userAgent.toLowerCase();
 
     let result = null;
-    const browserArray = {
-        'IE': window.ActiveXObject || "ActiveXObject" in window, // IE
+    const browserArray: { [key: string]: boolean } = {
+        'IE': !!(window.ActiveXObject || "ActiveXObject" in window), // IE
         'Chrome': userAgent.indexOf('chrome') > -1 && userAgent.indexOf('safari') > -1, // Chrome
         'Firefox': userAgent.indexOf('firefox') > -1, // Firefox
         'Opera': userAgent.indexOf('opera') > -1, // Opera
@@ -24,16 +26,16 @@ function browserType(userAgent: string): string {
         'WeixinBrowser': /MicroMessenger/i.test(userAgent), // wechat browser
     };
 
-    for (let i in browserArray) {
+    for (const i in browserArray) {
         if (browserArray[i]) {
             result = i;
         }
     }
 
-    return result;
+    return result as BrowserTypes | null;
 }
 
-function chromeVersion(userAgent: string): number | null {
+function chromeMajorVersion(userAgent: string): number | null {
     const chromeVersionPart = userAgent.match(/Chrome\/(.*?)\./)
     if (chromeVersionPart) {
         return parseInt(chromeVersionPart[1])
@@ -42,17 +44,19 @@ function chromeVersion(userAgent: string): number | null {
     return null
 }
 
-function os(userAgent: string): string {
+export type OSTypes = 'Windows' | 'macOS' | 'Linux' | 'iPhone' | 'iPod' | 'iPad' | 'Android'
+
+function os(userAgent: string): OSTypes | null {
     // https://wicg.github.io/ua-client-hints/#sec-ch-ua-platform
-    let OS = '';
-    let OSArray = {
-        Windows: false,
-        macOS: false,
-        Linux: false,
-        iPhone: false,
-        iPod: false,
-        iPad: false,
-        Android: false
+    let result = null;
+    const OSArray: { [key: string]: boolean } = {
+        'Windows': false,
+        'macOS': false,
+        'Linux': false,
+        'iPhone': false,
+        'iPod': false,
+        'iPad': false,
+        'Android': false,
     };
 
     userAgent = userAgent.toLowerCase();
@@ -65,18 +69,18 @@ function os(userAgent: string): string {
     OSArray['iPad'] = userAgent.includes('ipad');
     OSArray['Android'] = userAgent.includes('android');
 
-    for (let i in OSArray) {
+    for (const i in OSArray) {
         if (OSArray[i]) {
-            OS = i;
+            result = i;
         }
     }
 
-    return OS;
+    return result as OSTypes | null;
 }
 
 export const UserAgentHelper = {
     isMobile,
     browserType,
-    chromeVersion,
+    chromeMajorVersion,
     os,
 }

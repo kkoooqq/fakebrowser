@@ -11,6 +11,7 @@
     "noImplicitThis": true,
     "noUnusedLocals": true,
     "stripInternal": true,
+    "strict": true,
     "skipLibCheck": false,
     "declarationMap": true,
     "pretty": true,
