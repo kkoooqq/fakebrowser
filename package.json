@@ -25,6 +25,7 @@
   "dependencies": {
     "font-list": "^1.4.0",
     "fs-extra": "^10.0.0",
+    "lodash": "^4.17.21",
     "p-reflect": "^3.0.0",
     "p-retry": "^4.6.1",
     "pidtree": "^0.5.0",

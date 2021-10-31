@@ -453,10 +453,10 @@ class Plugin extends PuppeteerExtraPlugin {
         // };
 
         // Get out the font that exists
-        const allFonts = _Object.keys(opts.fontSaltsV5)
+        const allFonts = _Object.keys(opts.fontSalt)
             .map(e => e.toLowerCase());
 
-        const existFonts = _Object.entries(opts.fontSaltsV5)
+        const existFonts = _Object.entries(opts.fontSalt)
             .filter(e => e[1].exists)
             .map(e => e[0].toLowerCase());
 
@@ -469,7 +469,7 @@ class Plugin extends PuppeteerExtraPlugin {
 
         // All lowercase
         const fontSaltsWithLowerCaseName = _Object.fromEntries(
-            _Object.entries(opts.fontSaltsV5).map(e => {
+            _Object.entries(opts.fontSalt).map(e => {
                 e[0] = e[0].toLowerCase();
                 return e;
             }));

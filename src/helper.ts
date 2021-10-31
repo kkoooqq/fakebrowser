@@ -17,6 +17,14 @@ function _rd(min: number, max: number, pon = false): number {
     return Math.floor(Math.random() * c + min) * (pon ? _pon() : 1)
 }
 
+function _arrRd(arr: Array<any>) {
+    if (!arr || !arr.length) {
+        return null
+    }
+
+    return arr[_rd(0, arr.length - 1)]
+}
+
 /**
  * positive or negative
  */
@@ -55,6 +63,7 @@ async function waitFor<T>(func: () => T, timeout: number): Promise<T | null> {
 export const helper = {
     sleep,
     rd: _rd,
+    arrRd: _arrRd,
     pon: _pon,
     inMac,
     inLinux,
