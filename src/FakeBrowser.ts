@@ -1,15 +1,23 @@
-import {Browser, CDPSession, Target} from "puppeteer";
-import Driver, {FakeBrowserLaunchOptions, LaunchParameters, ProxyServer} from "./Driver.js";
-import DeviceDescriptorHelper, {DeviceDescriptor, FakeDeviceDescriptor} from "./DeviceDescriptor.js";
-import {strict as assert} from 'assert';
-import {PuppeteerExtra} from "puppeteer-extra";
 import * as fs from "fs-extra";
 import * as path from "path";
+
+import {Browser, CDPSession, Target} from "puppeteer";
+import {strict as assert} from 'assert';
+import {PuppeteerExtra} from "puppeteer-extra";
 import {PptrPatcher} from "./PptrPatcher";
+
+import Driver, {FakeBrowserLaunchOptions, LaunchParameters, ProxyServer} from "./Driver.js";
+import DeviceDescriptorHelper, {DeviceDescriptor, FakeDeviceDescriptor} from "./DeviceDescriptor.js";
+import {Express} from "express";
+import express = require("express");
+import {Agent} from "https";
+import * as URLToolkit from 'url-toolkit'
+import axios from "axios";
 
 const kWindowsDD = require('./device-hub/Windows.json')
 const kFakeDDFileName = '__fakebrowser_fakeDD.json'
 const kBrowserMaxSurvivalTime = 60 * 1000 * 10
+const kInternalHttpServerPort = 7311
 
 class FakeBrowserBuilder {
 
@@ -19,7 +27,7 @@ class FakeBrowserBuilder {
         this._launchParams = {
             deviceDesc: kWindowsDD,
             userDataDir: "",
-            maxSurvivalTime: kBrowserMaxSurvivalTime,
+            maxSurvivalTime: FakeBrowser.globalConfig.defaultBrowserMaxSurvivalTime,
         }
     }
 
@@ -67,6 +75,7 @@ class FakeBrowserLauncher {
 
     static _fakeBrowserInstances: Array<FakeBrowser> = []
     static _checkerIntervalId: NodeJS.Timer | null = null
+    static _app: Express | null = null
 
     private static checkOptionsLegal(options?: FakeBrowserLaunchOptions) {
         if (!options || !options.args || !options.args.length) {
@@ -126,6 +135,9 @@ class FakeBrowserLauncher {
         launchParams: LaunchParameters
         , options?: FakeBrowserLaunchOptions
     ): Promise<FakeBrowser> {
+        this.bootBrowserSurvivalChecker();
+        this.bootInternalHTTPServer()
+
         // deviceDesc, userDataDir cannot be empty
         this.checkLaunchParamsLegal(launchParams)
         this.checkOptionsLegal(options)
@@ -154,6 +166,57 @@ class FakeBrowserLauncher {
         // Manage surviving browsers and kill them if they time out
         this._fakeBrowserInstances.push(result)
 
+        return result
+    }
+
+    private static bootInternalHTTPServer() {
+        if (!this._app) {
+            this._app = express()
+        }
+
+        this._app.get('/patchWorker', async (req, res) => {
+            const relUrl = req.query['relUrl'] as string
+            const workerUrl = req.query['workerUrl'] as string
+            const uuid = req.query['uuid'] as string
+
+            const fullUrl = URLToolkit.buildAbsoluteURL(relUrl, workerUrl)
+
+            console.log('request worker content from: ', fullUrl)
+
+            const reqHeaders = Object.fromEntries(Object.entries(req.headers).map(e => ([e[0], e[1]![0]])))
+            delete reqHeaders.host
+
+            const jsResp = await axios.get(
+                fullUrl, {
+                    headers: reqHeaders,
+                    httpsAgent: new Agent({
+                        rejectUnauthorized: false
+                    })
+                })
+
+            let jsContent = jsResp.data
+            const browser = FakeBrowserLauncher.getBrowserWithUUID(uuid)
+
+            if (browser) {
+                jsContent = await PptrPatcher.patchWorkerJsContent(browser.pptrExtra, jsContent)
+            }
+
+            for (const {name, value} of Object.entries(jsResp.headers).map(e => ({
+                name: e[0],
+                value: e[1] as string
+            }))) {
+                if (name.toLowerCase() != 'content-length') {
+                    res.header(name, value)
+                }
+            }
+
+            res.send(jsContent)
+        })
+
+        this._app.listen(FakeBrowser.globalConfig.internalHttpServerPort)
+    }
+
+    private static bootBrowserSurvivalChecker() {
         if (!this._checkerIntervalId) {
             this._checkerIntervalId = setInterval(async () => {
                 const killThese = this._fakeBrowserInstances.filter(
@@ -170,8 +233,6 @@ class FakeBrowserLauncher {
                 await Promise.all(p)
             }, 5 * 1000)
         }
-
-        return result
     }
 
     static getBrowserWithUUID(uuid: string): FakeBrowser | undefined {
@@ -192,6 +253,11 @@ class FakeBrowserLauncher {
 // friend class FakeBrowserLauncher
 export class FakeBrowser {
     static Builder = FakeBrowserBuilder
+
+    static readonly globalConfig = {
+        defaultBrowserMaxSurvivalTime: kBrowserMaxSurvivalTime,
+        internalHttpServerPort: kInternalHttpServerPort
+    }
 
     private readonly _launchParams: LaunchParameters
     private readonly _vanillaBrowser: Browser

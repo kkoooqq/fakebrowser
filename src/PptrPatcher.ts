@@ -420,7 +420,7 @@ export class PptrPatcher {
      * @param pptr
      * @param jsContent
      */
-    private static async patchWorkerJsContent(pptr: PuppeteerExtra, jsContent: string) {
+    static async patchWorkerJsContent(pptr: PuppeteerExtra, jsContent: string) {
         let jsPatch = await this.evasionsCode(pptr);
         jsContent = jsPatch + jsContent
 

@@ -49,7 +49,7 @@ class Plugin extends PuppeteerExtraPlugin {
                                         break;
                                     }
 
-                                    args[0] = `http://127.0.0.1:7311/api/patchWorkerJsContent?type=worker&uuid=${env.uuid}&relUrl=${encodeURIComponent(relUrl)}&workerUrl=${encodeURIComponent(workerUrl)}`;
+                                    args[0] = `http://127.0.0.1:7311/patchWorker?type=worker&uuid=${env.uuid}&relUrl=${encodeURIComponent(relUrl)}&workerUrl=${encodeURIComponent(workerUrl)}`;
 
                                     break;
                                 }
@@ -87,7 +87,7 @@ class Plugin extends PuppeteerExtraPlugin {
                                         break;
                                     }
 
-                                    args[0] = `http://127.0.0.1:7311/api/patchWorkerJsContent?type=sharedWorker&uuid=${env.uuid}&relUrl=${encodeURIComponent(relUrl)}&workerUrl=${encodeURIComponent(workerUrl)}`;
+                                    args[0] = `http://127.0.0.1:7311/patchWorker?type=sharedWorker&uuid=${env.uuid}&relUrl=${encodeURIComponent(relUrl)}&workerUrl=${encodeURIComponent(workerUrl)}`;
 
                                     break;
                                 }
