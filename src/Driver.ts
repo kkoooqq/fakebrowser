@@ -1,8 +1,7 @@
 import {addExtra, PuppeteerExtra} from "puppeteer-extra";
 import {Browser, BrowserConnectOptions, BrowserLaunchArgumentOptions, LaunchOptions} from "puppeteer";
-import DeviceDescriptorHelper, {DeviceDescriptor, FakeDeviceDescriptor} from "./DeviceDescriptor.js";
+import {DeviceDescriptor, FakeDeviceDescriptor} from "./DeviceDescriptor.js";
 import {strict as assert} from 'assert';
-import * as path from "path";
 import {UserAgentHelper} from "./UserAgentHelper.js";
 import * as fs from "fs-extra";
 import pidtree = require('pidtree');
@@ -104,6 +103,7 @@ export interface LaunchParameters {
     fakeDeviceDesc?: FakeDeviceDescriptor,
     displayUserActionLayer?: boolean,
     userDataDir: string,
+    maxSurvivalTime: number,
     proxy?: ProxyServer,
     log?: boolean,
 }
@@ -130,7 +130,8 @@ export default class Driver {
         options: FakeBrowserLaunchOptions = kDefaultLaunchOptions
     ): Promise<{
         browser: Browser,
-        pptr: PuppeteerExtra
+        pptr: PuppeteerExtra,
+        options: FakeBrowserLaunchOptions
     }> {
         // args
         const args = [
@@ -195,9 +196,7 @@ export default class Driver {
             )
         }
 
-        const deviceUUID = DeviceDescriptorHelper.deviceUUID(launchParams.deviceDesc)
-        const userDataDir = path.resolve(launchParams.userDataDir, `./${deviceUUID}`)
-
+        const userDataDir = launchParams.userDataDir
         fs.mkdirSync(userDataDir, {recursive: true}) // throw exception
 
         args.push(
@@ -228,14 +227,10 @@ export default class Driver {
         // Different instances with different puppeteer configurations
         const pptr = addExtra(require('puppeteer'))
 
-        if (launchParams.log) {
-            console.log('Puppeteer launch options', options)
-        }
-
         // noinspection UnnecessaryLocalVariableJS
         const browser: Browser = await pptr.launch(options)
 
-        return {browser, pptr}
+        return {browser, pptr, options}
     }
 
     private static async getPids(pid: string | number) {
