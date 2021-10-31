@@ -157,7 +157,7 @@ export default class Driver {
             handleSIGINT: false,
             handleSIGTERM: false,
             handleSIGHUP: false,
-            pipe: true,
+            pipe: false,
             defaultViewport: {
                 width: fakeDeviceDesc.window.innerWidth,
                 height: fakeDeviceDesc.window.innerHeight,

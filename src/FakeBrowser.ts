@@ -20,7 +20,7 @@ const kWindowsDD = require('./device-hub/Windows.json')
 const kFakeDDFileName = '__fakebrowser_fakeDD.json'
 const kBrowserMaxSurvivalTime = 60 * 1000 * 10
 const kDefaultReferers = ["https://www.google.com", "https://www.bing.com"]
-const kInternalHttpServerPort = 7311
+const kInternalHttpServerPort = 17311
 
 class FakeBrowserBuilder {
 

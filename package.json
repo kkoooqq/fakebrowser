@@ -9,7 +9,7 @@
     "tsc": "npm run clean-lib && npm run tsc-cjs",
     "tsc-cjs": "tsc -b src/tsconfig.cjs.json",
     "dev": "cross-env ets && cross-env NODE_ENV=local midway-bin dev --port=7311 --ts",
-    "postbuild": "cpy --cwd=src --parents device-hub ../lib/cjs/fakebrowser"
+    "postbuild": "cpy --cwd=src --parents device-hub ../lib/cjs/fakebrowser && cpy --cwd=src --parents plugins ../lib/cjs/fakebrowser"
   },
   "repository": {
     "type": "git",

@@ -468,7 +468,7 @@ class Plugin extends PuppeteerExtraPlugin {
         let hookCount = 0;
 
         // All lowercase
-        const fontSaltsWithLowerCaseName = _Object.fromEntries(
+        const fontSaltWithLowerCaseName = _Object.fromEntries(
             _Object.entries(opts.fontSalt).map(e => {
                 e[0] = e[0].toLowerCase();
                 return e;
@@ -557,7 +557,7 @@ class Plugin extends PuppeteerExtraPlugin {
                         if (!fakeFontConfig) {
                             // Can't find it, need to add a new configuration
                             let targetStyle, targetWeight, targetSize;
-                            const fontSalt = fontSaltsWithLowerCaseName[targetFontFamily];
+                            const fontSalt = fontSaltWithLowerCaseName[targetFontFamily];
 
                             const sizeNumericValue = parseInt(size) || 5;
 

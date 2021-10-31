@@ -2,7 +2,6 @@
   "compileOnSave": true,
   "compilerOptions": {
     "target": "ES2018",
-    "allowJs": true,
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,
