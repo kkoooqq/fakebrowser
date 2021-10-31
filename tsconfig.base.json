@@ -11,15 +11,16 @@
     "noImplicitThis": true,
     "noUnusedLocals": true,
     "stripInternal": true,
-    "strict": true,
     "skipLibCheck": false,
     "declarationMap": true,
     "pretty": true,
     "declaration": true,
+    "strict": true,
     "typeRoots": [
       "./typings",
       "./node_modules/@types"
     ],
+    "outDir": "lib"
   },
   "exclude": [
     "lib",
