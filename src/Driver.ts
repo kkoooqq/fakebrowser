@@ -1,6 +1,6 @@
 import {addExtra, PuppeteerExtra} from "puppeteer-extra";
 import {Browser, BrowserConnectOptions, BrowserLaunchArgumentOptions, LaunchOptions} from "puppeteer";
-import DeviceDescriptorHelper, {FakeDeviceDescriptor} from "./DeviceDescriptor.js";
+import DeviceDescriptorHelper, {DeviceDescriptor, FakeDeviceDescriptor} from "./DeviceDescriptor.js";
 import {strict as assert} from 'assert';
 import * as path from "path";
 import {UserAgentHelper} from "./UserAgentHelper.js";
@@ -11,7 +11,7 @@ import pidtree = require('pidtree');
 // https://peter.sh/experiments/chromium-command-line-switches/
 // https://www.scrapehero.com/how-to-increase-web-scraping-speed-using-puppeteer/
 // noinspection TypeScriptValidateJSTypes,SpellCheckingInspection
-export const defaultLaunchArgs = [
+export const kDefaultLaunchArgs = [
     '--no-sandbox',
     '--no-pings',
     '--no-zygote',
@@ -81,7 +81,7 @@ export const defaultLaunchArgs = [
     '--hide-scrollbars',
     '--disable-renderer-backgrounding',
     '--font-render-hinting=none',
-    '--use-gl=swiftshader',
+    '--use-gl=swiftshader',             // better cpu usage with --use-gl=desktop rather than --use-gl=swiftshader, still needs more testing.
     // '--single-process',              // Chrome cannot run in single process mode
     // '--disable-logging',
     // '--disable-gpu',                 // Cannot be disabled: otherwise webgl will not work
@@ -92,12 +92,6 @@ export const defaultLaunchArgs = [
     // '--disable-notifications',       // Cannot be disabled: notification-api not available, fingerprints will be dirty
 ]
 
-export enum InterceptWorkerTypes {
-    DoNotIntercept,
-    Intercept,
-    InterceptViaRequest,
-}
-
 export interface ProxyServer {
     proxy: string,
     exportIP: string,
@@ -106,49 +100,49 @@ export interface ProxyServer {
 }
 
 export interface LaunchParameters {
-    fakeDevice: FakeDeviceDescriptor,
+    deviceDesc: DeviceDescriptor,
+    fakeDeviceDesc?: FakeDeviceDescriptor,
     displayUserActionLayer?: boolean,
     userDataDir: string,
-    interceptWorkerType?: InterceptWorkerTypes,
     proxy?: ProxyServer,
+    log?: boolean,
 }
 
-export const DefaultTimeout = 15 * 1000
+export const kDefaultTimeout = 15 * 1000
 
-export const DefaultLaunchOptions = {
+export const kDefaultLaunchOptions = {
     headless: true,
     devtools: false,
-    timeout: DefaultTimeout,
+    timeout: kDefaultTimeout,
 }
+
+export type FakeBrowserLaunchOptions = LaunchOptions & BrowserLaunchArgumentOptions & BrowserConnectOptions
 
 export default class Driver {
 
     /**
      * Launch browser
-     * @param launchParameters
+     * @param launchParams
      * @param options
      */
     static async launch(
-        launchParameters: LaunchParameters,
-        options: LaunchOptions & BrowserLaunchArgumentOptions & BrowserConnectOptions = DefaultLaunchOptions
+        launchParams: LaunchParameters,
+        options: FakeBrowserLaunchOptions = kDefaultLaunchOptions
     ): Promise<{
         browser: Browser,
         pptr: PuppeteerExtra
     }> {
-
-        // fakeDevice must be set
-        const fakeDevice: FakeDeviceDescriptor = launchParameters.fakeDevice
-        assert(fakeDevice)
-
         // args
         const args = [
+            ...kDefaultLaunchArgs,
             ...(options.args || []),
-            ...defaultLaunchArgs,
         ]
+
+        const fakeDeviceDesc = launchParams.fakeDeviceDesc
+        assert(!!fakeDeviceDesc)
 
         // Modify default options
         options = {
-            ...options,
             ignoreHTTPSErrors: true,
             ignoreDefaultArgs: [
                 '--enable-automation',
@@ -159,13 +153,14 @@ export default class Driver {
             handleSIGHUP: false,
             pipe: true,
             defaultViewport: {
-                width: fakeDevice.window.innerWidth,
-                height: fakeDevice.window.innerHeight,
-                deviceScaleFactor: fakeDevice.window.devicePixelRatio,
-                isMobile: UserAgentHelper.isMobile(fakeDevice.navigator.userAgent),
-                hasTouch: UserAgentHelper.isMobile(fakeDevice.navigator.userAgent),
+                width: fakeDeviceDesc.window.innerWidth,
+                height: fakeDeviceDesc.window.innerHeight,
+                deviceScaleFactor: fakeDeviceDesc.window.devicePixelRatio,
+                isMobile: UserAgentHelper.isMobile(fakeDeviceDesc.navigator.userAgent),
+                hasTouch: UserAgentHelper.isMobile(fakeDeviceDesc.navigator.userAgent),
                 isLandscape: false,
             },
+            ...options,
             args,
         }
 
@@ -180,33 +175,28 @@ export default class Driver {
         }
 
         // proxy
-        if (launchParameters.proxy) {
+        if (launchParams.proxy) {
             args.push(
-                `--proxy-server=${launchParameters.proxy}`
+                `--proxy-server=${launchParams.proxy}`
             )
         }
 
         // browser language
         if (
-            (fakeDevice.navigator.languages && fakeDevice.navigator.languages.length)
-            || fakeDevice.navigator.language
+            (fakeDeviceDesc.navigator.languages && fakeDeviceDesc.navigator.languages.length)
+            || fakeDeviceDesc.navigator.language
         ) {
-            const lang = (fakeDevice.navigator.languages || []).length
-                ? fakeDevice.navigator.languages.join(',')
-                : fakeDevice.navigator.language
+            const lang = (fakeDeviceDesc.navigator.languages || []).length
+                ? fakeDeviceDesc.navigator.languages.join(',')
+                : fakeDeviceDesc.navigator.language
 
             args.push(
                 `--lang=${lang};q=0.9`
             )
         }
 
-        // user data dir
-        // Browser fingerprint data FakeDeviceDescriptor will not change after generated, so we can use its UUID for user-data-dir.
-        // The userDataDir in launchParameters must be set, and we will splice UUID after the path.
-        assert(launchParameters.userDataDir)
-
-        const deviceUUID = DeviceDescriptorHelper.deviceUUID(launchParameters.fakeDevice)
-        const userDataDir = path.resolve(launchParameters.userDataDir, `./${deviceUUID}`)
+        const deviceUUID = DeviceDescriptorHelper.deviceUUID(launchParams.deviceDesc)
+        const userDataDir = path.resolve(launchParams.userDataDir, `./${deviceUUID}`)
 
         fs.mkdirSync(userDataDir, {recursive: true}) // throw exception
 
@@ -215,7 +205,7 @@ export default class Driver {
         )
 
         // window position & window size
-        let {screenX, screenY, innerWidth, innerHeight, outerWidth, outerHeight} = fakeDevice.window
+        let {screenX, screenY, innerWidth, innerHeight, outerWidth, outerHeight} = fakeDeviceDesc.window
 
         outerWidth ||= innerWidth
         outerHeight ||= (innerHeight + 85)
@@ -232,13 +222,15 @@ export default class Driver {
                 '--disable-canvas-aa', // Disable antialiasing on 2d canvas
                 '--disable-2d-canvas-clip-aa', // Disable antialiasing on 2d canvas clips
                 '--disable-gl-drawing-for-tests', // BEST OPTION EVER! Disables GL drawing operations which produce pixel output. With this the GL output will not be correct but tests will run faster.
-                // '--use-gl=swiftshader', // better cpu usage with --use-gl=desktop rather than --use-gl=swiftshader, still needs more testing.
-
             )
         }
 
         // Different instances with different puppeteer configurations
         const pptr = addExtra(require('puppeteer'))
+
+        if (launchParams.log) {
+            console.log('Puppeteer launch options', options)
+        }
 
         // noinspection UnnecessaryLocalVariableJS
         const browser: Browser = await pptr.launch(options)
@@ -246,7 +238,11 @@ export default class Driver {
         return {browser, pptr}
     }
 
-    private static async getPids(pid) {
+    private static async getPids(pid: string | number) {
+        if ('string' === typeof (pid)) {
+            pid = parseInt(pid)
+        }
+
         const pids = await pidtree(pid)
         return pids.includes(pid) ? pids : [...pids, pid]
     }

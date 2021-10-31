@@ -1,8 +1,10 @@
-import {Browser, BrowserConnectOptions, BrowserLaunchArgumentOptions, LaunchOptions} from "puppeteer";
-import Driver, {InterceptWorkerTypes, LaunchParameters, ProxyServer} from "./Driver.js";
-import {FakeDeviceDescriptor} from "./DeviceDescriptor.js";
+import {Browser} from "puppeteer";
+import Driver, {FakeBrowserLaunchOptions, LaunchParameters, ProxyServer} from "./Driver.js";
+import DeviceDescriptorHelper, {DeviceDescriptor, FakeDeviceDescriptor} from "./DeviceDescriptor.js";
 import {strict as assert} from 'assert';
 import {PuppeteerExtra} from "puppeteer-extra";
+
+const windowsDD = require('./device-hub/Windows.json')
 
 export class FakeBrowserBuilder {
 
@@ -10,13 +12,17 @@ export class FakeBrowserBuilder {
 
     constructor() {
         this._launchParams = {
-            fakeDevice: undefined,
+            deviceDesc: windowsDD,
             userDataDir: ""
         }
     }
 
-    fakeDevice(value: FakeDeviceDescriptor) {
-        this._launchParams.fakeDevice = value
+    get launchParams(): LaunchParameters {
+        return this._launchParams
+    }
+
+    deviceDescriptor(value: FakeDeviceDescriptor) {
+        this._launchParams.deviceDesc = value
         return this
     }
 
@@ -30,8 +36,8 @@ export class FakeBrowserBuilder {
         return this
     }
 
-    interceptWorkerType(value: InterceptWorkerTypes) {
-        this._launchParams.interceptWorkerType = value
+    log(value: boolean) {
+        this._launchParams.log = value
         return this
     }
 
@@ -40,19 +46,48 @@ export class FakeBrowserBuilder {
         return this
     }
 
-    async launch(options?: LaunchOptions & BrowserLaunchArgumentOptions & BrowserConnectOptions): Promise<FakeBrowser> {
-        // fakeDevice, userDataDir cannot be empty
-        assert(this._launchParams.fakeDevice)
-        assert(this._launchParams.userDataDir)
+    private static checkOptionsLegal(options?: FakeBrowserLaunchOptions) {
+        if (!options || !options.args || !options.args.length) {
+            return
+        }
 
-        const {browser, pptr} = await Driver.launch(this._launchParams, options)
+        // These args are set by FakeBrowser and cannot be set externally: These values cannot be set externally:
+        const externalCannotSetArgs = [
+            '--user-data-dir',
+            '--lang',
+            '--window-position',
+            '--window-size'
+        ]
 
-        // Create an instance of FakeBrowser using Object.create to bypass the constructor.
-        const result = Object.create(browser)
+        if (options.args.filter(e => externalCannotSetArgs.includes(e.toLocaleLowerCase().split('=')[0])).length > 0) {
+            throw new TypeError(`${externalCannotSetArgs} cannot not be set in options.args`)
+        }
+    }
 
-        result._browser = browser
-        result._pptr = pptr
+    private static checkLaunchParamsLegal(launchParams: LaunchParameters) {
+        // deviceDesc must be set
+        const deviceDesc: DeviceDescriptor = launchParams.deviceDesc
+        assert(deviceDesc, 'deviceDesc must be set')
 
+        assert(DeviceDescriptorHelper.isLegal(deviceDesc), 'deviceDesc illegal')
+
+        // user data dir
+        // Browser fingerprint data FakeDeviceDescriptor will not change after generated, so we can use its UUID for user-data-dir.
+        // The userDataDir in launchParameters must be set, and we will splice UUID after the path.
+        assert(launchParams.userDataDir, 'userDataDir must be set')
+    }
+
+    async launch(options?: FakeBrowserLaunchOptions): Promise<FakeBrowser> {
+        // deviceDesc, userDataDir cannot be empty
+        FakeBrowserBuilder.checkLaunchParamsLegal(this._launchParams)
+        FakeBrowserBuilder.checkOptionsLegal(options)
+
+        const {
+            browser,
+            pptr
+        } = await Driver.launch(this._launchParams, options)
+
+        const result = new FakeBrowser(browser, pptr)
         return result
     }
 }
@@ -60,8 +95,25 @@ export class FakeBrowserBuilder {
 export class FakeBrowser {
     static Builder = FakeBrowserBuilder
 
-    _browser: Browser
-    _pptr: PuppeteerExtra
+    private readonly _browser: Browser
+    private readonly _pptr: PuppeteerExtra
+
+    get browser(): Browser {
+        return this._browser
+    }
+
+    get pptr(): PuppeteerExtra {
+        return this._pptr
+    }
+
+    async shutdown() {
+        await Driver.shutdown(this._browser)
+    }
+
+    constructor(browser: Browser, pptr: PuppeteerExtra) {
+        this._browser = browser
+        this._pptr = pptr
+    }
 
 }
 
