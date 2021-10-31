@@ -4,6 +4,7 @@ import {DeviceDescriptor, FakeDeviceDescriptor} from "./DeviceDescriptor.js";
 import {strict as assert} from 'assert';
 import {UserAgentHelper} from "./UserAgentHelper.js";
 import * as fs from "fs-extra";
+import {PptrPatcher} from "./PptrPatcher";
 import pidtree = require('pidtree');
 
 // chromium startup parameters
@@ -122,10 +123,12 @@ export default class Driver {
 
     /**
      * Launch browser
+     * @param uuid
      * @param launchParams
      * @param options
      */
     static async launch(
+        uuid: string,
         launchParams: LaunchParameters,
         options: FakeBrowserLaunchOptions = kDefaultLaunchOptions
     ): Promise<{
@@ -226,6 +229,13 @@ export default class Driver {
 
         // Different instances with different puppeteer configurations
         const pptr = addExtra(require('puppeteer'))
+
+        // patch with evasions
+        await PptrPatcher.patch(
+            uuid,
+            pptr,
+            launchParams,
+        )
 
         // noinspection UnnecessaryLocalVariableJS
         const browser: Browser = await pptr.launch(options)

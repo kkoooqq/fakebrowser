@@ -1,3 +1,5 @@
+// noinspection JSUnusedLocalSymbols
+
 'use strict';
 
 const {PuppeteerExtraPlugin} = require('puppeteer-extra-plugin');
@@ -39,16 +41,16 @@ class Plugin extends PuppeteerExtraPlugin {
         // RTCSessionDescription.prototype.sdp get function
         // RTCSessionDescription.prototype.toJSON value function
 
-        const {proxyOutIP, fakeIPs} = opts;
+        const {proxyExportIP, fakeIPs} = opts;
 
-        if (!proxyOutIP || !fakeIPs || !fakeIPs.length) {
+        if (!proxyExportIP || !fakeIPs || !fakeIPs.length) {
             return;
         }
 
         const replaceIps = (str) => {
-            if (fakeIPs && proxyOutIP) {
+            if (fakeIPs && proxyExportIP) {
                 for (let fakeIP of fakeIPs) {
-                    str = str.replace(new RegExp(fakeIP, 'g'), proxyOutIP);
+                    str = str.replace(new RegExp(fakeIP, 'g'), proxyExportIP);
                 }
             }
 

@@ -2,6 +2,8 @@
  * setTimeout async wrapper
  * @param ms sleep timeout
  */
+import axios from "axios";
+
 function sleep(ms: number): Promise<void> {
     return new Promise(resolve => setTimeout(resolve, ms))
 }
@@ -60,6 +62,16 @@ async function waitFor<T>(func: () => T, timeout: number): Promise<T | null> {
     }
 }
 
+function myRealExportIP(): Promise<string> {
+    return new Promise<string>((resolve, reject) => {
+        axios.get('https://httpbin.org/ip').then(response => {
+            resolve(response.data.origin)
+        }).catch(ex => {
+            reject(ex)
+        })
+    })
+}
+
 export const helper = {
     sleep,
     rd: _rd,
@@ -69,4 +81,5 @@ export const helper = {
     inLinux,
     inWindow,
     waitFor,
+    myRealExportIP,
 }

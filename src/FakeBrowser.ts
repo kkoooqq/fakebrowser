@@ -131,14 +131,18 @@ class FakeBrowserLauncher {
 
         this.prepareFakeDeviceDesc(launchParams)
 
+        assert(launchParams.fakeDeviceDesc)
+
+        const launchTime = new Date().getTime()
+        const uuid = DeviceDescriptorHelper.deviceUUID(launchParams.fakeDeviceDesc)
+
         const {
             browser,
             pptr
-        } = await Driver.launch(launchParams, options)
+        } = await Driver.launch(uuid, launchParams, options)
 
-        const launchTime = new Date().getTime()
-        const uuid = DeviceDescriptorHelper.deviceUUID(launchParams.fakeDeviceDesc!)
         const result = new FakeBrowser(
+            launchParams,
             browser,
             pptr,
             launchTime,
@@ -153,8 +157,8 @@ class FakeBrowserLauncher {
             this._checkerIntervalId = setInterval(async () => {
                 const killTheseBrowsers = this._browserInstances.filter(
                     e =>
-                        (e.maxSurvivalTime > 0)
-                        && (new Date().getTime() > e.launchTime + e.maxSurvivalTime)
+                        (e.launchParams.maxSurvivalTime > 0)
+                        && (new Date().getTime() > e.launchTime + e.launchParams.maxSurvivalTime)
                 )
 
                 const p: Array<Promise<void>> = []
@@ -169,8 +173,12 @@ class FakeBrowserLauncher {
         return result
     }
 
+    static getBrowserWithUUID(uuid: string): FakeBrowser | undefined {
+        return this._browserInstances.find(e => e.uuid === uuid)
+    }
+
     static async shutdown(fb: FakeBrowser) {
-        await Driver.shutdown(fb.browser)
+        await Driver.shutdown(fb.vanillaBrowser)
 
         const browserIndex = this._browserInstances.indexOf(fb)
         assert(browserIndex >= 0)
@@ -184,26 +192,26 @@ class FakeBrowserLauncher {
 export class FakeBrowser {
     static Builder = FakeBrowserBuilder
 
-    private readonly _browser: Browser
-    private readonly _pptr: PuppeteerExtra
+    private readonly _launchParams: LaunchParameters
+    private readonly _vanillaBrowser: Browser
+    private readonly _pptrExtra: PuppeteerExtra
     private readonly _launchTime: number
-    private readonly _maxSurvivalTime: number
     private readonly _uuid: string
 
-    get browser(): Browser {
-        return this._browser
+    get launchParams(): LaunchParameters {
+        return this._launchParams
     }
 
-    get pptr(): PuppeteerExtra {
-        return this._pptr
+    get vanillaBrowser(): Browser {
+        return this._vanillaBrowser
+    }
+
+    get pptrExtra(): PuppeteerExtra {
+        return this._pptrExtra
     }
 
     get launchTime(): number {
         return this._launchTime
-    }
-
-    get maxSurvivalTime(): number {
-        return this._maxSurvivalTime
     }
 
     get uuid(): string {
@@ -215,16 +223,17 @@ export class FakeBrowser {
     }
 
     constructor(
-        browser: Browser,
-        pptr: PuppeteerExtra,
+        launchParams: LaunchParameters,
+        vanillaBrowser: Browser,
+        pptrExtra: PuppeteerExtra,
         launchTime: number,
         maxSurvivalTime: number,
         uuid: string,
     ) {
-        this._browser = browser
-        this._pptr = pptr
+        this._launchParams = launchParams
+        this._vanillaBrowser = vanillaBrowser
+        this._pptrExtra = pptrExtra
         this._launchTime = launchTime
-        this._maxSurvivalTime = maxSurvivalTime
         this._uuid = uuid
     }
 
