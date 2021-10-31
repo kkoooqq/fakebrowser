@@ -1,12 +1,13 @@
 import * as fs from "fs-extra";
 import * as path from "path";
 import * as URLToolkit from 'url-toolkit'
+import * as http from "http";
 
 import axios from "axios";
 import {Express} from "express";
 import {Agent} from "https";
 
-import {Browser, CDPSession, Page, Target, WebWorker} from "puppeteer";
+import {Browser, CDPSession, Page, Target} from "puppeteer";
 import {strict as assert} from 'assert';
 import {PuppeteerExtra} from "puppeteer-extra";
 
@@ -85,6 +86,7 @@ class FakeBrowserLauncher {
     static _fakeBrowserInstances: Array<FakeBrowser> = []
     static _checkerIntervalId: NodeJS.Timer | null = null
     static _app: Express | null = null
+    static _appServer: http.Server | null = null
 
     private static checkOptionsLegal(options?: VanillaLaunchOptions) {
         if (!options || !options.args || !options.args.length) {
@@ -160,7 +162,7 @@ class FakeBrowserLauncher {
             pptrExtra
         } = await Driver.launch(uuid, launchParams)
 
-        const result = new FakeBrowser(
+        const fb = new FakeBrowser(
             launchParams,
             vanillaBrowser,
             pptrExtra,
@@ -169,10 +171,21 @@ class FakeBrowserLauncher {
             uuid
         )
 
-        // Manage surviving browsers and kill them if they time out
-        this._fakeBrowserInstances.push(result)
+        // browser.pages()[0] will not fire onTargetCreated, so we need to inject it manually.
+        const pages = await vanillaBrowser.pages()
+        if (pages.length > 0) {
+            for (const page of pages) {
+                // await fb.interceptPage(page)
 
-        return result
+                // FIXME: pages[0] keeps failing to hook effectively and I have to turn it off. Does anyone know what to do?
+                await page.close()
+            }
+        }
+
+        // Manage surviving browsers and kill them if they time out
+        this._fakeBrowserInstances.push(fb)
+
+        return fb
     }
 
     private static bootInternalHTTPServer() {
@@ -219,7 +232,7 @@ class FakeBrowserLauncher {
             res.send(jsContent)
         })
 
-        this._app.listen(FakeBrowser.globalConfig.internalHttpServerPort)
+        this._appServer = this._app.listen(FakeBrowser.globalConfig.internalHttpServerPort)
     }
 
     private static bootBrowserSurvivalChecker() {
@@ -252,6 +265,13 @@ class FakeBrowserLauncher {
         assert(browserIndex >= 0)
 
         this._fakeBrowserInstances.splice(browserIndex, 1)
+
+        // If all browsers have exited, close internal http service
+        if (this._fakeBrowserInstances.length === 0) {
+            // console.log('close appserver')
+            this._app = null
+            this._appServer!.close()
+        }
     }
 }
 
@@ -271,7 +291,7 @@ export class FakeBrowser {
     private readonly _pptrExtra: PuppeteerExtra
     private readonly _launchTime: number
     private readonly _uuid: string
-    private readonly _workerUrls: Array<string>
+    // private readonly _workerUrls: Array<string>
 
     get launchParams(): LaunchParameters {
         return this._launchParams
@@ -310,20 +330,18 @@ export class FakeBrowser {
         this._pptrExtra = pptrExtra
         this._launchTime = launchTime
         this._uuid = uuid
-        this._workerUrls = []
+        // this._workerUrls = []
 
         vanillaBrowser.on('targetcreated', this.onTargetCreated.bind(this))
+        vanillaBrowser.on('disconnected', this.onDisconnected.bind(this))
+    }
 
-        // browser.pages()[0] will not fire onTargetCreated, so we need to inject it manually.
-        vanillaBrowser.pages().then(async (pages) => {
-            for (const page of pages) {
-                await this.interceptPage(page)
-            }
-        })
+    private async onDisconnected() {
+        await FakeBrowserLauncher.shutdown(this)
     }
 
     private async onTargetCreated(target: Target) {
-        console.log('targetcreated type:', target.type(), target.url())
+        // console.log('targetcreated type:', target.type(), target.url())
 
         const targetType = target.type()
 
@@ -342,7 +360,7 @@ export class FakeBrowser {
         assert(!!client)
 
         // FIXME: Worker & SharedWorker does not work with this way
-        console.log('intercept', target.url())
+        // console.log('intercept', target.url())
         const injectJs: string = await PptrPatcher.evasionsCode(this.pptrExtra)
 
         await client.send('Runtime.evaluate', {
@@ -350,7 +368,8 @@ export class FakeBrowser {
         })
     }
 
-    private async interceptPage(page: Page) {
+    async interceptPage(page: Page) {
+        // console.log('inject page')
         let cdpSession: CDPSession | null = null
 
         const fakeDD = this._launchParams.fakeDeviceDesc
@@ -376,18 +395,18 @@ export class FakeBrowser {
         }
 
         // intercept worker
-        const target = page.target()
-        cdpSession = await target.createCDPSession()
+        // const target = page.target()
+        // cdpSession = await target.createCDPSession()
         // await this.interceptWorker(target, cdpSession);
-
-        page.on('workercreated', (worker: WebWorker) => {
-            console.log(`worker created ${worker.url()}`)
-            this._workerUrls.push(worker.url())
-        })
-
-        page.on('workerdestroyed', async (worker: WebWorker) => {
-            console.log(`worker destroyed ${worker.url()}`)
-        })
+        //
+        // page.on('workercreated', (worker: WebWorker) => {
+        //     console.log(`worker created ${worker.url()}`)
+        //     this._workerUrls.push(worker.url())
+        // })
+        //
+        // page.on('workerdestroyed', async (worker: WebWorker) => {
+        //     console.log(`worker destroyed ${worker.url()}`)
+        // })
 
         // set additional request headers
         let langs = fakeDD.navigator.languages
@@ -423,7 +442,7 @@ export class FakeBrowser {
 
         await page.setExtraHTTPHeaders(extraHTTPHeaders)
 
-        console.log('use deviceParams', fakeDD.navigator.userAgent)
+        // console.log('use deviceParams', fakeDD.navigator.userAgent)
         await page.setUserAgent(fakeDD.navigator.userAgent)
 
         return {page, cdpSession};

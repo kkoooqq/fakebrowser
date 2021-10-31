@@ -3,11 +3,12 @@
 import * as path from "path";
 import {strict as assert} from 'assert';
 
+import axios from "axios";
 import {CDPSession, Protocol} from "puppeteer";
 import {PuppeteerExtra} from "puppeteer-extra";
+
 import {LaunchParameters} from "./Driver";
 import {helper} from "./helper";
-import axios from "axios";
 import {FakeBrowser} from "./FakeBrowser";
 
 export class PptrPatcher {
