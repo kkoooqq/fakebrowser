@@ -143,8 +143,8 @@ export default class Driver {
             ...(launchParams.launchOptions.args || []),
         ]
 
-        const fakeDeviceDesc = launchParams.fakeDeviceDesc
-        assert(!!fakeDeviceDesc)
+        const fakeDD = launchParams.fakeDeviceDesc
+        assert(!!fakeDD)
 
         // Modify default options
         launchParams.launchOptions = {
@@ -158,11 +158,11 @@ export default class Driver {
             handleSIGHUP: false,
             pipe: true,
             defaultViewport: {
-                width: fakeDeviceDesc.window.innerWidth,
-                height: fakeDeviceDesc.window.innerHeight,
-                deviceScaleFactor: fakeDeviceDesc.window.devicePixelRatio,
-                isMobile: UserAgentHelper.isMobile(fakeDeviceDesc.navigator.userAgent),
-                hasTouch: UserAgentHelper.isMobile(fakeDeviceDesc.navigator.userAgent),
+                width: fakeDD.window.innerWidth,
+                height: fakeDD.window.innerHeight,
+                deviceScaleFactor: fakeDD.window.devicePixelRatio,
+                isMobile: UserAgentHelper.isMobile(fakeDD.navigator.userAgent),
+                hasTouch: UserAgentHelper.isMobile(fakeDD.navigator.userAgent),
                 isLandscape: false,
             },
             ...launchParams.launchOptions,
@@ -188,12 +188,12 @@ export default class Driver {
 
         // browser language
         if (
-            (fakeDeviceDesc.navigator.languages && fakeDeviceDesc.navigator.languages.length)
-            || fakeDeviceDesc.navigator.language
+            (fakeDD.navigator.languages && fakeDD.navigator.languages.length)
+            || fakeDD.navigator.language
         ) {
-            const lang = (fakeDeviceDesc.navigator.languages || []).length
-                ? fakeDeviceDesc.navigator.languages.join(',')
-                : fakeDeviceDesc.navigator.language
+            const lang = (fakeDD.navigator.languages || []).length
+                ? fakeDD.navigator.languages.join(',')
+                : fakeDD.navigator.language
 
             args.push(
                 `--lang=${lang};q=0.9`
@@ -208,7 +208,7 @@ export default class Driver {
         )
 
         // window position & window size
-        let {screenX, screenY, innerWidth, innerHeight, outerWidth, outerHeight} = fakeDeviceDesc.window
+        let {screenX, screenY, innerWidth, innerHeight, outerWidth, outerHeight} = fakeDD.window
 
         outerWidth ||= innerWidth
         outerHeight ||= (innerHeight + 85)

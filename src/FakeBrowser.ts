@@ -21,7 +21,7 @@ import {UserAgentHelper} from "./UserAgentHelper";
 
 const kDefaultWindowsDD = require(path.resolve(__dirname, '../../device-hub/Windows.json'))
 const kFakeDDFileName = '__fakebrowser_fakeDD.json'
-const kBrowserMaxSurvivalTime = 60 * 1000 * 10
+const kBrowserMaxSurvivalTime = 60 * 1000 * 15
 const kDefaultReferers = ["https://www.google.com", "https://www.bing.com"]
 const kInternalHttpServerPort = 17311
 
@@ -85,7 +85,7 @@ class FakeBrowserBuilder {
 
 class FakeBrowserLauncher {
 
-    static _fakeBrowserInstances: Array<FakeBrowser> = []
+    static _fakeBrowserInstances: FakeBrowser[] = []
     static _checkerIntervalId: NodeJS.Timer | null = null
     static _app: Express | null = null
     static _appServer: http.Server | null = null
@@ -110,10 +110,10 @@ class FakeBrowserLauncher {
 
     private static checkLaunchParamsLegal(launchParams: LaunchParameters) {
         // deviceDesc must be set
-        const deviceDesc: DeviceDescriptor = launchParams.deviceDesc
-        assert(deviceDesc, 'deviceDesc must be set')
+        const dd: DeviceDescriptor = launchParams.deviceDesc
+        assert(dd, 'deviceDesc must be set')
 
-        assert(DeviceDescriptorHelper.isLegal(deviceDesc), 'deviceDesc illegal')
+        assert(DeviceDescriptorHelper.isLegal(dd), 'deviceDesc illegal')
 
         // user data dir
         // The userDataDir in launchParameters must be set
@@ -192,48 +192,47 @@ class FakeBrowserLauncher {
     private static bootInternalHTTPServer() {
         if (!this._app) {
             this._app = express()
-        }
+            this._app.get('/patchWorker', async (req, res) => {
+                const relUrl = req.query['relUrl'] as string
+                const workerUrl = req.query['workerUrl'] as string
+                const uuid = req.query['uuid'] as string
 
-        this._app.get('/patchWorker', async (req, res) => {
-            const relUrl = req.query['relUrl'] as string
-            const workerUrl = req.query['workerUrl'] as string
-            const uuid = req.query['uuid'] as string
+                const fullUrl = URLToolkit.buildAbsoluteURL(relUrl, workerUrl)
 
-            const fullUrl = URLToolkit.buildAbsoluteURL(relUrl, workerUrl)
+                console.log('request worker content from: ', fullUrl)
 
-            console.log('request worker content from: ', fullUrl)
+                const reqHeaders = Object.fromEntries(Object.entries(req.headers).map(e => ([e[0], e[1]![0]])))
+                delete reqHeaders.host
 
-            const reqHeaders = Object.fromEntries(Object.entries(req.headers).map(e => ([e[0], e[1]![0]])))
-            delete reqHeaders.host
-
-            const jsResp = await axios.get(
-                fullUrl, {
-                    headers: reqHeaders,
-                    httpsAgent: new Agent({
-                        rejectUnauthorized: false
+                const jsResp = await axios.get(
+                    fullUrl, {
+                        headers: reqHeaders,
+                        httpsAgent: new Agent({
+                            rejectUnauthorized: false
+                        })
                     })
-                })
 
-            let jsContent = jsResp.data
-            const browser = FakeBrowserLauncher.getBrowserWithUUID(uuid)
+                let jsContent = jsResp.data
+                const browser = FakeBrowserLauncher.getBrowserWithUUID(uuid)
 
-            if (browser) {
-                jsContent = await PptrPatcher.patchWorkerJsContent(browser.pptrExtra, jsContent)
-            }
-
-            for (const {name, value} of Object.entries(jsResp.headers).map(e => ({
-                name: e[0],
-                value: e[1] as string
-            }))) {
-                if (name.toLowerCase() != 'content-length') {
-                    res.header(name, value)
+                if (browser) {
+                    jsContent = await PptrPatcher.patchWorkerJsContent(browser.pptrExtra, jsContent)
                 }
-            }
 
-            res.send(jsContent)
-        })
+                for (const {name, value} of Object.entries(jsResp.headers).map(e => ({
+                    name: e[0],
+                    value: e[1] as string
+                }))) {
+                    if (name.toLowerCase() != 'content-length') {
+                        res.header(name, value)
+                    }
+                }
 
-        this._appServer = this._app.listen(FakeBrowser.globalConfig.internalHttpServerPort)
+                res.send(jsContent)
+            })
+
+            this._appServer = this._app.listen(FakeBrowser.globalConfig.internalHttpServerPort)
+        }
     }
 
     private static bootBrowserSurvivalChecker() {
@@ -245,7 +244,7 @@ class FakeBrowserLauncher {
                         && (new Date().getTime() > e.launchTime + e.launchParams.maxSurvivalTime)
                 )
 
-                const p: Array<Promise<void>> = []
+                const p: Promise<void>[] = []
                 for (const fb of killThese) {
                     p.push(this.shutdown(fb))
                 }
@@ -293,7 +292,7 @@ export class FakeBrowser {
     private readonly _launchTime: number
     private readonly _uuid: string
 
-    // private readonly _workerUrls: Array<string>
+    // private readonly _workerUrls: string[]
 
     get launchParams(): LaunchParameters {
         return this._launchParams
@@ -412,7 +411,7 @@ export class FakeBrowser {
         // })
 
         // set additional request headers
-        let langs = fakeDD.navigator.languages
+        let langs: string = fakeDD.navigator.languages
             ? fakeDD.navigator.languages.join(',')
             : fakeDD.navigator.language
 
@@ -427,9 +426,9 @@ export class FakeBrowser {
         assert(chromeVersion)
         assert(os)
 
-        // FIXME: As soon as add a referer get the error
         const extraHTTPHeaders: ChromeUACHHeaders = {
             'Accept-Language': langs ?? '',
+            // FIXME: error occurs after the referer is set
             // 'referer': FakeBrowser.globalConfig.defaultReferers[sh.rd(0, referers.length - 1)],
             'sec-ch-ua':
                 this._launchParams.launchOptions.executablePath && this._launchParams.launchOptions.executablePath.toLowerCase().includes('edge')
@@ -444,11 +443,9 @@ export class FakeBrowser {
         }
 
         await page.setExtraHTTPHeaders(extraHTTPHeaders)
-
-        // console.log('use deviceParams', fakeDD.navigator.userAgent)
         await page.setUserAgent(fakeDD.navigator.userAgent)
 
-        return {page, cdpSession};
+        return {page, cdpSession}
     }
 }
 

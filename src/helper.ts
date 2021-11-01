@@ -21,9 +21,9 @@ function _rd(min: number, max: number, pon = false): number {
     return Math.floor(Math.random() * c + min) * (pon ? _pon() : 1)
 }
 
-function _arrRd(arr: Array<any>) {
+function _arrRd<T>(arr: T[]): T {
     if (!arr || !arr.length) {
-        return null
+        throw new TypeError('arr must not be empty')
     }
 
     return arr[_rd(0, arr.length - 1)]
@@ -74,7 +74,7 @@ function myRealExportIP(): Promise<string> {
     })
 }
 
-function arrShuffle<T>(arr: Array<T>): Array<T> {
+function arrShuffle<T>(arr: T[]): T[] {
     const result = arr.sort(() => 0.5 - Math.random())
     return result
 }

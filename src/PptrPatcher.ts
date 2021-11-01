@@ -428,7 +428,7 @@ export class PptrPatcher {
         // utils
         let utilsContent =
             `const utils = {};\n`;
-        for (const [key, value] of Object.entries(utils) as Array<[string, string]>) {
+        for (const [key, value] of Object.entries(utils) as [string, string][]) {
             utilsContent +=
                 `
 utils.${key} = ${value.toString()};

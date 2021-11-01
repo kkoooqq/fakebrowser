@@ -1,6 +1,6 @@
 {
   "name": "fakebrowser",
-  "version": "0.0.18",
+  "version": "0.0.19",
   "description": "",
   "main": "dist/cjs/FakeBrowser.js",
   "module": "dist/esm/FakeBrowser.js",

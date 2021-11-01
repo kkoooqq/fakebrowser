@@ -31,7 +31,7 @@ export interface DeviceDescriptor {
             name: string,
             filename: string,
             description: string,
-            __mimeTypes: Array<string>,
+            __mimeTypes: string[],
         }>
     },
     allFonts: Array<{
@@ -43,7 +43,7 @@ export interface DeviceDescriptor {
         renderer: string,
     },
     navigator: {
-        languages: Array<string>,
+        languages: string[],
         userAgent: string,
         "appCodeName": string,
         "appMinorVersion": string,
@@ -119,7 +119,7 @@ export interface DeviceDescriptor {
         "clientHeight": number
     },
     "webgl": {
-        "supportedExtensions": Array<string>,
+        "supportedExtensions": string[],
         "antialias": boolean,
         "contextAttributes": {
             "alpha": boolean,
@@ -202,8 +202,8 @@ export interface DeviceDescriptor {
         name: string,
         voiceURI: string,
     }>,
-    "windowVersion": Array<string>,
-    "htmlElementVersion": Array<string>,
+    "windowVersion": string[],
+    "htmlElementVersion": string[],
     "keyboard": Record<string, string>,
 }
 
@@ -241,7 +241,7 @@ export type IFontSalt = {
 }
 
 export interface FakeDeviceDescriptor extends DeviceDescriptor {
-    canvasSalt: Array<number>,
+    canvasSalt: number[],
     // TODO: I should make a correspondence between user's existing fonts and required fonts,
     //  but I don't have time to do it for now.
     // fakeFonts: Array<FakeFont>,
@@ -453,7 +453,7 @@ export default class DeviceDescriptorHelper {
 
         // canvas with salt
         if (!fakeDD.canvasSalt || !fakeDD.canvasSalt.length) {
-            const random = (list: Array<number>) => {
+            const random = (list: number[]) => {
                 let min = 0;
                 let max = list.length
                 return list[Math.floor(Math.random() * (max - min)) + min];
