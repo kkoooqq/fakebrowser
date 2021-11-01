@@ -11,7 +11,7 @@ import pidtree = require('pidtree');
 // https://peter.sh/experiments/chromium-command-line-switches/
 // https://www.scrapehero.com/how-to-increase-web-scraping-speed-using-puppeteer/
 // noinspection TypeScriptValidateJSTypes,SpellCheckingInspection
-export const kDefaultLaunchArgs = [
+const kDefaultLaunchArgs = [
     '--no-sandbox',
     '--no-pings',
     '--no-zygote',

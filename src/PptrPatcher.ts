@@ -1,4 +1,4 @@
-// noinspection JSUnusedLocalSymbols
+// noinspection JSUnusedLocalSymbols,JSUnusedGlobalSymbols
 
 import * as path from "path";
 import {strict as assert} from 'assert';

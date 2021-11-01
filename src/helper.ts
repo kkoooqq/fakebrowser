@@ -1,3 +1,5 @@
+// noinspection JSUnusedGlobalSymbols
+
 /**
  * setTimeout async wrapper
  * @param ms sleep timeout

@@ -1,3 +1,5 @@
+// noinspection JSUnusedGlobalSymbols
+
 import * as fs from "fs-extra";
 import * as path from "path";
 import * as URLToolkit from 'url-toolkit'
@@ -10,14 +12,14 @@ import {Agent} from "https";
 import {Browser, CDPSession, Page, Target} from "puppeteer";
 import {strict as assert} from 'assert';
 import {PuppeteerExtra} from "puppeteer-extra";
+import express = require("express");
 
 import Driver, {LaunchParameters, ProxyServer, VanillaLaunchOptions} from "./Driver.js";
 import DeviceDescriptorHelper, {ChromeUACHHeaders, DeviceDescriptor, FakeDeviceDescriptor} from "./DeviceDescriptor.js";
 import {PptrPatcher} from "./PptrPatcher";
 import {UserAgentHelper} from "./UserAgentHelper";
-import express = require("express");
 
-const kWindowsDD = require(path.resolve(__dirname, '../../device-hub/Windows.json'))
+const kDefaultWindowsDD = require(path.resolve(__dirname, '../../device-hub/Windows.json'))
 const kFakeDDFileName = '__fakebrowser_fakeDD.json'
 const kBrowserMaxSurvivalTime = 60 * 1000 * 10
 const kDefaultReferers = ["https://www.google.com", "https://www.bing.com"]
@@ -29,7 +31,7 @@ class FakeBrowserBuilder {
 
     constructor() {
         this._launchParams = {
-            deviceDesc: kWindowsDD,
+            deviceDesc: kDefaultWindowsDD,
             userDataDir: "",
             maxSurvivalTime: FakeBrowser.globalConfig.defaultBrowserMaxSurvivalTime,
             launchOptions: {}
@@ -114,8 +116,7 @@ class FakeBrowserLauncher {
         assert(DeviceDescriptorHelper.isLegal(deviceDesc), 'deviceDesc illegal')
 
         // user data dir
-        // Browser fingerprint data FakeDeviceDescriptor will not change after generated, so we can use its UUID for user-data-dir.
-        // The userDataDir in launchParameters must be set, and we will splice UUID after the path.
+        // The userDataDir in launchParameters must be set
         assert(launchParams.userDataDir, 'userDataDir must be set')
     }
 
@@ -291,6 +292,7 @@ export class FakeBrowser {
     private readonly _pptrExtra: PuppeteerExtra
     private readonly _launchTime: number
     private readonly _uuid: string
+
     // private readonly _workerUrls: Array<string>
 
     get launchParams(): LaunchParameters {
@@ -356,6 +358,7 @@ export class FakeBrowser {
         }
     }
 
+    // noinspection JSUnusedLocalSymbols
     private async interceptWorker(target: Target, client: CDPSession) {
         assert(!!client)
 
