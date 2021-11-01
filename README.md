@@ -36,7 +36,11 @@ npm i fakebrowser
 # or "yarn add fakebrowser"
 ```
 
+---
+
 ### Usage
+
+#### Demo1: Quick Start
 
 ``` javascript
 // cjs
@@ -58,10 +62,13 @@ const {FakeBrowser} = require('fakebrowser');
         .displayUserActionLayer(true)
         // [Optional]: Set startup options (https://pptr.dev/#?product=Puppeteer&show=api-puppeteerlaunchoptions)
         .vanillaLaunchOptions({
-            devtools: true,
+            headless: false,
             executablePath: '/Applications/Google Chrome 93.0.4577.82.app/Contents/MacOS/Google Chrome',
         })
         // Must be set: path to save user data
+        // We will create a fake device description (fake browser fingerprint) and save the browser's user cache information to this folder.
+        // Note: Once the fake browser fingerprint is created, it will not change, just like a normal user using the browser.
+        // If you want to get a different browser fingerprint, see demo2.
         .userDataDir('./fakeBrowserUserData');
 
     const fakeBrowser = await builder.launch();
@@ -69,9 +76,59 @@ const {FakeBrowser} = require('fakebrowser');
     // vanillaBrowser is a puppeteer.Browser object
     const page = await fakeBrowser.vanillaBrowser.newPage();
     await page.goto('https://abrahamjuliot.github.io/creepjs/');
-
-    console.log('enjoy it');
 })();
+```
+
+---
+
+#### Demo2: Create fake different browser fingerprints.
+There are two ways:
+* Create multiple instances of FakeBrowser and set userDataDir to different folders.
+* Create FakeBrowser instances with different DeviceDescriptor (retrieved from [device-hub](device-hub)).
+* Too few device descriptions in device-hub? Please use [dumpDD.js](src/dumpDD.js) to crawl the real user's fingerprint by yourself 😜.
+
+```javascript
+const createBrowserAndGoto = async (userDataDir, url) => {
+    const builder = new FakeBrowser.Builder()
+        .vanillaLaunchOptions({
+            headless: false,
+        })
+        .userDataDir(userDataDir);
+
+    const fakeBrowser = await builder.launch();
+    const page = await fakeBrowser.vanillaBrowser.newPage();
+    await page.goto(url);
+};
+
+createBrowserAndGoto('./fakeBrowserUserData1', 'https://fingerprintjs.github.io/fingerprintjs/').then(e => e);
+createBrowserAndGoto('./fakeBrowserUserData2', 'https://fingerprintjs.github.io/fingerprintjs/').then(e => e);
+```
+
+```javascript
+const createBrowserAndGoto = async (dd, userDataDir, url) => {
+    const builder = new FakeBrowser.Builder()
+        .deviceDescriptor(dd)
+        .vanillaLaunchOptions({
+            headless: false,
+        })
+        .userDataDir(userDataDir);
+
+    const fakeBrowser = await builder.launch();
+    const page = await fakeBrowser.vanillaBrowser.newPage();
+    await page.goto(url);
+};
+
+createBrowserAndGoto(
+    require('./node_modules/fakebrowser/device-hub/Windows.json'),
+    './fakeBrowserUserData3',
+    'https://fingerprintjs.github.io/fingerprintjs/',
+).then(e => e);
+
+createBrowserAndGoto(
+    require('./node_modules/fakebrowser/device-hub/macOS.json'),
+    './fakeBrowserUserData4',
+    'https://fingerprintjs.github.io/fingerprintjs/',
+).then(e => e);
 ```
 
 ----
