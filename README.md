@@ -31,7 +31,7 @@ FakeBrowser automatic login demo:
 
 To use FakeBrowser in your project, run:
 
-``` shell
+```bash
 npm i fakebrowser
 # or "yarn add fakebrowser"
 ```

@@ -6,8 +6,7 @@ import * as URLToolkit from 'url-toolkit'
 import * as http from "http";
 
 import axios from "axios";
-import * as express from "express";
-import {Express} from "express";
+import express, {Application} from "express";
 import {Agent} from "https";
 
 import {Browser, CDPSession, Page, Target} from "puppeteer";
@@ -89,7 +88,7 @@ class FakeBrowserLauncher {
 
     static _fakeBrowserInstances: FakeBrowser[] = []
     static _checkerIntervalId: NodeJS.Timer | null = null
-    static _app: Express | null = null
+    static _app: Application | null = null
     static _appServer: http.Server | null = null
 
     private static checkOptionsLegal(options?: VanillaLaunchOptions) {

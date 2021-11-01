@@ -137,10 +137,10 @@ export class FakeUserAction {
         maxPoints?: number,
         timestamp?: number,
         cpDelta?: number,
-    ) {
+    ): Promise<boolean> {
         const fb = this.fakeBrowser
         if (!fb) {
-            return
+            return false
         }
 
         // Get the current page of the browser
@@ -156,16 +156,18 @@ export class FakeUserAction {
         })
 
         this._mouseCurrPos = endPos
+
+        return true
     }
 
-    async simRandomMouseMove() {
+    async simRandomMouseMove(): Promise<boolean> {
         //       1/6
         //  1/4      1/4
         //       1/6
 
         const fb = this.fakeBrowser
         if (!fb) {
-            return
+            return false
         }
 
         const fakeDD = fb.launchParams.fakeDeviceDesc
@@ -181,14 +183,16 @@ export class FakeUserAction {
 
         const endPos = {x: helper.rd(startX, endX), y: helper.rd(startY, endY)}
         await this.simMouseMoveTo(endPos)
+
+        return true
     }
 
     async simClick(options = {
         pauseAfterMouseUp: true
-    }) {
+    }): Promise<boolean> {
         const fb = this.fakeBrowser
         if (!fb) {
-            return
+            return false
         }
 
         const currPage = await fb.getActivePage()
@@ -201,6 +205,8 @@ export class FakeUserAction {
         if (options && options.pauseAfterMouseUp) {
             await helper.sleepRd(300, 1000)
         }
+
+        return true
     }
 
     async simMoveToAndClick(
@@ -208,10 +214,10 @@ export class FakeUserAction {
         options = {
             pauseAfterMouseUp: true
         }
-    ) {
+    ): Promise<boolean> {
         const fb = this.fakeBrowser
         if (!fb) {
-            return
+            return false
         }
 
         const currPage = await fb.getActivePage()
@@ -220,7 +226,8 @@ export class FakeUserAction {
         await this.simMouseMoveTo(endPos)
         await currPage.mouse.move(endPos.x + helper.rd(-10, 10), endPos.y, {steps: helper.rd(8, 20)})
         await helper.sleepRd(100, 300)
-        await this.simClick()
+
+        return this.simClick(options)
     }
 
     async simClickElement(
@@ -310,14 +317,16 @@ export class FakeUserAction {
             await helper.sleepRd(100, 300)
 
             // click
-            await this.simClick(options)
+            if (await this.simClick(options)) {
+                if (options && options.pauseAfterMouseUp) {
+                    // Pause
+                    await helper.sleepRd(500, 1500)
+                }
 
-            if (options && options.pauseAfterMouseUp) {
-                // Pause
-                await helper.sleepRd(500, 1500)
+                return true
+            } else {
+                return false
             }
-
-            return true
         }
 
         return false
@@ -328,7 +337,7 @@ export class FakeUserAction {
         options = {
             pauseAfterKeyUp: true
         }
-    ) {
+    ): Promise<boolean> {
         const fb = this.fakeBrowser
         if (!fb) {
             return false
@@ -342,18 +351,20 @@ export class FakeUserAction {
         if (options && options.pauseAfterKeyUp) {
             await helper.sleepRd(500, 1500)
         }
+
+        return true
     }
 
     async simKeyboardEnter(options = {
         pauseAfterKeyUp: true
-    }) {
-        await this.simKeyboardPress('Enter', options)
+    }): Promise<boolean> {
+        return await this.simKeyboardPress('Enter', options)
     }
 
     async simKeyboardEsc(options = {
         pauseAfterKeyUp: true
-    }) {
-        await this.simKeyboardPress('Escape', options)
+    }): Promise<boolean> {
+        return await this.simKeyboardPress('Escape', options)
     }
 
     async simKeyboardType(
@@ -361,7 +372,7 @@ export class FakeUserAction {
         options = {
             pauseAfterLastKeyUp: true
         }
-    ) {
+    ): Promise<boolean> {
         const fb = this.fakeBrowser
         if (!fb) {
             return false
@@ -397,5 +408,7 @@ export class FakeUserAction {
         if (options && options.pauseAfterLastKeyUp) {
             await helper.sleepRd(500, 1500)
         }
+
+        return true
     }
 }
