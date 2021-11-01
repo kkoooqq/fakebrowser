@@ -18,6 +18,8 @@ import Driver, {LaunchParameters, ProxyServer, VanillaLaunchOptions} from "./Dri
 import DeviceDescriptorHelper, {ChromeUACHHeaders, DeviceDescriptor, FakeDeviceDescriptor} from "./DeviceDescriptor.js";
 import {PptrPatcher} from "./PptrPatcher";
 import {UserAgentHelper} from "./UserAgentHelper";
+import {PptrToolkit} from "./PptrToolkit";
+import {FakeUserAction} from "./FakeUserAction";
 
 const kDefaultWindowsDD = require(path.resolve(__dirname, '../../device-hub/Windows.json'))
 const kFakeDDFileName = '__fakebrowser_fakeDD.json'
@@ -291,6 +293,7 @@ export class FakeBrowser {
     private readonly _pptrExtra: PuppeteerExtra
     private readonly _launchTime: number
     private readonly _uuid: string
+    private readonly _userAction: FakeUserAction
 
     // private readonly _workerUrls: string[]
 
@@ -314,8 +317,17 @@ export class FakeBrowser {
         return this._uuid
     }
 
+    get userAction(): FakeUserAction {
+        return this._userAction
+    }
+
     async shutdown() {
         await FakeBrowserLauncher.shutdown(this)
+    }
+
+    async getActivePage(): Promise<Page | null> {
+        const result = await PptrToolkit.getActivePage(this._vanillaBrowser)
+        return result
     }
 
     constructor(
@@ -332,6 +344,8 @@ export class FakeBrowser {
         this._launchTime = launchTime
         this._uuid = uuid
         // this._workerUrls = []
+
+        this._userAction = new FakeUserAction(this)
 
         vanillaBrowser.on('targetcreated', this.onTargetCreated.bind(this))
         vanillaBrowser.on('disconnected', this.onDisconnected.bind(this))

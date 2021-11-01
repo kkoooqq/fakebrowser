@@ -87,6 +87,14 @@ There are two ways:
 * [demo2-diff-fp2.js](demo/demo2-diff-fp2.js) Create FakeBrowser instances with different DeviceDescriptor (retrieved from [device-hub](device-hub)).
 * Too few device descriptions in device-hub? Please use [dumpDD.js](src/dumpDD.js) to crawl the real user's fingerprint by yourself 😜.
 
+---
+
+#### Demo3: Simulate complex actions like a real user.
+
+[demo3-fake-user-action.js](demo/demo3-fake-user-action.js), I have written very detailed comments.
+
+![](doc/fakebrowser-demo3.gif)
+
 ----
 
 ## 🐱 Bot / Fingerprint detection sites 

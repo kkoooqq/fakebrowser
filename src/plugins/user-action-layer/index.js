@@ -16,8 +16,6 @@ class Plugin extends PuppeteerExtraPlugin {
         await withUtils(page).evaluateOnNewDocument(
             (utils) => {
                 window.addEventListener('DOMContentLoaded', () => {
-                    console.log('DOMContentLoaded');
-
                     // Add a canvas on top of the document.body
                     const canvas = document.createElement('canvas');
                     canvas.width = window.innerWidth;
