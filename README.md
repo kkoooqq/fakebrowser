@@ -40,7 +40,7 @@ npm i fakebrowser
 
 ### Usage
 
-#### Demo1: Quick Start
+#### ✅ Demo1: Quick Start
 
 ``` javascript
 // cjs
@@ -81,7 +81,8 @@ const {FakeBrowser} = require('fakebrowser');
 
 ---
 
-#### Demo2: Create fake different browser fingerprints.
+#### ✅ Demo2: Create fake different browser fingerprints.
+
 There are two ways:
 * [demo2-diff-fp1.js](demo/demo2-diff-fp1.js) Create multiple instances of FakeBrowser and set userDataDir to different folders.
 * [demo2-diff-fp2.js](demo/demo2-diff-fp2.js) Create FakeBrowser instances with different DeviceDescriptor (retrieved from [device-hub](device-hub)).
@@ -89,11 +90,17 @@ There are two ways:
 
 ---
 
-#### Demo3: Simulate complex actions like a real user.
+#### ✅ Demo3: Simulate complex actions like a real user.
 
 [demo3-fake-user-action.js](demo/demo3-fake-user-action.js), I have written very detailed comments.
 
 ![](doc/fakebrowser-demo3.gif)
+
+---
+
+#### ✅ Demo4: Proxy support.
+
+[demo4-proxy.js](demo/demo4-proxy.js), Support socks5, http, https proxy.
 
 ----
 

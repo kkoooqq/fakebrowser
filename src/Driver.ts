@@ -182,7 +182,7 @@ export default class Driver {
         // proxy
         if (launchParams.proxy) {
             args.push(
-                `--proxy-server=${launchParams.proxy}`
+                `--proxy-server=${launchParams.proxy.proxy}`
             )
         }
 

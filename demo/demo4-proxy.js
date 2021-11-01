@@ -1,11 +1,15 @@
 const {FakeBrowser} = require('fakebrowser');
 
 !(async () => {
+    // https://hideip.me/en/proxy/socks5list
     const builder = new FakeBrowser.Builder()
         .displayUserActionLayer(true)
         .proxy({
-            proxy: 'socks5://34.105.214.25:1080',
-            exportIP: '34.105.214.25',
+            // socks5://ip:port
+            // http://ip:port
+            // https://ip:port
+            proxy: 'socks5://213.183.32.155:53335',
+            exportIP: '213.183.32.155',
         })
         .vanillaLaunchOptions({
             headless: false,
@@ -17,4 +21,3 @@ const {FakeBrowser} = require('fakebrowser');
     const page = await fakeBrowser.vanillaBrowser.newPage();
     await page.goto('https://whoer.net');
 })();
-
