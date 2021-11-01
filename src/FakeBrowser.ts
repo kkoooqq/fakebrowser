@@ -1,4 +1,4 @@
-// noinspection JSUnusedGlobalSymbols
+// noinspection JSUnusedGlobalSymbols,JSUnusedLocalSymbols
 
 import * as fs from "fs-extra";
 import * as path from "path";
@@ -6,13 +6,13 @@ import * as URLToolkit from 'url-toolkit'
 import * as http from "http";
 
 import axios from "axios";
+import * as express from "express";
 import {Express} from "express";
 import {Agent} from "https";
 
 import {Browser, CDPSession, Page, Target} from "puppeteer";
 import {strict as assert} from 'assert';
 import {PuppeteerExtra} from "puppeteer-extra";
-import * as express from "express";
 
 import Driver, {LaunchParameters, ProxyServer, VanillaLaunchOptions} from "./Driver.js";
 import DeviceDescriptorHelper, {ChromeUACHHeaders, DeviceDescriptor, FakeDeviceDescriptor} from "./DeviceDescriptor.js";
@@ -180,7 +180,7 @@ class FakeBrowserLauncher {
             for (const page of pages) {
                 // await fb.interceptPage(page)
 
-                // FIXME: pages[0] keeps failing to hook effectively and I have to turn it off. Does anyone know what to do?
+                // FIXME: pages[0] keeps failing to hook effectively, I have to turn it off.
                 await page.close()
             }
         }
@@ -261,18 +261,23 @@ class FakeBrowserLauncher {
     }
 
     static async shutdown(fb: FakeBrowser) {
-        await Driver.shutdown(fb.vanillaBrowser)
+        if (fb.zombie) {
+            console.warn('This instance has been shutdown and turned into a zombie.')
+        } else {
+            fb.zombie = true
+            await Driver.shutdown(fb.vanillaBrowser)
 
-        const browserIndex = this._fakeBrowserInstances.indexOf(fb)
-        assert(browserIndex >= 0)
+            const browserIndex = this._fakeBrowserInstances.indexOf(fb)
+            assert(browserIndex >= 0)
 
-        this._fakeBrowserInstances.splice(browserIndex, 1)
+            this._fakeBrowserInstances.splice(browserIndex, 1)
 
-        // If all browsers have exited, close internal http service
-        if (this._fakeBrowserInstances.length === 0) {
-            // console.log('close appserver')
-            this._app = null
-            this._appServer!.close()
+            // If all browsers have exited, close internal http service
+            if (this._fakeBrowserInstances.length === 0) {
+                // console.log('close appserver')
+                this._app = null
+                this._appServer!.close()
+            }
         }
     }
 }
@@ -294,6 +299,7 @@ export class FakeBrowser {
     private readonly _launchTime: number
     private readonly _uuid: string
     private readonly _userAction: FakeUserAction
+    private _zombie: boolean
 
     // private readonly _workerUrls: string[]
 
@@ -321,8 +327,18 @@ export class FakeBrowser {
         return this._userAction
     }
 
+    get zombie(): boolean {
+        return this._zombie
+    }
+
+    set zombie(value: boolean) {
+        this._zombie = value
+    }
+
     async shutdown() {
-        await FakeBrowserLauncher.shutdown(this)
+        if (!this._zombie) {
+            await FakeBrowserLauncher.shutdown(this)
+        }
     }
 
     async getActivePage(): Promise<Page | null> {
@@ -343,6 +359,7 @@ export class FakeBrowser {
         this._pptrExtra = pptrExtra
         this._launchTime = launchTime
         this._uuid = uuid
+        this._zombie = false
         // this._workerUrls = []
 
         this._userAction = new FakeUserAction(this)
@@ -352,7 +369,9 @@ export class FakeBrowser {
     }
 
     private async onDisconnected() {
-        await FakeBrowserLauncher.shutdown(this)
+        if (!this._zombie) {
+            await this.shutdown()
+        }
     }
 
     private async onTargetCreated(target: Target) {
@@ -371,7 +390,6 @@ export class FakeBrowser {
         }
     }
 
-    // noinspection JSUnusedLocalSymbols
     private async interceptWorker(target: Target, client: CDPSession) {
         assert(!!client)
 

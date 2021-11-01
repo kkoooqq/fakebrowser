@@ -1,9 +1,11 @@
+import {strict as assert} from 'assert';
+import * as fs from "fs-extra";
+
 import {addExtra, PuppeteerExtra} from "puppeteer-extra";
 import {Browser, BrowserConnectOptions, BrowserLaunchArgumentOptions, LaunchOptions} from "puppeteer";
+
 import {DeviceDescriptor, FakeDeviceDescriptor} from "./DeviceDescriptor.js";
-import {strict as assert} from 'assert';
 import {UserAgentHelper} from "./UserAgentHelper.js";
-import * as fs from "fs-extra";
 import {PptrPatcher} from "./PptrPatcher";
 
 // chromium startup parameters
@@ -249,9 +251,13 @@ export default class Driver {
             pid = parseInt(pid)
         }
 
-        const pidtree = require('pidtree')
-        const pids: number[] = await pidtree(pid)
-        return pids.includes(pid) ? pids : [...pids, pid]
+        try {
+            const pidtree = require('pidtree')
+            const pids: number[] = await pidtree(pid)
+            return pids.includes(pid) ? pids : [...pids, pid]
+        } catch (ignored: any) {
+            return [pid]
+        }
     }
 
     /**

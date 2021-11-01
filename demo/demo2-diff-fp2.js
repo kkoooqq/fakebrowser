@@ -12,6 +12,11 @@ const {FakeBrowser} = require('fakebrowser');
         const fakeBrowser = await builder.launch();
         const page = await fakeBrowser.vanillaBrowser.newPage();
         await page.goto(url);
+
+        // ***** Do something automatic *****
+
+        // Don't forget to close your browser to release resources
+        await fakeBrowser.shutdown();
     };
 
     createBrowserAndGoto(

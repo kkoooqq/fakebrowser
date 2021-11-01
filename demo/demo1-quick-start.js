@@ -31,5 +31,10 @@ const {FakeBrowser} = require('fakebrowser');
     // vanillaBrowser is a puppeteer.Browser object
     const page = await fakeBrowser.vanillaBrowser.newPage();
     await page.goto('https://abrahamjuliot.github.io/creepjs/');
+
+    // ***** Do something automatic *****
+
+    // Don't forget to close your browser to release resources
+    await fakeBrowser.shutdown();
 })();
 

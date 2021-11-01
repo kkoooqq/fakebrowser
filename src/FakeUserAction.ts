@@ -16,6 +16,8 @@ export interface IMousePosition {
 export class FakeUserAction {
 
     private _mouseCurrPos: IMousePosition
+
+    // WeakRef needs node >= 14.16.0
     private _fakeBrowser: WeakRef<FakeBrowser> | null
 
     constructor(fb: FakeBrowser) {
