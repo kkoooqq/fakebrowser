@@ -39,16 +39,24 @@ npm i fakebrowser
 ### Usage
 
 ``` javascript
+// cjs
 const {FakeBrowser} = require('fakebrowser');
 
+// esm
+// import {FakeBrowser} from 'fakebrowser';
+// import {createRequire} from 'module';
+// const require = createRequire(import.meta.url);
+
 !(async () => {
+    // [Optional]: Select a fake device description
     const windowsDD = require('./node_modules/fakebrowser/device-hub/Windows.json');
+
     const builder = new FakeBrowser.Builder()
-        // Optional: Select a forged device description.
+        // [Optional]: Set the fake device description
         .deviceDescriptor(windowsDD)
-        // Optional: Show user action layers
+        // [Optional]: Show user action layers
         .displayUserActionLayer(true)
-        // Optional: Set startup options (https://pptr.dev/#?product=Puppeteer&show=api-puppeteerlaunchoptions)
+        // [Optional]: Set startup options (https://pptr.dev/#?product=Puppeteer&show=api-puppeteerlaunchoptions)
         .vanillaLaunchOptions({
             devtools: true,
             executablePath: '/Applications/Google Chrome 93.0.4577.82.app/Contents/MacOS/Google Chrome',

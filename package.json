@@ -1,6 +1,6 @@
 {
   "name": "fakebrowser",
-  "version": "0.0.17",
+  "version": "0.0.18",
   "description": "",
   "main": "dist/cjs/FakeBrowser.js",
   "module": "dist/esm/FakeBrowser.js",
@@ -55,7 +55,6 @@
   "devDependencies": {
     "@types/express": "^4.17.13",
     "@types/fs-extra": "^9.0.13",
-    "@types/lodash": "^4.14.176",
     "cpy-cli": "^3.1.1",
     "cross-env": "^7.0.3",
     "jest": "^27.3.1",
