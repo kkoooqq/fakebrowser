@@ -247,7 +247,7 @@ class FakeBrowserLauncher {
 
                 const p: Promise<void>[] = []
                 for (const fb of killThese) {
-                    p.push(this.shutdown(fb))
+                    p.push(fb.shutdown())
                 }
 
                 await Promise.all(p)
@@ -259,24 +259,19 @@ class FakeBrowserLauncher {
         return this._fakeBrowserInstances.find(e => e.uuid === uuid)
     }
 
-    static async shutdown(fb: FakeBrowser) {
-        if (fb.zombie) {
-            console.warn('This instance has been shutdown and turned into a zombie.')
-        } else {
-            fb.zombie = true
-            await Driver.shutdown(fb.vanillaBrowser)
+    static async _forceShutdown(fb: FakeBrowser) {
+        await Driver.shutdown(fb.vanillaBrowser)
 
-            const browserIndex = this._fakeBrowserInstances.indexOf(fb)
-            assert(browserIndex >= 0)
+        const browserIndex = this._fakeBrowserInstances.indexOf(fb)
+        assert(browserIndex >= 0)
 
-            this._fakeBrowserInstances.splice(browserIndex, 1)
+        this._fakeBrowserInstances.splice(browserIndex, 1)
 
-            // If all browsers have exited, close internal http service
-            if (this._fakeBrowserInstances.length === 0) {
-                // console.log('close appserver')
-                this._app = null
-                this._appServer!.close()
-            }
+        // If all browsers have exited, close internal http service
+        if (this._fakeBrowserInstances.length === 0) {
+            // console.log('close appserver')
+            this._app = null
+            this._appServer!.close()
         }
     }
 }
@@ -326,17 +321,17 @@ export class FakeBrowser {
         return this._userAction
     }
 
-    get zombie(): boolean {
-        return this._zombie
-    }
+    private async beforeShutdown() {
 
-    set zombie(value: boolean) {
-        this._zombie = value
     }
 
     async shutdown() {
         if (!this._zombie) {
-            await FakeBrowserLauncher.shutdown(this)
+            await this.beforeShutdown()
+            this._zombie = true
+            await FakeBrowserLauncher._forceShutdown(this)
+        } else {
+            console.warn('This instance has been shutdown and turned into a zombie.')
         }
     }
 
@@ -367,10 +362,8 @@ export class FakeBrowser {
         vanillaBrowser.on('disconnected', this.onDisconnected.bind(this))
     }
 
-    private async onDisconnected() {
-        if (!this._zombie) {
-            await this.shutdown()
-        }
+    private onDisconnected() {
+        return this.shutdown()
     }
 
     private async onTargetCreated(target: Target) {

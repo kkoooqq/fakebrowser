@@ -210,10 +210,17 @@ export default class Driver {
         )
 
         // window position & window size
-        let {screenX, screenY, innerWidth, innerHeight, outerWidth, outerHeight} = fakeDD.window
+        let {
+            screenX,
+            screenY,
+            innerWidth,
+            innerHeight,
+            outerWidth,
+            outerHeight
+        } = fakeDD.window
 
-        outerWidth ||= innerWidth
-        outerHeight ||= (innerHeight + 85)
+        outerWidth = outerWidth || innerWidth
+        outerHeight = outerHeight || (innerHeight + 85)
         args.push(
             `--window-position=${screenX},${screenY}`,
             `--window-size=${outerWidth},${outerHeight}`,

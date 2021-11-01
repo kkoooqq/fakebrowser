@@ -17,12 +17,14 @@ export class FakeUserAction {
 
     private _mouseCurrPos: IMousePosition
 
-    // WeakRef needs node >= 14.16.0
-    private _fakeBrowser: WeakRef<FakeBrowser> | null
+    // WeakRef needs node >= 14.6.0
+    // private _fakeBrowser: WeakRef<FakeBrowser> | null
+    private _fakeBrowser: FakeBrowser | null
 
     constructor(fb: FakeBrowser) {
         this._mouseCurrPos = {x: helper.rd(0, 1280), y: helper.rd(0, 700)}
-        this._fakeBrowser = new WeakRef<FakeBrowser>(fb)
+        // this._fakeBrowser = new WeakRef<FakeBrowser>(fb)
+        this._fakeBrowser = fb
     }
 
     /**
@@ -119,11 +121,13 @@ export class FakeUserAction {
     }
 
     get fakeBrowser(): FakeBrowser | null {
-        if (!this._fakeBrowser) {
+        // @ts-ignore
+        if (!this._fakeBrowser || this._fakeBrowser._zombie) {
             return null
         }
 
-        const fb: FakeBrowser | undefined = this._fakeBrowser.deref()
+        // const fb: FakeBrowser | undefined = this._fakeBrowser.deref()
+        const fb: FakeBrowser | undefined = this._fakeBrowser
         if (!fb) {
             this._fakeBrowser = null
             return null
