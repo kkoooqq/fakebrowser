@@ -32,8 +32,7 @@ FakeBrowser automatic login demo:
 To use FakeBrowser in your project, run:
 
 ```bash
-npm i fakebrowser
-# or "yarn add fakebrowser"
+yarn add puppeteer axios express fakebrowser
 ```
 
 ---
