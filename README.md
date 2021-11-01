@@ -83,53 +83,9 @@ const {FakeBrowser} = require('fakebrowser');
 
 #### Demo2: Create fake different browser fingerprints.
 There are two ways:
-* Create multiple instances of FakeBrowser and set userDataDir to different folders.
-* Create FakeBrowser instances with different DeviceDescriptor (retrieved from [device-hub](device-hub)).
+* [demo2-diff-fp1.js](demo/demo2-diff-fp1.js) Create multiple instances of FakeBrowser and set userDataDir to different folders.
+* [demo2-diff-fp2.js](demo/demo2-diff-fp2.js) Create FakeBrowser instances with different DeviceDescriptor (retrieved from [device-hub](device-hub)).
 * Too few device descriptions in device-hub? Please use [dumpDD.js](src/dumpDD.js) to crawl the real user's fingerprint by yourself 😜.
-
-```javascript
-const createBrowserAndGoto = async (userDataDir, url) => {
-    const builder = new FakeBrowser.Builder()
-        .vanillaLaunchOptions({
-            headless: false,
-        })
-        .userDataDir(userDataDir);
-
-    const fakeBrowser = await builder.launch();
-    const page = await fakeBrowser.vanillaBrowser.newPage();
-    await page.goto(url);
-};
-
-createBrowserAndGoto('./fakeBrowserUserData1', 'https://fingerprintjs.github.io/fingerprintjs/').then(e => e);
-createBrowserAndGoto('./fakeBrowserUserData2', 'https://fingerprintjs.github.io/fingerprintjs/').then(e => e);
-```
-
-```javascript
-const createBrowserAndGoto = async (dd, userDataDir, url) => {
-    const builder = new FakeBrowser.Builder()
-        .deviceDescriptor(dd)
-        .vanillaLaunchOptions({
-            headless: false,
-        })
-        .userDataDir(userDataDir);
-
-    const fakeBrowser = await builder.launch();
-    const page = await fakeBrowser.vanillaBrowser.newPage();
-    await page.goto(url);
-};
-
-createBrowserAndGoto(
-    require('./node_modules/fakebrowser/device-hub/Windows.json'),
-    './fakeBrowserUserData3',
-    'https://fingerprintjs.github.io/fingerprintjs/',
-).then(e => e);
-
-createBrowserAndGoto(
-    require('./node_modules/fakebrowser/device-hub/macOS.json'),
-    './fakeBrowserUserData4',
-    'https://fingerprintjs.github.io/fingerprintjs/',
-).then(e => e);
-```
 
 ----
 
