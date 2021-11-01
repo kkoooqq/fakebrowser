@@ -1,7 +1,6 @@
 // noinspection JSUnusedGlobalSymbols
 
 import * as crypto from 'crypto'
-import * as _ from 'lodash'
 import {strict as assert} from 'assert'
 
 import {UserAgentHelper} from './UserAgentHelper.js'
@@ -353,7 +352,7 @@ export default class DeviceDescriptorHelper {
         assert(!!deviceDesc)
 
         let needsUpdate = false
-        const fakeDD: FakeDeviceDescriptor = _.clone(deviceDesc) as FakeDeviceDescriptor
+        const fakeDD: FakeDeviceDescriptor = helper.objClone(deviceDesc) as FakeDeviceDescriptor
 
         // Fake new fonts
         if (!fakeDD.fontSalt) {
@@ -375,7 +374,7 @@ export default class DeviceDescriptorHelper {
             }
 
             // disrupt them
-            fontEntries = _.shuffle(fontEntries)
+            fontEntries = helper.arrShuffle(fontEntries)
 
             let fontSizeIncreasement = 1
             let fontStyleKeywordIndex = 0

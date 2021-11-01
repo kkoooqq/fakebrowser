@@ -12,7 +12,7 @@ import {Agent} from "https";
 import {Browser, CDPSession, Page, Target} from "puppeteer";
 import {strict as assert} from 'assert';
 import {PuppeteerExtra} from "puppeteer-extra";
-import express = require("express");
+import * as express from "express";
 
 import Driver, {LaunchParameters, ProxyServer, VanillaLaunchOptions} from "./Driver.js";
 import DeviceDescriptorHelper, {ChromeUACHHeaders, DeviceDescriptor, FakeDeviceDescriptor} from "./DeviceDescriptor.js";

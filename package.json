@@ -1,15 +1,17 @@
 {
   "name": "fakebrowser",
-  "version": "0.0.15",
+  "version": "0.0.17",
   "description": "",
   "main": "dist/cjs/FakeBrowser.js",
+  "module": "dist/esm/FakeBrowser.js",
   "scripts": {
     "clean-dist": "rimraf dist",
     "build": "npm run tsc",
-    "tsc": "npm run clean-dist && npm run tsc-cjs",
+    "tsc": "npm run clean-dist && npm run tsc-cjs && npm run tsc-esm",
     "tsc-cjs": "tsc -b src/tsconfig.cjs.json",
+    "tsc-esm": "tsc -b src/tsconfig.esm.json",
     "dev": "cross-env ets && cross-env NODE_ENV=local midway-bin dev --port=7311 --ts",
-    "postbuild": "cpy --cwd=src --parents plugins ../dist/cjs"
+    "postbuild": "cpy --cwd=src --parents plugins ../dist/cjs && cpy --cwd=src --parents plugins ../dist/esm"
   },
   "repository": {
     "type": "git",
@@ -43,9 +45,6 @@
     "express": "^4.17.1",
     "font-list": "^1.4.0",
     "fs-extra": "^10.0.0",
-    "lodash": "^4.17.21",
-    "p-reflect": "^3.0.0",
-    "p-retry": "^4.6.1",
     "pidtree": "^0.5.0",
     "puppeteer": "^10.4.0",
     "puppeteer-extra": "^3.2.3",

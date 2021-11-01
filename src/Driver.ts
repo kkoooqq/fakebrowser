@@ -5,7 +5,6 @@ import {strict as assert} from 'assert';
 import {UserAgentHelper} from "./UserAgentHelper.js";
 import * as fs from "fs-extra";
 import {PptrPatcher} from "./PptrPatcher";
-import pidtree = require('pidtree');
 
 // chromium startup parameters
 // https://peter.sh/experiments/chromium-command-line-switches/
@@ -245,12 +244,13 @@ export default class Driver {
         return {vanillaBrowser: browser, pptrExtra: pptr}
     }
 
-    private static async getPids(pid: string | number) {
+    private static async getPids(pid: string | number): Promise<number[]> {
         if ('string' === typeof (pid)) {
             pid = parseInt(pid)
         }
 
-        const pids = await pidtree(pid)
+        const pidtree = require('pidtree')
+        const pids: number[] = await pidtree(pid)
         return pids.includes(pid) ? pids : [...pids, pid]
     }
 

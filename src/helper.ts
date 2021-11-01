@@ -74,6 +74,15 @@ function myRealExportIP(): Promise<string> {
     })
 }
 
+function arrShuffle<T>(arr: Array<T>): Array<T> {
+    const result = arr.sort(() => 0.5 - Math.random())
+    return result
+}
+
+function objClone<T>(obj: T): T {
+    return JSON.parse(JSON.stringify(obj)) as T;
+}
+
 export const helper = {
     sleep,
     rd: _rd,
@@ -84,4 +93,6 @@ export const helper = {
     inWindow,
     waitFor,
     myRealExportIP,
+    arrShuffle,
+    objClone,
 }
