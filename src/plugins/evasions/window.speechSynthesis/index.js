@@ -106,15 +106,54 @@ class Plugin extends PuppeteerExtraPlugin {
                 );
             }
 
+            // https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesis/onvoiceschanged
+            // In chrome, getVoices can only get values after onvoiceschanged is fired, otherwise you get an empty array
+
+            let voicesWarnup = false;
+            let onvoiceschangedHandler = null;
+
             utils.replaceWithProxy(
                 _Object.getPrototypeOf(window.speechSynthesis),
                 'getVoices',
                 {
                     apply(target, thisArg, args) {
+                        if (!voicesWarnup) {
+                            return [];
+                        }
+
                         return voiceObjs;
                     },
                 },
             );
+
+            utils.replaceSetterWithProxy(
+                _Object.getPrototypeOf(window.speechSynthesis),
+                'onvoiceschanged',
+                {
+                    apply(target, thisArg, args) {
+                        if (args && args[0] instanceof Function) {
+                            onvoiceschangedHandler = args[0];
+
+                            if (voicesWarnup) {
+                                onvoiceschangedHandler();
+                            }
+                        }
+                    },
+                },
+            );
+
+            // Simulating delays and triggering events
+            setTimeout(function () {
+                voicesWarnup = true;
+
+                // TODO: After testing, the callback order of voiceschanged and onvoiceschanged is the same as the order in which they are called.
+                const event = new Event('voiceschanged');
+                window.speechSynthesis.dispatchEvent(event);
+
+                if (onvoiceschangedHandler) {
+                    onvoiceschangedHandler();
+                }
+            }, utils.random(20, 40));
         }
     };
 
