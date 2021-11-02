@@ -4,7 +4,6 @@ const {PuppeteerExtraPlugin} = require('puppeteer-extra-plugin');
 
 const withUtils = require('../_utils/withUtils');
 const withWorkerUtils = require('../_utils/withWorkerUtils');
-const {over} = require('lodash');
 
 /**
  * Fixes the UserAgent info (composed of UA string, Accept-Language, Platform, and UA hints).

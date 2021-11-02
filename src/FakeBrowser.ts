@@ -435,12 +435,12 @@ export class FakeBrowser {
         // })
 
         // set additional request headers
-        let langs: string = fakeDD.navigator.languages
+        let lang: string = fakeDD.navigator.languages
             ? fakeDD.navigator.languages.join(',')
             : fakeDD.navigator.language
 
-        if (langs && langs.length) {
-            langs += ';q=0.9'
+        if (lang && lang.length) {
+            lang += ';q=0.9'
         }
 
         // FIXME: read version from the launched browser
@@ -451,7 +451,7 @@ export class FakeBrowser {
         assert(os)
 
         const extraHTTPHeaders: ChromeUACHHeaders = {
-            'Accept-Language': langs ?? '',
+            'Accept-Language': lang || '',
             // FIXME: error occurs after the referer is set
             // 'referer': FakeBrowser.globalConfig.defaultReferers[sh.rd(0, referers.length - 1)],
             'sec-ch-ua':
