@@ -17,7 +17,7 @@
     "tsc": "npm run clean-dist && npm run tsc-cjs && npm run tsc-esm",
     "tsc-cjs": "tsc -b src/tsconfig.cjs.json",
     "tsc-esm": "tsc -b src/tsconfig.esm.json",
-    "postbuild": "cpy --cwd=src --parents plugins ../dist/cjs && cpy --cwd=src --parents plugins ../dist/esm"
+    "postbuild": "cpy --cwd=src --parents plugins ../dist"
   },
   "keywords": [
     "bot",
