@@ -8,91 +8,6 @@ import {DeviceDescriptor, FakeDeviceDescriptor} from "./DeviceDescriptor.js";
 import {UserAgentHelper} from "./UserAgentHelper.js";
 import {PptrPatcher} from "./PptrPatcher";
 
-// chromium startup parameters
-// https://peter.sh/experiments/chromium-command-line-switches/
-// https://www.scrapehero.com/how-to-increase-web-scraping-speed-using-puppeteer/
-// noinspection TypeScriptValidateJSTypes,SpellCheckingInspection
-const kDefaultLaunchArgs = [
-    '--no-sandbox',
-    '--no-pings',
-    '--no-zygote',
-    '--mute-audio',
-    '--no-first-run',
-    '--no-default-browser-check',
-    '--disable-software-rasterizer',
-    '--disable-cloud-import',
-    '--disable-gesture-typing',
-    '--disable-setuid-sandbox',
-    '--disable-offer-store-unmasked-wallet-cards',
-    '--disable-offer-upload-credit-cards',
-    '--disable-print-preview',
-    '--disable-voice-input',
-    '--disable-wake-on-wifi',
-    '--ignore-gpu-blocklist',
-    '--enable-async-dns',
-    '--enable-simple-cache-backend',
-    '--enable-tcp-fast-open',
-    '--enable-webgl',
-    '--prerender-from-omnibox=disabled',
-    '--enable-web-bluetooth',
-    // '--enable-experimental-web-platform-features', // Make Chrome for Linux support Bluetooth. eg: navigator.bluetooth, window.BluetoothUUID
-    '--ignore-certificate-errors',
-    '--ignore-certificate-errors-spki-list',
-    '--disable-web-security',
-    '--disable-site-isolation-trials',
-    '--disable-features=AudioServiceOutOfProcess,IsolateOrigins,site-per-process,TranslateUI,BlinkGenPropertyTrees', // do not disable UserAgentClientHint
-    '--aggressive-cache-discard',
-    '--disable-cache',
-    '--disable-application-cache',
-    '--disable-offline-load-stale-cache',
-    '--disable-gpu-shader-disk-cache',
-    '--media-cache-size=0',
-    '--disk-cache-size=0',
-    '--disable-extensions',
-    '--disable-blink-features',
-    '--disable-blink-features=AutomationControlled',
-    '--disable-ipc-flooding-protection',
-    '--enable-features=NetworkService,NetworkServiceInProcess',  // support ServiceWorkers
-    '--metrics-recording-only',
-    '--disable-component-extensions-with-background-pages',
-    '--disable-default-apps',
-    '--disable-breakpad',
-    '--disable-component-update',
-    '--disable-domain-reliability',
-    '--disable-sync',
-    '--disable-client-side-phishing-detection',
-    '--disable-hang-monitor',
-    '--disable-popup-blocking',
-    '--disable-prompt-on-repost',
-    '--metrics-recording-only',
-    '--safebrowsing-disable-auto-update',
-    '--password-store=basic',
-    '--autoplay-policy=no-user-gesture-required',
-    '--use-mock-keychain',
-    '--force-webrtc-ip-handling-policy=default_public_interface_only',
-    '--disable-crash-reporter',
-    '--disable-dev-shm-usage',
-    '--force-color-profile=srgb',
-    '--disable-accelerated-2d-canvas',
-    '--disable-translate',
-    '--disable-background-networking',
-    '--disable-background-timer-throttling',
-    '--disable-backgrounding-occluded-windows',
-    '--disable-infobars',
-    '--hide-scrollbars',
-    '--disable-renderer-backgrounding',
-    '--font-render-hinting=none',
-    '--use-gl=swiftshader',             // better cpu usage with --use-gl=desktop rather than --use-gl=swiftshader, still needs more testing.
-    // '--single-process',              // Chrome cannot run in single process mode
-    // '--disable-logging',
-    // '--disable-gpu',                 // Cannot be disabled: otherwise webgl will not work
-    // '--disable-speech-api',          // Cannot be disabled: some websites use speech-api as fingerprint
-    // '--no-startup-window',           // Cannot be enabled: Chrome won't open the window and puppeteer thinks it's not connected
-    // '--disable-webgl',               // Requires webgl fingerprint
-    // '--disable-webgl2',
-    // '--disable-notifications',       // Cannot be disabled: notification-api not available, fingerprints will be dirty
-]
-
 export interface ProxyServer {
     proxy: string,
     exportIP: string,
@@ -126,22 +41,28 @@ export default class Driver {
     /**
      * Launch browser
      * @param uuid
+     * @param defaultLaunchArgs
      * @param launchParams
      */
     static async launch(
         uuid: string,
+        defaultLaunchArgs: string[],
         launchParams: LaunchParameters,
     ): Promise<{
         vanillaBrowser: Browser,
         pptrExtra: PuppeteerExtra,
     }> {
-        if (!launchParams.launchOptions || Object.keys(launchParams.launchOptions).length === 0) {
+        if (
+            !launchParams.launchOptions
+            || Object.keys(launchParams.launchOptions).length === 0
+        ) {
             launchParams.launchOptions = kDefaultLaunchOptions
         }
 
         // args
+        assert(defaultLaunchArgs instanceof Array)
         const args = [
-            ...kDefaultLaunchArgs,
+            ...defaultLaunchArgs,
             ...(launchParams.launchOptions.args || []),
         ]
 

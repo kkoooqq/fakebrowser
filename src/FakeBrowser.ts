@@ -25,6 +25,92 @@ const kFakeDDFileName = '__fakebrowser_fakeDD.json'
 const kBrowserMaxSurvivalTime = 60 * 1000 * 15
 const kDefaultReferers = ["https://www.google.com", "https://www.bing.com"]
 const kInternalHttpServerPort = 17311
+const kInternalHttpServerHeartbeatMagic = '__fakebrowser__&88ff22--'
+
+// chromium startup parameters
+// https://peter.sh/experiments/chromium-command-line-switches/
+// https://www.scrapehero.com/how-to-increase-web-scraping-speed-using-puppeteer/
+// noinspection TypeScriptValidateJSTypes,SpellCheckingInspection
+const kDefaultLaunchArgs = [
+    '--no-sandbox',
+    '--no-pings',
+    '--no-zygote',
+    '--mute-audio',
+    '--no-first-run',
+    '--no-default-browser-check',
+    '--disable-software-rasterizer',
+    '--disable-cloud-import',
+    '--disable-gesture-typing',
+    '--disable-setuid-sandbox',
+    '--disable-offer-store-unmasked-wallet-cards',
+    '--disable-offer-upload-credit-cards',
+    '--disable-print-preview',
+    '--disable-voice-input',
+    '--disable-wake-on-wifi',
+    '--ignore-gpu-blocklist',
+    '--enable-async-dns',
+    '--enable-simple-cache-backend',
+    '--enable-tcp-fast-open',
+    '--enable-webgl',
+    '--prerender-from-omnibox=disabled',
+    '--enable-web-bluetooth',
+    // '--enable-experimental-web-platform-features', // Make Chrome for Linux support Bluetooth. eg: navigator.bluetooth, window.BluetoothUUID
+    '--ignore-certificate-errors',
+    '--ignore-certificate-errors-spki-list',
+    '--disable-web-security',
+    '--disable-site-isolation-trials',
+    '--disable-features=AudioServiceOutOfProcess,IsolateOrigins,site-per-process,TranslateUI,BlinkGenPropertyTrees', // do not disable UserAgentClientHint
+    '--aggressive-cache-discard',
+    '--disable-cache',
+    '--disable-application-cache',
+    '--disable-offline-load-stale-cache',
+    '--disable-gpu-shader-disk-cache',
+    '--media-cache-size=0',
+    '--disk-cache-size=0',
+    '--disable-extensions',
+    '--disable-blink-features',
+    '--disable-blink-features=AutomationControlled',
+    '--disable-ipc-flooding-protection',
+    '--enable-features=NetworkService,NetworkServiceInProcess',  // support ServiceWorkers
+    '--metrics-recording-only',
+    '--disable-component-extensions-with-background-pages',
+    '--disable-default-apps',
+    '--disable-breakpad',
+    '--disable-component-update',
+    '--disable-domain-reliability',
+    '--disable-sync',
+    '--disable-client-side-phishing-detection',
+    '--disable-hang-monitor',
+    '--disable-popup-blocking',
+    '--disable-prompt-on-repost',
+    '--metrics-recording-only',
+    '--safebrowsing-disable-auto-update',
+    '--password-store=basic',
+    '--autoplay-policy=no-user-gesture-required',
+    '--use-mock-keychain',
+    '--force-webrtc-ip-handling-policy=default_public_interface_only',
+    '--disable-crash-reporter',
+    '--disable-dev-shm-usage',
+    '--force-color-profile=srgb',
+    '--disable-accelerated-2d-canvas',
+    '--disable-translate',
+    '--disable-background-networking',
+    '--disable-background-timer-throttling',
+    '--disable-backgrounding-occluded-windows',
+    '--disable-infobars',
+    '--hide-scrollbars',
+    '--disable-renderer-backgrounding',
+    '--font-render-hinting=none',
+    '--use-gl=swiftshader',             // better cpu usage with --use-gl=desktop rather than --use-gl=swiftshader, still needs more testing.
+    // '--single-process',              // Chrome cannot run in single process mode
+    // '--disable-logging',
+    // '--disable-gpu',                 // Cannot be disabled: otherwise webgl will not work
+    // '--disable-speech-api',          // Cannot be disabled: some websites use speech-api as fingerprint
+    // '--no-startup-window',           // Cannot be enabled: Chrome won't open the window and puppeteer thinks it's not connected
+    // '--disable-webgl',               // Requires webgl fingerprint
+    // '--disable-webgl2',
+    // '--disable-notifications',       // Cannot be disabled: notification-api not available, fingerprints will be dirty
+]
 
 class FakeBrowserBuilder {
 
@@ -104,7 +190,9 @@ class FakeBrowserLauncher {
             '--window-size'
         ]
 
-        if (options.args.filter(e => externalCannotSetArgs.includes(e.toLocaleLowerCase().split('=')[0])).length > 0) {
+        if (options.args.filter(
+            e => externalCannotSetArgs.includes(e.toLocaleLowerCase().split('=')[0])
+        ).length > 0) {
             throw new TypeError(`${externalCannotSetArgs} cannot be set in options.args`)
         }
     }
@@ -146,7 +234,7 @@ class FakeBrowserLauncher {
 
     static async launch(launchParams: LaunchParameters): Promise<FakeBrowser> {
         this.bootBrowserSurvivalChecker();
-        this.bootInternalHTTPServer()
+        await this.bootInternalHTTPServer()
 
         // deviceDesc, userDataDir cannot be empty
         this.checkLaunchParamsLegal(launchParams)
@@ -162,7 +250,11 @@ class FakeBrowserLauncher {
         const {
             vanillaBrowser,
             pptrExtra
-        } = await Driver.launch(uuid, launchParams)
+        } = await Driver.launch(
+            uuid,
+            FakeBrowser.globalConfig.defaultLaunchArgs,
+            launchParams
+        )
 
         const fb = new FakeBrowser(
             launchParams,
@@ -190,9 +282,14 @@ class FakeBrowserLauncher {
         return fb
     }
 
-    private static bootInternalHTTPServer() {
+    private static async bootInternalHTTPServer() {
         if (!this._app) {
             this._app = express()
+
+            this._app.get('/hb', async (req, res) => {
+                res.send(kInternalHttpServerHeartbeatMagic)
+            })
+
             this._app.get('/patchWorker', async (req, res) => {
                 const relUrl = req.query['relUrl'] as string
                 const workerUrl = req.query['workerUrl'] as string
@@ -211,7 +308,8 @@ class FakeBrowserLauncher {
                         httpsAgent: new Agent({
                             rejectUnauthorized: false
                         })
-                    })
+                    }
+                )
 
                 let jsContent = jsResp.data
                 const browser = FakeBrowserLauncher.getBrowserWithUUID(uuid)
@@ -232,7 +330,21 @@ class FakeBrowserLauncher {
                 res.send(jsContent)
             })
 
-            this._appServer = this._app.listen(FakeBrowser.globalConfig.internalHttpServerPort)
+            // If the port listens to errors, determine if the heartbeat interface is successful
+            try {
+                this._appServer = this._app.listen(FakeBrowser.globalConfig.internalHttpServerPort)
+            } catch (ex: any) {
+                const hbUrl = `http://127.0.0.1:${FakeBrowser.globalConfig.internalHttpServerPort}/hb`
+                try {
+                    const hbData = (await axios.get(hbUrl)).data
+                    if (hbData === kInternalHttpServerHeartbeatMagic) {
+                        return
+                    }
+                } catch (ignore: any) {
+                }
+
+                throw ex
+            }
         }
     }
 
@@ -285,6 +397,7 @@ export class FakeBrowser {
         defaultBrowserMaxSurvivalTime: kBrowserMaxSurvivalTime,
         defaultReferers: kDefaultReferers,
         internalHttpServerPort: kInternalHttpServerPort,
+        defaultLaunchArgs: kDefaultLaunchArgs,
     }
 
     private readonly _launchParams: LaunchParameters
@@ -455,7 +568,8 @@ export class FakeBrowser {
             // FIXME: error occurs after the referer is set
             // 'referer': FakeBrowser.globalConfig.defaultReferers[sh.rd(0, referers.length - 1)],
             'sec-ch-ua':
-                this._launchParams.launchOptions.executablePath && this._launchParams.launchOptions.executablePath.toLowerCase().includes('edge')
+                this._launchParams.launchOptions.executablePath
+                && this._launchParams.launchOptions.executablePath.toLowerCase().includes('edge')
                     ? `"Microsoft Edge";v="${chromeVersion}", " Not;A Brand";v="99", "Chromium";v="${chromeVersion}"`
                     : `"Google Chrome";v="${chromeVersion}", " Not;A Brand";v="99", "Chromium";v="${chromeVersion}"`,
             'sec-ch-ua-mobile': '?0',

@@ -139,7 +139,10 @@ export class PptrToolkit {
         return box
     }
 
-    static async intersectingViewport(eh: ElementHandle, fakeDD: FakeDeviceDescriptor): Promise<BoundingBox | null> {
+    static async intersectingViewport(
+        eh: ElementHandle,
+        fakeDD: FakeDeviceDescriptor
+    ): Promise<BoundingBox | null> {
         if (!(await eh.isIntersectingViewport())) {
             return null
         }

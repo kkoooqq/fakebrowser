@@ -17,7 +17,7 @@ FakeBrowser automatic login demo:
 
 ![](doc/fakebrowser-demo.gif)
 
-* Using [dumpDD.js](src/dumpDD.js) to collect fingerprint from real users.
+* Using [dumpDD.js](script/dumpDD.js) to collect fingerprint from real users.
 * Writing [evasions](https://github.com/kkoooqq/fakebrowser/tree/main/src/plugins/evasions)😈 based on [puppeteer-extra](https://github.com/berstend/puppeteer-extra) to simulate the above fingerprints and bypass anti-bot detection.
 * Provide toolkit API to simulate real user's mouse and keyboard operations.
 * [Deploy to Linux](https://github.com/kkoooqq/fakebrowser/tree/main/script) and use Chrome / Edge in headless mode to **SAVE COST**. Chromium doesn't support MP4 and few users use it, so I don't recommend it.
@@ -90,7 +90,7 @@ const {FakeBrowser} = require('fakebrowser');
 There are two ways:
 * [demo2-diff-fp1.js](demo/demo2-diff-fp1.js) Create multiple instances of FakeBrowser and set userDataDir to different folders.
 * [demo2-diff-fp2.js](demo/demo2-diff-fp2.js) Create FakeBrowser instances with different DeviceDescriptor (retrieved from [device-hub](device-hub)).
-* Too few device descriptions in device-hub? Please use [dumpDD.js](src/dumpDD.js) to crawl the real user's fingerprint by yourself 😜.
+* Too few device descriptions in device-hub? Please use [dumpDD.js](script/dumpDD.js) to crawl the real user's fingerprint by yourself 😜.
 
 ---
 
