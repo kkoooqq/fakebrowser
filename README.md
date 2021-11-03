@@ -96,6 +96,8 @@ There are two ways:
 
 #### ✅ Demo3: Simulate complex actions like a real user.
 
+Some websites track user mouse movements and listen for keyup events of fn keys. FakeBrowser provides easy-to-use toolkit to help you simulate real users.
+
 [demo3-fake-user-action.js](demo/demo3-fake-user-action.js), I have written very detailed comments.
 
 ![](doc/fakebrowser-demo3.gif)
