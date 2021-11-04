@@ -256,80 +256,84 @@ export default class DeviceDescriptorHelper {
      * Check device descriptor legal based on attributes
      * @param e
      */
-    static isLegal(e: DeviceDescriptor): boolean {
+    static checkLegal(e: DeviceDescriptor) {
         if (!e) {
-            return false
+            throw new Error('DeviceDescriptor empty')
         }
 
         if (!e.navigator) {
-            return false
+            throw new Error('navigator empty')
         }
 
         if (!UserAgentHelper.isMobile(e.navigator.userAgent)) {
             // If not mobile phone, but screen is too small, filter it out
-            if (e.window.innerWidth < 1200 || e.window.innerHeight < 540) {
-                return false
+            if (e.window.innerWidth < 900 || e.window.innerHeight < 450) {
+                throw new Error('width and height of windows is too small')
             }
 
             // Screen height greater than width, remove it
             if (e.window.innerHeight > e.window.innerWidth) {
-                return false
+                throw new Error('Height of window is greater than width of window, non-normal browser')
             }
 
             // No plugins and mineType information, remove
             // noinspection RedundantIfStatementJS
             if (!e.plugins || !e.plugins.mimeTypes.length || !e.plugins.plugins.length) {
-                return false
+                throw new Error('Plugins of desktop browser cannot be empty')
             }
 
             // Ordinary PC computers should not have touch screens
             if (e.navigator.maxTouchPoints != 0) {
-                return false
+                throw new Error('Desktop browsers cannot have touchscreens')
             }
         }
 
-        if (e.window.screenX != 0 || e.window.screenY != 0) {
-            return false
+        if (e.window.innerHeight > e.screen.availHeight
+            || e.window.innerWidth > e.screen.availWidth) {
+
+            throw new Error('Width of browser window cannot be greater than width of screen and height cannot be greater than height of screen')
         }
+
+        // if (e.window.screenX != 0 || e.window.screenY != 0) {
+        //     return false
+        // }
 
         // Only chrome browser is allowed
         if (!e.navigator.userAgent.toLowerCase().includes('chrome')) {
-            return false
+            throw new Error('Only chrome kernel browsers are supported')
         }
 
         // chrome os
         if (e.navigator.userAgent.toLowerCase().includes('cros')) {
-            return false
+            throw new Error('ChromeOS is not supported')
         }
 
         // Googlebot
         if (e.navigator.userAgent.toLowerCase().includes('googlebot')) {
-            return false
+            throw new Error('google bot')
         }
         if (e.navigator.userAgent.toLowerCase().includes('adsbot-google')) {
-            return false
+            throw new Error('google bot')
         }
 
         if (e.navigator.userAgent.toLowerCase().includes('mediapartners')) {
-            return false
+            throw new Error('google bot')
         }
 
         // Chrome-Lighthouse
         if (e.navigator.userAgent.toLowerCase().includes('chrome-lighthouse')) {
-            return false
+            throw new Error('google bot')
         }
 
         // voices
         if (!e.voices || !e.voices.length) {
-            return false
+            throw new Error('voices cannot be empty')
         }
 
         // mimeTypes
         if (!e.mimeTypes || !e.mimeTypes.length) {
-            return false
+            throw new Error('mimeTypes cannot be empty')
         }
-
-        return true
     }
 
     /**

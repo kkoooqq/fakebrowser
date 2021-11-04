@@ -202,7 +202,7 @@ class FakeBrowserLauncher {
         const dd: DeviceDescriptor = launchParams.deviceDesc
         assert(dd, 'deviceDesc must be set')
 
-        assert(DeviceDescriptorHelper.isLegal(dd), 'deviceDesc illegal')
+        DeviceDescriptorHelper.checkLegal(dd)
 
         // user data dir
         // The userDataDir in launchParameters must be set
