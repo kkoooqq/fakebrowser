@@ -7,6 +7,10 @@ Based on [puppeteer](https://github.com/puppeteer/puppeteer), uses JavaScript ho
 
 ------
 
+😎 Join the discussion and let's discover fun things together: https://discord.gg/VMUhnUe2
+
+------
+
 Reverse engineering is not easy, and I would appreciate if you could give a ⭐!
 
 ------
