@@ -101,7 +101,7 @@ class Plugin extends PuppeteerExtraPlugin {
         }
 
         if ('undefined' !== typeof window) {
-            overwriteObjectProperties(window, data.window);
+            overwriteObjectProperties(window, data.window, ['pageXOffset', 'pageYOffset']);
         }
 
         if ('undefined' !== typeof Document) {

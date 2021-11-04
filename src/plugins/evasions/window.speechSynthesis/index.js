@@ -22,7 +22,7 @@ class Plugin extends PuppeteerExtraPlugin {
         const _Object = utils.cache.Prototype.Object;
 
         if (window.speechSynthesis) {
-            // FIXME: SpeechSynthesisVoice
+            // SpeechSynthesisVoice
             // I tried everything but couldn't find the system's SpeechSynthesisVoice class, so I had to build it myself.
             // Does any expert know how to find this class?
             // We can replace it with Object.create to construct the object.
