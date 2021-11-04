@@ -382,8 +382,8 @@ class FakeBrowserLauncher {
         // If all browsers have exited, close internal http service
         if (this._fakeBrowserInstances.length === 0) {
             // console.log('close appserver')
-            this._app = null
             this._appServer!.close()
+            this._app = null
         }
     }
 }
