@@ -5,23 +5,26 @@ describe(
     () => {
         let page;
         beforeAll(async () => {
-            console.log('before new page')
+            console.log('before new page');
             page = await global.__BROWSER__.newPage();
-            console.log('before goto')
+            console.log('before goto');
             await page.goto('https://google.com');
-            console.log('after goto')
+            console.log('after goto');
+
+            const pages = await global.__BROWSER__.pages();
+            console.log(pages.map(e => e.url()));
         }, timeout);
 
         afterAll(async () => {
-            console.log('before page close')
+            console.log('before page close');
             await page.close();
-            console.log('after page close')
+            console.log('after page close');
         });
 
         it('should load without error', async () => {
-            console.log('before get html content')
+            console.log('before get html content');
             let text = await page.evaluate(() => document.body.textContent);
-            console.log('after get html content')
+            console.log('after get html content');
             expect(text).toContain('google');
         });
     },

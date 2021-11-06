@@ -544,15 +544,15 @@ window['__$dd'] = async () => {
     const dumpDefaultCS = async () => {
         const frame = document.createElement('iframe');
         document.body.appendChild(frame);
-        const defaultCS = {};
+        const result = {};
         const cs = frame.contentWindow.getComputedStyle(frame.contentDocument.body);
         for (const key in cs) {
-            defaultCS[key] = cs[key];
+            result[key] = cs[key];
         }
 
         frame.remove();
 
-        return defaultCS;
+        return result;
     };
 
     // keyboard
@@ -578,15 +578,66 @@ window['__$dd'] = async () => {
 
     // htmlElementVersion
     const dumpHtmlElementVersion = async () => {
-        const keys = [];
+        const result = [];
         for (const key in document.documentElement) {
-            keys.push(key);
+            result.push(key);
         }
 
-        return keys;
+        return result;
     };
 
-    // TODO: permissions
+    // permissions
+    const dumpPermissions = async () => {
+        const permissions = [
+            'storage-access',
+            'push',
+            'speaker',
+            'device-info',
+            'bluetooth',
+            'clipboard',
+            'midi',
+            'background-fetch',
+            'background-sync',
+            'accelerometer',
+            'gyroscope',
+            'magnetometer',
+            'screen-wake-lock',
+            'clipboard-read',
+            'clipboard-write',
+            'payment-handler',
+            'periodic-background-sync',
+            'geolocation',
+            'notifications',
+            'camera',
+            'microphone',
+            'display-capture',
+            'persistent-storage',
+            'ambient-light-sensor',
+            'accessibility-events',
+        ];
+
+        const result = {};
+
+        await Promise.all(
+            permissions.map(e => new Promise(resolve => {
+                // noinspection JSCheckFunctionSignatures
+                navigator.permissions.query({name: e})
+                    .then(({state}) => {
+                        result[e] = state;
+                        resolve();
+                    })
+                    .catch((ex) => {
+                        result[e] = {
+                            'exType': ex.constructor.name,
+                            'msg': ex.message,
+                        };
+                        resolve();
+                    });
+            })),
+        );
+
+        return result;
+    };
 
     // TODO: RTCRtpSender.getCapabilities
 
@@ -617,6 +668,7 @@ window['__$dd'] = async () => {
         setDDProp(dd, 'keyboard', dumpKeyboard),
         setDDProp(dd, 'windowVersion', dumpWindowVersion),
         setDDProp(dd, 'htmlElementVersion', dumpHtmlElementVersion),
+        setDDProp(dd, 'permissions', dumpPermissions),
     ]);
 
     // upload fp

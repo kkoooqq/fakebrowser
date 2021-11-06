@@ -286,6 +286,9 @@ class FakeBrowserLauncher {
             uuid
         )
 
+        // pages 0 cannot be hook, lets drop it
+        await fb._patchPages0Bug()
+
         // Manage surviving browsers and kill them if they time out
         this._fakeBrowserInstances.push(fb)
 
@@ -481,9 +484,6 @@ export class FakeBrowser {
 
         this._userAction = new FakeUserAction(this)
 
-        // pages 0 cannot be hook, lets drop it
-        this.patchPages0Bug().then(e => e)
-
         vanillaBrowser.on('targetcreated', this.onTargetCreated.bind(this))
         vanillaBrowser.on('disconnected', this.onDisconnected.bind(this))
     }
@@ -599,23 +599,30 @@ export class FakeBrowser {
         return {page, cdpSession}
     }
 
-    private async patchPages0Bug() {
+    async _patchPages0Bug() {
         // pages[0] keeps failing to hook effectively
         // But I can't close it, because in windows, closing this page will cause the whole browser to close
         // So I can only make it inaccessible to users
 
-        const abandonedPages: Page[] = []
+        const abandonedPageTargetIds: string[] = []
 
         const pages = await this.vanillaBrowser.pages()
         if (pages.length > 0) {
-            abandonedPages.push(...pages)
+            abandonedPageTargetIds.push(
+                ...pages.map(e => e.target()['_targetId'])
+            )
         }
 
-        Object.defineProperty(this.vanillaBrowser, 'pages', {
+        Object.defineProperty(Object.getPrototypeOf(this.vanillaBrowser), 'pages', {
             value: new Proxy(this.vanillaBrowser.pages, {
                 async apply(target, thisArg, args) {
                     let pages: Page[] = await Reflect.apply(target, thisArg, args)
-                    pages = pages.filter(e => !abandonedPages.includes(e))
+
+                    // Maybe browser is created based on connect, with different instances
+                    // so can only compare TargetId
+                    pages = pages.filter(
+                        e => !abandonedPageTargetIds.includes(e.target()['_targetId'])
+                    )
 
                     return pages
                 }
