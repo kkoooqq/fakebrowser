@@ -904,7 +904,7 @@ utils.getCurrentScriptPath = () => {
         }
     }
 
-    return absPath[0] || '';
+    return (absPath && absPath[0]) || '';
 };
 
 utils.makePseudoClass = (

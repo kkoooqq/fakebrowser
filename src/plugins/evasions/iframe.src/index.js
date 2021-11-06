@@ -51,10 +51,10 @@ class Plugin extends PuppeteerExtraPlugin {
                 const parent = iframe.parentElement;
                 if (parent) {
                     Element_Prototype_remove.call(iframe);
-                }
 
-                // This will trigger the Element.prototype.append trap
-                parent.appendChild(iframe);
+                    // This will trigger the Element.prototype.append trap
+                    parent.appendChild(iframe);
+                }
 
                 return true;
             }
