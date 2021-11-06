@@ -1,6 +1,6 @@
 'use strict';
 
-const { PuppeteerExtraPlugin } = require('puppeteer-extra-plugin');
+const {PuppeteerExtraPlugin} = require('puppeteer-extra-plugin');
 
 const withUtils = require('../_utils/withUtils');
 const withWorkerUtils = require('../_utils/withWorkerUtils');
@@ -12,58 +12,58 @@ const withWorkerUtils = require('../_utils/withWorkerUtils');
  */
 
 class Plugin extends PuppeteerExtraPlugin {
-  constructor(opts = {}) {
-    super(opts);
-  }
+    constructor(opts = {}) {
+        super(opts);
+    }
 
-  get name() {
-    return 'evasions/navigator.permissions';
-  }
+    get name() {
+        return 'evasions/navigator.permissions';
+    }
 
-  /* global Notification Permissions PermissionStatus */
-  async onPageCreated(page) {
-    await withUtils(page).evaluateOnNewDocument(this.mainFunction, this.opts);
+    /* global Notification Permissions PermissionStatus */
+    async onPageCreated(page) {
+        await withUtils(page).evaluateOnNewDocument(this.mainFunction, this.opts);
 
-    let permissions = {
-      accelerometer: 'granted',
-      'background-fetch': 'granted',
-      'background-sync': 'granted',
-      gyroscope: 'granted',
-      magnetometer: 'granted',
-      midi: 'granted',
-      'screen-wake-lock': 'granted',
+        let permissions = {
+            accelerometer: 'granted',
+            'background-fetch': 'granted',
+            'background-sync': 'granted',
+            gyroscope: 'granted',
+            magnetometer: 'granted',
+            midi: 'granted',
+            'screen-wake-lock': 'granted',
 
-      camera: 'prompt',
-      'display-capture': 'prompt',
-      geolocation: 'prompt',
-      microphone: 'prompt',
-      notifications: 'prompt',
-      'persistent-storage': 'prompt',
+            camera: 'prompt',
+            'display-capture': 'prompt',
+            geolocation: 'prompt',
+            microphone: 'prompt',
+            notifications: 'prompt',
+            'persistent-storage': 'prompt',
+        };
+
+        for (let permission in permissions) {
+            await page._client.send('Browser.setPermission', {
+                permission: {name: permission},
+                setting: permissions[permission],
+            });
+        }
+    }
+
+    onServiceWorkerContent(jsContent) {
+        return withWorkerUtils(jsContent).evaluate(this.mainFunction, this.opts);
+    }
+
+    mainFunction = (utils) => {
+        if ('undefined' !== typeof Notification) {
+            utils.replaceGetterWithProxy(Notification, 'permission', {
+                apply() {
+                    return 'default';
+                },
+            });
+        }
     };
-
-    for (let permission in permissions) {
-      await page._client.send('Browser.setPermission', {
-        permission: { name: permission },
-        setting: permissions[permission],
-      });
-    }
-  }
-
-  onServiceWorkerContent(jsContent) {
-    return withWorkerUtils(jsContent).evaluate(this.mainFunction, this.opts);
-  }
-
-  mainFunction = (utils) => {
-    if ('undefined' !== typeof Notification) {
-      utils.replaceGetterWithProxy(Notification, 'permission', {
-        apply() {
-          return 'default';
-        },
-      });
-    }
-  };
 }
 
 module.exports = function (pluginConfig) {
-  return new Plugin(pluginConfig);
+    return new Plugin(pluginConfig);
 };

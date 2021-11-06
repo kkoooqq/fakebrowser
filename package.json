@@ -12,7 +12,7 @@
   "module": "dist/esm/FakeBrowser.js",
   "scripts": {
     "clean-dist": "rimraf dist",
-    "test": "jest --force-exit --detectOpenHandles",
+    "test": "jest --force-exit --detectOpenHandles --config=./jest.config.js",
     "build": "npm run tsc",
     "tsc": "npm run clean-dist && npm run tsc-cjs && npm run tsc-esm",
     "tsc-cjs": "tsc -b src/tsconfig.cjs.json",

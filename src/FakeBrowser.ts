@@ -19,6 +19,7 @@ import {PptrPatcher} from "./PptrPatcher";
 import {UserAgentHelper} from "./UserAgentHelper";
 import {PptrToolkit} from "./PptrToolkit";
 import {FakeUserAction} from "./FakeUserAction";
+import {helper} from "./helper";
 
 const kDefaultWindowsDD = require(path.resolve(__dirname, '../../device-hub/Windows.json'))
 const kFakeDDFileName = '__fakebrowser_fakeDD.json'
@@ -54,25 +55,16 @@ const kDefaultLaunchArgs = [
     '--enable-webgl',
     '--prerender-from-omnibox=disabled',
     '--enable-web-bluetooth',
-    // '--enable-experimental-web-platform-features', // Make Chrome for Linux support Bluetooth. eg: navigator.bluetooth, window.BluetoothUUID
     '--ignore-certificate-errors',
     '--ignore-certificate-errors-spki-list',
-    '--disable-web-security',
     '--disable-site-isolation-trials',
     '--disable-features=AudioServiceOutOfProcess,IsolateOrigins,site-per-process,TranslateUI,BlinkGenPropertyTrees', // do not disable UserAgentClientHint
     '--aggressive-cache-discard',
-    '--disable-cache',
-    '--disable-application-cache',
-    '--disable-offline-load-stale-cache',
-    '--disable-gpu-shader-disk-cache',
-    '--media-cache-size=0',
-    '--disk-cache-size=0',
     '--disable-extensions',
     '--disable-blink-features',
     '--disable-blink-features=AutomationControlled',
     '--disable-ipc-flooding-protection',
-    '--enable-features=NetworkService,NetworkServiceInProcess',  // support ServiceWorkers
-    '--metrics-recording-only',
+    '--enable-features=NetworkService,NetworkServiceInProcess,TrustTokens,TrustTokensAlwaysAllowIssuance',  // support ServiceWorkers
     '--disable-component-extensions-with-background-pages',
     '--disable-default-apps',
     '--disable-breakpad',
@@ -89,6 +81,7 @@ const kDefaultLaunchArgs = [
     '--autoplay-policy=no-user-gesture-required',
     '--use-mock-keychain',
     '--force-webrtc-ip-handling-policy=default_public_interface_only',
+    '--disable-session-crashed-bubble',
     '--disable-crash-reporter',
     '--disable-dev-shm-usage',
     '--force-color-profile=srgb',
@@ -101,16 +94,44 @@ const kDefaultLaunchArgs = [
     '--hide-scrollbars',
     '--disable-renderer-backgrounding',
     '--font-render-hinting=none',
+    '--disable-logging',
     '--use-gl=swiftshader',             // better cpu usage with --use-gl=desktop rather than --use-gl=swiftshader, still needs more testing.
-    // '--single-process',              // Chrome cannot run in single process mode
-    // '--disable-logging',
-    // '--disable-gpu',                 // Cannot be disabled: otherwise webgl will not work
-    // '--disable-speech-api',          // Cannot be disabled: some websites use speech-api as fingerprint
-    // '--no-startup-window',           // Cannot be enabled: Chrome won't open the window and puppeteer thinks it's not connected
-    // '--disable-webgl',               // Requires webgl fingerprint
+
+    // optimze fps
+    '--enable-surface-synchronization',
+    '--run-all-compositor-stages-before-draw',
+    '--disable-threaded-animation',
+    '--disable-threaded-scrolling',
+    '--disable-checker-imaging',
+
+    '--deterministic-mode',
+    '--disable-new-content-rendering-timeout',
+    '--disable-image-animation-resync',
+    '--disable-partial-raster',
+
+    '--blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4',
+
+    // '--disable-web-security',
+    // '--disable-cache',                               // cache
+    // '--disable-application-cache',
+    // '--disable-offline-load-stale-cache',
+    // '--disable-gpu-shader-disk-cache',
+    // '--media-cache-size=0',
+    // '--disk-cache-size=0',
+    // '--enable-experimental-web-platform-features',   // Make Chrome for Linux support Bluetooth. eg: navigator.bluetooth, window.BluetoothUUID
+    // '--disable-gpu',                                 // Cannot be disabled: otherwise webgl will not work
+    // '--disable-speech-api',                          // Cannot be disabled: some websites use speech-api as fingerprint
+    // '--no-startup-window',                           // Cannot be enabled: Chrome won't open the window and puppeteer thinks it's not connected
+    // '--disable-webgl',                               // Requires webgl fingerprint
     // '--disable-webgl2',
-    // '--disable-notifications',       // Cannot be disabled: notification-api not available, fingerprints will be dirty
+    // '--disable-notifications',                       // Cannot be disabled: notification-api not available, fingerprints will be dirty
 ]
+
+if (helper.inLinux()) {
+    kDefaultLaunchArgs.push(...[
+        '--single-process',              // Chrome does not run with single process in windows / macos, but it runs very well in linux (from Anton bro).
+    ])
+}
 
 class FakeBrowserBuilder {
 
@@ -264,17 +285,6 @@ class FakeBrowserLauncher {
             launchParams.maxSurvivalTime,
             uuid
         )
-
-        // browser.pages()[0] will not fire onTargetCreated, so we need to inject it manually.
-        const pages = await vanillaBrowser.pages()
-        if (pages.length > 0) {
-            for (const page of pages) {
-                // await fb.interceptPage(page)
-
-                // FIXME: pages[0] keeps failing to hook effectively, I have to turn it off.
-                await page.close()
-            }
-        }
 
         // Manage surviving browsers and kill them if they time out
         this._fakeBrowserInstances.push(fb)
@@ -471,6 +481,9 @@ export class FakeBrowser {
 
         this._userAction = new FakeUserAction(this)
 
+        // pages 0 cannot be hook, lets drop it
+        this.patchPages0Bug().then(e => e)
+
         vanillaBrowser.on('targetcreated', this.onTargetCreated.bind(this))
         vanillaBrowser.on('disconnected', this.onDisconnected.bind(this))
     }
@@ -584,6 +597,31 @@ export class FakeBrowser {
         await page.setUserAgent(fakeDD.navigator.userAgent)
 
         return {page, cdpSession}
+    }
+
+    private async patchPages0Bug() {
+        // pages[0] keeps failing to hook effectively
+        // But I can't close it, because in windows, closing this page will cause the whole browser to close
+        // So I can only make it inaccessible to users
+
+        const abandonedPages: Page[] = []
+
+        const pages = await this.vanillaBrowser.pages()
+        if (pages.length > 0) {
+            abandonedPages.push(...pages)
+        }
+
+        Object.defineProperty(this.vanillaBrowser, 'pages', {
+            value: new Proxy(this.vanillaBrowser.pages, {
+                async apply(target, thisArg, args) {
+                    let pages: Page[] = await Reflect.apply(target, thisArg, args)
+                    pages = pages.filter(e => !abandonedPages.includes(e))
+
+                    return pages
+                }
+            })
+        })
+
     }
 }
 
