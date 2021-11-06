@@ -145,6 +145,7 @@ window['__$dd'] = async () => {
                 span.innerHTML = 'mmmmmmmmmmlli';
                 span.style.fontSize = '72px';
                 span.style.fontFamily = font + ',' + baseFont;
+                // noinspection JSCheckFunctionSignatures
                 document.body.appendChild(span);
 
                 const sizeNotTheSame =
@@ -153,6 +154,7 @@ window['__$dd'] = async () => {
 
                 exists = sizeNotTheSame ? 1 : 0;
 
+                // noinspection JSCheckFunctionSignatures
                 document.body.removeChild(span);
 
                 if (sizeNotTheSame) {
@@ -435,8 +437,6 @@ window['__$dd'] = async () => {
         });
     };
 
-    // TODO: !timezone
-
     // rtcip
     const dumpRTC = () => {
         const result = [];
@@ -445,6 +445,7 @@ window['__$dd'] = async () => {
         return new Promise(function (resolve) {
             try {
                 if (rtcCls) {
+                    // noinspection JSUnusedLocalSymbols
                     let rtc = new rtcCls({
                             'iceServers': [{
                                 'urls': 'stun:stun.l.google.com:19302',
@@ -484,8 +485,6 @@ window['__$dd'] = async () => {
             }
         });
     };
-
-    // TODO: RTCRtpSender.getCapabilities
 
     // window.speechSynthesis.getVoices
     const dumpVoices = () => {
@@ -586,6 +585,16 @@ window['__$dd'] = async () => {
 
         return keys;
     };
+
+    // TODO: permissions
+
+    // TODO: RTCRtpSender.getCapabilities
+
+    // TODO: Audio fingerprint
+
+    // TODO: emoji fingerprint
+
+    // TODO: unicode fingerprint
 
     // device descriptor
     const dd = {};
