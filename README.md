@@ -25,7 +25,6 @@ FakeBrowser automatic login demo:
 * Writing [evasions](https://github.com/kkoooqq/fakebrowser/tree/main/src/plugins/evasions)😈 based on [puppeteer-extra](https://github.com/berstend/puppeteer-extra) to simulate the above fingerprints and bypass anti-bot detection.
 * Provide [toolkit](src/FakeUserAction.ts) to simulate real user's mouse and keyboard operations.
 * [Deploy to Linux](https://github.com/kkoooqq/fakebrowser/tree/main/script) and use Chrome / Edge in headless to **SAVE COST**. Chromium is not recommended because it lacks features such as MP4 support.
-* Captcha recognition from my another open source project: [anti-captcha](https://github.com/kkoooqq/anti-captcha).
 
 ----
 
