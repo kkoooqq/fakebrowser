@@ -243,9 +243,35 @@ class FakeBrowserLauncher {
 
         // Read from existing files, or generate if not available.
         const fakeDDPathName = path.resolve(userDataDir, `./${kFakeDDFileName}`)
-        const tempFakeDD = (fs.existsSync(fakeDDPathName) ? fs.readJsonSync(fakeDDPathName) : launchParams.deviceDesc) as FakeDeviceDescriptor
+        let tempFakeDD: FakeDeviceDescriptor | null = null
 
-        const {fakeDeviceDesc, needsUpdate} = DeviceDescriptorHelper.buildFakeDeviceDescriptor(tempFakeDD)
+        try {
+            tempFakeDD = (
+                fs.existsSync(fakeDDPathName)
+                    ? fs.readJsonSync(fakeDDPathName)
+                    : launchParams.deviceDesc
+            ) as FakeDeviceDescriptor
+
+            DeviceDescriptorHelper.checkLegal(tempFakeDD)
+        } catch (ex: any) {
+            console.warn('FakeDD illegal')
+
+            // It is possible that some fields are missing due to the deviceDesc update and need to recreate fakeDD
+            const orgTempFakeDD = tempFakeDD
+
+            tempFakeDD = launchParams.deviceDesc as FakeDeviceDescriptor
+
+            if (orgTempFakeDD) {
+                tempFakeDD.fontSalt = orgTempFakeDD.fontSalt
+                tempFakeDD.canvasSalt = orgTempFakeDD.canvasSalt
+            }
+        }
+
+        const {
+            fakeDeviceDesc,
+            needsUpdate
+        } = DeviceDescriptorHelper.buildFakeDeviceDescriptor(tempFakeDD)
+
         if (needsUpdate) {
             fs.writeJsonSync(fakeDDPathName, fakeDeviceDesc, {spaces: 2})
         }

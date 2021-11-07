@@ -339,6 +339,11 @@ export default class DeviceDescriptorHelper {
         if (!e.mimeTypes || !e.mimeTypes.length) {
             throw new Error('mimeTypes cannot be empty')
         }
+
+        // permissions
+        if (!e.permissions || Object.keys(e.permissions).length === 0) {
+            throw new Error('permissions cannot be empty')
+        }
     }
 
     /**

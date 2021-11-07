@@ -427,7 +427,7 @@ export class PptrPatcher {
 
     static async evasionsCode(pptr: PuppeteerExtra) {
         let jsPatch = ''
-        const utils = require('.../plugins/evasions/_utils');
+        const utils = require('../plugins/evasions/_utils');
 
         // utils
         let utilsContent =
