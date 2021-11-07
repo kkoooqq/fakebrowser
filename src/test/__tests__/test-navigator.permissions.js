@@ -1,5 +1,4 @@
-const vanillaBrowser = require('puppeteer');
-const timeout = 300000;
+const timeout = 30000;
 
 describe(
     '/ (navigator.permissions)',

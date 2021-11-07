@@ -226,7 +226,8 @@ utils.hookObjectPrototype = () => {
 
                 return target.call(thisArg);
             },
-        }));
+        }),
+    );
 
     utils.replaceProperty(Function.prototype, 'toString', {
         value: toStringProxy,

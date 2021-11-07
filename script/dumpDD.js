@@ -1,4 +1,5 @@
-// noinspection JSUnusedGlobalSymbols
+// noinspection JSUnusedGlobalSymbols,SpellCheckingInspection
+
 /**
  * Get browser fingerprint
  *
@@ -75,10 +76,13 @@ window['__$dd'] = async () => {
 
         try {
             result.mimeTypes = [];
+            // noinspection JSDeprecatedSymbols
             const mimeTypes = navigator.mimeTypes;
+
             for (let n = 0; n < mimeTypes.length; ++n) {
                 const mimeType = mimeTypes[n];
 
+                // noinspection JSDeprecatedSymbols
                 result.mimeTypes.push({
                     'type': mimeType.type,
                     'suffixes': mimeType.suffixes,
@@ -88,6 +92,8 @@ window['__$dd'] = async () => {
             }
 
             result.plugins = [];
+
+            // noinspection JSDeprecatedSymbols
             const plugins = navigator.plugins;
             for (let n = 0; n < plugins.length; ++n) {
                 const plugin = plugins[n];
@@ -126,6 +132,8 @@ window['__$dd'] = async () => {
             span.innerHTML = 'mmmmmmmmmmlli';
             span.style.fontSize = '72px';
             span.style.fontFamily = font;
+
+            // noinspection JSCheckFunctionSignatures
             document.body.appendChild(span);
             baseWidth[font] = span.offsetWidth;
             baseHeight[font] = span.offsetHeight;
@@ -135,6 +143,7 @@ window['__$dd'] = async () => {
                 exists: 2,
             });
 
+            // noinspection JSCheckFunctionSignatures
             document.body.removeChild(span);
         }
 
@@ -380,6 +389,8 @@ window['__$dd'] = async () => {
                 const audioPlayType = audioEl.canPlayType(type);
                 const videoPlayType = videoEl.canPlayType(type);
                 const mediaSource = MediaSource.isTypeSupported(type);
+
+                // noinspection JSUnresolvedVariable
                 const mediaRecorder = isMediaRecorderSupported ? MediaRecorder.isTypeSupported(type) : false;
 
                 if (audioPlayType) {
@@ -463,10 +474,12 @@ window['__$dd'] = async () => {
 
                     let offer = rtc.createOffer();
 
+                    // noinspection JSDeprecatedSymbols
                     offer instanceof Promise ? offer.then(function (e) {
                         return rtc.setLocalDescription(e);
                     }).then(function () {
                     }) : rtc.createOffer(function (e) {
+                        // noinspection JSDeprecatedSymbols
                         rtc.setLocalDescription(e, emptyFunc, emptyFunc);
                     }, emptyFunc);
 
@@ -543,7 +556,10 @@ window['__$dd'] = async () => {
     // default ComputedStyle
     const dumpDefaultCS = async () => {
         const frame = document.createElement('iframe');
+
+        // noinspection JSCheckFunctionSignatures
         document.body.appendChild(frame);
+
         const result = {};
         const cs = frame.contentWindow.getComputedStyle(frame.contentDocument.body);
         for (const key in cs) {

@@ -5,7 +5,7 @@ const path = require('path');
 const DIR = path.join(os.tmpdir(), 'testFakeBrowserUserData');
 
 module.exports = async function () {
-    console.log('Teardown Puppeteer');
+    console.log('Teardown FakeBrowser');
 
     // noinspection JSUnresolvedVariable
     await global.fakeBrowser.shutdown();

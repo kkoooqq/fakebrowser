@@ -9,7 +9,7 @@ import axios from "axios";
 import express, {Application} from "express";
 import {Agent} from "https";
 
-import {Browser, CDPSession, Page, Target} from "puppeteer";
+import {Browser, CDPSession, Page, Target, WebWorker} from "puppeteer";
 import {strict as assert} from 'assert';
 import {PuppeteerExtra} from "puppeteer-extra";
 
@@ -522,19 +522,29 @@ export class FakeBrowser {
         // console.log('targetcreated type:', target.type(), target.url())
 
         const targetType = target.type()
+        const worker = await target.worker()
 
-        if (
+        if (0 && worker) {
+            await this.interceptWorker(worker)
+        } else if (
             targetType === 'service_worker'
             || targetType === 'other' && (target.url().startsWith('http'))
         ) {
             const cdpSession = await target.createCDPSession()
-            await this.interceptWorker(target, cdpSession);
+            await this.interceptTarget(target, cdpSession);
         } else if (targetType === 'page') {
             await this.interceptPage((await target.page())!)
         }
     }
 
-    private async interceptWorker(target: Target, client: CDPSession) {
+    private async interceptWorker(worker: WebWorker) {
+        assert(!!worker)
+
+        const injectJs: string = await PptrPatcher.evasionsCode(this.pptrExtra)
+        await worker.evaluate(injectJs)
+    }
+
+    private async interceptTarget(target: Target, client: CDPSession) {
         assert(!!client)
 
         // FIXME: Worker & SharedWorker does not work with this way

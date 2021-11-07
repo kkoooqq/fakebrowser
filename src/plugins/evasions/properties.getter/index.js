@@ -29,35 +29,35 @@ class Plugin extends PuppeteerExtraPlugin {
         const kObjPlaceHolder = '_$obj!_//+_';
         const kObjUndefinedPlaceHolder = '_$obj!_undefined_//+_';
 
-        const overwriteObjectProperties = function (o, newValues, blackList) {
-            if (!o) {
+        const overwriteObjectProperties = function (obj, newPropValues, blackList) {
+            if (!obj) {
                 return;
             }
 
-            for (const key in newValues) {
-                if (blackList && blackList.includes(key)) {
+            for (const name in newPropValues) {
+                if (blackList && blackList.includes(name)) {
                     continue;
                 }
 
                 // Check if the original has this property
-                const desc = utils.cache.Prototype.Object.getOwnPropertyDescriptor(o, key);
+                const desc = utils.cache.Prototype.Object.getOwnPropertyDescriptor(obj, name);
                 if (!desc) {
                     // Does not exist, just exit
                     // console.warn('!!! Property not found:' + o.constructor.name + ' propertyKey:' + key);
                     continue;
                 }
 
-                let value = newValues[key];
-                if (value === kObjUndefinedPlaceHolder) {
-                    value = undefined;
+                let newPropValue = newPropValues[name];
+                if (newPropValue === kObjUndefinedPlaceHolder) {
+                    newPropValue = undefined;
                 }
 
-                if (value === kObjPlaceHolder) {
+                if (newPropValue === kObjPlaceHolder) {
                     // If it contains attribute and has value, exit directly
                     continue;
-                } else if ('undefined' == typeof value) {
-                    // FIXME: If empty, delete this property
-                    // delete
+                } else if ('undefined' == typeof newPropValue) {
+                    // If empty, delete this property
+                    delete obj[name];
                 } else {
                     // Other value, direct assignment
                 }
@@ -78,15 +78,15 @@ class Plugin extends PuppeteerExtraPlugin {
                 }
 
                 // Consider whether the check for undefined elsewhere contains
-                if ('undefined' == typeof value) {
+                if ('undefined' == typeof newPropValue) {
                     // TODO: Ignore this property
                     // utils.addIgnoreProperty(o, propertyKey);
                 }
 
-                func(o, key, {
+                func(obj, name, {
                     apply(target, thisArgs, args) {
                         utils.cache.Reflect.apply(target, thisArgs, args);
-                        return value;
+                        return newPropValue;
                     },
                 });
             }
@@ -106,6 +106,10 @@ class Plugin extends PuppeteerExtraPlugin {
 
         if ('undefined' !== typeof Document) {
             overwriteObjectProperties(Document.prototype, data.document);
+        }
+
+        if ('undefined' !== typeof HTMLBodyElement) {
+            overwriteObjectProperties(HTMLBodyElement.prototype, data.body, ['clientWidth', 'clientHeight']);
         }
 
         if ('undefined' !== typeof Screen) {
