@@ -6,13 +6,13 @@ import {Browser, CDPSession, Page, Target, WebWorker} from "puppeteer";
 import {strict as assert} from 'assert';
 import {PuppeteerExtra} from "puppeteer-extra";
 
+import {helper} from "./helper";
+import {PptrToolkit} from "./PptrToolkit";
 import {LaunchParameters} from "./Driver.js";
 import {ChromeUACHHeaders} from "./DeviceDescriptor.js";
 import {PptrPatcher} from "./PptrPatcher";
 import {UserAgentHelper} from "./UserAgentHelper";
-import {PptrToolkit} from "./PptrToolkit";
 import {FakeUserAction} from "./FakeUserAction";
-import {helper} from "./helper";
 import {BrowserLauncher} from "./BrowserLauncher";
 import {BrowserBuilder} from "./BrowserBuilder";
 
@@ -88,7 +88,7 @@ export const kDefaultLaunchArgs = [
     '--hide-scrollbars',
     '--disable-renderer-backgrounding',
     '--font-render-hinting=none',
-    // '--disable-logging',
+    '--disable-logging',
     '--use-gl=swiftshader',             // better cpu usage with --use-gl=desktop rather than --use-gl=swiftshader, still needs more testing.
 
     // optimze fps
