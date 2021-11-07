@@ -52,7 +52,7 @@ export class PptrPatcher {
         pptr: PuppeteerExtra,
         launchParams: LaunchParameters,
     ) {
-        const Plugin = require(path.resolve(__dirname, './plugins/taskEnv'))
+        const Plugin = require(path.resolve(__dirname, '../plugins/taskEnv'))
         const plugin = Plugin({
             env: {
                 uuid: uuid,
@@ -69,7 +69,7 @@ export class PptrPatcher {
         launchParams: LaunchParameters,
     ) {
         if (launchParams.displayUserActionLayer) {
-            const Plugin = require(path.resolve(__dirname, './plugins/user-action-layer'))
+            const Plugin = require(path.resolve(__dirname, '../plugins/user-action-layer'))
             const plugin = Plugin()
             pptr.use(plugin)
         }
@@ -88,7 +88,7 @@ export class PptrPatcher {
         ];
 
         for (const evasion of availableEvasions) {
-            const Plugin = require(path.resolve(__dirname, `./plugins/evasions/${evasion}`))
+            const Plugin = require(path.resolve(__dirname, `../plugins/evasions/${evasion}`))
             const plugin = Plugin()
             pptr.use(plugin)
         }
@@ -101,7 +101,7 @@ export class PptrPatcher {
     ) {
         const historyLength = helper.rd(2, 10)
 
-        const Plugin = require(path.resolve(__dirname, './plugins/evasions/window.history.length'))
+        const Plugin = require(path.resolve(__dirname, '../plugins/evasions/window.history.length'))
         const plugin = Plugin({historyLength})
         pptr.use(plugin)
 
@@ -112,7 +112,7 @@ export class PptrPatcher {
         pptr: PuppeteerExtra,
         launchParams: LaunchParameters,
     ) {
-        const Plugin = require(path.resolve(__dirname, './plugins/evasions/window.matchMedia'))
+        const Plugin = require(path.resolve(__dirname, '../plugins/evasions/window.matchMedia'))
         const plugin = Plugin()
         pptr.use(plugin)
     }
@@ -122,7 +122,7 @@ export class PptrPatcher {
         pptr: PuppeteerExtra,
         launchParams: LaunchParameters,
     ) {
-        const Plugin = require(path.resolve(__dirname, './plugins/evasions/navigator.webdriver'))
+        const Plugin = require(path.resolve(__dirname, '../plugins/evasions/navigator.webdriver'))
         const plugin = Plugin()
         pptr.use(plugin)
     }
@@ -132,7 +132,7 @@ export class PptrPatcher {
         pptr: PuppeteerExtra,
         launchParams: LaunchParameters,
     ) {
-        const Plugin = require(path.resolve(__dirname, './plugins/evasions/sourceurl'))
+        const Plugin = require(path.resolve(__dirname, '../plugins/evasions/sourceurl'))
         const plugin = Plugin()
         pptr.use(plugin)
     }
@@ -145,7 +145,7 @@ export class PptrPatcher {
         assert(launchParams.fakeDeviceDesc)
 
         //
-        const Plugin = require(path.resolve(__dirname, './plugins/evasions/navigator.plugins'))
+        const Plugin = require(path.resolve(__dirname, '../plugins/evasions/navigator.plugins'))
         const plugin = Plugin({
             data: launchParams.fakeDeviceDesc.plugins
         })
@@ -160,7 +160,7 @@ export class PptrPatcher {
     ) {
         assert(launchParams.fakeDeviceDesc)
 
-        const Plugin = require(path.resolve(__dirname, './plugins/evasions/webgl'))
+        const Plugin = require(path.resolve(__dirname, '../plugins/evasions/webgl'))
         const plugin = Plugin({
             data: {
                 gpu: launchParams.fakeDeviceDesc.gpu,
@@ -178,7 +178,7 @@ export class PptrPatcher {
     ) {
         assert(launchParams.fakeDeviceDesc)
 
-        const Plugin = require(path.resolve(__dirname, './plugins/evasions/mimeTypes'))
+        const Plugin = require(path.resolve(__dirname, '../plugins/evasions/mimeTypes'))
         const plugin = Plugin({
             data: launchParams.fakeDeviceDesc.mimeTypes
         })
@@ -193,7 +193,7 @@ export class PptrPatcher {
     ) {
         assert(launchParams.fakeDeviceDesc)
 
-        const Plugin = require(path.resolve(__dirname, './plugins/evasions/navigator.mediaDevices'))
+        const Plugin = require(path.resolve(__dirname, '../plugins/evasions/navigator.mediaDevices'))
         const plugin = Plugin({
             data: launchParams.fakeDeviceDesc.mediaDevices
         })
@@ -206,7 +206,7 @@ export class PptrPatcher {
         pptr: PuppeteerExtra,
         launchParams: LaunchParameters,
     ) {
-        const Plugin = require(path.resolve(__dirname, './plugins/evasions/bluetooth'))
+        const Plugin = require(path.resolve(__dirname, '../plugins/evasions/bluetooth'))
         const plugin = Plugin({})
 
         pptr.use(plugin)
@@ -219,7 +219,7 @@ export class PptrPatcher {
     ) {
         assert(launchParams.fakeDeviceDesc)
 
-        const Plugin = require(path.resolve(__dirname, './plugins/evasions/navigator.permissions'))
+        const Plugin = require(path.resolve(__dirname, '../plugins/evasions/navigator.permissions'))
         const plugin = Plugin({
             permissions: launchParams.fakeDeviceDesc.permissions
         })
@@ -234,7 +234,7 @@ export class PptrPatcher {
     ) {
         assert(launchParams.fakeDeviceDesc)
 
-        const Plugin = require(path.resolve(__dirname, './plugins/evasions/navigator.batteryManager'))
+        const Plugin = require(path.resolve(__dirname, '../plugins/evasions/navigator.batteryManager'))
         const plugin = Plugin({
             battery: launchParams.fakeDeviceDesc.battery
         })
@@ -260,7 +260,7 @@ export class PptrPatcher {
             //     ' fakeIPs:' + JSON.stringify(fakeIPs)
             // );
 
-            const Plugin = require(path.resolve(__dirname, './plugins/evasions/webrtc'))
+            const Plugin = require(path.resolve(__dirname, '../plugins/evasions/webrtc'))
             const plugin = Plugin({
                 proxyExportIP: launchParams.proxy.exportIP,
                 fakeIPs
@@ -277,7 +277,7 @@ export class PptrPatcher {
     ) {
         assert(launchParams.fakeDeviceDesc)
 
-        const Plugin = require(path.resolve(__dirname, './plugins/evasions/canvas.fingerprint'))
+        const Plugin = require(path.resolve(__dirname, '../plugins/evasions/canvas.fingerprint'))
         const plugin = Plugin({
             canvasSalt: launchParams.fakeDeviceDesc.canvasSalt,
             fontSalt: launchParams.fakeDeviceDesc.fontSalt,
@@ -293,7 +293,7 @@ export class PptrPatcher {
     ) {
         assert(launchParams.fakeDeviceDesc)
 
-        const Plugin = require(path.resolve(__dirname, './plugins/evasions/font.fingerprint'))
+        const Plugin = require(path.resolve(__dirname, '../plugins/evasions/font.fingerprint'))
         const plugin = Plugin({
             fontSalt: launchParams.fakeDeviceDesc.fontSalt,
         })
@@ -308,7 +308,7 @@ export class PptrPatcher {
     ) {
         assert(launchParams.fakeDeviceDesc)
 
-        const Plugin = require(path.resolve(__dirname, './plugins/evasions/emoji.fingerprint'))
+        const Plugin = require(path.resolve(__dirname, '../plugins/evasions/emoji.fingerprint'))
         const plugin = Plugin({
             fontSalt: launchParams.fakeDeviceDesc.fontSalt,
         })
@@ -323,7 +323,7 @@ export class PptrPatcher {
     ) {
         assert(launchParams.fakeDeviceDesc)
 
-        const Plugin = require(path.resolve(__dirname, './plugins/evasions/window.speechSynthesis'))
+        const Plugin = require(path.resolve(__dirname, '../plugins/evasions/window.speechSynthesis'))
         const plugin = Plugin({
             voices: launchParams.fakeDeviceDesc.voices,
         })
@@ -336,7 +336,7 @@ export class PptrPatcher {
         pptr: PuppeteerExtra,
         launchParams: LaunchParameters,
     ) {
-        const Plugin = require(path.resolve(__dirname, './plugins/evasions/workers'))
+        const Plugin = require(path.resolve(__dirname, '../plugins/evasions/workers'))
         const plugin = Plugin({
             env: {
                 uuid: uuid,
@@ -354,7 +354,7 @@ export class PptrPatcher {
     ) {
         assert(launchParams.fakeDeviceDesc)
 
-        const Plugin = require(path.resolve(__dirname, './plugins/evasions/keyboard'))
+        const Plugin = require(path.resolve(__dirname, '../plugins/evasions/keyboard'))
         const plugin = Plugin({
             keyboard: launchParams.fakeDeviceDesc.keyboard,
         })
@@ -369,7 +369,7 @@ export class PptrPatcher {
     ) {
         assert(launchParams.fakeDeviceDesc)
 
-        const Plugin = require(path.resolve(__dirname, './plugins/evasions/user-agent-override'))
+        const Plugin = require(path.resolve(__dirname, '../plugins/evasions/user-agent-override'))
         const plugin = Plugin({
             userAgent: launchParams.fakeDeviceDesc.navigator.userAgent,
             locale: launchParams.fakeDeviceDesc.navigator.languages.join(','),
@@ -384,11 +384,11 @@ export class PptrPatcher {
         pptr: PuppeteerExtra,
         launchParams: LaunchParameters,
     ) {
-        let Plugin = require(path.resolve(__dirname, './plugins/evasions/iframe.contentWindow'))
+        let Plugin = require(path.resolve(__dirname, '../plugins/evasions/iframe.contentWindow'))
         let plugin = Plugin()
         pptr.use(plugin)
 
-        Plugin = require(path.resolve(__dirname, './plugins/evasions/iframe.src'))
+        Plugin = require(path.resolve(__dirname, '../plugins/evasions/iframe.src'))
         plugin = Plugin()
         pptr.use(plugin)
     }
@@ -400,7 +400,7 @@ export class PptrPatcher {
     ) {
         assert(launchParams.fakeDeviceDesc)
 
-        let Plugin = require(path.resolve(__dirname, './plugins/evasions/properties.getter'))
+        let Plugin = require(path.resolve(__dirname, '../plugins/evasions/properties.getter'))
         let plugin = Plugin({
             data: {
                 navigator: launchParams.fakeDeviceDesc.navigator,
@@ -427,7 +427,7 @@ export class PptrPatcher {
 
     static async evasionsCode(pptr: PuppeteerExtra) {
         let jsPatch = ''
-        const utils = require('./plugins/evasions/_utils/index');
+        const utils = require('.../plugins/evasions/_utils');
 
         // utils
         let utilsContent =
