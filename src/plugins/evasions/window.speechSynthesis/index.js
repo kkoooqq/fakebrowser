@@ -11,11 +11,11 @@ class Plugin extends PuppeteerExtraPlugin {
     }
 
     get name() {
-        return 'window.speechSynthesis';
+        return 'evasions/window.speechSynthesis';
     }
 
     async onPageCreated(page) {
-        await withUtils(page).evaluateOnNewDocument(this.mainFunction, this.opts);
+        await withUtils(this, page).evaluateOnNewDocument(this.mainFunction, this.opts);
     }
 
     mainFunction = (utils, opts) => {

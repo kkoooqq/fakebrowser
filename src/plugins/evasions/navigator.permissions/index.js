@@ -30,8 +30,10 @@ class Plugin extends PuppeteerExtraPlugin {
         //     "msg"?: string,
         // }>
 
-        const permissions = this.opts.permissions;
+        await withUtils(this, page).evaluateOnNewDocument(this.mainFunction, this.opts);
 
+        // invoke CDP setPermission
+        const permissions = this.opts.permissions;
         for (const name in permissions) {
             const permission = permissions[name];
             if (permission.state) {
@@ -44,12 +46,10 @@ class Plugin extends PuppeteerExtraPlugin {
                 }
             }
         }
-
-        await withUtils(page).evaluateOnNewDocument(this.mainFunction, this.opts);
     }
 
     onServiceWorkerContent(jsContent) {
-        return withWorkerUtils(jsContent).evaluate(this.mainFunction, this.opts);
+        return withWorkerUtils(this, jsContent).evaluate(this.mainFunction, this.opts);
     }
 
     mainFunction = (utils, opts) => {

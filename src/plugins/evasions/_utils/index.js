@@ -1,4 +1,4 @@
-// noinspection JSUnusedLocalSymbols,JSUnusedGlobalSymbols
+// noinspection JSUnusedLocalSymbols,JSUnusedGlobalSymbols,JSUnresolvedVariable
 
 /**
  * A set of shared utility functions specifically for the purpose of modifying native browser APIs without leaving traces.
@@ -14,10 +14,10 @@
 const utils = {};
 
 utils.init = () => {
-    utils.preloadCache();
-    utils.preloadEnv();
-    utils.preloadGlobalVariables();
-    utils.hookObjectPrototype();
+    utils._preloadCache();
+    utils._preloadEnv();
+    utils._preloadGlobalVariables();
+    utils._hookObjectPrototype();
 };
 
 /**
@@ -31,17 +31,17 @@ utils.init = () => {
  *
  * This is evaluated once per execution context (e.g. window)
  */
-utils.preloadCache = () => {
+utils._preloadCache = () => {
     if (utils.cache) {
         return;
     }
 
-    utils.cache = OffscreenCanvas.prototype.constructor.__cache;
+    utils.cache = OffscreenCanvas.prototype.constructor.__$cache;
     if (utils.cache) {
         return;
     }
 
-    OffscreenCanvas.prototype.constructor.__cache = utils.cache = {
+    OffscreenCanvas.prototype.constructor.__$cache = utils.cache = {
         // Used in our proxies
         Reflect: {
             get: Reflect.get.bind(Reflect),
@@ -120,17 +120,17 @@ utils.preloadCache = () => {
     }
 };
 
-utils.preloadGlobalVariables = () => {
+utils._preloadGlobalVariables = () => {
     if (utils.variables) {
         return;
     }
 
-    utils.variables = OffscreenCanvas.prototype.constructor.__variables;
+    utils.variables = OffscreenCanvas.prototype.constructor.__$variables;
     if (utils.variables) {
         return;
     }
 
-    OffscreenCanvas.prototype.constructor.__variables = utils.variables = {
+    OffscreenCanvas.prototype.constructor.__$variables = utils.variables = {
         proxies: [],
         toStringPatchObjs: [],
         toStringRedirectObjs: [],
@@ -138,34 +138,34 @@ utils.preloadGlobalVariables = () => {
     };
 };
 
-utils.preloadEnv = () => {
+utils._preloadEnv = () => {
     if (utils.env) {
         return;
     }
 
-    utils.env = OffscreenCanvas.prototype.constructor.__env;
+    utils.env = OffscreenCanvas.prototype.constructor.__$env;
     if (utils.env) {
         return;
     }
 
-    OffscreenCanvas.prototype.constructor.__env = utils.env = {
+    OffscreenCanvas.prototype.constructor.__$env = utils.env = {
         isWorker: !globalThis.document && !!globalThis.WorkerGlobalScope,
         isSharedWorker: !!globalThis.SharedWorkerGlobalScope,
         isServiceWorker: !!globalThis.ServiceWorkerGlobalScope,
     };
 };
 
-utils.hookObjectPrototype = () => {
+utils._hookObjectPrototype = () => {
     if (utils.objHooked) {
         return;
     }
 
-    utils.objHooked = OffscreenCanvas.prototype.constructor.__objHooked;
+    utils.objHooked = OffscreenCanvas.prototype.constructor.__$objHooked;
     if (utils.objHooked) {
         return;
     }
 
-    utils.objHooked = OffscreenCanvas.prototype.constructor.__objHooked = true;
+    utils.objHooked = OffscreenCanvas.prototype.constructor.__$objHooked = true;
     const _Object = utils.cache.Prototype.Object;
 
     // setPrototypeOf
@@ -243,7 +243,17 @@ utils.hookObjectPrototype = () => {
             return utils.cache.Reflect.apply(target, thisArg, args);
         },
     });
+};
 
+utils.removeTempVariables = () => {
+    const tmpVarNames =
+        Object.getOwnPropertyNames(
+            OffscreenCanvas.prototype.constructor,
+        ).filter(e => e.startsWith('__$'));
+
+    tmpVarNames.forEach(e => {
+        delete OffscreenCanvas.prototype.constructor[e];
+    });
 };
 
 utils.newProxyInstance = (target, handler) => {

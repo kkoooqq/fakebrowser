@@ -3,9 +3,10 @@ const utils = require('./index');
 /**
  * Wrap a page with utilities.
  *
- * @param {Puppeteer.Page} page
+ * @param {PuppeteerExtraPlugin} plugin
+ * @param {Page} page
  */
-module.exports = (page) => ({
+module.exports = (plugin, page) => ({
     /**
      * Simple `page.evaluate` replacement to preload utils
      */
@@ -31,7 +32,12 @@ module.exports = (page) => ({
      */
     evaluateOnNewDocument: async function (mainFunction, ...args) {
         return page.evaluateOnNewDocument(
-            ({_utilsFns, _mainFunction, _args}) => {
+            ({
+                 _utilsFns,
+                 _mainFunction,
+                 _args,
+                 _pluginName,
+             }) => {
                 // Add this point we cannot use our utililty functions as they're just strings, we need to materialize them first
                 const utils = Object.fromEntries(
                     Object.entries(_utilsFns).map(([key, value]) => [key, eval(value)]), // eslint-disable-line no-eval
@@ -44,6 +50,7 @@ module.exports = (page) => ({
                 _utilsFns: utils.stringifyFns(utils),
                 _mainFunction: mainFunction.toString(),
                 _args: args || [],
+                _pluginName: plugin.name,
             },
         );
     },

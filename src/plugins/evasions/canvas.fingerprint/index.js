@@ -344,11 +344,11 @@ class Plugin extends PuppeteerExtraPlugin {
     };
 
     async onPageCreated(page) {
-        await withUtils(page).evaluateOnNewDocument(this.mainFunction, this.opts);
+        await withUtils(this, page).evaluateOnNewDocument(this.mainFunction, this.opts);
     }
 
     onServiceWorkerContent(jsContent) {
-        return withWorkerUtils(jsContent).evaluate(this.mainFunction, this.opts);
+        return withWorkerUtils(this, jsContent).evaluate(this.mainFunction, this.opts);
     }
 }
 

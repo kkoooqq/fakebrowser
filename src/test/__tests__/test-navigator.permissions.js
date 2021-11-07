@@ -1,4 +1,4 @@
-const timeout = 30000;
+const timeout = 3000000;
 
 describe(
     '/ (navigator.permissions)',
@@ -6,7 +6,7 @@ describe(
         let page;
         beforeAll(async () => {
             page = await global.vanillaBrowser.newPage();
-            await page.goto('https://google.com');
+            await page.goto('https://google.com/');
         }, timeout);
 
         afterAll(async () => {

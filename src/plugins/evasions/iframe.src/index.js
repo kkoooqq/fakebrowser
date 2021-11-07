@@ -24,7 +24,7 @@ class Plugin extends PuppeteerExtraPlugin {
     }
 
     async onPageCreated(page) {
-        await withUtils(page).evaluateOnNewDocument(this.mainFunction);
+        await withUtils(this, page).evaluateOnNewDocument(this.mainFunction);
     }
 
     mainFunction = (utils) => {

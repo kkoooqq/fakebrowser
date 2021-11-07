@@ -13,7 +13,7 @@ class Plugin extends PuppeteerExtraPlugin {
     }
 
     async onPageCreated(page) {
-        await withUtils(page).evaluateOnNewDocument(
+        await withUtils(this, page).evaluateOnNewDocument(
             (utils, {historyLength}) => {
                 for (let n = 0; n < historyLength; ++n) {
                     if (window.history.length >= historyLength) {

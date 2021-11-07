@@ -12,10 +12,9 @@ class Plugin extends PuppeteerExtraPlugin {
     }
 
     get name() {
-        return 'evasions/emoji.fingerprint';
+        return 'evasions/zzzzzzzz.last';
     }
 
-    // noinspection JSUnusedGlobalSymbols
     get requirements() {
         return new Set(['runLast']);
     }
@@ -35,12 +34,7 @@ class Plugin extends PuppeteerExtraPlugin {
     }
 
     mainFunction = (utils, opts) => {
-        utils.replaceWithProxy(String, 'fromCodePoint', {
-            apply(target, thisArg, args) {
-                const result = utils.cache.Reflect.apply(target, thisArg, args);
-                return result;
-            },
-        });
+        utils.removeTempVariables();
     };
 
 }

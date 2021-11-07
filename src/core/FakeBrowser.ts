@@ -1,38 +1,32 @@
 // noinspection JSUnusedGlobalSymbols,JSUnusedLocalSymbols
 
-import * as fs from "fs-extra";
 import * as path from "path";
-import * as URLToolkit from 'url-toolkit'
-import * as http from "http";
-
-import axios from "axios";
-import express, {Application} from "express";
-import {Agent} from "https";
 
 import {Browser, CDPSession, Page, Target, WebWorker} from "puppeteer";
 import {strict as assert} from 'assert';
 import {PuppeteerExtra} from "puppeteer-extra";
 
-import Driver, {LaunchParameters, ProxyServer, VanillaLaunchOptions} from "./Driver.js";
-import DeviceDescriptorHelper, {ChromeUACHHeaders, DeviceDescriptor, FakeDeviceDescriptor} from "./DeviceDescriptor.js";
+import {LaunchParameters} from "./Driver.js";
+import {ChromeUACHHeaders} from "./DeviceDescriptor.js";
 import {PptrPatcher} from "./PptrPatcher";
 import {UserAgentHelper} from "./UserAgentHelper";
 import {PptrToolkit} from "./PptrToolkit";
 import {FakeUserAction} from "./FakeUserAction";
 import {helper} from "./helper";
+import {BrowserLauncher} from "./BrowserLauncher";
+import {BrowserBuilder} from "./BrowserBuilder";
 
-const kDefaultWindowsDD = require(path.resolve(__dirname, '../../device-hub/Windows.json'))
-const kFakeDDFileName = '__fakebrowser_fakeDD.json'
+export const kDefaultWindowsDD = require(path.resolve(__dirname, '../../device-hub/Windows.json'))
+
 const kBrowserMaxSurvivalTime = 60 * 1000 * 15
 const kDefaultReferers = ["https://www.google.com", "https://www.bing.com"]
 const kInternalHttpServerPort = 17311
-const kInternalHttpServerHeartbeatMagic = '__fakebrowser__&88ff22--'
 
 // chromium startup parameters
 // https://peter.sh/experiments/chromium-command-line-switches/
 // https://www.scrapehero.com/how-to-increase-web-scraping-speed-using-puppeteer/
 // noinspection TypeScriptValidateJSTypes,SpellCheckingInspection
-const kDefaultLaunchArgs = [
+export const kDefaultLaunchArgs = [
     '--no-sandbox',
     '--no-pings',
     '--no-zygote',
@@ -133,304 +127,10 @@ if (helper.inLinux()) {
     ])
 }
 
-class FakeBrowserBuilder {
-
-    private readonly _launchParams: LaunchParameters
-
-    constructor() {
-        this._launchParams = {
-            deviceDesc: kDefaultWindowsDD,
-            userDataDir: "",
-            maxSurvivalTime: FakeBrowser.globalConfig.defaultBrowserMaxSurvivalTime,
-            launchOptions: {}
-        }
-    }
-
-    get launchParams(): LaunchParameters {
-        return this._launchParams
-    }
-
-    maxSurvivalTime(value: number) {
-        this._launchParams.maxSurvivalTime = value
-        return this
-    }
-
-    deviceDescriptor(value: DeviceDescriptor) {
-        this._launchParams.deviceDesc = value
-        return this
-    }
-
-    displayUserActionLayer(value: boolean) {
-        this._launchParams.displayUserActionLayer = value
-        return this
-    }
-
-    userDataDir(value: string) {
-        this._launchParams.userDataDir = value
-        return this
-    }
-
-    log(value: boolean) {
-        this._launchParams.log = value
-        return this
-    }
-
-    proxy(value: ProxyServer) {
-        this._launchParams.proxy = value
-        return this
-    }
-
-    vanillaLaunchOptions(value: VanillaLaunchOptions) {
-        this._launchParams.launchOptions = value
-        return this
-    }
-
-    async launch(): Promise<FakeBrowser> {
-        const result = FakeBrowserLauncher.launch(this._launchParams)
-        return result
-    }
-}
-
-class FakeBrowserLauncher {
-
-    static _fakeBrowserInstances: FakeBrowser[] = []
-    static _checkerIntervalId: NodeJS.Timer | null = null
-    static _app: Application | null = null
-    static _appServer: http.Server | null = null
-
-    private static checkOptionsLegal(options?: VanillaLaunchOptions) {
-        if (!options || !options.args || !options.args.length) {
-            return
-        }
-
-        // These args are set by FakeBrowser and cannot be set externally:
-        const externalCannotSetArgs = [
-            '--user-data-dir',
-            '--lang',
-            '--window-position',
-            '--window-size'
-        ]
-
-        if (options.args.filter(
-            e => externalCannotSetArgs.includes(e.toLocaleLowerCase().split('=')[0])
-        ).length > 0) {
-            throw new TypeError(`${externalCannotSetArgs} cannot be set in options.args`)
-        }
-    }
-
-    private static checkLaunchParamsLegal(launchParams: LaunchParameters) {
-        // deviceDesc must be set
-        const dd: DeviceDescriptor = launchParams.deviceDesc
-        assert(dd, 'deviceDesc must be set')
-
-        DeviceDescriptorHelper.checkLegal(dd)
-
-        // user data dir
-        // The userDataDir in launchParameters must be set
-        assert(launchParams.userDataDir, 'userDataDir must be set')
-    }
-
-    private static prepareFakeDeviceDesc(launchParams: LaunchParameters) {
-        // Go to the userDataDir specified by the user and read the __fakebrowser_fakeDD.json file
-        // or create it if it does not exist.
-
-        const userDataDir = launchParams.userDataDir
-
-        if (!fs.existsSync(userDataDir)) {
-            // may throw
-            fs.mkdirSync(userDataDir, {recursive: true})
-        }
-
-        // Read from existing files, or generate if not available.
-        const fakeDDPathName = path.resolve(userDataDir, `./${kFakeDDFileName}`)
-        let tempFakeDD: FakeDeviceDescriptor | null = null
-
-        try {
-            tempFakeDD = (
-                fs.existsSync(fakeDDPathName)
-                    ? fs.readJsonSync(fakeDDPathName)
-                    : launchParams.deviceDesc
-            ) as FakeDeviceDescriptor
-
-            DeviceDescriptorHelper.checkLegal(tempFakeDD)
-        } catch (ex: any) {
-            console.warn('FakeDD illegal')
-
-            // It is possible that some fields are missing due to the deviceDesc update and need to recreate fakeDD
-            const orgTempFakeDD = tempFakeDD
-
-            tempFakeDD = launchParams.deviceDesc as FakeDeviceDescriptor
-
-            if (orgTempFakeDD) {
-                tempFakeDD.fontSalt = orgTempFakeDD.fontSalt
-                tempFakeDD.canvasSalt = orgTempFakeDD.canvasSalt
-            }
-        }
-
-        const {
-            fakeDeviceDesc,
-            needsUpdate
-        } = DeviceDescriptorHelper.buildFakeDeviceDescriptor(tempFakeDD)
-
-        if (needsUpdate) {
-            fs.writeJsonSync(fakeDDPathName, fakeDeviceDesc, {spaces: 2})
-        }
-
-        launchParams.fakeDeviceDesc = fakeDeviceDesc
-    }
-
-    static async launch(launchParams: LaunchParameters): Promise<FakeBrowser> {
-        this.bootBrowserSurvivalChecker();
-        await this.bootInternalHTTPServer()
-
-        // deviceDesc, userDataDir cannot be empty
-        this.checkLaunchParamsLegal(launchParams)
-        this.checkOptionsLegal(launchParams.launchOptions)
-
-        this.prepareFakeDeviceDesc(launchParams)
-
-        assert(launchParams.fakeDeviceDesc)
-
-        const launchTime = new Date().getTime()
-        const uuid = DeviceDescriptorHelper.deviceUUID(launchParams.fakeDeviceDesc)
-
-        const {
-            vanillaBrowser,
-            pptrExtra
-        } = await Driver.launch(
-            uuid,
-            FakeBrowser.globalConfig.defaultLaunchArgs,
-            launchParams
-        )
-
-        const fb = new FakeBrowser(
-            launchParams,
-            vanillaBrowser,
-            pptrExtra,
-            launchTime,
-            launchParams.maxSurvivalTime,
-            uuid
-        )
-
-        // pages 0 cannot be hook, lets drop it
-        await fb._patchPages0Bug()
-
-        // Manage surviving browsers and kill them if they time out
-        this._fakeBrowserInstances.push(fb)
-
-        return fb
-    }
-
-    private static async bootInternalHTTPServer() {
-        if (!this._app) {
-            this._app = express()
-
-            this._app.get('/hb', async (req, res) => {
-                res.send(kInternalHttpServerHeartbeatMagic)
-            })
-
-            this._app.get('/patchWorker', async (req, res) => {
-                const relUrl = req.query['relUrl'] as string
-                const workerUrl = req.query['workerUrl'] as string
-                const uuid = req.query['uuid'] as string
-
-                const fullUrl = URLToolkit.buildAbsoluteURL(relUrl, workerUrl)
-
-                console.log('request worker content from: ', fullUrl)
-
-                const reqHeaders = Object.fromEntries(Object.entries(req.headers).map(e => ([e[0], e[1]![0]])))
-                delete reqHeaders.host
-
-                const jsResp = await axios.get(
-                    fullUrl, {
-                        headers: reqHeaders,
-                        httpsAgent: new Agent({
-                            rejectUnauthorized: false
-                        })
-                    }
-                )
-
-                let jsContent = jsResp.data
-                const browser = FakeBrowserLauncher.getBrowserWithUUID(uuid)
-
-                if (browser) {
-                    jsContent = await PptrPatcher.patchWorkerJsContent(browser.pptrExtra, jsContent)
-                }
-
-                for (const {name, value} of Object.entries(jsResp.headers).map(e => ({
-                    name: e[0],
-                    value: e[1] as string
-                }))) {
-                    if (name.toLowerCase() != 'content-length') {
-                        res.header(name, value)
-                    }
-                }
-
-                res.send(jsContent)
-            })
-
-            // If the port listens to errors, determine if the heartbeat interface is successful
-            try {
-                this._appServer = this._app.listen(FakeBrowser.globalConfig.internalHttpServerPort)
-            } catch (ex: any) {
-                const hbUrl = `http://127.0.0.1:${FakeBrowser.globalConfig.internalHttpServerPort}/hb`
-                try {
-                    const hbData = (await axios.get(hbUrl)).data
-                    if (hbData === kInternalHttpServerHeartbeatMagic) {
-                        return
-                    }
-                } catch (ignore: any) {
-                }
-
-                throw ex
-            }
-        }
-    }
-
-    private static bootBrowserSurvivalChecker() {
-        if (!this._checkerIntervalId) {
-            this._checkerIntervalId = setInterval(async () => {
-                const killThese = this._fakeBrowserInstances.filter(
-                    e =>
-                        (e.launchParams.maxSurvivalTime > 0)
-                        && (new Date().getTime() > e.launchTime + e.launchParams.maxSurvivalTime)
-                )
-
-                const p: Promise<void>[] = []
-                for (const fb of killThese) {
-                    p.push(fb.shutdown())
-                }
-
-                await Promise.all(p)
-            }, 5 * 1000)
-        }
-    }
-
-    static getBrowserWithUUID(uuid: string): FakeBrowser | undefined {
-        return this._fakeBrowserInstances.find(e => e.uuid === uuid)
-    }
-
-    static async _forceShutdown(fb: FakeBrowser) {
-        await Driver.shutdown(fb.vanillaBrowser)
-
-        const browserIndex = this._fakeBrowserInstances.indexOf(fb)
-        assert(browserIndex >= 0)
-
-        this._fakeBrowserInstances.splice(browserIndex, 1)
-
-        // If all browsers have exited, close internal http service
-        if (this._fakeBrowserInstances.length === 0) {
-            // console.log('close appserver')
-            this._appServer!.close()
-            this._app = null
-        }
-    }
-}
-
 // Is there a friend class similar to C++ ?
 // friend class FakeBrowserLauncher
 export class FakeBrowser {
-    static Builder = FakeBrowserBuilder
+    static Builder = BrowserBuilder
 
     static readonly globalConfig = {
         defaultBrowserMaxSurvivalTime: kBrowserMaxSurvivalTime,
@@ -481,7 +181,7 @@ export class FakeBrowser {
         if (!this._zombie) {
             await this.beforeShutdown()
             this._zombie = true
-            await FakeBrowserLauncher._forceShutdown(this)
+            await BrowserLauncher._forceShutdown(this)
         } else {
             console.warn('This instance has been shutdown and turned into a zombie.')
         }
@@ -631,6 +331,13 @@ export class FakeBrowser {
 
         await page.setExtraHTTPHeaders(extraHTTPHeaders)
         await page.setUserAgent(fakeDD.navigator.userAgent)
+        await page.setViewport({
+            width: fakeDD.window.innerWidth,
+            height: fakeDD.window.innerHeight,
+            isMobile: UserAgentHelper.isMobile(fakeDD.navigator.userAgent),
+            hasTouch: fakeDD.navigator.maxTouchPoints > 0,
+            deviceScaleFactor: fakeDD.window.devicePixelRatio,
+        })
 
         return {page, cdpSession}
     }

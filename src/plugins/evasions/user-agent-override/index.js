@@ -1,3 +1,5 @@
+// noinspection JSUnresolvedVariable,JSCheckFunctionSignatures,JSValidateTypes
+
 'use strict';
 
 const {PuppeteerExtraPlugin} = require('puppeteer-extra-plugin');
@@ -6,17 +8,23 @@ const withUtils = require('../_utils/withUtils');
 const withWorkerUtils = require('../_utils/withWorkerUtils');
 
 class Plugin extends PuppeteerExtraPlugin {
+
+    _override = null;
+
     constructor(opts = {}) {
         super(opts);
-
         this._headless = false;
     }
 
-    getOverride = async (page) => {
+    onBrowser(browser, opts) {
+        this._override = this.getOverride(browser);
+    }
+
+    getOverride = (browser) => {
         // Determine the full user agent string, strip the "Headless" part
         let ua =
             this.opts.userAgent ||
-            page && (await page.browser().userAgent()).replace('HeadlessChrome/', 'Chrome/');
+            browser && (browser.userAgent()).replace('HeadlessChrome/', 'Chrome/');
 
         if (!ua) {
             return null;
@@ -33,7 +41,7 @@ class Plugin extends PuppeteerExtraPlugin {
         // Full version number from Chrome
         const uaVersion = ua.includes('Chrome/')
             ? ua.match(/Chrome\/([\d|.]+)/)[1]
-            : (page && (await page.browser().version()).match(/\/([\d|.]+)/)[1]);
+            : (browser && (browser.version()).match(/\/([\d|.]+)/)[1]);
 
         if (!uaVersion) {
             return null;
@@ -155,22 +163,21 @@ class Plugin extends PuppeteerExtraPlugin {
     }
 
     async onPageCreated(page) {
-        const override = await this.getOverride(page);
+        const override = this._override;
+        await withUtils(this, page).evaluateOnNewDocument(this.mainFunction, override);
 
         try {
             await page._client.send('Network.setUserAgentOverride', override);
         } catch (ex) {
             console.warn('Network.setUserAgentOverride CDPSession Error', ex, JSON.stringify(override));
         }
-
-        await withUtils(page).evaluateOnNewDocument(this.mainFunction, override);
     }
 
     async onServiceWorkerContent(jsContent) {
-        const override = await this.getOverride();
+        const override = this._override;
 
         if (override) {
-            return withWorkerUtils(jsContent).evaluate(this.mainFunction, override);
+            return withWorkerUtils(this, jsContent).evaluate(this.mainFunction, override);
         } else {
             return jsContent;
         }
@@ -179,13 +186,13 @@ class Plugin extends PuppeteerExtraPlugin {
     mainFunction = (utils, override) => {
         if ('undefined' !== typeof NavigatorUAData) {
             utils.replaceGetterWithProxy(NavigatorUAData.prototype, 'brands', {
-                apply(target, thisArg, args) {
+                apply() {
                     return JSON.parse(JSON.stringify(override.userAgentMetadata.brands));
                 },
             });
 
             utils.replaceGetterWithProxy(NavigatorUAData.prototype, 'platform', {
-                apply(target, thisArg, args) {
+                apply() {
                     return override.userAgentMetadata.platform;
                 },
             });
@@ -211,8 +218,9 @@ class Plugin extends PuppeteerExtraPlugin {
                 },
             });
 
+            // noinspection JSUnresolvedVariable
             utils.replaceWithProxy(NavigatorUAData.prototype, 'toJSON', {
-                apply(target, thisArg, args) {
+                apply() {
                     const result = {
                         brands: override.userAgentMetadata.brands,
                         mobile: override.userAgentMetadata.mobile,

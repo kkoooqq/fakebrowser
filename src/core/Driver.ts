@@ -85,7 +85,7 @@ export default class Driver {
                 height: fakeDD.window.innerHeight,
                 deviceScaleFactor: fakeDD.window.devicePixelRatio,
                 isMobile: UserAgentHelper.isMobile(fakeDD.navigator.userAgent),
-                hasTouch: UserAgentHelper.isMobile(fakeDD.navigator.userAgent),
+                hasTouch: fakeDD.navigator.maxTouchPoints > 0,
                 isLandscape: false,
             },
             ...launchParams.launchOptions,

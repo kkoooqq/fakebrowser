@@ -14,7 +14,7 @@ class Plugin extends PuppeteerExtraPlugin {
     }
 
     async onPageCreated(page) {
-        await withUtils(page).evaluateOnNewDocument(
+        await withUtils(this, page).evaluateOnNewDocument(
             (utils, env) => {
                 if ('undefined' !== typeof Worker) {
                     // noinspection UnnecessaryLocalVariableJS

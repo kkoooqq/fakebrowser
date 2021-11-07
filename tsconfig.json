@@ -1,7 +1,7 @@
 {
   "compileOnSave": true,
   "compilerOptions": {
-    "target": "ES2017",
+    "target": "ES2019",
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
@@ -14,12 +14,15 @@
     "noUnusedLocals": true,
     "noUnusedParameters": false,
     "stripInternal": true,
-    "types": ["node"],
+    "types": [
+      "node"
+    ],
     "skipLibCheck": false,
     "declarationMap": true,
     "pretty": true,
     "declaration": true,
     "strict": true,
+    "baseUrl": "src/core",
     "typeRoots": [
       "./typings",
       "./node_modules/@types"

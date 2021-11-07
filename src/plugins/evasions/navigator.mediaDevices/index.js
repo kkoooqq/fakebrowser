@@ -14,7 +14,7 @@ class Plugin extends PuppeteerExtraPlugin {
     }
 
     async onPageCreated(page) {
-        await withUtils(page).evaluateOnNewDocument(
+        await withUtils(this, page).evaluateOnNewDocument(
             this.mainFunction,
             {
                 mediaDevices: this.opts.data,
@@ -23,7 +23,7 @@ class Plugin extends PuppeteerExtraPlugin {
     }
 
     onServiceWorkerContent(jsContent) {
-        return withWorkerUtils(jsContent).evaluate(this.mainFunction,
+        return withWorkerUtils(this, jsContent).evaluate(this.mainFunction,
             {
                 mediaDevices: this.opts.data,
             });

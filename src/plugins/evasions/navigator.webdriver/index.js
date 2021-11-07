@@ -35,7 +35,7 @@ class Plugin extends PuppeteerExtraPlugin {
     }
 
     onServiceWorkerContent(jsContent) {
-        return withWorkerUtils(jsContent).evaluate(this.mainFunction);
+        return withWorkerUtils(this, jsContent).evaluate(this.mainFunction);
     }
 
     mainFunction = () => {

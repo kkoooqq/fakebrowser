@@ -16,11 +16,11 @@ class Plugin extends PuppeteerExtraPlugin {
 
     /* global WebGLRenderingContext WebGL2RenderingContext */
     async onPageCreated(page) {
-        await withUtils(page).evaluateOnNewDocument(this.mainFunction, this.opts.data);
+        await withUtils(this, page).evaluateOnNewDocument(this.mainFunction, this.opts.data);
     }
 
     onServiceWorkerContent(jsContent) {
-        return withWorkerUtils(jsContent).evaluate(this.mainFunction, this.opts.data);
+        return withWorkerUtils(this, jsContent).evaluate(this.mainFunction, this.opts.data);
     }
 
     mainFunction = (utils, data) => {

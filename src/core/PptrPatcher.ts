@@ -45,6 +45,7 @@ export class PptrPatcher {
         await this.patchSpeechSynthesis(uuid, pptr, launchParams)
         await this.patchWorkers(uuid, pptr, launchParams)
         await this.patchKeyboard(uuid, pptr, launchParams)
+        await this.patchLast(uuid, pptr, launchParams)
     }
 
     private static patchTaskEnv(
@@ -413,6 +414,16 @@ export class PptrPatcher {
         pptr.use(plugin)
     }
 
+    private static patchLast(
+        uuid: string,
+        pptr: PuppeteerExtra,
+        launchParams: LaunchParameters,
+    ) {
+        let Plugin = require(path.resolve(__dirname, '../plugins/evasions/zzzzzzzz.last'))
+        let plugin = Plugin()
+        pptr.use(plugin)
+    }
+
     /**
      * Package evasions to js string for worker to use
      * @param pptr
@@ -430,20 +441,15 @@ export class PptrPatcher {
         const utils = require('../plugins/evasions/_utils');
 
         // utils
-        let utilsContent =
-            `const utils = {};\n`;
+        let utilsContent = `const utils = {};\n`;
+
         for (const [key, value] of Object.entries(utils) as [string, string][]) {
-            utilsContent +=
-                `
-utils.${key} = ${value.toString()};
-`;
+            utilsContent += `utils.${key} = ${value.toString()}; \n`;
         }
 
-        utilsContent +=
-            `
-utils.init();
-`;
+        utilsContent += `utils.init(); \n`;
 
+        // code from puppeteer-extra
         const plugins = pptr.plugins
         const runLast = plugins
             .filter(p => p.requirements.has('runLast'))
@@ -462,13 +468,17 @@ utils.init();
         }
 
         jsPatch = utilsContent + jsPatch
-        return `
-(function() {
-${jsPatch};
-})();      
 
-// end
-// ===========================
+        // when all evasions are patched, delete OffscreenCanvas.prototype.constructor.__cache
+        return `(function() {${jsPatch};})(); \n\n 
+const tmpVarNames =
+    Object.getOwnPropertyNames(
+        OffscreenCanvas.prototype.constructor,
+    ).filter(e => e.startsWith('__$'));
+
+tmpVarNames.forEach(e => {
+    delete OffscreenCanvas.prototype.constructor[e];
+});
 `
     }
 
@@ -491,7 +501,12 @@ ${jsPatch};
                 const jsResp = await axios.get(request.url, {headers: request.headers})
                 jsContent = jsResp.data
 
-                responseHeaders = Object.entries(jsResp.headers).map(e => ({name: e[0], value: e[1] as string}))
+                responseHeaders =
+                    Object.entries(
+                        jsResp.headers
+                    ).map(
+                        e => ({name: e[0], value: e[1] as string})
+                    )
             }
 
             jsContent = await this.patchWorkerJsContent(pptr, jsContent)

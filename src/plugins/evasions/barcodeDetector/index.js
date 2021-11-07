@@ -18,14 +18,14 @@ class Plugin extends PuppeteerExtraPlugin {
     }
 
     async onPageCreated(page) {
-        await withUtils(page).evaluateOnNewDocument(
+        await withUtils(this, page).evaluateOnNewDocument(
             this.mainFunction,
             this.opts,
         );
     }
 
     onServiceWorkerContent(jsContent) {
-        return withWorkerUtils(jsContent).evaluate(
+        return withWorkerUtils(this, jsContent).evaluate(
             this.mainFunction,
             this.opts,
         );

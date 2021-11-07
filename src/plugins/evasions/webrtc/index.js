@@ -16,7 +16,7 @@ class Plugin extends PuppeteerExtraPlugin {
     }
 
     async onPageCreated(page) {
-        await withUtils(page).evaluateOnNewDocument(
+        await withUtils(this, page).evaluateOnNewDocument(
             this.mainFunction,
             {
                 opts: this.opts,
@@ -26,7 +26,7 @@ class Plugin extends PuppeteerExtraPlugin {
 
     // SW does not support RTC
     // onServiceWorkerContent(jsContent) {
-    //     return withWorkerUtils(jsContent).evaluate(
+    //     return withWorkerUtils(this, jsContent).evaluate(
     //         this.mainFunction,
     //         {
     //             opts: this.opts,
