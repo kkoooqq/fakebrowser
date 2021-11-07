@@ -7,7 +7,7 @@ Based on [puppeteer](https://github.com/puppeteer/puppeteer), uses JavaScript ho
 
 ------
 
-😎 Join Discord discussion and let's discover fun things together: [All-For-Bots](https://discord.gg/VMUhnUe2)
+😎 Join Discord [**ALL-FOR-BOTS**](https://discord.gg/VMUhnUe2) and let's discover fun things together!
 
 ------
 

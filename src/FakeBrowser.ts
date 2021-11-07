@@ -94,7 +94,7 @@ const kDefaultLaunchArgs = [
     '--hide-scrollbars',
     '--disable-renderer-backgrounding',
     '--font-render-hinting=none',
-    '--disable-logging',
+    // '--disable-logging',
     '--use-gl=swiftshader',             // better cpu usage with --use-gl=desktop rather than --use-gl=swiftshader, still needs more testing.
 
     // optimze fps
@@ -155,7 +155,7 @@ class FakeBrowserBuilder {
         return this
     }
 
-    deviceDescriptor(value: FakeDeviceDescriptor) {
+    deviceDescriptor(value: DeviceDescriptor) {
         this._launchParams.deviceDesc = value
         return this
     }

@@ -11,6 +11,8 @@ const withWorkerUtils = require('../_utils/withWorkerUtils');
  * @see https://bugs.chromium.org/p/chromium/issues/detail?id=1052332
  */
 
+// https://source.chromium.org/chromium/chromium/src/+/master:third_party/blink/renderer/modules/permissions/permission_descriptor.idl
+
 class Plugin extends PuppeteerExtraPlugin {
     constructor(opts = {}) {
         super(opts);
@@ -22,38 +24,37 @@ class Plugin extends PuppeteerExtraPlugin {
 
     /* global Notification Permissions PermissionStatus */
     async onPageCreated(page) {
-        await withUtils(page).evaluateOnNewDocument(this.mainFunction, this.opts);
+        // "permissions": Record<string, {
+        //     "state"?: string,
+        //     "exType"?: string,
+        //     "msg"?: string,
+        // }>
 
-        let permissions = {
-            accelerometer: 'granted',
-            'background-fetch': 'granted',
-            'background-sync': 'granted',
-            gyroscope: 'granted',
-            magnetometer: 'granted',
-            midi: 'granted',
-            'screen-wake-lock': 'granted',
+        const permissions = this.opts.permissions;
 
-            camera: 'prompt',
-            'display-capture': 'prompt',
-            geolocation: 'prompt',
-            microphone: 'prompt',
-            notifications: 'prompt',
-            'persistent-storage': 'prompt',
-        };
-
-        for (let permission in permissions) {
-            await page._client.send('Browser.setPermission', {
-                permission: {name: permission},
-                setting: permissions[permission],
-            });
+        for (const name in permissions) {
+            const permission = permissions[name];
+            if (permission.state) {
+                try {
+                    await page['_client'].send('Browser.setPermission', {
+                        permission: {name},
+                        setting: permission.state,
+                    });
+                } catch (ignore) {
+                }
+            }
         }
+
+        await withUtils(page).evaluateOnNewDocument(this.mainFunction, this.opts);
     }
 
     onServiceWorkerContent(jsContent) {
         return withWorkerUtils(jsContent).evaluate(this.mainFunction, this.opts);
     }
 
-    mainFunction = (utils) => {
+    mainFunction = (utils, opts) => {
+        const _Object = utils.cache.Prototype.Object;
+
         if ('undefined' !== typeof Notification) {
             utils.replaceGetterWithProxy(Notification, 'permission', {
                 apply() {
@@ -61,6 +62,46 @@ class Plugin extends PuppeteerExtraPlugin {
                 },
             });
         }
+
+        // We need to handle exceptions
+        utils.replaceWithProxy(Permissions.prototype, 'query', {
+            apply(target, thisArg, args) {
+                const param = (args || [])[0];
+                const paramName = param && param.name;
+
+                return new Promise((resolve, reject) => {
+                    const permissions = opts.permissions;
+                    const permission = permissions[paramName];
+
+                    if (permission) {
+                        let exType = permission.exType;
+                        if (exType) {
+                            if (!globalThis[exType]) {
+                                exType = 'Error';
+                            }
+
+                            return reject(
+                                utils.patchError(new globalThis[exType](permission.msg), 'query'),
+                            );
+                        }
+
+                        let state = permission.state;
+                        if (state) {
+                            return resolve(_Object.setPrototypeOf({
+                                state: state,
+                                onchange: null,
+                            }, PermissionStatus.prototype));
+                        }
+                    }
+
+                    utils.cache.Reflect.apply(...arguments).then(result => {
+                        return resolve(result);
+                    }).catch(ex => {
+                        return reject(utils.patchError(ex, 'query'));
+                    });
+                });
+            },
+        });
     };
 }
 

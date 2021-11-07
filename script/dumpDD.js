@@ -588,13 +588,13 @@ window['__$dd'] = async () => {
 
     // permissions
     const dumpPermissions = async () => {
+        // https://source.chromium.org/chromium/chromium/src/+/master:third_party/blink/renderer/modules/permissions/permission_descriptor.idl
         const permissions = [
             'storage-access',
             'push',
             'speaker',
             'device-info',
             'bluetooth',
-            'clipboard',
             'midi',
             'background-fetch',
             'background-sync',
@@ -602,6 +602,7 @@ window['__$dd'] = async () => {
             'gyroscope',
             'magnetometer',
             'screen-wake-lock',
+            'clipboard',
             'clipboard-read',
             'clipboard-write',
             'payment-handler',
@@ -614,6 +615,11 @@ window['__$dd'] = async () => {
             'persistent-storage',
             'ambient-light-sensor',
             'accessibility-events',
+            'nfc',
+            'idle-detection',
+            'system-wake-lock',
+            'window-placement',
+            'font-access',
         ];
 
         const result = {};
@@ -623,7 +629,7 @@ window['__$dd'] = async () => {
                 // noinspection JSCheckFunctionSignatures
                 navigator.permissions.query({name: e})
                     .then(({state}) => {
-                        result[e] = state;
+                        result[e] = {state};
                         resolve();
                     })
                     .catch((ex) => {

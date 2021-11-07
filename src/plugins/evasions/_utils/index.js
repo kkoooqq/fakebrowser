@@ -36,12 +36,12 @@ utils.preloadCache = () => {
         return;
     }
 
-    utils.cache = Permissions.prototype.query.__cache;
+    utils.cache = OffscreenCanvas.prototype.constructor.__cache;
     if (utils.cache) {
         return;
     }
 
-    Permissions.prototype.query.__cache = utils.cache = {
+    OffscreenCanvas.prototype.constructor.__cache = utils.cache = {
         // Used in our proxies
         Reflect: {
             get: Reflect.get.bind(Reflect),
@@ -125,12 +125,12 @@ utils.preloadGlobalVariables = () => {
         return;
     }
 
-    utils.variables = Permissions.prototype.query.__variables;
+    utils.variables = OffscreenCanvas.prototype.constructor.__variables;
     if (utils.variables) {
         return;
     }
 
-    Permissions.prototype.query.__variables = utils.variables = {
+    OffscreenCanvas.prototype.constructor.__variables = utils.variables = {
         proxies: [],
         toStringPatchObjs: [],
         toStringRedirectObjs: [],
@@ -143,12 +143,12 @@ utils.preloadEnv = () => {
         return;
     }
 
-    utils.env = Permissions.prototype.query.__env;
+    utils.env = OffscreenCanvas.prototype.constructor.__env;
     if (utils.env) {
         return;
     }
 
-    Permissions.prototype.query.__env = utils.env = {
+    OffscreenCanvas.prototype.constructor.__env = utils.env = {
         isWorker: !globalThis.document && !!globalThis.WorkerGlobalScope,
         isSharedWorker: !!globalThis.SharedWorkerGlobalScope,
         isServiceWorker: !!globalThis.ServiceWorkerGlobalScope,
@@ -160,12 +160,12 @@ utils.hookObjectPrototype = () => {
         return;
     }
 
-    utils.objHooked = Permissions.prototype.query.__objHooked;
+    utils.objHooked = OffscreenCanvas.prototype.constructor.__objHooked;
     if (utils.objHooked) {
         return;
     }
 
-    utils.objHooked = Permissions.prototype.query.__objHooked = true;
+    utils.objHooked = OffscreenCanvas.prototype.constructor.__objHooked = true;
     const _Object = utils.cache.Prototype.Object;
 
     // setPrototypeOf

@@ -2,10 +2,13 @@ const rimraf = require('rimraf');
 const os = require('os');
 const path = require('path');
 
-const DIR = path.join(os.tmpdir(), 'jest_puppeteer_global_setup');
+const DIR = path.join(os.tmpdir(), 'testFakeBrowserUserData');
 
 module.exports = async function () {
     console.log('Teardown Puppeteer');
-    await global.__BROWSER_GLOBAL__.shutdown();
+
+    // noinspection JSUnresolvedVariable
+    await global.fakeBrowser.shutdown();
+
     rimraf.sync(DIR);
 };

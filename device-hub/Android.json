@@ -6092,5 +6092,109 @@
       "name": "padmaa-Bold.1.1",
       "exists": 1
     }
-  ]
+  ],
+  "permissions": {
+    "storage-access": {
+      "exType": "TypeError",
+      "msg": "Failed to execute 'query' on 'Permissions': The Storage Access API is not enabled."
+    },
+    "push": {
+      "exType": "DOMException",
+      "msg": "Failed to execute 'query' on 'Permissions': Push Permission without userVisibleOnly:true isn't supported yet."
+    },
+    "speaker": {
+      "exType": "TypeError",
+      "msg": "Failed to execute 'query' on 'Permissions': Failed to read the 'name' property from 'PermissionDescriptor': The provided value 'speaker' is not a valid enum value of type PermissionName."
+    },
+    "device-info": {
+      "exType": "TypeError",
+      "msg": "Failed to execute 'query' on 'Permissions': Failed to read the 'name' property from 'PermissionDescriptor': The provided value 'device-info' is not a valid enum value of type PermissionName."
+    },
+    "bluetooth": {
+      "exType": "TypeError",
+      "msg": "Failed to execute 'query' on 'Permissions': Failed to read the 'name' property from 'PermissionDescriptor': The provided value 'bluetooth' is not a valid enum value of type PermissionName."
+    },
+    "clipboard": {
+      "exType": "TypeError",
+      "msg": "Failed to execute 'query' on 'Permissions': Failed to read the 'name' property from 'PermissionDescriptor': The provided value 'clipboard' is not a valid enum value of type PermissionName."
+    },
+    "ambient-light-sensor": {
+      "exType": "TypeError",
+      "msg": "Failed to execute 'query' on 'Permissions': GenericSensorExtraClasses flag is not enabled."
+    },
+    "accessibility-events": {
+      "exType": "TypeError",
+      "msg": "Failed to execute 'query' on 'Permissions': Accessibility Object Model is not enabled."
+    },
+    "nfc": {
+      "exType": "TypeError",
+      "msg": "Failed to execute 'query' on 'Permissions': Web NFC is not enabled."
+    },
+    "system-wake-lock": {
+      "exType": "TypeError",
+      "msg": "Failed to execute 'query' on 'Permissions': System Wake Lock is not enabled."
+    },
+    "window-placement": {
+      "exType": "TypeError",
+      "msg": "Failed to execute 'query' on 'Permissions': Window Placement is not enabled."
+    },
+    "font-access": {
+      "exType": "TypeError",
+      "msg": "Failed to execute 'query' on 'Permissions': Font Access is not enabled."
+    },
+    "midi": {
+      "state": "granted"
+    },
+    "background-fetch": {
+      "state": "granted"
+    },
+    "background-sync": {
+      "state": "granted"
+    },
+    "accelerometer": {
+      "state": "granted"
+    },
+    "gyroscope": {
+      "state": "granted"
+    },
+    "magnetometer": {
+      "state": "granted"
+    },
+    "screen-wake-lock": {
+      "state": "granted"
+    },
+    "clipboard-read": {
+      "state": "prompt"
+    },
+    "clipboard-write": {
+      "state": "granted"
+    },
+    "payment-handler": {
+      "state": "granted"
+    },
+    "periodic-background-sync": {
+      "state": "denied"
+    },
+    "geolocation": {
+      "state": "prompt"
+    },
+    "notifications": {
+      "state": "prompt"
+    },
+    "camera": {
+      "state": "prompt"
+    },
+    "microphone": {
+      "state": "prompt"
+    },
+    "display-capture": {
+      "state": "prompt"
+    },
+    "persistent-storage": {
+      "state": "prompt"
+    },
+    "idle-detection": {
+      "state": "prompt"
+    }
+  }
 }

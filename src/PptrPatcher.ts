@@ -217,8 +217,12 @@ export class PptrPatcher {
         pptr: PuppeteerExtra,
         launchParams: LaunchParameters,
     ) {
+        assert(launchParams.fakeDeviceDesc)
+
         const Plugin = require(path.resolve(__dirname, './plugins/evasions/navigator.permissions'))
-        const plugin = Plugin()
+        const plugin = Plugin({
+            permissions: launchParams.fakeDeviceDesc.permissions
+        })
 
         pptr.use(plugin)
     }

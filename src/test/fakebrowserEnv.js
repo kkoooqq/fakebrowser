@@ -1,6 +1,7 @@
 const NodeEnvironment = require('jest-environment-node');
-const vanillaBrowser = require('puppeteer');
-const fs = require('fs');
+const PuppeteerExtra = require('puppeteer-extra');
+
+const fs = require('fs-extra');
 const os = require('os');
 const path = require('path');
 
@@ -14,16 +15,23 @@ class FakeBrowserEnvironment extends NodeEnvironment {
     async setup() {
         console.log('Setup Test Environment.');
         await super.setup();
-        const wsEndpoint = fs.readFileSync(path.join(DIR, '__wsEndpoint'), 'utf8');
+
+        // read context
+        const testFBContextFile = path.join(DIR, '__testFBContext.json');
+        const context = fs.readJsonSync(testFBContextFile);
+        const wsEndpoint = context.wsEndpoint;
         if (!wsEndpoint) {
             throw new Error('wsEndpoint not found');
         }
 
-        this.global.__BROWSER__ = await vanillaBrowser.connect({
+        this.global.deviceDesc = context.DD;
+        this.global.fakeDeviceDesc = context.fakeDD;
+        this.global.vanillaBrowser = await PuppeteerExtra.connect({
             browserWSEndpoint: wsEndpoint,
         });
     }
 
+    // noinspection JSCheckFunctionSignatures
     async teardown() {
         console.log('Teardown Test Environment.');
         await super.teardown();

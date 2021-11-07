@@ -205,6 +205,11 @@ export interface DeviceDescriptor {
     "windowVersion": string[],
     "htmlElementVersion": string[],
     "keyboard": Record<string, string>,
+    "permissions": Record<string, {
+        "state"?: string,
+        "exType"?: string,
+        "msg"?: string,
+    }>
 }
 
 export type ChromeUACHHeaders = {

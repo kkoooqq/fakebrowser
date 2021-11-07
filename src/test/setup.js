@@ -1,6 +1,6 @@
 const {FakeBrowser} = require('../../dist/cjs/FakeBrowser');
 
-const fs = require('fs');
+const fs = require('fs-extra');
 const mkdirp = require('mkdirp');
 const os = require('os');
 const path = require('path');
@@ -12,20 +12,32 @@ module.exports = async function () {
 
     const windowsDD = require('../../device-hub/Windows.json');
 
+    // build fb
     const builder = new FakeBrowser.Builder()
         .deviceDescriptor(windowsDD)
         .displayUserActionLayer(true)
         .vanillaLaunchOptions({
             pipe: false,
-            headless: false,
+            headless: true,
+            devtools: false,
         })
         .userDataDir(DIR);
 
     const fakeBrowser = await builder.launch();
+    global.fakeBrowser = fakeBrowser;
 
-    global.__BROWSER_GLOBAL__ = fakeBrowser;
+    // save context file
     mkdirp.sync(DIR);
+    const testFBContextFile = path.join(DIR, '__testFBContext.json');
 
-    const wsEndPointFile = path.join(DIR, '__wsEndpoint')
-    fs.writeFileSync(wsEndPointFile, fakeBrowser.vanillaBrowser.wsEndpoint());
+    console.log('context file', testFBContextFile);
+
+    fs.writeJsonSync(
+        testFBContextFile,
+        {
+            'wsEndpoint': fakeBrowser.vanillaBrowser.wsEndpoint(),
+            'DD': fakeBrowser.launchParams.deviceDesc,
+            'fakeDD': fakeBrowser.launchParams.fakeDeviceDesc,
+        },
+        {spaces: 2});
 };
