@@ -7,7 +7,7 @@ import axios from "axios";
 import {CDPSession, Protocol} from "puppeteer";
 import {PuppeteerExtra, PuppeteerExtraPlugin} from "puppeteer-extra";
 
-import {LaunchParameters} from "./Driver";
+import {DriverParameters} from "./Driver";
 import {helper} from "./helper";
 import {FakeBrowser} from "./FakeBrowser";
 
@@ -16,7 +16,7 @@ export class PptrPatcher {
     static async patch(
         uuid: string,
         pptr: PuppeteerExtra,
-        launchParams: LaunchParameters,
+        launchParams: DriverParameters,
     ) {
         assert(!!launchParams.fakeDeviceDesc)
 
@@ -51,7 +51,7 @@ export class PptrPatcher {
     private static patchTaskEnv(
         uuid: string,
         pptr: PuppeteerExtra,
-        launchParams: LaunchParameters,
+        launchParams: DriverParameters,
     ) {
         const Plugin = require(path.resolve(__dirname, '../plugins/taskEnv'))
         const plugin = Plugin({
@@ -67,7 +67,7 @@ export class PptrPatcher {
     private static patchUserActionLayer(
         uuid: string,
         pptr: PuppeteerExtra,
-        launchParams: LaunchParameters,
+        launchParams: DriverParameters,
     ) {
         if (launchParams.displayUserActionLayer) {
             const Plugin = require(path.resolve(__dirname, '../plugins/user-action-layer'))
@@ -79,7 +79,7 @@ export class PptrPatcher {
     private static pathChrome(
         uuid: string,
         pptr: PuppeteerExtra,
-        launchParams: LaunchParameters,
+        launchParams: DriverParameters,
     ) {
         const availableEvasions = [
             'chrome.app',
@@ -98,7 +98,7 @@ export class PptrPatcher {
     private static patchWindowHistoryLength(
         uuid: string,
         pptr: PuppeteerExtra,
-        launchParams: LaunchParameters,
+        launchParams: DriverParameters,
     ) {
         const historyLength = helper.rd(2, 10)
 
@@ -111,7 +111,7 @@ export class PptrPatcher {
     private static patchWindowMatchMedia(
         uuid: string,
         pptr: PuppeteerExtra,
-        launchParams: LaunchParameters,
+        launchParams: DriverParameters,
     ) {
         const Plugin = require(path.resolve(__dirname, '../plugins/evasions/window.matchMedia'))
         const plugin = Plugin()
@@ -121,7 +121,7 @@ export class PptrPatcher {
     private static pathWebdriver(
         uuid: string,
         pptr: PuppeteerExtra,
-        launchParams: LaunchParameters,
+        launchParams: DriverParameters,
     ) {
         const Plugin = require(path.resolve(__dirname, '../plugins/evasions/navigator.webdriver'))
         const plugin = Plugin()
@@ -131,7 +131,7 @@ export class PptrPatcher {
     private static pathSourceUrl(
         uuid: string,
         pptr: PuppeteerExtra,
-        launchParams: LaunchParameters,
+        launchParams: DriverParameters,
     ) {
         const Plugin = require(path.resolve(__dirname, '../plugins/evasions/sourceurl'))
         const plugin = Plugin()
@@ -141,7 +141,7 @@ export class PptrPatcher {
     private static patchPluginsMineTypes(
         uuid: string,
         pptr: PuppeteerExtra,
-        launchParams: LaunchParameters,
+        launchParams: DriverParameters,
     ) {
         assert(launchParams.fakeDeviceDesc)
 
@@ -157,7 +157,7 @@ export class PptrPatcher {
     private static patchWebGL(
         uuid: string,
         pptr: PuppeteerExtra,
-        launchParams: LaunchParameters,
+        launchParams: DriverParameters,
     ) {
         assert(launchParams.fakeDeviceDesc)
 
@@ -175,7 +175,7 @@ export class PptrPatcher {
     private static patchMimeTypes(
         uuid: string,
         pptr: PuppeteerExtra,
-        launchParams: LaunchParameters,
+        launchParams: DriverParameters,
     ) {
         assert(launchParams.fakeDeviceDesc)
 
@@ -190,7 +190,7 @@ export class PptrPatcher {
     private static patchMediaDevices(
         uuid: string,
         pptr: PuppeteerExtra,
-        launchParams: LaunchParameters,
+        launchParams: DriverParameters,
     ) {
         assert(launchParams.fakeDeviceDesc)
 
@@ -205,7 +205,7 @@ export class PptrPatcher {
     private static patchBluetooth(
         uuid: string,
         pptr: PuppeteerExtra,
-        launchParams: LaunchParameters,
+        launchParams: DriverParameters,
     ) {
         const Plugin = require(path.resolve(__dirname, '../plugins/evasions/bluetooth'))
         const plugin = Plugin({})
@@ -216,7 +216,7 @@ export class PptrPatcher {
     private static patchPermissions(
         uuid: string,
         pptr: PuppeteerExtra,
-        launchParams: LaunchParameters,
+        launchParams: DriverParameters,
     ) {
         assert(launchParams.fakeDeviceDesc)
 
@@ -231,7 +231,7 @@ export class PptrPatcher {
     private static patchBatteryManager(
         uuid: string,
         pptr: PuppeteerExtra,
-        launchParams: LaunchParameters,
+        launchParams: DriverParameters,
     ) {
         assert(launchParams.fakeDeviceDesc)
 
@@ -246,18 +246,18 @@ export class PptrPatcher {
     private static async patchWebRtc(
         uuid: string,
         pptr: PuppeteerExtra,
-        launchParams: LaunchParameters,
+        launchParams: DriverParameters,
     ) {
         if (launchParams.proxy && launchParams.proxy.exportIP) {
             const myRealExportIP = await helper.myRealExportIP()
             const fakeIPs = [myRealExportIP]
 
-            // if (launchParams.cluster && launchParams.cluster.length) {
-            //     fakeIPs.push(launchParams.cluster)
+            // if (driverParams.cluster && driverParams.cluster.length) {
+            //     fakeIPs.push(driverParams.cluster)
             // }
 
             // console.log(
-            //     '!!! proxyExportIP: ' + launchParams.proxy.exportIP +
+            //     '!!! proxyExportIP: ' + driverParams.proxy.exportIP +
             //     ' fakeIPs:' + JSON.stringify(fakeIPs)
             // );
 
@@ -274,7 +274,7 @@ export class PptrPatcher {
     private static patchCanvas2DFingerprint(
         uuid: string,
         pptr: PuppeteerExtra,
-        launchParams: LaunchParameters,
+        launchParams: DriverParameters,
     ) {
         assert(launchParams.fakeDeviceDesc)
 
@@ -290,7 +290,7 @@ export class PptrPatcher {
     private static patchFonts(
         uuid: string,
         pptr: PuppeteerExtra,
-        launchParams: LaunchParameters,
+        launchParams: DriverParameters,
     ) {
         assert(launchParams.fakeDeviceDesc)
 
@@ -305,7 +305,7 @@ export class PptrPatcher {
     private static patchEmojis(
         uuid: string,
         pptr: PuppeteerExtra,
-        launchParams: LaunchParameters,
+        launchParams: DriverParameters,
     ) {
         assert(launchParams.fakeDeviceDesc)
 
@@ -320,7 +320,7 @@ export class PptrPatcher {
     private static patchSpeechSynthesis(
         uuid: string,
         pptr: PuppeteerExtra,
-        launchParams: LaunchParameters,
+        launchParams: DriverParameters,
     ) {
         assert(launchParams.fakeDeviceDesc)
 
@@ -335,7 +335,7 @@ export class PptrPatcher {
     private static patchWorkers(
         uuid: string,
         pptr: PuppeteerExtra,
-        launchParams: LaunchParameters,
+        launchParams: DriverParameters,
     ) {
         const Plugin = require(path.resolve(__dirname, '../plugins/evasions/workers'))
         const plugin = Plugin({
@@ -351,7 +351,7 @@ export class PptrPatcher {
     private static patchKeyboard(
         uuid: string,
         pptr: PuppeteerExtra,
-        launchParams: LaunchParameters,
+        launchParams: DriverParameters,
     ) {
         assert(launchParams.fakeDeviceDesc)
 
@@ -366,7 +366,7 @@ export class PptrPatcher {
     private static patchUserAgent(
         uuid: string,
         pptr: PuppeteerExtra,
-        launchParams: LaunchParameters,
+        launchParams: DriverParameters,
     ) {
         assert(launchParams.fakeDeviceDesc)
 
@@ -383,7 +383,7 @@ export class PptrPatcher {
     private static patchIFrame(
         uuid: string,
         pptr: PuppeteerExtra,
-        launchParams: LaunchParameters,
+        launchParams: DriverParameters,
     ) {
         let Plugin = require(path.resolve(__dirname, '../plugins/evasions/iframe.contentWindow'))
         let plugin = Plugin()
@@ -397,7 +397,7 @@ export class PptrPatcher {
     private static patchPropertiesGetters(
         uuid: string,
         pptr: PuppeteerExtra,
-        launchParams: LaunchParameters,
+        launchParams: DriverParameters,
     ) {
         assert(launchParams.fakeDeviceDesc)
 
@@ -415,7 +415,7 @@ export class PptrPatcher {
     private static patchLast(
         uuid: string,
         pptr: PuppeteerExtra,
-        launchParams: LaunchParameters,
+        launchParams: DriverParameters,
     ) {
         let Plugin = require(path.resolve(__dirname, '../plugins/evasions/zzzzzzzz.last'))
         let plugin = Plugin()

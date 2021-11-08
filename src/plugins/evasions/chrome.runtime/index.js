@@ -88,8 +88,20 @@ class Plugin extends PuppeteerExtraPlugin {
 
         // That means we're running headful and don't need to mock anything
         const existsAlready = 'runtime' in window.chrome;
+
         // `chrome.runtime` is only exposed on secure origins
-        const isNotSecure = !window.top.location.protocol.startsWith('https');
+        let isNotSecure = false;
+        try {
+            isNotSecure = !window.top.location.protocol.startsWith('https');
+        } catch (ex) {
+            try {
+                isNotSecure = !window.location.protocol.startsWith('https');
+            } catch (ignore) {
+            }
+
+            console.warn(ex);
+        }
+
         if (existsAlready || (isNotSecure && !opts.runOnInsecureOrigins)) {
             return; // Nothing to do here
         }

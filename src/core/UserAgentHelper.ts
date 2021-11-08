@@ -9,30 +9,30 @@ function isMobile(ua: string): boolean {
     }
 }
 
-export type BrowserTypes = 'IE' | 'Chrome' | 'Firefox' | 'Opera' | 'Safari' | 'Edge' | 'QQBrowser' | 'WeixinBrowser'
+export type BrowserTypes = 'IE' | 'Chrome' | 'Firefox' | 'Opera' | 'Safari' | 'Edge' | 'QQBrowser' | 'WeixinBrowser' | 'Unknown'
 
-function browserType(userAgent: string): BrowserTypes | null {
+function browserType(userAgent: string): BrowserTypes {
     userAgent = userAgent.toLowerCase();
 
-    let result = null;
+    let result: BrowserTypes = 'Unknown';
     const browserArray: { [key: string]: boolean } = {
-        'IE': !!(window.ActiveXObject || "ActiveXObject" in window), // IE
+        'IE': userAgent.includes('msie') || userAgent.includes('trident'), // IE
         'Chrome': userAgent.indexOf('chrome') > -1 && userAgent.indexOf('safari') > -1, // Chrome
         'Firefox': userAgent.indexOf('firefox') > -1, // Firefox
         'Opera': userAgent.indexOf('opera') > -1, // Opera
         'Safari': userAgent.indexOf('safari') > -1 && userAgent.indexOf('chrome') == -1, // safari
-        'Edge': userAgent.indexOf('edge') > -1, // Edge
+        'Edge': userAgent.indexOf('edge') > -1 || userAgent.indexOf('edg/') > -1, // Edge
         'QQBrowser': /qqbrowser/.test(userAgent), // qq browser
         'WeixinBrowser': /MicroMessenger/i.test(userAgent), // wechat browser
     };
 
     for (const i in browserArray) {
         if (browserArray[i]) {
-            result = i;
+            result = i as BrowserTypes;
         }
     }
 
-    return result as BrowserTypes | null;
+    return result;
 }
 
 function chromeMajorVersion(userAgent: string): number | null {

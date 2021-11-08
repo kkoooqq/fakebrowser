@@ -8,7 +8,7 @@ import {PuppeteerExtra} from "puppeteer-extra";
 
 import {helper} from "./helper";
 import {PptrToolkit} from "./PptrToolkit";
-import {LaunchParameters} from "./Driver.js";
+import {ConnectParameters, DriverParameters, LaunchParameters} from "./Driver.js";
 import {ChromeUACHHeaders} from "./DeviceDescriptor.js";
 import {PptrPatcher} from "./PptrPatcher";
 import {UserAgentHelper} from "./UserAgentHelper";
@@ -139,18 +139,28 @@ export class FakeBrowser {
         defaultLaunchArgs: kDefaultLaunchArgs,
     }
 
-    private readonly _launchParams: LaunchParameters
+    private readonly _driverParams: DriverParameters
     private readonly _vanillaBrowser: Browser
     private readonly _pptrExtra: PuppeteerExtra
-    private readonly _launchTime: number
+    private readonly _bindingTime: number
     private readonly _uuid: string
     private readonly _userAction: FakeUserAction
     private _zombie: boolean
 
     // private readonly _workerUrls: string[]
 
+    get driverParams(): DriverParameters {
+        return this._driverParams
+    }
+
     get launchParams(): LaunchParameters {
-        return this._launchParams
+        assert((this._driverParams as LaunchParameters).launchOptions)
+        return this._driverParams as LaunchParameters
+    }
+
+    get connectParams(): ConnectParameters {
+        assert((this._driverParams as ConnectParameters).connectOptions)
+        return this._driverParams as ConnectParameters
     }
 
     get vanillaBrowser(): Browser {
@@ -161,8 +171,11 @@ export class FakeBrowser {
         return this._pptrExtra
     }
 
-    get launchTime(): number {
-        return this._launchTime
+    /**
+     * Browser instance launch time or connection time
+     */
+    get bindingTime(): number {
+        return this._bindingTime
     }
 
     get uuid(): string {
@@ -193,17 +206,16 @@ export class FakeBrowser {
     }
 
     constructor(
-        launchParams: LaunchParameters,
+        params: DriverParameters,
         vanillaBrowser: Browser,
         pptrExtra: PuppeteerExtra,
-        launchTime: number,
-        maxSurvivalTime: number,
+        bindingTime: number,
         uuid: string,
     ) {
-        this._launchParams = launchParams
+        this._driverParams = params
         this._vanillaBrowser = vanillaBrowser
         this._pptrExtra = pptrExtra
-        this._launchTime = launchTime
+        this._bindingTime = bindingTime
         this._uuid = uuid
         this._zombie = false
         // this._workerUrls = []
@@ -260,18 +272,18 @@ export class FakeBrowser {
         // console.log('inject page')
         let cdpSession: CDPSession | null = null
 
-        const fakeDD = this._launchParams.fakeDeviceDesc
+        const fakeDD = this._driverParams.fakeDeviceDesc
         assert(fakeDD)
 
         // if there is an account password that proxy needs to log in
         if (
-            this._launchParams.proxy &&
-            this._launchParams.proxy.username &&
-            this._launchParams.proxy.password
+            this._driverParams.proxy &&
+            this._driverParams.proxy.username &&
+            this._driverParams.proxy.password
         ) {
             await page.authenticate({
-                username: this._launchParams.proxy.username,
-                password: this._launchParams.proxy.password,
+                username: this._driverParams.proxy.username,
+                password: this._driverParams.proxy.password,
             });
         }
 
@@ -307,7 +319,8 @@ export class FakeBrowser {
         }
 
         // read version from the launched browser
-        const chromeMajorVersion = UserAgentHelper.chromeMajorVersion(await this.vanillaBrowser.userAgent())
+        const ua = await this.vanillaBrowser.userAgent()
+        const chromeMajorVersion = UserAgentHelper.chromeMajorVersion(ua)
         const os = UserAgentHelper.os(fakeDD.navigator.userAgent)
 
         assert(chromeMajorVersion)
@@ -318,10 +331,9 @@ export class FakeBrowser {
             // FIXME: error occurs after the referer is set
             // 'referer': FakeBrowser.globalConfig.defaultReferers[sh.rd(0, referers.length - 1)],
             'sec-ch-ua':
-                this._launchParams.launchOptions.executablePath
-                && this._launchParams.launchOptions.executablePath.toLowerCase().includes('edge')
-                    ? `"Microsoft Edge";v="${chromeMajorVersion}", " Not;A Brand";v="99", "Chromium";v="${chromeMajorVersion}"`
-                    : `"Google Chrome";v="${chromeMajorVersion}", " Not;A Brand";v="99", "Chromium";v="${chromeMajorVersion}"`,
+                UserAgentHelper.browserType(ua) === 'Edge'
+                    ? `"Microsoft Edge";v="${chromeMajorVersion}", "Chromium";v="${chromeMajorVersion}", ";Not A Brand";v="99"`
+                    : `"Google Chrome";v="${chromeMajorVersion}", "Chromium";v="${chromeMajorVersion}", ";Not A Brand";v="99"`,
             'sec-ch-ua-mobile': '?0',
             // 'sec-fetch-site': 'cross-site',
         }

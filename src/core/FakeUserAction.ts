@@ -174,7 +174,7 @@ export class FakeUserAction {
             return false
         }
 
-        const fakeDD = fb.launchParams.fakeDeviceDesc
+        const fakeDD = fb.driverParams.fakeDeviceDesc
         assert(fakeDD)
 
         const innerWidth = fakeDD.window.innerWidth
@@ -245,7 +245,7 @@ export class FakeUserAction {
             return false
         }
 
-        const fakeDD = fb.launchParams.fakeDeviceDesc
+        const fakeDD = fb.driverParams.fakeDeviceDesc
         assert(fakeDD)
 
         const currPage = await fb.getActivePage()

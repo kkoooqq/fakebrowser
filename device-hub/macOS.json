@@ -4,81 +4,68 @@
       {
         "type": "application/pdf",
         "suffixes": "pdf",
-        "description": "Portable Document Format",
-        "__pluginName": "PDF Viewer"
+        "description": "",
+        "__pluginName": "Chrome PDF Viewer"
       },
       {
-        "type": "text/pdf",
+        "type": "application/x-google-chrome-pdf",
         "suffixes": "pdf",
         "description": "Portable Document Format",
-        "__pluginName": "PDF Viewer"
+        "__pluginName": "Chrome PDF Plugin"
+      },
+      {
+        "type": "application/x-nacl",
+        "suffixes": "",
+        "description": "Native Client Executable",
+        "__pluginName": "Native Client"
+      },
+      {
+        "type": "application/x-pnacl",
+        "suffixes": "",
+        "description": "Portable Native Client Executable",
+        "__pluginName": "Native Client"
       }
     ],
     "plugins": [
       {
-        "name": "PDF Viewer",
+        "name": "Chrome PDF Plugin",
         "filename": "internal-pdf-viewer",
         "description": "Portable Document Format",
         "__mimeTypes": [
-          "application/pdf",
-          "text/pdf"
+          "application/x-google-chrome-pdf"
         ]
       },
       {
         "name": "Chrome PDF Viewer",
-        "filename": "internal-pdf-viewer",
-        "description": "Portable Document Format",
+        "filename": "mhjfbmdgcfjbbpaeojofohoefgiehjai",
+        "description": "",
         "__mimeTypes": [
-          "application/pdf",
-          "text/pdf"
+          "application/pdf"
         ]
       },
       {
-        "name": "Chromium PDF Viewer",
-        "filename": "internal-pdf-viewer",
-        "description": "Portable Document Format",
+        "name": "Native Client",
+        "filename": "internal-nacl-plugin",
+        "description": "",
         "__mimeTypes": [
-          "application/pdf",
-          "text/pdf"
-        ]
-      },
-      {
-        "name": "Microsoft Edge PDF Viewer",
-        "filename": "internal-pdf-viewer",
-        "description": "Portable Document Format",
-        "__mimeTypes": [
-          "application/pdf",
-          "text/pdf"
-        ]
-      },
-      {
-        "name": "WebKit built-in PDF",
-        "filename": "internal-pdf-viewer",
-        "description": "Portable Document Format",
-        "__mimeTypes": [
-          "application/pdf",
-          "text/pdf"
+          "application/x-nacl",
+          "application/x-pnacl"
         ]
       }
     ]
   },
   "gpu": {
-    "vendor": "ATI Technologies Inc.",
-    "renderer": "AMD Radeon Pro 560 OpenGL Engine"
+    "vendor": "Google Inc.",
+    "renderer": "Google SwiftShader"
   },
   "webgl": {
     "supportedExtensions": [
       "ANGLE_instanced_arrays",
       "EXT_blend_minmax",
       "EXT_color_buffer_half_float",
-      "EXT_disjoint_timer_query",
       "EXT_float_blend",
-      "EXT_frag_depth",
-      "EXT_shader_texture_lod",
-      "EXT_texture_compression_rgtc",
       "EXT_texture_filter_anisotropic",
       "WEBKIT_EXT_texture_filter_anisotropic",
-      "EXT_sRGB",
       "OES_element_index_uint",
       "OES_fbo_render_mipmap",
       "OES_standard_derivatives",
@@ -88,9 +75,10 @@
       "OES_texture_half_float_linear",
       "OES_vertex_array_object",
       "WEBGL_color_buffer_float",
+      "WEBGL_compressed_texture_etc",
+      "WEBGL_compressed_texture_etc1",
       "WEBGL_compressed_texture_s3tc",
       "WEBKIT_WEBGL_compressed_texture_s3tc",
-      "WEBGL_compressed_texture_s3tc_srgb",
       "WEBGL_debug_renderer_info",
       "WEBGL_debug_shaders",
       "WEBGL_depth_texture",
@@ -117,16 +105,16 @@
     "depthBits": 24,
     "greenBits": 8,
     "maxAnisotropy": 16,
-    "maxCombinedTextureImageUnits": 80,
-    "maxCubeMapTextureSize": 16384,
-    "maxFragmentUniformVectors": 1024,
-    "maxRenderbufferSize": 16384,
+    "maxCombinedTextureImageUnits": 32,
+    "maxCubeMapTextureSize": 8192,
+    "maxFragmentUniformVectors": 261,
+    "maxRenderbufferSize": 8192,
     "maxTextureImageUnits": 16,
-    "maxTextureSize": 16384,
+    "maxTextureSize": 8192,
     "maxVaryingVectors": 32,
-    "maxVertexAttribs": 16,
+    "maxVertexAttribs": 32,
     "maxVertexTextureImageUnits": 16,
-    "maxVertexUniformVectors": 1024,
+    "maxVertexUniformVectors": 256,
     "shadingLanguageVersion": "WebGL GLSL ES 1.0 (OpenGL ES GLSL ES 1.0 Chromium)",
     "stencilBits": 0,
     "version": "WebGL 1.0 (OpenGL ES 2.0 Chromium)",
@@ -135,12 +123,12 @@
       "1": 1
     },
     "aliasedPointSizeRange": {
-      "0": 1,
-      "1": 8191
+      "0": 0.125,
+      "1": 8192
     },
     "maxViewportDims": {
-      "0": 16384,
-      "1": 16384
+      "0": 8192,
+      "1": 8192
     },
     "alphaBits": 8,
     "redBits": 8,
@@ -483,111 +471,110 @@
     "219": "scroll-padding-block-start",
     "220": "scroll-padding-inline-end",
     "221": "scroll-padding-inline-start",
-    "222": "scrollbar-gutter",
-    "223": "shape-image-threshold",
-    "224": "shape-margin",
-    "225": "shape-outside",
-    "226": "shape-rendering",
-    "227": "speak",
-    "228": "stop-color",
-    "229": "stop-opacity",
-    "230": "stroke",
-    "231": "stroke-dasharray",
-    "232": "stroke-dashoffset",
-    "233": "stroke-linecap",
-    "234": "stroke-linejoin",
-    "235": "stroke-miterlimit",
-    "236": "stroke-opacity",
-    "237": "stroke-width",
-    "238": "tab-size",
-    "239": "table-layout",
-    "240": "text-align",
-    "241": "text-align-last",
-    "242": "text-anchor",
-    "243": "text-decoration",
-    "244": "text-decoration-color",
-    "245": "text-decoration-line",
-    "246": "text-decoration-skip-ink",
-    "247": "text-decoration-style",
-    "248": "text-indent",
-    "249": "text-overflow",
-    "250": "text-rendering",
-    "251": "text-shadow",
-    "252": "text-size-adjust",
-    "253": "text-transform",
-    "254": "text-underline-position",
-    "255": "top",
-    "256": "touch-action",
-    "257": "transform",
-    "258": "transform-origin",
-    "259": "transform-style",
-    "260": "transition-delay",
-    "261": "transition-duration",
-    "262": "transition-property",
-    "263": "transition-timing-function",
-    "264": "unicode-bidi",
-    "265": "user-select",
-    "266": "vector-effect",
-    "267": "vertical-align",
-    "268": "visibility",
-    "269": "white-space",
-    "270": "widows",
-    "271": "width",
-    "272": "will-change",
-    "273": "word-break",
-    "274": "word-spacing",
-    "275": "writing-mode",
-    "276": "x",
-    "277": "y",
-    "278": "z-index",
-    "279": "zoom",
-    "280": "-webkit-app-region",
-    "281": "-webkit-border-horizontal-spacing",
-    "282": "-webkit-border-image",
-    "283": "-webkit-border-vertical-spacing",
-    "284": "-webkit-box-align",
-    "285": "-webkit-box-decoration-break",
-    "286": "-webkit-box-direction",
-    "287": "-webkit-box-flex",
-    "288": "-webkit-box-ordinal-group",
-    "289": "-webkit-box-orient",
-    "290": "-webkit-box-pack",
-    "291": "-webkit-box-reflect",
-    "292": "-webkit-font-smoothing",
-    "293": "-webkit-highlight",
-    "294": "-webkit-hyphenate-character",
-    "295": "-webkit-line-break",
-    "296": "-webkit-line-clamp",
-    "297": "-webkit-locale",
-    "298": "-webkit-mask-box-image",
-    "299": "-webkit-mask-box-image-outset",
-    "300": "-webkit-mask-box-image-repeat",
-    "301": "-webkit-mask-box-image-slice",
-    "302": "-webkit-mask-box-image-source",
-    "303": "-webkit-mask-box-image-width",
-    "304": "-webkit-mask-clip",
-    "305": "-webkit-mask-composite",
-    "306": "-webkit-mask-image",
-    "307": "-webkit-mask-origin",
-    "308": "-webkit-mask-position",
-    "309": "-webkit-mask-repeat",
-    "310": "-webkit-mask-size",
-    "311": "-webkit-print-color-adjust",
-    "312": "-webkit-rtl-ordering",
-    "313": "-webkit-tap-highlight-color",
-    "314": "-webkit-text-combine",
-    "315": "-webkit-text-decorations-in-effect",
-    "316": "-webkit-text-emphasis-color",
-    "317": "-webkit-text-emphasis-position",
-    "318": "-webkit-text-emphasis-style",
-    "319": "-webkit-text-fill-color",
-    "320": "-webkit-text-orientation",
-    "321": "-webkit-text-security",
-    "322": "-webkit-text-stroke-color",
-    "323": "-webkit-text-stroke-width",
-    "324": "-webkit-user-drag",
-    "325": "-webkit-user-modify",
-    "326": "-webkit-writing-mode",
+    "222": "shape-image-threshold",
+    "223": "shape-margin",
+    "224": "shape-outside",
+    "225": "shape-rendering",
+    "226": "speak",
+    "227": "stop-color",
+    "228": "stop-opacity",
+    "229": "stroke",
+    "230": "stroke-dasharray",
+    "231": "stroke-dashoffset",
+    "232": "stroke-linecap",
+    "233": "stroke-linejoin",
+    "234": "stroke-miterlimit",
+    "235": "stroke-opacity",
+    "236": "stroke-width",
+    "237": "tab-size",
+    "238": "table-layout",
+    "239": "text-align",
+    "240": "text-align-last",
+    "241": "text-anchor",
+    "242": "text-decoration",
+    "243": "text-decoration-color",
+    "244": "text-decoration-line",
+    "245": "text-decoration-skip-ink",
+    "246": "text-decoration-style",
+    "247": "text-indent",
+    "248": "text-overflow",
+    "249": "text-rendering",
+    "250": "text-shadow",
+    "251": "text-size-adjust",
+    "252": "text-transform",
+    "253": "text-underline-position",
+    "254": "top",
+    "255": "touch-action",
+    "256": "transform",
+    "257": "transform-origin",
+    "258": "transform-style",
+    "259": "transition-delay",
+    "260": "transition-duration",
+    "261": "transition-property",
+    "262": "transition-timing-function",
+    "263": "unicode-bidi",
+    "264": "user-select",
+    "265": "vector-effect",
+    "266": "vertical-align",
+    "267": "visibility",
+    "268": "white-space",
+    "269": "widows",
+    "270": "width",
+    "271": "will-change",
+    "272": "word-break",
+    "273": "word-spacing",
+    "274": "writing-mode",
+    "275": "x",
+    "276": "y",
+    "277": "z-index",
+    "278": "zoom",
+    "279": "-webkit-app-region",
+    "280": "-webkit-border-horizontal-spacing",
+    "281": "-webkit-border-image",
+    "282": "-webkit-border-vertical-spacing",
+    "283": "-webkit-box-align",
+    "284": "-webkit-box-decoration-break",
+    "285": "-webkit-box-direction",
+    "286": "-webkit-box-flex",
+    "287": "-webkit-box-ordinal-group",
+    "288": "-webkit-box-orient",
+    "289": "-webkit-box-pack",
+    "290": "-webkit-box-reflect",
+    "291": "-webkit-font-smoothing",
+    "292": "-webkit-highlight",
+    "293": "-webkit-hyphenate-character",
+    "294": "-webkit-line-break",
+    "295": "-webkit-line-clamp",
+    "296": "-webkit-locale",
+    "297": "-webkit-mask-box-image",
+    "298": "-webkit-mask-box-image-outset",
+    "299": "-webkit-mask-box-image-repeat",
+    "300": "-webkit-mask-box-image-slice",
+    "301": "-webkit-mask-box-image-source",
+    "302": "-webkit-mask-box-image-width",
+    "303": "-webkit-mask-clip",
+    "304": "-webkit-mask-composite",
+    "305": "-webkit-mask-image",
+    "306": "-webkit-mask-origin",
+    "307": "-webkit-mask-position",
+    "308": "-webkit-mask-repeat",
+    "309": "-webkit-mask-size",
+    "310": "-webkit-print-color-adjust",
+    "311": "-webkit-rtl-ordering",
+    "312": "-webkit-tap-highlight-color",
+    "313": "-webkit-text-combine",
+    "314": "-webkit-text-decorations-in-effect",
+    "315": "-webkit-text-emphasis-color",
+    "316": "-webkit-text-emphasis-position",
+    "317": "-webkit-text-emphasis-style",
+    "318": "-webkit-text-fill-color",
+    "319": "-webkit-text-orientation",
+    "320": "-webkit-text-security",
+    "321": "-webkit-text-stroke-color",
+    "322": "-webkit-text-stroke-width",
+    "323": "-webkit-user-drag",
+    "324": "-webkit-user-modify",
+    "325": "-webkit-writing-mode",
     "accentColor": "auto",
     "additiveSymbols": "",
     "alignContent": "normal",
@@ -925,7 +912,6 @@
     "scrollSnapAlign": "none",
     "scrollSnapStop": "normal",
     "scrollSnapType": "none",
-    "scrollbarGutter": "auto",
     "shapeImageThreshold": "0",
     "shapeMargin": "0px",
     "shapeOutside": "none",
@@ -1155,11 +1141,12 @@
     "zIndex": "auto",
     "zoom": "1",
     "cssText": "",
-    "length": 327,
+    "length": 326,
     "parentRule": null,
     "cssFloat": "none"
   },
   "windowVersion": [
+    "0",
     "Object",
     "Function",
     "Array",
@@ -1625,7 +1612,6 @@
     "External",
     "EventTarget",
     "EventSource",
-    "EventCounts",
     "Event",
     "ErrorEvent",
     "ElementInternals",
@@ -2005,18 +1991,6 @@
     "XRDOMOverlayState",
     "XRLayer",
     "XRWebGLBinding",
-    "AudioData",
-    "EncodedAudioChunk",
-    "EncodedVideoChunk",
-    "ImageTrack",
-    "ImageTrackList",
-    "VideoColorSpace",
-    "VideoFrame",
-    "AudioDecoder",
-    "AudioEncoder",
-    "ImageDecoder",
-    "VideoDecoder",
-    "VideoEncoder",
     "AuthenticatorAssertionResponse",
     "AuthenticatorAttestationResponse",
     "AuthenticatorResponse",
@@ -2039,9 +2013,9 @@
     "HIDConnectionEvent",
     "HIDDevice",
     "HIDInputReportEvent",
-    "IdleDetector",
-    "MediaStreamTrackGenerator",
-    "MediaStreamTrackProcessor",
+    "Mojo",
+    "MojoHandle",
+    "MojoWatcher",
     "OTPCredential",
     "PaymentAddress",
     "PaymentRequest",
@@ -2055,7 +2029,6 @@
     "PresentationConnectionList",
     "PresentationReceiver",
     "PresentationRequest",
-    "Profiler",
     "Scheduling",
     "Serial",
     "SerialPort",
@@ -2072,7 +2045,6 @@
     "USBIsochronousOutTransferPacket",
     "USBIsochronousOutTransferResult",
     "USBOutTransferResult",
-    "VirtualKeyboard",
     "WakeLock",
     "WakeLockSentinel",
     "XRAnchor",
@@ -2114,7 +2086,6 @@
     "speechSynthesis",
     "onpointerrawupdate",
     "crossOriginIsolated",
-    "scheduler",
     "AnimationPlaybackEvent",
     "AnimationTimeline",
     "CSSAnimation",
@@ -2125,8 +2096,7 @@
     "BackgroundFetchRegistration",
     "BluetoothUUID",
     "CustomStateSet",
-    "DelegatedInkTrailPresenter",
-    "Ink",
+    "EventCounts",
     "MediaMetadata",
     "MediaSession",
     "MediaSource",
@@ -2146,10 +2116,6 @@
     "PushSubscription",
     "PushSubscriptionOptions",
     "RemotePlayback",
-    "Scheduler",
-    "TaskController",
-    "TaskPriorityChangeEvent",
-    "TaskSignal",
     "SharedWorker",
     "SpeechSynthesisErrorEvent",
     "SpeechSynthesisEvent",
@@ -2160,7 +2126,6 @@
     "TrustedTypePolicy",
     "TrustedTypePolicyFactory",
     "VideoPlaybackQuality",
-    "VirtualKeyboardGeometryChangeEvent",
     "XSLTProcessor",
     "webkitSpeechGrammar",
     "webkitSpeechGrammarList",
@@ -2170,7 +2135,47 @@
     "openDatabase",
     "webkitRequestFileSystem",
     "webkitResolveLocalFileSystemURL",
-    "dumpFingerprint"
+    "ShadyCSS",
+    "loadTimeData",
+    "mojo",
+    "mojoBase",
+    "skia",
+    "url",
+    "realbox",
+    "cr",
+    "mostVisited",
+    "newTabPage",
+    "chromeCart",
+    "drive",
+    "taskModule",
+    "promoBrowserCommand",
+    "dir",
+    "dirxml",
+    "profile",
+    "profileEnd",
+    "table",
+    "keys",
+    "values",
+    "debug",
+    "undebug",
+    "monitor",
+    "unmonitor",
+    "inspect",
+    "copy",
+    "queryObjects",
+    "$0",
+    "$1",
+    "$2",
+    "$3",
+    "$4",
+    "getEventListeners",
+    "getAccessibleName",
+    "getAccessibleRole",
+    "monitorEvents",
+    "unmonitorEvents",
+    "$",
+    "$$",
+    "$x"
   ],
   "htmlElementVersion": [
     "version",
@@ -2291,7 +2296,6 @@
     "click",
     "focus",
     "enterKeyHint",
-    "virtualKeyboardPolicy",
     "onpointerrawupdate",
     "namespaceURI",
     "prefix",
@@ -2475,18 +2479,14 @@
   ],
   "navigator": {
     "languages": [
-      "en",
-      "zh",
-      "fr",
-      "es",
       "zh-CN",
-      "pt-BR"
+      "zh"
     ],
-    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.54 Safari/537.36",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36",
     "appCodeName": "Mozilla",
     "appMinorVersion": "_$obj!_undefined_//+_",
     "appName": "Netscape",
-    "appVersion": "5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.54 Safari/537.36",
+    "appVersion": "5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36",
     "buildID": "_$obj!_undefined_//+_",
     "platform": "MacIntel",
     "product": "Gecko",
@@ -2505,15 +2505,15 @@
     "storage": "_$obj!_//+_",
     "requestMediaKeySystemAccess": "_$obj!_//+_",
     "bluetooth": "_$obj!_//+_",
-    "language": "en",
+    "language": "zh-CN",
     "systemLanguage": "_$obj!_undefined_//+_",
     "userLanguage": "_$obj!_undefined_//+_"
   },
   "window": {
-    "innerWidth": 1680,
+    "innerWidth": 1564,
     "innerHeight": 900,
-    "outerWidth": 1680,
-    "outerHeight": 1050,
+    "outerWidth": 1564,
+    "outerHeight": 981,
     "screenX": 0,
     "screenY": 0,
     "pageXOffset": 0,
@@ -2544,43 +2544,23 @@
   },
   "screen": {
     "availWidth": 1680,
-    "availHeight": 1050,
+    "availHeight": 1025,
     "availLeft": 0,
-    "availTop": 0,
+    "availTop": 25,
     "width": 1680,
     "height": 1050,
     "colorDepth": 30,
     "pixelDepth": 30
   },
   "body": {
-    "clientWidth": 1664,
-    "clientHeight": 0
+    "clientWidth": 1564,
+    "clientHeight": 417
   },
-  "mediaDevices": [
-    {
-      "deviceId": "",
-      "kind": "audioinput",
-      "label": "",
-      "groupId": "010a17b19e9c118129e3102e8169f95393105b9af422441997d102dce919f9da"
-    },
-    {
-      "deviceId": "",
-      "kind": "videoinput",
-      "label": "",
-      "groupId": "aacf78a3c2a6bdb839d7c5d5bcbbaea20350f93a4c0a2711910a72737a50c16b"
-    },
-    {
-      "deviceId": "",
-      "kind": "audiooutput",
-      "label": "",
-      "groupId": "010a17b19e9c118129e3102e8169f95393105b9af422441997d102dce919f9da"
-    }
-  ],
   "battery": {
     "charging": true,
-    "chargingTime": 0,
+    "chargingTime": null,
     "dischargingTime": null,
-    "level": 1
+    "level": 0.87
   },
   "keyboard": {
     "KeyA": "a",
@@ -2968,146 +2948,146 @@
       "localService": true,
       "name": "Zuzana",
       "voiceURI": "Zuzana"
+    }
+  ],
+  "permissions": {
+    "storage-access": {
+      "exType": "TypeError",
+      "msg": "Failed to execute 'query' on 'Permissions': The Storage Access API is not enabled."
+    },
+    "push": {
+      "exType": "DOMException",
+      "msg": "Failed to execute 'query' on 'Permissions': Push Permission without userVisibleOnly:true isn't supported yet."
+    },
+    "speaker": {
+      "exType": "TypeError",
+      "msg": "Failed to execute 'query' on 'Permissions': Failed to read the 'name' property from 'PermissionDescriptor': The provided value 'speaker' is not a valid enum value of type PermissionName."
+    },
+    "device-info": {
+      "exType": "TypeError",
+      "msg": "Failed to execute 'query' on 'Permissions': Failed to read the 'name' property from 'PermissionDescriptor': The provided value 'device-info' is not a valid enum value of type PermissionName."
+    },
+    "bluetooth": {
+      "exType": "TypeError",
+      "msg": "Failed to execute 'query' on 'Permissions': Failed to read the 'name' property from 'PermissionDescriptor': The provided value 'bluetooth' is not a valid enum value of type PermissionName."
+    },
+    "clipboard": {
+      "exType": "TypeError",
+      "msg": "Failed to execute 'query' on 'Permissions': Failed to read the 'name' property from 'PermissionDescriptor': The provided value 'clipboard' is not a valid enum value of type PermissionName."
+    },
+    "display-capture": {
+      "exType": "TypeError",
+      "msg": "Failed to execute 'query' on 'Permissions': Display Capture is not enabled."
+    },
+    "ambient-light-sensor": {
+      "exType": "TypeError",
+      "msg": "Failed to execute 'query' on 'Permissions': GenericSensorExtraClasses flag is not enabled."
+    },
+    "accessibility-events": {
+      "exType": "TypeError",
+      "msg": "Failed to execute 'query' on 'Permissions': Accessibility Object Model is not enabled."
+    },
+    "nfc": {
+      "exType": "TypeError",
+      "msg": "Failed to execute 'query' on 'Permissions': Web NFC is not enabled."
+    },
+    "system-wake-lock": {
+      "exType": "TypeError",
+      "msg": "Failed to execute 'query' on 'Permissions': System Wake Lock is not enabled."
+    },
+    "window-placement": {
+      "exType": "TypeError",
+      "msg": "Failed to execute 'query' on 'Permissions': Window Placement is not enabled."
+    },
+    "font-access": {
+      "exType": "TypeError",
+      "msg": "Failed to execute 'query' on 'Permissions': Font Access is not enabled."
+    },
+    "midi": {
+      "state": "granted"
+    },
+    "background-fetch": {
+      "state": "granted"
+    },
+    "background-sync": {
+      "state": "granted"
+    },
+    "accelerometer": {
+      "state": "granted"
+    },
+    "gyroscope": {
+      "state": "granted"
+    },
+    "magnetometer": {
+      "state": "granted"
+    },
+    "screen-wake-lock": {
+      "state": "granted"
+    },
+    "clipboard-read": {
+      "state": "prompt"
+    },
+    "clipboard-write": {
+      "state": "granted"
+    },
+    "payment-handler": {
+      "state": "granted"
+    },
+    "periodic-background-sync": {
+      "state": "denied"
+    },
+    "geolocation": {
+      "state": "prompt"
+    },
+    "notifications": {
+      "state": "denied"
+    },
+    "camera": {
+      "state": "prompt"
+    },
+    "microphone": {
+      "state": "prompt"
+    },
+    "persistent-storage": {
+      "state": "prompt"
+    },
+    "idle-detection": {
+      "state": "prompt"
+    }
+  },
+  "mediaDevices": [
+    {
+      "deviceId": "",
+      "kind": "audioinput",
+      "label": "",
+      "groupId": "203cfa640a576d55e89e5ce4bb98c7fb109aa01a1f63d2582eaf3564d7330ddc"
     },
     {
-      "default": false,
-      "lang": "de-DE",
-      "localService": false,
-      "name": "Google Deutsch",
-      "voiceURI": "Google Deutsch"
+      "deviceId": "",
+      "kind": "videoinput",
+      "label": "",
+      "groupId": "e30c75d2ac52793347530d6688fa160e7436fbd2711e76e1662bafab88d4424a"
     },
     {
-      "default": false,
-      "lang": "en-US",
-      "localService": false,
-      "name": "Google US English",
-      "voiceURI": "Google US English"
+      "deviceId": "",
+      "kind": "audiooutput",
+      "label": "",
+      "groupId": "203cfa640a576d55e89e5ce4bb98c7fb109aa01a1f63d2582eaf3564d7330ddc"
+    }
+  ],
+  "rtc": [
+    {
+      "candidate": "candidate:2862045435 1 udp 2113937151 a9f5931a-bf63-4967-8865-7e6d04030d10.local 61611 typ host generation 0 ufrag t0+F network-cost 999",
+      "reg": null
     },
     {
-      "default": false,
-      "lang": "en-GB",
-      "localService": false,
-      "name": "Google UK English Female",
-      "voiceURI": "Google UK English Female"
-    },
-    {
-      "default": false,
-      "lang": "en-GB",
-      "localService": false,
-      "name": "Google UK English Male",
-      "voiceURI": "Google UK English Male"
-    },
-    {
-      "default": false,
-      "lang": "es-ES",
-      "localService": false,
-      "name": "Google español",
-      "voiceURI": "Google español"
-    },
-    {
-      "default": false,
-      "lang": "es-US",
-      "localService": false,
-      "name": "Google español de Estados Unidos",
-      "voiceURI": "Google español de Estados Unidos"
-    },
-    {
-      "default": false,
-      "lang": "fr-FR",
-      "localService": false,
-      "name": "Google français",
-      "voiceURI": "Google français"
-    },
-    {
-      "default": false,
-      "lang": "hi-IN",
-      "localService": false,
-      "name": "Google हिन्दी",
-      "voiceURI": "Google हिन्दी"
-    },
-    {
-      "default": false,
-      "lang": "id-ID",
-      "localService": false,
-      "name": "Google Bahasa Indonesia",
-      "voiceURI": "Google Bahasa Indonesia"
-    },
-    {
-      "default": false,
-      "lang": "it-IT",
-      "localService": false,
-      "name": "Google italiano",
-      "voiceURI": "Google italiano"
-    },
-    {
-      "default": false,
-      "lang": "ja-JP",
-      "localService": false,
-      "name": "Google 日本語",
-      "voiceURI": "Google 日本語"
-    },
-    {
-      "default": false,
-      "lang": "ko-KR",
-      "localService": false,
-      "name": "Google 한국의",
-      "voiceURI": "Google 한국의"
-    },
-    {
-      "default": false,
-      "lang": "nl-NL",
-      "localService": false,
-      "name": "Google Nederlands",
-      "voiceURI": "Google Nederlands"
-    },
-    {
-      "default": false,
-      "lang": "pl-PL",
-      "localService": false,
-      "name": "Google polski",
-      "voiceURI": "Google polski"
-    },
-    {
-      "default": false,
-      "lang": "pt-BR",
-      "localService": false,
-      "name": "Google português do Brasil",
-      "voiceURI": "Google português do Brasil"
-    },
-    {
-      "default": false,
-      "lang": "ru-RU",
-      "localService": false,
-      "name": "Google русский",
-      "voiceURI": "Google русский"
-    },
-    {
-      "default": false,
-      "lang": "zh-CN",
-      "localService": false,
-      "name": "Google 普通话（中国大陆）",
-      "voiceURI": "Google 普通话（中国大陆）"
-    },
-    {
-      "default": false,
-      "lang": "zh-HK",
-      "localService": false,
-      "name": "Google 粤語（香港）",
-      "voiceURI": "Google 粤語（香港）"
-    },
-    {
-      "default": false,
-      "lang": "zh-TW",
-      "localService": false,
-      "name": "Google 國語（臺灣）",
-      "voiceURI": "Google 國語（臺灣）"
-    },
-    {
-      "default": false,
-      "lang": "en-US",
-      "localService": true,
-      "name": "US English Female TTS (by Google)",
-      "voiceURI": "US English Female TTS (by Google)"
+      "candidate": "candidate:842163049 1 udp 1677729535 76.67.143.197 61611 typ srflx raddr 0.0.0.0 rport 0 generation 0 ufrag t0+F network-cost 999",
+      "reg": [
+        "76.67.143.197",
+        "76.67.143.197",
+        ".197",
+        null
+      ]
     }
   ],
   "mimeTypes": [
@@ -7235,6 +7215,10 @@
       "exists": 1
     },
     {
+      "name": "Roboto",
+      "exists": 1
+    },
+    {
       "name": "Slabo 13px",
       "exists": 1
     },
@@ -8070,109 +8054,5 @@
       "name": "微软雅黑",
       "exists": 1
     }
-  ],
-  "permissions": {
-    "storage-access": {
-      "exType": "TypeError",
-      "msg": "Failed to execute 'query' on 'Permissions': The Storage Access API is not enabled."
-    },
-    "push": {
-      "exType": "DOMException",
-      "msg": "Failed to execute 'query' on 'Permissions': Push Permission without userVisibleOnly:true isn't supported yet."
-    },
-    "speaker": {
-      "exType": "TypeError",
-      "msg": "Failed to execute 'query' on 'Permissions': Failed to read the 'name' property from 'PermissionDescriptor': The provided value 'speaker' is not a valid enum value of type PermissionName."
-    },
-    "device-info": {
-      "exType": "TypeError",
-      "msg": "Failed to execute 'query' on 'Permissions': Failed to read the 'name' property from 'PermissionDescriptor': The provided value 'device-info' is not a valid enum value of type PermissionName."
-    },
-    "bluetooth": {
-      "exType": "TypeError",
-      "msg": "Failed to execute 'query' on 'Permissions': Failed to read the 'name' property from 'PermissionDescriptor': The provided value 'bluetooth' is not a valid enum value of type PermissionName."
-    },
-    "clipboard": {
-      "exType": "TypeError",
-      "msg": "Failed to execute 'query' on 'Permissions': Failed to read the 'name' property from 'PermissionDescriptor': The provided value 'clipboard' is not a valid enum value of type PermissionName."
-    },
-    "ambient-light-sensor": {
-      "exType": "TypeError",
-      "msg": "Failed to execute 'query' on 'Permissions': GenericSensorExtraClasses flag is not enabled."
-    },
-    "accessibility-events": {
-      "exType": "TypeError",
-      "msg": "Failed to execute 'query' on 'Permissions': Accessibility Object Model is not enabled."
-    },
-    "nfc": {
-      "exType": "TypeError",
-      "msg": "Failed to execute 'query' on 'Permissions': Web NFC is not enabled."
-    },
-    "system-wake-lock": {
-      "exType": "TypeError",
-      "msg": "Failed to execute 'query' on 'Permissions': System Wake Lock is not enabled."
-    },
-    "window-placement": {
-      "exType": "TypeError",
-      "msg": "Failed to execute 'query' on 'Permissions': Window Placement is not enabled."
-    },
-    "font-access": {
-      "exType": "TypeError",
-      "msg": "Failed to execute 'query' on 'Permissions': Font Access is not enabled."
-    },
-    "midi": {
-      "state": "granted"
-    },
-    "background-fetch": {
-      "state": "granted"
-    },
-    "background-sync": {
-      "state": "granted"
-    },
-    "accelerometer": {
-      "state": "granted"
-    },
-    "gyroscope": {
-      "state": "granted"
-    },
-    "magnetometer": {
-      "state": "granted"
-    },
-    "screen-wake-lock": {
-      "state": "granted"
-    },
-    "clipboard-read": {
-      "state": "prompt"
-    },
-    "clipboard-write": {
-      "state": "granted"
-    },
-    "payment-handler": {
-      "state": "granted"
-    },
-    "periodic-background-sync": {
-      "state": "denied"
-    },
-    "geolocation": {
-      "state": "prompt"
-    },
-    "notifications": {
-      "state": "prompt"
-    },
-    "camera": {
-      "state": "prompt"
-    },
-    "microphone": {
-      "state": "prompt"
-    },
-    "display-capture": {
-      "state": "prompt"
-    },
-    "persistent-storage": {
-      "state": "prompt"
-    },
-    "idle-detection": {
-      "state": "prompt"
-    }
-  }
+  ]
 }

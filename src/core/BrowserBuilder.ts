@@ -1,62 +1,100 @@
-import {LaunchParameters, ProxyServer, VanillaLaunchOptions} from "./Driver.js";
+// noinspection JSUnusedGlobalSymbols
+
+import {
+    ConnectParameters,
+    DriverParameters,
+    LaunchParameters,
+    ProxyServer,
+    VanillaConnectOptions,
+    VanillaLaunchOptions
+} from "./Driver.js";
+
 import {DeviceDescriptor} from "./DeviceDescriptor.js";
 import {BrowserLauncher} from "./BrowserLauncher";
 import {FakeBrowser, kDefaultWindowsDD} from "./FakeBrowser";
 
 export class BrowserBuilder {
 
-    private readonly _launchParams: LaunchParameters
+    private readonly _driverParams: DriverParameters
 
     constructor() {
-        this._launchParams = {
+        this._driverParams = {
             deviceDesc: kDefaultWindowsDD,
             userDataDir: "",
-            maxSurvivalTime: FakeBrowser.globalConfig.defaultBrowserMaxSurvivalTime,
-            launchOptions: {}
         }
     }
 
+    get driverParams(): DriverParameters {
+        return this._driverParams
+    }
+
     get launchParams(): LaunchParameters {
-        return this._launchParams
+        const result = this._driverParams as LaunchParameters
+        result.launchOptions = result.launchOptions || {}
+
+        return result
+    }
+
+    get connectParams(): ConnectParameters {
+        const result = this._driverParams as ConnectParameters
+        result.connectOptions = result.connectOptions || {}
+
+        return result
     }
 
     maxSurvivalTime(value: number) {
-        this._launchParams.maxSurvivalTime = value
+        this.launchParams.maxSurvivalTime = value
         return this
     }
 
     deviceDescriptor(value: DeviceDescriptor) {
-        this._launchParams.deviceDesc = value
+        this._driverParams.deviceDesc = value
         return this
     }
 
     displayUserActionLayer(value: boolean) {
-        this._launchParams.displayUserActionLayer = value
+        this._driverParams.displayUserActionLayer = value
         return this
     }
 
     userDataDir(value: string) {
-        this._launchParams.userDataDir = value
+        this._driverParams.userDataDir = value
         return this
     }
 
     log(value: boolean) {
-        this._launchParams.log = value
+        this._driverParams.log = value
         return this
     }
 
     proxy(value: ProxyServer) {
-        this._launchParams.proxy = value
+        this._driverParams.proxy = value
         return this
     }
 
     vanillaLaunchOptions(value: VanillaLaunchOptions) {
-        this._launchParams.launchOptions = value
+        this.launchParams.launchOptions = value
+        return this
+    }
+
+    vanillaConnectOptions(value: VanillaConnectOptions) {
+        this.connectParams.connectOptions = value
         return this
     }
 
     async launch(): Promise<FakeBrowser> {
-        const result = await BrowserLauncher.launch(this._launchParams)
+        if ('undefined' === typeof this.launchParams.maxSurvivalTime) {
+            this.launchParams.maxSurvivalTime = FakeBrowser.globalConfig.defaultBrowserMaxSurvivalTime
+        }
+
+        const result = await BrowserLauncher.launch(this.launchParams)
         return result
     }
+
+    async connect(): Promise<FakeBrowser> {
+        const result = await BrowserLauncher.connect(this.connectParams)
+        return result
+    }
+
+
 }

@@ -36,8 +36,8 @@ module.exports = async function () {
         testFBContextFile,
         {
             'wsEndpoint': fakeBrowser.vanillaBrowser.wsEndpoint(),
-            'DD': fakeBrowser.launchParams.deviceDesc,
-            'fakeDD': fakeBrowser.launchParams.fakeDeviceDesc,
+            'DD': fakeBrowser.driverParams.deviceDesc,
+            'fakeDD': fakeBrowser.driverParams.fakeDeviceDesc,
         },
         {spaces: 2});
 };

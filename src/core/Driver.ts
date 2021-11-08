@@ -2,9 +2,9 @@ import {strict as assert} from 'assert';
 import * as fs from "fs-extra";
 
 import {addExtra, PuppeteerExtra} from "puppeteer-extra";
-import {Browser, BrowserConnectOptions, BrowserLaunchArgumentOptions, LaunchOptions} from "puppeteer";
+import {Browser, BrowserConnectOptions, BrowserLaunchArgumentOptions, ConnectOptions, LaunchOptions} from "puppeteer";
 
-import {DeviceDescriptor, FakeDeviceDescriptor} from "./DeviceDescriptor.js";
+import DeviceDescriptorHelper, {DeviceDescriptor, FakeDeviceDescriptor} from "./DeviceDescriptor.js";
 import {UserAgentHelper} from "./UserAgentHelper.js";
 import {PptrPatcher} from "./PptrPatcher";
 
@@ -16,16 +16,24 @@ export interface ProxyServer {
 }
 
 export type VanillaLaunchOptions = LaunchOptions & BrowserLaunchArgumentOptions & BrowserConnectOptions
+export type VanillaConnectOptions = ConnectOptions
 
-export interface LaunchParameters {
+export interface DriverParameters {
     deviceDesc: DeviceDescriptor,
     fakeDeviceDesc?: FakeDeviceDescriptor,
     displayUserActionLayer?: boolean,
-    userDataDir: string,
-    maxSurvivalTime: number,
-    proxy?: ProxyServer,
     log?: boolean,
+    proxy?: ProxyServer,
+    userDataDir: string,
+}
+
+export interface LaunchParameters extends DriverParameters {
+    maxSurvivalTime: number,
     launchOptions: VanillaLaunchOptions,
+}
+
+export interface ConnectParameters extends DriverParameters {
+    connectOptions: VanillaConnectOptions,
 }
 
 export const kDefaultTimeout = 15 * 1000
@@ -38,29 +46,117 @@ export const kDefaultLaunchOptions = {
 
 export default class Driver {
 
+    private static checkParamsLegal(params: DriverParameters) {
+        // deviceDesc must be set
+        const dd: DeviceDescriptor = params.deviceDesc
+        assert(dd, 'deviceDesc must be set')
+
+        DeviceDescriptorHelper.checkLegal(dd)
+
+        // user data dir
+        // The userDataDir in launchParameters must be set
+        assert(params.userDataDir, 'userDataDir must be set')
+    }
+
     /**
-     * Launch browser
+     * Connect to browser
      * @param uuid
-     * @param defaultLaunchArgs
-     * @param launchParams
+     * @param connectParams
      */
-    static async launch(
+    static async connect(
         uuid: string,
-        defaultLaunchArgs: string[],
-        launchParams: LaunchParameters,
+        connectParams: ConnectParameters,
     ): Promise<{
         vanillaBrowser: Browser,
         pptrExtra: PuppeteerExtra,
     }> {
+        // Different instances with different puppeteer configurations
+        const pptr = addExtra(require('puppeteer'))
+
+        // patch with evasions
+        await PptrPatcher.patch(
+            uuid,
+            pptr,
+            connectParams,
+        )
+
+        const fakeDD = connectParams.fakeDeviceDesc
+        assert(!!fakeDD)
+
+        const browser: Browser = await pptr.connect(connectParams.connectOptions)
+        await this.patchUAFromLaunchedBrowser(browser, fakeDD);
+
+        return {
+            vanillaBrowser: browser,
+            pptrExtra: pptr
+        }
+    }
+
+    /**
+     * Launch browser
+     * @param uuid
+     * @param defaultLaunchArgs
+     * @param params
+     */
+    static async launch(
+        uuid: string,
+        defaultLaunchArgs: string[],
+        params: LaunchParameters,
+    ): Promise<{
+        vanillaBrowser: Browser,
+        pptrExtra: PuppeteerExtra,
+    }> {
+        this.checkParamsLegal(params)
+
         if (
-            !launchParams.launchOptions
-            || Object.keys(launchParams.launchOptions).length === 0
+            !params.launchOptions
+            || Object.keys(params.launchOptions).length === 0
         ) {
-            launchParams.launchOptions = kDefaultLaunchOptions
+            params.launchOptions = kDefaultLaunchOptions
         }
 
+        this.patchLaunchArgs(defaultLaunchArgs, params)
+
+        // Different instances with different puppeteer configurations
+        const pptr = addExtra(require('puppeteer'))
+
+        // patch with evasions
+        await PptrPatcher.patch(
+            uuid,
+            pptr,
+            params,
+        )
+
+        const fakeDD = params.fakeDeviceDesc
+        assert(!!fakeDD)
+
+        const browser: Browser = await pptr.launch(params.launchOptions)
+        await this.patchUAFromLaunchedBrowser(browser, fakeDD);
+
+        return {
+            vanillaBrowser: browser,
+            pptrExtra: pptr
+        }
+    }
+
+    private static async patchUAFromLaunchedBrowser(browser: Browser, fakeDD: FakeDeviceDescriptor) {
+        // read major version from the launched browser and replace dd.userAgent
+        const orgUA = await browser.userAgent()
+        const orgVersion = UserAgentHelper.chromeVersion(orgUA)
+        const fakeVersion = UserAgentHelper.chromeVersion(fakeDD.navigator.userAgent)
+
+        assert(orgVersion)
+        assert(fakeVersion)
+
+        fakeDD.navigator.userAgent = fakeDD.navigator.userAgent.replace(fakeVersion, orgVersion)
+        fakeDD.navigator.appVersion = fakeDD.navigator.appVersion.replace(fakeVersion, orgVersion)
+    }
+
+    private static patchLaunchArgs(defaultLaunchArgs: string[], launchParams: LaunchParameters) {
         // args
+        // noinspection SuspiciousTypeOfGuard
         assert(defaultLaunchArgs instanceof Array)
+
         const args = [
             ...defaultLaunchArgs,
             ...(launchParams.launchOptions.args || []),
@@ -156,35 +252,6 @@ export default class Driver {
                 '--disable-2d-canvas-clip-aa', // Disable antialiasing on 2d canvas clips
                 '--disable-gl-drawing-for-tests', // BEST OPTION EVER! Disables GL drawing operations which produce pixel output. With this the GL output will not be correct but tests will run faster.
             )
-        }
-
-        // Different instances with different puppeteer configurations
-        const pptr = addExtra(require('puppeteer'))
-
-        // patch with evasions
-        await PptrPatcher.patch(
-            uuid,
-            pptr,
-            launchParams,
-        )
-
-        // noinspection UnnecessaryLocalVariableJS
-        const browser: Browser = await pptr.launch(launchParams.launchOptions)
-
-        // read major version from the launched browser and replace dd.userAgent
-        const orgUA = await browser.userAgent()
-        const orgVersion = UserAgentHelper.chromeVersion(orgUA)
-        const fakeVersion = UserAgentHelper.chromeVersion(fakeDD.navigator.userAgent)
-
-        assert(orgVersion)
-        assert(fakeVersion)
-
-        fakeDD.navigator.userAgent = fakeDD.navigator.userAgent.replace(fakeVersion, orgVersion)
-        fakeDD.navigator.appVersion = fakeDD.navigator.appVersion.replace(fakeVersion, orgVersion)
-
-        return {
-            vanillaBrowser: browser,
-            pptrExtra: pptr
         }
     }
 

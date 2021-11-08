@@ -8,8 +8,8 @@ import express, {Application} from "express";
 import {Agent} from "https";
 import {strict as assert} from 'assert';
 
-import Driver, {LaunchParameters, VanillaLaunchOptions} from "./Driver.js";
-import DeviceDescriptorHelper, {DeviceDescriptor, FakeDeviceDescriptor} from "./DeviceDescriptor.js";
+import Driver, {ConnectParameters, DriverParameters, LaunchParameters, VanillaLaunchOptions} from "./Driver.js";
+import DeviceDescriptorHelper, {FakeDeviceDescriptor} from "./DeviceDescriptor.js";
 import {PptrPatcher} from "./PptrPatcher";
 import {FakeBrowser} from "./FakeBrowser";
 
@@ -23,7 +23,7 @@ export class BrowserLauncher {
     static _app: Application | null = null
     static _appServer: http.Server | null = null
 
-    private static checkOptionsLegal(options?: VanillaLaunchOptions) {
+    private static checkLaunchOptionsLegal(options?: VanillaLaunchOptions) {
         if (!options || !options.args || !options.args.length) {
             return
         }
@@ -43,23 +43,11 @@ export class BrowserLauncher {
         }
     }
 
-    private static checkLaunchParamsLegal(launchParams: LaunchParameters) {
-        // deviceDesc must be set
-        const dd: DeviceDescriptor = launchParams.deviceDesc
-        assert(dd, 'deviceDesc must be set')
-
-        DeviceDescriptorHelper.checkLegal(dd)
-
-        // user data dir
-        // The userDataDir in launchParameters must be set
-        assert(launchParams.userDataDir, 'userDataDir must be set')
-    }
-
-    private static prepareFakeDeviceDesc(launchParams: LaunchParameters) {
+    private static prepareFakeDeviceDesc(params: DriverParameters) {
         // Go to the userDataDir specified by the user and read the __fakebrowser_fakeDD.json file
         // or create it if it does not exist.
 
-        const userDataDir = launchParams.userDataDir
+        const userDataDir = params.userDataDir
 
         if (!fs.existsSync(userDataDir)) {
             // may throw
@@ -74,7 +62,7 @@ export class BrowserLauncher {
             tempFakeDD = (
                 fs.existsSync(fakeDDPathName)
                     ? fs.readJsonSync(fakeDDPathName)
-                    : launchParams.deviceDesc
+                    : params.deviceDesc
             ) as FakeDeviceDescriptor
 
             DeviceDescriptorHelper.checkLegal(tempFakeDD)
@@ -84,7 +72,7 @@ export class BrowserLauncher {
             // It is possible that some fields are missing due to the deviceDesc update and need to recreate fakeDD
             const orgTempFakeDD = tempFakeDD
 
-            tempFakeDD = launchParams.deviceDesc as FakeDeviceDescriptor
+            tempFakeDD = params.deviceDesc as FakeDeviceDescriptor
 
             if (orgTempFakeDD) {
                 tempFakeDD.fontSalt = orgTempFakeDD.fontSalt
@@ -101,39 +89,65 @@ export class BrowserLauncher {
             fs.writeJsonSync(fakeDDPathName, fakeDeviceDesc, {spaces: 2})
         }
 
-        launchParams.fakeDeviceDesc = fakeDeviceDesc
+        params.fakeDeviceDesc = fakeDeviceDesc
     }
 
-    static async launch(launchParams: LaunchParameters): Promise<FakeBrowser> {
+    static async connect(params: ConnectParameters): Promise<FakeBrowser> {
+        await this.bootInternalHTTPServer()
+
+        this.prepareFakeDeviceDesc(params)
+        assert(params.fakeDeviceDesc)
+
+        const uuid = DeviceDescriptorHelper.deviceUUID(params.fakeDeviceDesc)
+        const {
+            vanillaBrowser,
+            pptrExtra
+        } = await Driver.connect(
+            uuid,
+            params
+        )
+
+        const launchTime = new Date().getTime()
+        const fb = new FakeBrowser(
+            params,
+            vanillaBrowser,
+            pptrExtra,
+            launchTime,
+            uuid
+        )
+
+        // pages 0 cannot be hook, lets drop it
+        await fb._patchPages0Bug()
+
+        return fb
+    }
+
+    static async launch(params: LaunchParameters): Promise<FakeBrowser> {
         this.bootBrowserSurvivalChecker();
         await this.bootInternalHTTPServer()
 
         // deviceDesc, userDataDir cannot be empty
-        this.checkLaunchParamsLegal(launchParams)
-        this.checkOptionsLegal(launchParams.launchOptions)
+        this.checkLaunchOptionsLegal(params.launchOptions)
 
-        this.prepareFakeDeviceDesc(launchParams)
+        this.prepareFakeDeviceDesc(params)
+        assert(params.fakeDeviceDesc)
 
-        assert(launchParams.fakeDeviceDesc)
-
-        const launchTime = new Date().getTime()
-        const uuid = DeviceDescriptorHelper.deviceUUID(launchParams.fakeDeviceDesc)
-
+        const uuid = DeviceDescriptorHelper.deviceUUID(params.fakeDeviceDesc)
         const {
             vanillaBrowser,
             pptrExtra
         } = await Driver.launch(
             uuid,
             FakeBrowser.globalConfig.defaultLaunchArgs,
-            launchParams
+            params
         )
 
+        const launchTime = new Date().getTime()
         const fb = new FakeBrowser(
-            launchParams,
+            params,
             vanillaBrowser,
             pptrExtra,
             launchTime,
-            launchParams.maxSurvivalTime,
             uuid
         )
 
@@ -226,7 +240,7 @@ export class BrowserLauncher {
                 const killThese = this._fakeBrowserInstances.filter(
                     e =>
                         (e.launchParams.maxSurvivalTime > 0)
-                        && (new Date().getTime() > e.launchTime + e.launchParams.maxSurvivalTime)
+                        && (new Date().getTime() > e.bindingTime + e.launchParams.maxSurvivalTime)
                 )
 
                 const p: Promise<void>[] = []

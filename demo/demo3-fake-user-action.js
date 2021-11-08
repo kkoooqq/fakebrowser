@@ -26,7 +26,7 @@ const {PptrToolkit} = require('fakebrowser/dist/cjs/PptrToolkit');
         for (const sb of submitButtons) {
             // There are lots of type="submit" buttons on the page, we need to find the button that intersects with viewport,
             // and the first button we found is the "search" button.
-            if (await PptrToolkit.intersectingViewport(sb, fakeBrowser.launchParams.fakeDeviceDesc)) {
+            if (await PptrToolkit.intersectingViewport(sb, fakeBrowser.driverParams.fakeDeviceDesc)) {
                 submitButton = sb;
                 break;
             }
