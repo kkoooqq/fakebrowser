@@ -128,7 +128,7 @@ if (helper.inLinux()) {
 }
 
 // Is there a friend class similar to C++ ?
-// friend class FakeBrowserLauncher
+// friend class BrowserLauncher
 export class FakeBrowser {
     static Builder = BrowserBuilder
 
@@ -240,7 +240,7 @@ export class FakeBrowser {
     private async interceptWorker(worker: WebWorker) {
         assert(!!worker)
 
-        const injectJs: string = await PptrPatcher.evasionsCode(this.pptrExtra)
+        const injectJs: string = await PptrPatcher.evasionsCode(this)
         await worker.evaluate(injectJs)
     }
 
@@ -249,7 +249,7 @@ export class FakeBrowser {
 
         // FIXME: Worker & SharedWorker does not work with this way
         // console.log('intercept', target.url())
-        const injectJs: string = await PptrPatcher.evasionsCode(this.pptrExtra)
+        const injectJs: string = await PptrPatcher.evasionsCode(this)
 
         await client.send('Runtime.evaluate', {
             expression: injectJs
@@ -297,19 +297,20 @@ export class FakeBrowser {
         // })
 
         // set additional request headers
-        let lang: string = fakeDD.navigator.languages
-            ? fakeDD.navigator.languages.join(',')
-            : fakeDD.navigator.language
+        let lang: string =
+            fakeDD.navigator.languages
+                ? fakeDD.navigator.languages.join(',')
+                : fakeDD.navigator.language
 
         if (lang && lang.length) {
             lang += ';q=0.9'
         }
 
-        // FIXME: read version from the launched browser
-        const chromeVersion = UserAgentHelper.chromeMajorVersion(fakeDD.navigator.userAgent)
+        // read version from the launched browser
+        const chromeMajorVersion = UserAgentHelper.chromeMajorVersion(await this.vanillaBrowser.userAgent())
         const os = UserAgentHelper.os(fakeDD.navigator.userAgent)
 
-        assert(chromeVersion)
+        assert(chromeMajorVersion)
         assert(os)
 
         const extraHTTPHeaders: ChromeUACHHeaders = {
@@ -319,13 +320,13 @@ export class FakeBrowser {
             'sec-ch-ua':
                 this._launchParams.launchOptions.executablePath
                 && this._launchParams.launchOptions.executablePath.toLowerCase().includes('edge')
-                    ? `"Microsoft Edge";v="${chromeVersion}", " Not;A Brand";v="99", "Chromium";v="${chromeVersion}"`
-                    : `"Google Chrome";v="${chromeVersion}", " Not;A Brand";v="99", "Chromium";v="${chromeVersion}"`,
+                    ? `"Microsoft Edge";v="${chromeMajorVersion}", " Not;A Brand";v="99", "Chromium";v="${chromeMajorVersion}"`
+                    : `"Google Chrome";v="${chromeMajorVersion}", " Not;A Brand";v="99", "Chromium";v="${chromeMajorVersion}"`,
             'sec-ch-ua-mobile': '?0',
             // 'sec-fetch-site': 'cross-site',
         }
 
-        if (chromeVersion >= 93) {
+        if (chromeMajorVersion >= 93) {
             extraHTTPHeaders['sec-ch-ua-platform'] = `"${os}"`
         }
 

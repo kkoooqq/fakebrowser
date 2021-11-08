@@ -16,15 +16,42 @@ class Plugin extends PuppeteerExtraPlugin {
         return 'evasions/properties.getter';
     }
 
+    async onBrowser(browser, opts) {
+        if (
+            this.opts.navigator
+            && this.opts.navigator.userAgent
+        ) {
+            const orgUA = await browser.userAgent();
+
+            function chromeVersion(userAgent) {
+                const chromeVersionPart = userAgent.match(/Chrome\/(.*?) /);
+                if (chromeVersionPart) {
+                    return chromeVersionPart[1];
+                }
+
+                return null;
+            }
+
+            const orgVersion = chromeVersion(orgUA);
+            const fakeVersion = chromeVersion(this.opts.navigator.userAgent);
+
+            this.opts.navigator.userAgent = this.opts.navigator.userAgent.replace(fakeVersion, orgVersion);
+
+            if (this.opts.navigator.appVersion) {
+                this.opts.navigator.appVersion = this.opts.navigator.appVersion.replace(fakeVersion, orgVersion);
+            }
+        }
+    }
+
     async onPageCreated(page) {
-        await withUtils(this, page).evaluateOnNewDocument(this.mainFunction, this.opts.data);
+        await withUtils(this, page).evaluateOnNewDocument(this.mainFunction, this.opts);
     }
 
     onServiceWorkerContent(jsContent) {
-        return withWorkerUtils(this, jsContent).evaluate(this.mainFunction, this.opts.data);
+        return withWorkerUtils(this, jsContent).evaluate(this.mainFunction, this.opts);
     }
 
-    mainFunction = (utils, data) => {
+    mainFunction = (utils, opts) => {
         /* Define variables */
         const kObjPlaceHolder = '_$obj!_//+_';
         const kObjUndefinedPlaceHolder = '_$obj!_undefined_//+_';
@@ -93,27 +120,27 @@ class Plugin extends PuppeteerExtraPlugin {
         };
 
         if ('undefined' !== typeof WorkerNavigator) {
-            overwriteObjectProperties(WorkerNavigator.prototype, data.navigator);
+            overwriteObjectProperties(WorkerNavigator.prototype, opts.navigator);
         }
 
         if ('undefined' !== typeof Navigator) {
-            overwriteObjectProperties(Navigator.prototype, data.navigator, ['userAgent']);
+            overwriteObjectProperties(Navigator.prototype, opts.navigator);
         }
 
         if ('undefined' !== typeof window) {
-            overwriteObjectProperties(window, data.window, ['pageXOffset', 'pageYOffset']);
+            overwriteObjectProperties(window, opts.window, ['pageXOffset', 'pageYOffset']);
         }
 
         if ('undefined' !== typeof Document) {
-            overwriteObjectProperties(Document.prototype, data.document);
+            overwriteObjectProperties(Document.prototype, opts.document);
         }
 
         if ('undefined' !== typeof HTMLBodyElement) {
-            overwriteObjectProperties(HTMLBodyElement.prototype, data.body, ['clientWidth', 'clientHeight']);
+            overwriteObjectProperties(HTMLBodyElement.prototype, opts.body, ['clientWidth', 'clientHeight']);
         }
 
         if ('undefined' !== typeof Screen) {
-            overwriteObjectProperties(Screen.prototype, data.screen);
+            overwriteObjectProperties(Screen.prototype, opts.screen);
         }
     };
 

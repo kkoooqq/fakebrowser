@@ -44,6 +44,15 @@ function chromeMajorVersion(userAgent: string): number | null {
     return null
 }
 
+function chromeVersion(userAgent: string): string | null {
+    const chromeVersionPart = userAgent.match(/Chrome\/(.*?) /)
+    if (chromeVersionPart) {
+        return chromeVersionPart[1]
+    }
+
+    return null
+}
+
 export type OSTypes = 'Windows' | 'macOS' | 'Linux' | 'iPhone' | 'iPod' | 'iPad' | 'Android'
 
 function os(userAgent: string): OSTypes | null {
@@ -82,5 +91,6 @@ export const UserAgentHelper = {
     isMobile,
     browserType,
     chromeMajorVersion,
+    chromeVersion,
     os,
 }

@@ -187,7 +187,7 @@ export class BrowserLauncher {
                 const browser = BrowserLauncher.getBrowserWithUUID(uuid)
 
                 if (browser) {
-                    jsContent = await PptrPatcher.patchWorkerJsContent(browser.pptrExtra, jsContent)
+                    jsContent = await PptrPatcher.patchWorkerJsContent(browser, jsContent)
                 }
 
                 for (const {name, value} of Object.entries(jsResp.headers).map(e => ({

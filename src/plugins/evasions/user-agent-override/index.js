@@ -16,15 +16,34 @@ class Plugin extends PuppeteerExtraPlugin {
         this._headless = false;
     }
 
-    onBrowser(browser, opts) {
-        this._override = this.getOverride(browser);
+    async onBrowser(browser, opts) {
+        this._override = await this.getOverride(browser);
     }
 
-    getOverride = (browser) => {
+    getOverride = async (browser) => {
+        // read major version from the launched browser and replace dd.userAgent
+        if (this.opts.userAgent) {
+            const orgUA = await browser.userAgent();
+
+            function chromeVersion(userAgent) {
+                const chromeVersionPart = userAgent.match(/Chrome\/(.*?) /);
+                if (chromeVersionPart) {
+                    return chromeVersionPart[1];
+                }
+
+                return null;
+            }
+
+            const orgVersion = chromeVersion(orgUA);
+            const fakeVersion = chromeVersion(this.opts.userAgent);
+
+            this.opts.userAgent = this.opts.userAgent.replace(fakeVersion, orgVersion);
+        }
+
         // Determine the full user agent string, strip the "Headless" part
         let ua =
             this.opts.userAgent ||
-            browser && (browser.userAgent()).replace('HeadlessChrome/', 'Chrome/');
+            browser && (await browser.userAgent()).replace('HeadlessChrome/', 'Chrome/');
 
         if (!ua) {
             return null;
@@ -41,7 +60,7 @@ class Plugin extends PuppeteerExtraPlugin {
         // Full version number from Chrome
         const uaVersion = ua.includes('Chrome/')
             ? ua.match(/Chrome\/([\d|.]+)/)[1]
-            : (browser && (browser.version()).match(/\/([\d|.]+)/)[1]);
+            : (browser && (await browser.version()).match(/\/([\d|.]+)/)[1]);
 
         if (!uaVersion) {
             return null;
@@ -173,7 +192,7 @@ class Plugin extends PuppeteerExtraPlugin {
         }
     }
 
-    async onServiceWorkerContent(jsContent) {
+    onServiceWorkerContent(jsContent) {
         const override = this._override;
 
         if (override) {

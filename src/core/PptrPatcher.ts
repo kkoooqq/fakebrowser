@@ -5,7 +5,7 @@ import {strict as assert} from 'assert';
 
 import axios from "axios";
 import {CDPSession, Protocol} from "puppeteer";
-import {PuppeteerExtra} from "puppeteer-extra";
+import {PuppeteerExtra, PuppeteerExtraPlugin} from "puppeteer-extra";
 
 import {LaunchParameters} from "./Driver";
 import {helper} from "./helper";
@@ -403,12 +403,10 @@ export class PptrPatcher {
 
         let Plugin = require(path.resolve(__dirname, '../plugins/evasions/properties.getter'))
         let plugin = Plugin({
-            data: {
-                navigator: launchParams.fakeDeviceDesc.navigator,
-                window: launchParams.fakeDeviceDesc.window,
-                document: launchParams.fakeDeviceDesc.document,
-                screen: launchParams.fakeDeviceDesc.screen
-            }
+            navigator: launchParams.fakeDeviceDesc.navigator,
+            window: launchParams.fakeDeviceDesc.window,
+            document: launchParams.fakeDeviceDesc.document,
+            screen: launchParams.fakeDeviceDesc.screen
         })
 
         pptr.use(plugin)
@@ -426,17 +424,17 @@ export class PptrPatcher {
 
     /**
      * Package evasions to js string for worker to use
-     * @param pptr
+     * @param browser
      * @param jsContent
      */
-    static async patchWorkerJsContent(pptr: PuppeteerExtra, jsContent: string) {
-        let jsPatch = await this.evasionsCode(pptr);
+    static async patchWorkerJsContent(browser: FakeBrowser, jsContent: string) {
+        const jsPatch = await this.evasionsCode(browser);
         jsContent = jsPatch + jsContent
 
         return jsContent
     }
 
-    static async evasionsCode(pptr: PuppeteerExtra) {
+    static async evasionsCode(browser: FakeBrowser) {
         let jsPatch = ''
         const utils = require('../plugins/evasions/_utils');
 
@@ -450,7 +448,7 @@ export class PptrPatcher {
         utilsContent += `utils.init(); \n`;
 
         // code from puppeteer-extra
-        const plugins = pptr.plugins
+        const plugins: PuppeteerExtraPlugin[] = browser.pptrExtra.plugins
         const runLast = plugins
             .filter(p => p.requirements.has('runLast'))
             .map(p => p.name);
@@ -461,6 +459,10 @@ export class PptrPatcher {
         }
 
         for (const plugin of plugins) {
+            if (plugin['onBrowser']) {
+                await plugin['onBrowser'](browser.vanillaBrowser)
+            }
+
             if (plugin['onServiceWorkerContent']) {
                 // console.log(`SW Patch: ${plugin.name}`)
                 jsPatch = await plugin['onServiceWorkerContent'](jsPatch)
@@ -483,7 +485,7 @@ tmpVarNames.forEach(e => {
     }
 
     static async patchServiceWorkerRequest(
-        pptr: PuppeteerExtra,
+        browser: FakeBrowser,
         requestId: Protocol.Network.RequestId,
         request: Protocol.Network.Request,
         responseHeaders: Protocol.Fetch.HeaderEntry[],
@@ -509,7 +511,7 @@ tmpVarNames.forEach(e => {
                     )
             }
 
-            jsContent = await this.patchWorkerJsContent(pptr, jsContent)
+            jsContent = await this.patchWorkerJsContent(browser, jsContent)
 
             // The order I used is: Fetch.enable -> on Fetch.requestPaused event -> Fetch.getResponseBody -> Fetch.fulfillRequest -> Fetch.disable
             await client.send('Fetch.fulfillRequest', {

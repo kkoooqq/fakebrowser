@@ -17,7 +17,7 @@ class Plugin extends PuppeteerExtraPlugin {
         await withUtils(this, page).evaluateOnNewDocument(this.mainFunction, this.opts.env);
     }
 
-    async onServiceWorkerContent(jsContent) {
+    onServiceWorkerContent(jsContent) {
         return withWorkerUtils(this, jsContent).evaluate(this.mainFunction, this.opts.env);
     }
 

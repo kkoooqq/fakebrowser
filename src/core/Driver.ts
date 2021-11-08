@@ -171,7 +171,21 @@ export default class Driver {
         // noinspection UnnecessaryLocalVariableJS
         const browser: Browser = await pptr.launch(launchParams.launchOptions)
 
-        return {vanillaBrowser: browser, pptrExtra: pptr}
+        // read major version from the launched browser and replace dd.userAgent
+        const orgUA = await browser.userAgent()
+        const orgVersion = UserAgentHelper.chromeVersion(orgUA)
+        const fakeVersion = UserAgentHelper.chromeVersion(fakeDD.navigator.userAgent)
+
+        assert(orgVersion)
+        assert(fakeVersion)
+
+        fakeDD.navigator.userAgent = fakeDD.navigator.userAgent.replace(fakeVersion, orgVersion)
+        fakeDD.navigator.appVersion = fakeDD.navigator.appVersion.replace(fakeVersion, orgVersion)
+
+        return {
+            vanillaBrowser: browser,
+            pptrExtra: pptr
+        }
     }
 
     private static async getPids(pid: string | number): Promise<number[]> {
