@@ -19,6 +19,7 @@ export type VanillaLaunchOptions = LaunchOptions & BrowserLaunchArgumentOptions 
 export type VanillaConnectOptions = ConnectOptions
 
 export interface DriverParameters {
+    doNotHook: boolean,
     deviceDesc: DeviceDescriptor,
     fakeDeviceDesc?: FakeDeviceDescriptor,
     displayUserActionLayer?: boolean,
@@ -61,11 +62,11 @@ export default class Driver {
     /**
      * Connect to browser
      * @param uuid
-     * @param connectParams
+     * @param params
      */
     static async connect(
         uuid: string,
-        connectParams: ConnectParameters,
+        params: ConnectParameters,
     ): Promise<{
         vanillaBrowser: Browser,
         pptrExtra: PuppeteerExtra,
@@ -74,16 +75,18 @@ export default class Driver {
         const pptr = addExtra(require('puppeteer'))
 
         // patch with evasions
-        await PptrPatcher.patch(
-            uuid,
-            pptr,
-            connectParams,
-        )
+        if (!params.doNotHook) {
+            await PptrPatcher.patch(
+                uuid,
+                pptr,
+                params,
+            )
+        }
 
-        const fakeDD = connectParams.fakeDeviceDesc
+        const fakeDD = params.fakeDeviceDesc
         assert(!!fakeDD)
 
-        const browser: Browser = await pptr.connect(connectParams.connectOptions)
+        const browser: Browser = await pptr.connect(params.connectOptions)
         await this.patchUAFromLaunchedBrowser(browser, fakeDD);
 
         return {

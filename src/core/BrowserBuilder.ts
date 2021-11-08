@@ -19,8 +19,9 @@ export class BrowserBuilder {
 
     constructor() {
         this._driverParams = {
+            doNotHook: false,
             deviceDesc: kDefaultWindowsDD,
-            userDataDir: "",
+            userDataDir: ""
         }
     }
 
@@ -40,6 +41,11 @@ export class BrowserBuilder {
         result.connectOptions = result.connectOptions || {}
 
         return result
+    }
+
+    doNotHook(value: boolean) {
+        this.launchParams.doNotHook = value
+        return this
     }
 
     maxSurvivalTime(value: number) {
