@@ -1,6 +1,6 @@
 {
   "name": "fakebrowser",
-  "version": "0.0.51",
+  "version": "0.0.52",
   "description": "🤖 Fake fingerprints to bypass anti-bot systems. Simulate mouse and keyboard operations to make behavior like a real person.",
   "repository": {
     "type": "git",
@@ -56,18 +56,15 @@
   },
   "peerDependencies": {
     "axios": "*",
-    "express": "*",
     "puppeteer": "*"
   },
   "devDependencies": {
     "@types/axios": "*",
-    "@types/express": "*",
     "@types/fs-extra": "^9.0.13",
     "@types/puppeteer": "*",
     "axios": "^0.24.0",
     "cpy-cli": "^3.1.1",
     "cross-env": "^7.0.3",
-    "express": "^4.17.1",
     "jest": "^27.3.1",
     "puppeteer": "^11.0.0",
     "rimraf": "^3.0.2",

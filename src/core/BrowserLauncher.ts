@@ -2,9 +2,10 @@ import * as fs from "fs-extra";
 import * as path from "path";
 import * as URLToolkit from 'url-toolkit'
 import * as http from "http";
+import {IncomingMessage, ServerResponse} from "http";
+import * as url from "url";
 
 import axios from "axios";
-import express, {Application} from "express";
 import {Agent} from "https";
 import {strict as assert} from 'assert';
 
@@ -20,8 +21,7 @@ export class BrowserLauncher {
 
     static _fakeBrowserInstances: FakeBrowser[] = []
     static _checkerIntervalId: NodeJS.Timer | null = null
-    static _app: Application | null = null
-    static _appServer: http.Server | null = null
+    static _httpServer: http.Server | null = null
 
     private static checkLaunchOptionsLegal(options?: VanillaLaunchOptions) {
         if (!options || !options.args || !options.args.length) {
@@ -161,69 +161,80 @@ export class BrowserLauncher {
     }
 
     private static async bootInternalHTTPServer() {
-        if (!this._app) {
-            this._app = express()
+        if (!this._httpServer) {
+            this._httpServer = http.createServer()
 
-            this._app.get('/hb', async (req, res) => {
-                res.send(kInternalHttpServerHeartbeatMagic)
-            })
+            this._httpServer.on('request', async (req: IncomingMessage, res: ServerResponse) => {
+                assert(req.url)
+                const {query, pathname} = url.parse(req.url, true)
 
-            this._app.get('/patchWorker', async (req, res) => {
-                const relUrl = req.query['relUrl'] as string
-                const workerUrl = req.query['workerUrl'] as string
-                const uuid = req.query['uuid'] as string
+                if (pathname === '/hb') {
+                    res.write(kInternalHttpServerHeartbeatMagic)
+                    res.end()
+                }
 
-                const fullUrl = URLToolkit.buildAbsoluteURL(relUrl, workerUrl)
+                if (pathname === '/patchWorker') {
+                    const relUrl = query['relUrl'] as string
+                    const workerUrl = query['workerUrl'] as string
+                    const uuid = query['uuid'] as string
 
-                console.log('request worker content from: ', fullUrl)
+                    const fullUrl = URLToolkit.buildAbsoluteURL(relUrl, workerUrl)
 
-                // Object.fromEntries ES2019
-                const reqHeaders = Object.fromEntries(
-                    Object.entries(
-                        req.headers
-                    ).map(
-                        e => ([e[0], e[1]![0]])
+                    console.log('request worker content from: ', fullUrl)
+
+                    // Object.fromEntries ES2019
+                    const reqHeaders = Object.fromEntries(
+                        Object.entries(
+                            req.headers
+                        ).map(
+                            e => ([e[0], e[1]![0]])
+                        )
                     )
-                )
 
-                delete reqHeaders.host
+                    delete reqHeaders.host
 
-                const jsResp = await axios.get(
-                    fullUrl, {
-                        headers: reqHeaders,
-                        httpsAgent: new Agent({
-                            rejectUnauthorized: false
-                        })
+                    // TODO: get through proxy
+                    const jsResp = await axios.get(
+                        fullUrl, {
+                            headers: reqHeaders,
+                            httpsAgent: new Agent({
+                                rejectUnauthorized: false
+                            })
+                        }
+                    )
+
+                    let jsContent = jsResp.data
+                    const browser = BrowserLauncher.getBrowserWithUUID(uuid)
+
+                    if (browser) {
+                        jsContent = await PptrPatcher.patchWorkerJsContent(browser, jsContent)
                     }
-                )
 
-                let jsContent = jsResp.data
-                const browser = BrowserLauncher.getBrowserWithUUID(uuid)
+                    res.writeHead(
+                        jsResp.status,
+                        jsResp.statusText,
+                        jsResp.headers as NodeJS.Dict<string>
+                    )
 
-                if (browser) {
-                    jsContent = await PptrPatcher.patchWorkerJsContent(browser, jsContent)
+                    res.write(jsContent)
+                    res.end()
                 }
-
-                for (const {name, value} of Object.entries(jsResp.headers).map(e => ({
-                    name: e[0],
-                    value: e[1] as string
-                }))) {
-                    if (name.toLowerCase() != 'content-length') {
-                        res.header(name, value)
-                    }
-                }
-
-                res.send(jsContent)
             })
 
             // If the port listens to errors, determine if the heartbeat interface is successful
             try {
-                this._appServer = this._app.listen(FakeBrowser.globalConfig.internalHttpServerPort)
+                this._httpServer.listen(FakeBrowser.globalConfig.internalHttpServerPort)
             } catch (ex: any) {
                 const hbUrl = `http://127.0.0.1:${FakeBrowser.globalConfig.internalHttpServerPort}/hb`
                 try {
                     const hbData = (await axios.get(hbUrl)).data
                     if (hbData === kInternalHttpServerHeartbeatMagic) {
+                        try {
+                            this._httpServer.close()
+                        } finally {
+                            this._httpServer = null
+                        }
+
                         return
                     }
                 } catch (ignore: any) {
@@ -268,8 +279,14 @@ export class BrowserLauncher {
         // If all browsers have exited, close internal http service
         if (this._fakeBrowserInstances.length === 0) {
             // console.log('close appserver')
-            this._appServer!.close()
-            this._app = null
+
+            if (this._httpServer) {
+                try {
+                    this._httpServer.close()
+                } finally {
+                    this._httpServer = null
+                }
+            }
         }
     }
 }

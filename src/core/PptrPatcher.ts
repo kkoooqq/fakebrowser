@@ -48,6 +48,7 @@ export class PptrPatcher {
         await this.patchLast(uuid, pptr, params)
     }
 
+    // @ts-ignore
     private static patchTaskEnv(
         uuid: string,
         pptr: PuppeteerExtra,
@@ -64,6 +65,7 @@ export class PptrPatcher {
         pptr.use(plugin)
     }
 
+    // @ts-ignore
     private static patchUserActionLayer(
         uuid: string,
         pptr: PuppeteerExtra,
@@ -76,6 +78,7 @@ export class PptrPatcher {
         }
     }
 
+    // @ts-ignore
     private static pathChrome(
         uuid: string,
         pptr: PuppeteerExtra,
@@ -95,6 +98,7 @@ export class PptrPatcher {
         }
     }
 
+    // @ts-ignore
     private static patchWindowHistoryLength(
         uuid: string,
         pptr: PuppeteerExtra,
@@ -108,6 +112,7 @@ export class PptrPatcher {
 
     }
 
+    // @ts-ignore
     private static patchWindowMatchMedia(
         uuid: string,
         pptr: PuppeteerExtra,
@@ -118,6 +123,7 @@ export class PptrPatcher {
         pptr.use(plugin)
     }
 
+    // @ts-ignore
     private static pathWebdriver(
         uuid: string,
         pptr: PuppeteerExtra,
@@ -128,6 +134,7 @@ export class PptrPatcher {
         pptr.use(plugin)
     }
 
+    // @ts-ignore
     private static pathSourceUrl(
         uuid: string,
         pptr: PuppeteerExtra,
@@ -138,6 +145,7 @@ export class PptrPatcher {
         pptr.use(plugin)
     }
 
+    // @ts-ignore
     private static patchPluginsMineTypes(
         uuid: string,
         pptr: PuppeteerExtra,
@@ -154,6 +162,7 @@ export class PptrPatcher {
         pptr.use(plugin)
     }
 
+    // @ts-ignore
     private static patchWebGL(
         uuid: string,
         pptr: PuppeteerExtra,
@@ -170,6 +179,7 @@ export class PptrPatcher {
         pptr.use(plugin)
     }
 
+    // @ts-ignore
     private static patchMimeTypes(
         uuid: string,
         pptr: PuppeteerExtra,
@@ -185,6 +195,7 @@ export class PptrPatcher {
         pptr.use(plugin)
     }
 
+    // @ts-ignore
     private static patchMediaDevices(
         uuid: string,
         pptr: PuppeteerExtra,
@@ -200,6 +211,7 @@ export class PptrPatcher {
         pptr.use(plugin)
     }
 
+    // @ts-ignore
     private static patchBluetooth(
         uuid: string,
         pptr: PuppeteerExtra,
@@ -211,6 +223,7 @@ export class PptrPatcher {
         pptr.use(plugin)
     }
 
+    // @ts-ignore
     private static patchPermissions(
         uuid: string,
         pptr: PuppeteerExtra,
@@ -226,6 +239,7 @@ export class PptrPatcher {
         pptr.use(plugin)
     }
 
+    // @ts-ignore
     private static patchBatteryManager(
         uuid: string,
         pptr: PuppeteerExtra,
@@ -241,6 +255,7 @@ export class PptrPatcher {
         pptr.use(plugin)
     }
 
+    // @ts-ignore
     private static async patchWebRtc(
         uuid: string,
         pptr: PuppeteerExtra,
@@ -269,6 +284,7 @@ export class PptrPatcher {
         }
     }
 
+    // @ts-ignore
     private static patchCanvas2DFingerprint(
         uuid: string,
         pptr: PuppeteerExtra,
@@ -285,6 +301,7 @@ export class PptrPatcher {
         pptr.use(plugin)
     }
 
+    // @ts-ignore
     private static patchFonts(
         uuid: string,
         pptr: PuppeteerExtra,
@@ -300,6 +317,7 @@ export class PptrPatcher {
         pptr.use(plugin)
     }
 
+    // @ts-ignore
     private static patchEmojis(
         uuid: string,
         pptr: PuppeteerExtra,
@@ -315,6 +333,7 @@ export class PptrPatcher {
         pptr.use(plugin)
     }
 
+    // @ts-ignore
     private static patchSpeechSynthesis(
         uuid: string,
         pptr: PuppeteerExtra,
@@ -330,6 +349,7 @@ export class PptrPatcher {
         pptr.use(plugin)
     }
 
+    // @ts-ignore
     private static patchWorkers(
         uuid: string,
         pptr: PuppeteerExtra,
@@ -346,6 +366,7 @@ export class PptrPatcher {
         pptr.use(plugin)
     }
 
+    // @ts-ignore
     private static patchKeyboard(
         uuid: string,
         pptr: PuppeteerExtra,
@@ -361,6 +382,7 @@ export class PptrPatcher {
         pptr.use(plugin)
     }
 
+    // @ts-ignore
     private static patchUserAgent(
         uuid: string,
         pptr: PuppeteerExtra,
@@ -378,6 +400,7 @@ export class PptrPatcher {
         pptr.use(plugin)
     }
 
+    // @ts-ignore
     private static patchIFrame(
         uuid: string,
         pptr: PuppeteerExtra,
@@ -392,6 +415,7 @@ export class PptrPatcher {
         pptr.use(plugin)
     }
 
+    // @ts-ignore
     private static patchPropertiesGetters(
         uuid: string,
         pptr: PuppeteerExtra,
@@ -410,6 +434,7 @@ export class PptrPatcher {
         pptr.use(plugin)
     }
 
+    // @ts-ignore
     private static patchLast(
         uuid: string,
         pptr: PuppeteerExtra,
