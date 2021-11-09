@@ -148,7 +148,7 @@ export class PptrPatcher {
         //
         const Plugin = require(path.resolve(__dirname, '../plugins/evasions/navigator.plugins'))
         const plugin = Plugin({
-            data: params.fakeDeviceDesc.plugins
+            plugins: params.fakeDeviceDesc.plugins
         })
 
         pptr.use(plugin)
@@ -163,10 +163,8 @@ export class PptrPatcher {
 
         const Plugin = require(path.resolve(__dirname, '../plugins/evasions/webgl'))
         const plugin = Plugin({
-            data: {
-                gpu: params.fakeDeviceDesc.gpu,
-                webgl: params.fakeDeviceDesc.webgl
-            },
+            gpu: params.fakeDeviceDesc.gpu,
+            webgl: params.fakeDeviceDesc.webgl
         })
 
         pptr.use(plugin)

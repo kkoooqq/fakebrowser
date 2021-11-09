@@ -4,6 +4,59 @@ const {PuppeteerExtraPlugin} = require('puppeteer-extra-plugin');
 const withUtils = require('../_utils/withUtils');
 const withWorkerUtils = require('../_utils/withWorkerUtils');
 
+// the results of toDataURL are not the same for the same OS version, same GPU, same chrome version:
+// After looking at the source code for quite a while, I found that including png generation, LZ77 zlib compression, there are no random values,
+// there may be an effect of libpng version number, but libpng is statically linked to chrome, no external dll call.
+// so libpng version must be bound to chrome
+
+// ImageDataBuffer::ToDataURL
+// https://github.com/chromium/chromium/blob/master/third_party/blink/renderer/platform/graphics/image_data_buffer.cc#L170
+//
+// ImageDataBuffer::EncodeImageInternal
+// https://github.com/chromium/chromium/blob/master/third_party/blink/renderer/platform/graphics/image_data_buffer.cc#L142
+//
+// ImageEncoder::Encode
+// https://github.com/chromium/chromium/blob/master/third_party/blink/renderer/platform/image-encoders/image_encoder.cc#L28
+//
+// SkPngEncoder::Encode
+// https://github.com/google/skia/blob/main/src/images/SkPngEncoder.cpp#L462
+//
+// // https://github.com/google/skia/blob/main/src/images/SkPngEncoder.cpp#L400
+// std::unique_ptr<SkPngEncoderMgr> SkPngEncoderMgr::Make(SkWStream* stream) {
+//     // https://github.com/glennrp/libpng/blob/master/pngwrite.c#L492
+//     png_structp pngPtr =
+//             png_create_write_struct(PNG_LIBPNG_VER_STRING, nullptr, sk_error_fn, nullptr);
+//     if (!pngPtr) {
+//         return nullptr;
+//     }
+//
+//     // https://github.com/glennrp/libpng/blob/master/png.c#L353
+//     png_infop infoPtr = png_create_info_struct(pngPtr);
+//     if (!infoPtr) {
+//         png_destroy_write_struct(&pngPtr, nullptr);
+//         return nullptr;
+//     }
+//
+//     // sk_write_fn: https://github.com/google/skia/blob/main/src/images/SkPngEncoder.cpp#L41
+//     png_set_write_fn(pngPtr, (void*)stream, sk_write_fn, nullptr);
+//     return std::unique_ptr<SkPngEncoderMgr>(new SkPngEncoderMgr(pngPtr, infoPtr));
+// }
+//
+//
+//
+// // https://github.com/google/skia/blob/main/src/images/SkPngEncoder.cpp#L435
+// Make -> onEncodeRows -> for (png_write_rows) -> png_write_end
+//
+// png_write_rows
+// https://github.com/glennrp/libpng/blob/master/pngwrite.c#L574
+// https://github.com/glennrp/libpng/blob/master/pngwrite.c#L691
+//
+// png_write_start_row
+// https://github.com/glennrp/libpng/blob/master/pngwutil.c#L1890
+//
+// png_write_end
+// https://github.com/glennrp/libpng/blob/master/pngwrite.c#L358
+
 class Plugin extends PuppeteerExtraPlugin {
     constructor(opts = {}) {
         super(opts);
