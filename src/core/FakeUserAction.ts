@@ -1,21 +1,18 @@
-// noinspection JSUnusedGlobalSymbols,JSUnusedLocalSymbols
+// noinspection JSUnusedGlobalSymbols,JSUnusedLocalSymbols,PointlessArithmeticExpressionJS
 
 import {strict as assert} from 'assert';
 
-import {ElementHandle, KeyInput, Page} from "puppeteer";
+import {BoundingBox, ElementHandle, KeyInput, Page, Point} from "puppeteer";
 
 import {helper} from "./helper";
 import {FakeBrowser} from "./FakeBrowser";
 import {PptrToolkit} from "./PptrToolkit";
-
-export interface IMousePosition {
-    x: number,
-    y: number,
-}
+import {FakeDeviceDescriptor} from "./DeviceDescriptor";
+import {Touchscreen} from "./TouchScreen";
 
 export class FakeUserAction {
 
-    private _mouseCurrPos: IMousePosition
+    private _mouseCurrPos: Point
 
     // WeakRef needs node >= 14.6.0
     // private _fakeBrowser: WeakRef<FakeBrowser> | null
@@ -34,12 +31,12 @@ export class FakeUserAction {
      * @param maxPoints
      * @param cpDelta
      */
-    static mouseMovementTrack(
-        startPos: IMousePosition,
-        endPos: IMousePosition,
+    private static mouseMovementTrack(
+        startPos: Point,
+        endPos: Point,
         maxPoints = 30,
         cpDelta = 1,
-    ): IMousePosition[] {
+    ): Point[] {
         // reference: https://github.com/mtsee/Bezier/blob/master/src/bezier.js
 
         let nums = []
@@ -94,9 +91,9 @@ export class FakeUserAction {
      * @param page
      * @param options
      */
-    static async simMouseMove(page: Page, options: {
-        startPos: IMousePosition,
-        endPos: IMousePosition,
+    private static async simMouseMove(page: Page, options: {
+        startPos: Point,
+        endPos: Point,
         maxPoints?: number,
         timestamp?: number,
         cpDelta?: number,
@@ -126,6 +123,7 @@ export class FakeUserAction {
             return null
         }
 
+        // WeakRef:
         // const fb: FakeBrowser | undefined = this._fakeBrowser.deref()
         const fb: FakeBrowser | undefined = this._fakeBrowser
         if (!fb) {
@@ -137,7 +135,7 @@ export class FakeUserAction {
     }
 
     async simMouseMoveTo(
-        endPos: IMousePosition,
+        endPos: Point,
         maxPoints?: number,
         timestamp?: number,
         cpDelta?: number,
@@ -147,17 +145,36 @@ export class FakeUserAction {
             return false
         }
 
+        if (fb.isMobileBrowser) {
+            // We don't need to simulate mouse slide.
+            await helper.sleepRd(300, 800)
+            return true
+        }
+
         // Get the current page of the browser
         const currPage = await fb.getActivePage()
         assert(currPage)
 
+        // first move to a close position, then finally move to the target position
+        const closeToEndPos: Point = {
+            x: endPos.x + helper.rd(5, 30, true),
+            y: endPos.y + helper.rd(5, 20, true),
+        }
+
         await FakeUserAction.simMouseMove(currPage, {
             startPos: this._mouseCurrPos,
-            endPos,
+            endPos: closeToEndPos,
             maxPoints,
             timestamp,
             cpDelta
         })
+
+        // The last pos must correction
+        await currPage.mouse.move(
+            endPos.x,
+            endPos.y,
+            {steps: helper.rd(5, 13)}
+        )
 
         this._mouseCurrPos = endPos
 
@@ -165,13 +182,15 @@ export class FakeUserAction {
     }
 
     async simRandomMouseMove(): Promise<boolean> {
-        //       1/6
-        //  1/4      1/4
-        //       1/6
-
         const fb = this.fakeBrowser
         if (!fb) {
             return false
+        }
+
+        if (fb.isMobileBrowser) {
+            // We don't need to simulate mouse slide.
+            await helper.sleepRd(300, 800)
+            return true
         }
 
         const fakeDD = fb.driverParams.fakeDeviceDesc
@@ -179,6 +198,12 @@ export class FakeUserAction {
 
         const innerWidth = fakeDD.window.innerWidth
         const innerHeight = fakeDD.window.innerHeight
+
+        // -----------------
+        // |      1/6      |
+        // | 1/4      1/4  |
+        // |      1/6      |
+        // -----------------
 
         const startX = innerWidth / 4
         const startY = innerHeight / 6
@@ -202,19 +227,24 @@ export class FakeUserAction {
         const currPage = await fb.getActivePage()
         assert(currPage)
 
-        await currPage.mouse.down()
-        await helper.sleepRd(50, 80)
-        await currPage.mouse.up()
+        if (fb.isMobileBrowser) {
+            // We can't use mouse obj, we have to use touchscreen
+            await currPage.touchscreen.tap(this._mouseCurrPos.x, this._mouseCurrPos.y)
+        } else {
+            await currPage.mouse.down()
+            await helper.sleepRd(50, 80)
+            await currPage.mouse.up()
+        }
 
         if (options && options.pauseAfterMouseUp) {
-            await helper.sleepRd(300, 1000)
+            await helper.sleepRd(200, 1000)
         }
 
         return true
     }
 
     async simMoveToAndClick(
-        endPos: IMousePosition,
+        endPos: Point,
         options = {
             pauseAfterMouseUp: true
         }
@@ -227,8 +257,16 @@ export class FakeUserAction {
         const currPage = await fb.getActivePage()
         assert(currPage)
 
-        await this.simMouseMoveTo(endPos)
-        await currPage.mouse.move(endPos.x + helper.rd(-10, 10), endPos.y, {steps: helper.rd(8, 20)})
+        if (!fb.isMobileBrowser) {
+            await this.simMouseMoveTo(endPos)
+            await currPage.mouse.move(
+                endPos.x + helper.rd(-10, 10),
+                endPos.y,
+                {steps: helper.rd(8, 20)}
+            )
+        }
+
+        this._mouseCurrPos = endPos
         await helper.sleepRd(100, 300)
 
         return this.simClick(options)
@@ -251,71 +289,23 @@ export class FakeUserAction {
         const currPage = await fb.getActivePage()
         assert(currPage)
 
-        let box = null
-        for (; ;) {
-            box = await PptrToolkit.boundingBox(eh)
+        let box: BoundingBox | null
 
-            if (box) {
-                // Check the node is in the visible area
-                // @ts-ignore
-                let deltaX: number = 0
-                let deltaY: number = 0
-
-                let viewportAdjust = false
-                if (box.y <= 0) {
-                    // If the top of the node is less than 0
-                    deltaY = Math.min(-box.y + 30, helper.rd(100, 400))
-                    await currPage.mouse.wheel({deltaY: -deltaY})
-                    viewportAdjust = true
-                } else if (box.y + box.height >= fakeDD.window.innerHeight) {
-                    // If the bottom is beyond
-                    deltaY = Math.min(box.y + box.height - fakeDD.window.innerHeight + 30, helper.rd(100, 400))
-                    await currPage.mouse.wheel({deltaY: deltaY})
-                    viewportAdjust = true
-                }
-
-                // if (box.x <= 0) {
-                //     // If the top of the button is less than 0
-                //     deltaX = Math.min(-box.x + 30, sh.rd(100, 400))
-                //     await currPage.mouse.wheel({deltaX: -deltaX})
-                //     viewportAdjust = true
-                // } else if (box.x + box.width >= fakeDD.window.innerWidth) {
-                //     // If the bottom is beyond
-                //     deltaX = Math.min(box.x + box.width - fakeDD.window.innerWidth + 30, sh.rd(100, 400))
-                //     await currPage.mouse.wheel({deltaX: deltaX})
-                //     viewportAdjust = true
-                // }
-
-                if (viewportAdjust) {
-                    await helper.sleepRd(100, 500)
-                } else {
-                    break
-                }
-            } else {
-                break
-            }
+        if (fb.isMobileBrowser) {
+            box = await FakeUserAction.adjustElementPositionWithTouchscreen(eh, currPage, fakeDD)
+        } else {
+            box = await FakeUserAction.adjustElementPositionWithMouse(eh, currPage, fakeDD)
         }
 
         if (box) {
-            // button cannot be smaller than 25 pixels
-            let endPos: IMousePosition = {
-                x: helper.rd(box.x + box.width / 2 - box.width / 3, box.x + box.width / 2 + box.width / 3),
-                y: helper.rd(box.y, box.y + box.height)
+            // The position of each element click should not be the center of the element
+            // size of the clicked element must larger than 10 x 10
+            let endPos: Point = {
+                x: box.x + box.width / 2 + helper.rd(0, 5, true),
+                y: box.y + box.height / 2 + helper.rd(0, 5, true),
             }
 
             await this.simMouseMoveTo(endPos)
-
-            // The last click must be hit
-            endPos = {
-                x: box.x + box.width / 2,
-                y: box.y + box.height / 2,
-            }
-
-            await currPage.mouse.move(
-                endPos.x + helper.rd(-10, 10),
-                endPos.y,
-                {steps: 13}
-            )
 
             // Pause
             await helper.sleepRd(100, 300)
@@ -334,6 +324,143 @@ export class FakeUserAction {
         }
 
         return false
+    }
+
+    private static async adjustElementPositionWithMouse(
+        eh: ElementHandle<Element>,
+        currPage: Page,
+        fakeDD: FakeDeviceDescriptor
+    ): Promise<BoundingBox | null> {
+        let box = null
+        for (; ;) {
+            box = await PptrToolkit.boundingBox(eh)
+
+            if (box) {
+                // Check the node is in the visible area
+                // @ts-ignore
+                let deltaX: number = 0
+                let deltaY: number = 0
+
+                let viewportAdjust = false
+
+                // If the top of the node is less than 0
+                if (box.y <= 0) {
+                    // deltaY always positive
+
+                    // ---------------------
+                    //     30px           |
+                    //    [   ]           |
+                    // ..         Distance to be moved
+                    // ..                 |
+                    // ..                 |
+                    // ---------------------body top
+
+                    deltaY = Math.min(
+                        -(box.y - 30) - 0,
+                        helper.rd(150, 400)
+                    )
+
+                    deltaY = -deltaY
+                    viewportAdjust = true
+                } else if (box.y + box.height >= fakeDD.window.innerHeight) {
+                    // If the bottom is beyond
+
+                    deltaY = Math.min(
+                        box.y + box.height + 30 - fakeDD.window.innerHeight,
+                        helper.rd(150, 400)
+                    )
+
+                    viewportAdjust = true
+                }
+
+                // if (box.x <= 0) {
+                //     // If the top of the button is less than 0
+                //     deltaX = Math.min(-box.x + 30, sh.rd(100, 400))
+                //     deltaX = -deltaX
+                //     viewportAdjust = true
+                // } else if (box.x + box.width >= fakeDD.window.innerWidth) {
+                //     // If the bottom is beyond
+                //     deltaX = Math.min(box.x + box.width - fakeDD.window.innerWidth + 30, sh.rd(100, 400))
+                //     viewportAdjust = true
+                // }
+
+                if (viewportAdjust) {
+                    // await currPage.mouse.wheel({deltaX})
+                    await currPage.mouse.wheel({deltaY})
+                    await helper.sleepRd(100, 500)
+                } else {
+                    break
+                }
+            } else {
+                break
+            }
+        }
+
+        return box;
+    }
+
+    private static async adjustElementPositionWithTouchscreen(
+        eh: ElementHandle<Element>,
+        currPage: Page,
+        fakeDD: FakeDeviceDescriptor
+    ): Promise<BoundingBox | null> {
+        let box = null
+        for (; ;) {
+            box = await PptrToolkit.boundingBox(eh)
+
+            if (box) {
+                // @ts-ignore
+                let deltaX: number = 0
+                let deltaY: number = 0
+
+                let viewportAdjust = false
+                if (box.y <= 0) {
+                    deltaY = Math.min(-box.y + 30, helper.rd(100, 400))
+                    deltaY = -deltaY
+                    viewportAdjust = true
+                } else if (box.y + box.height >= fakeDD.window.innerHeight) {
+                    deltaY = Math.min(box.y + box.height - fakeDD.window.innerHeight + 30, helper.rd(100, 400))
+                    viewportAdjust = true
+                }
+
+                if (viewportAdjust) {
+                    // noinspection TypeScriptValidateTypes
+                    const _patchTouchscreenDesc = Object.getOwnPropertyDescriptor(currPage, '_patchTouchscreen')
+                    assert(_patchTouchscreenDesc)
+
+                    const touchscreen: Touchscreen = _patchTouchscreenDesc.value
+                    assert(touchscreen)
+
+                    // if deltaY is negative, drop down, otherwise drop up
+                    const startX: number = fakeDD.window.innerWidth / 2 + helper.rd(0, fakeDD.window.innerWidth / 6)
+                    const endX: number = fakeDD.window.innerWidth / 2 + helper.rd(0, fakeDD.window.innerWidth / 6)
+                    let startY: number
+                    let endY: number
+
+                    if (deltaY < 0) {
+                        startY = helper.rd(0, fakeDD.window.innerHeight - (-deltaY))
+                        endY = startY + deltaY
+                    } else {
+                        startY = helper.rd(deltaY, fakeDD.window.innerHeight)
+                        endY = startY - deltaY
+                    }
+
+                    await touchscreen.drag({
+                        x: startX, y: startY
+                    }, {
+                        x: endX, y: endY
+                    })
+
+                    await helper.sleepRd(100, 500)
+                } else {
+                    break
+                }
+            } else {
+                break
+            }
+        }
+
+        return box;
     }
 
     async simKeyboardPress(
@@ -387,6 +514,7 @@ export class FakeUserAction {
 
         const needsShiftKey = '~!@#$%^&*()_+QWERTYUIOP{}|ASDFGHJKL:"ZXCVBNM<>?'
 
+        // TODO: check if shiftKey, alt, ctrl can be fired in mobile browsers
         for (let ch of text) {
             let needsShift = false
             if (needsShiftKey.includes(ch)) {

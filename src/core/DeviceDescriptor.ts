@@ -209,7 +209,7 @@ export interface DeviceDescriptor {
         "state"?: string,
         "exType"?: string,
         "msg"?: string,
-    }>
+    }>,
 }
 
 export type ChromeUACHHeaders = {
@@ -261,7 +261,7 @@ export default class DeviceDescriptorHelper {
      * Check device descriptor legal based on attributes
      * @param e
      */
-    static checkLegal(e: DeviceDescriptor) {
+    static checkLegal(e: DeviceDescriptor): boolean {
         if (!e) {
             throw new Error('DeviceDescriptor empty')
         }
@@ -290,6 +290,10 @@ export default class DeviceDescriptorHelper {
             // Ordinary PC computers should not have touch screens
             if (e.navigator.maxTouchPoints != 0) {
                 throw new Error('Desktop browsers cannot have touchscreens')
+            }
+        } else {
+            if (e.navigator.maxTouchPoints === 0) {
+                throw new Error('Mobile devices must have touch screen')
             }
         }
 
@@ -344,6 +348,8 @@ export default class DeviceDescriptorHelper {
         if (!e.permissions || Object.keys(e.permissions).length === 0) {
             throw new Error('permissions cannot be empty')
         }
+
+        return true
     }
 
     /**

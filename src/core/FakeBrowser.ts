@@ -15,6 +15,7 @@ import {UserAgentHelper} from "./UserAgentHelper";
 import {FakeUserAction} from "./FakeUserAction";
 import {BrowserLauncher} from "./BrowserLauncher";
 import {BrowserBuilder} from "./BrowserBuilder";
+import {Touchscreen} from "./TouchScreen";
 
 export const kDefaultWindowsDD = require(path.resolve(__dirname, '../../device-hub/Windows.json'))
 
@@ -139,51 +140,30 @@ export class FakeBrowser {
         defaultLaunchArgs: kDefaultLaunchArgs,
     }
 
-    private readonly _driverParams: DriverParameters
-    private readonly _vanillaBrowser: Browser
-    private readonly _pptrExtra: PuppeteerExtra
-    private readonly _bindingTime: number
-    private readonly _uuid: string
-    private readonly _userAction: FakeUserAction
+    readonly driverParams: DriverParameters
+    readonly vanillaBrowser: Browser
+    readonly pptrExtra: PuppeteerExtra
+    /**
+     * Browser instance launch time or connection time
+     */
+    readonly bindingTime: number
+    readonly uuid: string
+    readonly isMobileBrowser: boolean
+    readonly userAction: FakeUserAction
+
+    // friend to FakeUserAction
     private _zombie: boolean
 
     // private readonly _workerUrls: string[]
 
-    get driverParams(): DriverParameters {
-        return this._driverParams
-    }
-
     get launchParams(): LaunchParameters {
-        assert((this._driverParams as LaunchParameters).launchOptions)
-        return this._driverParams as LaunchParameters
+        assert((this.driverParams as LaunchParameters).launchOptions)
+        return this.driverParams as LaunchParameters
     }
 
     get connectParams(): ConnectParameters {
-        assert((this._driverParams as ConnectParameters).connectOptions)
-        return this._driverParams as ConnectParameters
-    }
-
-    get vanillaBrowser(): Browser {
-        return this._vanillaBrowser
-    }
-
-    get pptrExtra(): PuppeteerExtra {
-        return this._pptrExtra
-    }
-
-    /**
-     * Browser instance launch time or connection time
-     */
-    get bindingTime(): number {
-        return this._bindingTime
-    }
-
-    get uuid(): string {
-        return this._uuid
-    }
-
-    get userAction(): FakeUserAction {
-        return this._userAction
+        assert((this.driverParams as ConnectParameters).connectOptions)
+        return this.driverParams as ConnectParameters
     }
 
     private async beforeShutdown() {
@@ -201,7 +181,7 @@ export class FakeBrowser {
     }
 
     async getActivePage(): Promise<Page | null> {
-        const result = await PptrToolkit.getActivePage(this._vanillaBrowser)
+        const result = await PptrToolkit.getActivePage(this.vanillaBrowser)
         return result
     }
 
@@ -212,15 +192,23 @@ export class FakeBrowser {
         bindingTime: number,
         uuid: string,
     ) {
-        this._driverParams = params
-        this._vanillaBrowser = vanillaBrowser
-        this._pptrExtra = pptrExtra
-        this._bindingTime = bindingTime
-        this._uuid = uuid
+        this.driverParams = params
+        this.vanillaBrowser = vanillaBrowser
+        this.pptrExtra = pptrExtra
+        this.bindingTime = bindingTime
+
+        assert(
+            params.deviceDesc
+            && params.deviceDesc.navigator
+            && params.deviceDesc.navigator.userAgent
+        )
+
+        this.isMobileBrowser = UserAgentHelper.isMobile(params.deviceDesc.navigator.userAgent)
+        this.uuid = uuid
+        this.userAction = new FakeUserAction(this)
+
         this._zombie = false
         // this._workerUrls = []
-
-        this._userAction = new FakeUserAction(this)
 
         vanillaBrowser.on('targetcreated', this.onTargetCreated.bind(this))
         vanillaBrowser.on('disconnected', this.onDisconnected.bind(this))
@@ -272,18 +260,18 @@ export class FakeBrowser {
         // console.log('inject page')
         let cdpSession: CDPSession | null = null
 
-        const fakeDD = this._driverParams.fakeDeviceDesc
+        const fakeDD = this.driverParams.fakeDeviceDesc
         assert(fakeDD)
 
         // if there is an account password that proxy needs to log in
         if (
-            this._driverParams.proxy &&
-            this._driverParams.proxy.username &&
-            this._driverParams.proxy.password
+            this.driverParams.proxy &&
+            this.driverParams.proxy.username &&
+            this.driverParams.proxy.password
         ) {
             await page.authenticate({
-                username: this._driverParams.proxy.username,
-                password: this._driverParams.proxy.password,
+                username: this.driverParams.proxy.username,
+                password: this.driverParams.proxy.password,
             });
         }
 
@@ -291,7 +279,22 @@ export class FakeBrowser {
         try {
             await page['_client'].send('ServiceWorker.setForceUpdateOnPageLoad', {forceUpdateOnPageLoad: true})
         } catch (ex: any) {
-            console.warn('ServiceWorker.setForceUpdateOnPageLoad exception', ex)
+            console.warn('CDP ServiceWorker.setForceUpdateOnPageLoad exception', ex)
+        }
+
+        // touch
+        if (this.isMobileBrowser) {
+            try {
+                await page['_client'].send('Emulation.setEmitTouchEventsForMouse', {
+                    enabled: true,
+                })
+            } catch (ex: any) {
+                console.warn('CDP Emulation.setEmitTouchEventsForMouse exception', ex)
+            }
+
+            Object.defineProperty(page, '_patchTouchscreen', {
+                value: new Touchscreen(page['_client'], page.keyboard)
+            })
         }
 
         // intercept worker

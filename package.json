@@ -1,6 +1,6 @@
 {
   "name": "fakebrowser",
-  "version": "0.0.52",
+  "version": "0.0.53",
   "description": "🤖 Fake fingerprints to bypass anti-bot systems. Simulate mouse and keyboard operations to make behavior like a real person.",
   "repository": {
     "type": "git",

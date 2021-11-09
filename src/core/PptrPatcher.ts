@@ -22,7 +22,6 @@ export class PptrPatcher {
 
         await this.patchTaskEnv(uuid, pptr, params)
         await this.patchUserActionLayer(uuid, pptr, params)
-
         await this.pathChrome(uuid, pptr, params)
         await this.patchWindowHistoryLength(uuid, pptr, params)
         await this.patchWindowMatchMedia(uuid, pptr, params)
@@ -523,6 +522,7 @@ tmpVarNames.forEach(e => {
                 ;({body, base64Encoded} = await client.send('Fetch.getResponseBody', {requestId}))
                 jsContent = base64Encoded ? Buffer.from(body, 'base64').toString('utf-8') : body
             } else {
+                // TODO: get through proxy
                 const jsResp = await axios.get(request.url, {headers: request.headers})
                 jsContent = jsResp.data
 
