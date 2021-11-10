@@ -324,6 +324,7 @@ export class FakeBrowser {
         assert(os)
 
         const extraHTTPHeaders: ChromeUACHHeaders = {
+            // MUST NOT SET ACCEPT-LANGUAGE!!!! : https://github.com/puppeteer/puppeteer/issues/1984
             // 'Accept-Language': UserAgentHelper.buildAcceptLanguage(fakeDD),
             // FIXME: error occurs after the referer is set
             // 'referer': FakeBrowser.globalConfig.defaultReferers[sh.rd(0, referers.length - 1)],

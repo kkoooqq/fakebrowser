@@ -211,18 +211,10 @@ export default class Driver {
         }
 
         // browser language
-        if (
-            (fakeDD.navigator.languages && fakeDD.navigator.languages.length)
-            || fakeDD.navigator.language
-        ) {
-            const lang = (fakeDD.navigator.languages || []).length
-                ? fakeDD.navigator.languages.join(',')
-                : fakeDD.navigator.language
-
-            args.push(
-                `--lang=${lang};q=0.9`
-            )
-        }
+        const lang = UserAgentHelper.buildAcceptLanguage(fakeDD)
+        args.push(
+            `--lang=${lang}`
+        )
 
         const userDataDir = launchParams.userDataDir
         fs.mkdirSync(userDataDir, {recursive: true}) // throw exception
