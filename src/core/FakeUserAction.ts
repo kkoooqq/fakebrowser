@@ -101,7 +101,7 @@ export class FakeUserAction {
         const points = this.mouseMovementTrack(
             options.startPos,
             options.endPos,
-            options.maxPoints || helper.rd(15, 25),
+            options.maxPoints || helper.rd(12, 22),
             options.cpDelta || 1
         )
 
@@ -113,7 +113,7 @@ export class FakeUserAction {
                 {steps: helper.rd(1, 2)}
             )
 
-            await helper.sleep((options.timestamp || helper.rd(300, 800)) / points.length)
+            await helper.sleep((options.timestamp || helper.rd(200, 500)) / points.length)
         }
     }
 
@@ -147,7 +147,7 @@ export class FakeUserAction {
 
         if (fb.isMobileBrowser) {
             // We don't need to simulate mouse slide.
-            await helper.sleepRd(300, 800)
+            await helper.sleepRd(200, 500)
             return true
         }
 
@@ -189,7 +189,7 @@ export class FakeUserAction {
 
         if (fb.isMobileBrowser) {
             // We don't need to simulate mouse slide.
-            await helper.sleepRd(300, 800)
+            await helper.sleepRd(200, 500)
             return true
         }
 
@@ -232,12 +232,12 @@ export class FakeUserAction {
             await currPage.touchscreen.tap(this._mouseCurrPos.x, this._mouseCurrPos.y)
         } else {
             await currPage.mouse.down()
-            await helper.sleepRd(50, 80)
+            await helper.sleepRd(30, 80)
             await currPage.mouse.up()
         }
 
         if (options && options.pauseAfterMouseUp) {
-            await helper.sleepRd(200, 1000)
+            await helper.sleepRd(150, 600)
         }
 
         return true
@@ -267,7 +267,7 @@ export class FakeUserAction {
         }
 
         this._mouseCurrPos = endPos
-        await helper.sleepRd(100, 300)
+        await helper.sleepRd(100, 250)
 
         return this.simClick(options)
     }
@@ -308,13 +308,13 @@ export class FakeUserAction {
             await this.simMouseMoveTo(endPos)
 
             // Pause
-            await helper.sleepRd(100, 300)
+            await helper.sleepRd(100, 250)
 
             // click
             if (await this.simClick(options)) {
                 if (options && options.pauseAfterMouseUp) {
                     // Pause
-                    await helper.sleepRd(500, 1500)
+                    await helper.sleepRd(300, 1000)
                 }
 
                 return true
@@ -357,7 +357,7 @@ export class FakeUserAction {
 
                     deltaY = Math.min(
                         -(box.y - 30) - 0,
-                        helper.rd(150, 400)
+                        helper.rd(150, 300)
                     )
 
                     deltaY = -deltaY
@@ -367,7 +367,7 @@ export class FakeUserAction {
 
                     deltaY = Math.min(
                         box.y + box.height + 30 - fakeDD.window.innerHeight,
-                        helper.rd(150, 400)
+                        helper.rd(150, 300)
                     )
 
                     viewportAdjust = true
@@ -387,7 +387,7 @@ export class FakeUserAction {
                 if (viewportAdjust) {
                     // await currPage.mouse.wheel({deltaX})
                     await currPage.mouse.wheel({deltaY})
-                    await helper.sleepRd(100, 500)
+                    await helper.sleepRd(100, 400)
                 } else {
                     break
                 }
@@ -415,11 +415,11 @@ export class FakeUserAction {
 
                 let viewportAdjust = false
                 if (box.y <= 0) {
-                    deltaY = Math.min(-box.y + 30, helper.rd(100, 400))
+                    deltaY = Math.min(-box.y + 30, helper.rd(100, 300))
                     deltaY = -deltaY
                     viewportAdjust = true
                 } else if (box.y + box.height >= fakeDD.window.innerHeight) {
-                    deltaY = Math.min(box.y + box.height - fakeDD.window.innerHeight + 30, helper.rd(100, 400))
+                    deltaY = Math.min(box.y + box.height - fakeDD.window.innerHeight + 30, helper.rd(100, 300))
                     viewportAdjust = true
                 }
 
@@ -451,7 +451,7 @@ export class FakeUserAction {
                         x: endX, y: endY
                     })
 
-                    await helper.sleepRd(100, 500)
+                    await helper.sleepRd(100, 300)
                 } else {
                     break
                 }
@@ -480,7 +480,7 @@ export class FakeUserAction {
         await currPage.keyboard.press(text)
 
         if (options && options.pauseAfterKeyUp) {
-            await helper.sleepRd(500, 1500)
+            await helper.sleepRd(300, 1000)
         }
 
         return true
@@ -520,17 +520,17 @@ export class FakeUserAction {
             if (needsShiftKey.includes(ch)) {
                 needsShift = true
                 await currPage.keyboard.down('ShiftLeft')
-                await helper.sleepRd(800, 1500)
+                await helper.sleepRd(500, 1000)
             }
 
             // if a Chinese character
             const isCh = ch.match(/^[\u4e00-\u9fa5]/)
-            const delay = isCh ? helper.rd(300, 1500) : helper.rd(80, 250)
+            const delay = isCh ? helper.rd(300, 1000) : helper.rd(80, 250)
 
             await currPage.keyboard.type('' + ch, {delay})
 
             if (needsShift) {
-                await helper.sleepRd(300, 800)
+                await helper.sleepRd(150, 450)
                 await currPage.keyboard.up('ShiftLeft')
             }
 
@@ -538,7 +538,7 @@ export class FakeUserAction {
         }
 
         if (options && options.pauseAfterLastKeyUp) {
-            await helper.sleepRd(500, 1500)
+            await helper.sleepRd(300, 1000)
         }
 
         return true

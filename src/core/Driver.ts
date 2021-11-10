@@ -124,11 +124,13 @@ export default class Driver {
         const pptr = addExtra(require('puppeteer'))
 
         // patch with evasions
-        await PptrPatcher.patch(
-            uuid,
-            pptr,
-            params,
-        )
+        if (!params.doNotHook) {
+            await PptrPatcher.patch(
+                uuid,
+                pptr,
+                params,
+            )
+        }
 
         const fakeDD = params.fakeDeviceDesc
         assert(!!fakeDD)

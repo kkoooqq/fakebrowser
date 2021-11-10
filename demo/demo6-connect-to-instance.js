@@ -33,7 +33,7 @@ child.stderr.on('data', (data) => {
         const wsEndPoint = dataStr.substr(dataStr.indexOf('ws://'));
         console.log(wsEndPoint);
 
-        launchFBPure(wsEndPoint).then(r => r);
+        launchFB(wsEndPoint).then(r => r);
     }
 });
 

@@ -1,3 +1,7 @@
+import {strict as assert} from 'assert';
+
+import {DeviceDescriptor} from "./DeviceDescriptor";
+
 function isMobile(ua: string): boolean {
     try {
         let userAgent = ua || ''
@@ -9,7 +13,16 @@ function isMobile(ua: string): boolean {
     }
 }
 
-export type BrowserTypes = 'IE' | 'Chrome' | 'Firefox' | 'Opera' | 'Safari' | 'Edge' | 'QQBrowser' | 'WeixinBrowser' | 'Unknown'
+export type BrowserTypes =
+    'IE'
+    | 'Chrome'
+    | 'Firefox'
+    | 'Opera'
+    | 'Safari'
+    | 'Edge'
+    | 'QQBrowser'
+    | 'WeixinBrowser'
+    | 'Unknown'
 
 function browserType(userAgent: string): BrowserTypes {
     userAgent = userAgent.toLowerCase();
@@ -87,10 +100,37 @@ function os(userAgent: string): OSTypes | null {
     return result as OSTypes | null;
 }
 
+function buildAcceptLanguage(deviceDesc: DeviceDescriptor): string {
+    // referer: https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Accept-Language
+    // https://developer.mozilla.org/zh-CN/docs/Glossary/Quality_values
+
+    assert(deviceDesc.navigator)
+    assert(deviceDesc.navigator.languages)
+
+    const langs = deviceDesc.navigator.languages
+    let result = ''
+    let counter = 9
+    for (const lang of langs) {
+        if (result) {
+            result += ','
+        }
+
+        result += lang
+
+        if (langs.length > 1) {
+            result += `;q=0.${counter}`
+            counter = Math.max(--counter, 1)
+        }
+    }
+
+    return result
+}
+
 export const UserAgentHelper = {
     isMobile,
     browserType,
     chromeMajorVersion,
     chromeVersion,
     os,
+    buildAcceptLanguage,
 }

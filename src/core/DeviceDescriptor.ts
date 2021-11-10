@@ -297,6 +297,14 @@ export default class DeviceDescriptorHelper {
             }
         }
 
+        if (
+            !e.navigator.language
+            || !e.navigator.languages
+            || !e.navigator.languages.length
+        ) {
+            throw new Error('language cannot be empty')
+        }
+
         if (e.window.innerHeight > e.screen.availHeight
             || e.window.innerWidth > e.screen.availWidth) {
 

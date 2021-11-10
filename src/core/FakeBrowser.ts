@@ -1,9 +1,9 @@
 // noinspection JSUnusedGlobalSymbols,JSUnusedLocalSymbols
 
 import * as path from "path";
+import {strict as assert} from 'assert';
 
 import {Browser, CDPSession, Page, Target, WebWorker} from "puppeteer";
-import {strict as assert} from 'assert';
 import {PuppeteerExtra} from "puppeteer-extra";
 
 import {helper} from "./helper";
@@ -210,8 +210,11 @@ export class FakeBrowser {
         this._zombie = false
         // this._workerUrls = []
 
-        vanillaBrowser.on('targetcreated', this.onTargetCreated.bind(this))
         vanillaBrowser.on('disconnected', this.onDisconnected.bind(this))
+
+        if (!params.doNotHook) {
+            vanillaBrowser.on('targetcreated', this.onTargetCreated.bind(this))
+        }
     }
 
     private onDisconnected() {
@@ -312,15 +315,6 @@ export class FakeBrowser {
         // })
 
         // set additional request headers
-        let lang: string =
-            fakeDD.navigator.languages
-                ? fakeDD.navigator.languages.join(',')
-                : fakeDD.navigator.language
-
-        if (lang && lang.length) {
-            lang += ';q=0.9'
-        }
-
         // read version from the launched browser
         const ua = await this.vanillaBrowser.userAgent()
         const chromeMajorVersion = UserAgentHelper.chromeMajorVersion(ua)
@@ -330,7 +324,7 @@ export class FakeBrowser {
         assert(os)
 
         const extraHTTPHeaders: ChromeUACHHeaders = {
-            'Accept-Language': lang || '',
+            // 'Accept-Language': UserAgentHelper.buildAcceptLanguage(fakeDD),
             // FIXME: error occurs after the referer is set
             // 'referer': FakeBrowser.globalConfig.defaultReferers[sh.rd(0, referers.length - 1)],
             'sec-ch-ua':
