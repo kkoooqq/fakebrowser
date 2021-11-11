@@ -272,12 +272,7 @@ export class FakeUserAction {
         return this.simClick(options)
     }
 
-    async simClickElement(
-        eh: ElementHandle,
-        options = {
-            pauseAfterMouseUp: true
-        }
-    ): Promise<boolean> {
+    async simMouseMoveToElement(eh: ElementHandle): Promise<boolean> {
         const fb = this.fakeBrowser
         if (!fb) {
             return false
@@ -309,21 +304,29 @@ export class FakeUserAction {
 
             // Pause
             await helper.sleepRd(100, 250)
-
-            // click
-            if (await this.simClick(options)) {
-                if (options && options.pauseAfterMouseUp) {
-                    // Pause
-                    await helper.sleepRd(300, 1000)
-                }
-
-                return true
-            } else {
-                return false
-            }
         }
 
         return false
+
+    }
+
+    async simClickElement(
+        eh: ElementHandle,
+        options = {
+            pauseAfterMouseUp: true
+        }
+    ): Promise<boolean> {
+        const moveToEl = await this.simMouseMoveToElement(eh)
+        if (!moveToEl) {
+            return false
+        }
+
+        // click
+        if (await this.simClick(options)) {
+            return true
+        } else {
+            return false
+        }
     }
 
     private static async adjustElementPositionWithMouse(
