@@ -101,7 +101,7 @@ export class FakeUserAction {
         const points = this.mouseMovementTrack(
             options.startPos,
             options.endPos,
-            options.maxPoints || helper.rd(12, 22),
+            options.maxPoints || helper.rd(15, 30),
             options.cpDelta || 1
         )
 
@@ -113,7 +113,7 @@ export class FakeUserAction {
                 {steps: helper.rd(1, 2)}
             )
 
-            await helper.sleep((options.timestamp || helper.rd(200, 500)) / points.length)
+            await helper.sleep((options.timestamp || helper.rd(300, 800)) / points.length)
         }
     }
 
@@ -147,7 +147,7 @@ export class FakeUserAction {
 
         if (fb.isMobileBrowser) {
             // We don't need to simulate mouse slide.
-            await helper.sleepRd(200, 500)
+            await helper.sleepRd(300, 800)
             return true
         }
 
@@ -212,6 +212,7 @@ export class FakeUserAction {
 
         const endPos = {x: helper.rd(startX, endX), y: helper.rd(startY, endY)}
         await this.simMouseMoveTo(endPos)
+        await helper.sleepRd(300, 800)
 
         return true
     }
@@ -267,7 +268,7 @@ export class FakeUserAction {
         }
 
         this._mouseCurrPos = endPos
-        await helper.sleepRd(100, 250)
+        await helper.sleepRd(300, 800)
 
         return this.simClick(options)
     }
@@ -295,7 +296,7 @@ export class FakeUserAction {
         if (box) {
             // The position of each element click should not be the center of the element
             // size of the clicked element must larger than 10 x 10
-            let endPos: Point = {
+            const endPos: Point = {
                 x: box.x + box.width / 2 + helper.rd(0, 5, true),
                 y: box.y + box.height / 2 + helper.rd(0, 5, true),
             }
@@ -303,7 +304,7 @@ export class FakeUserAction {
             await this.simMouseMoveTo(endPos)
 
             // Pause
-            await helper.sleepRd(100, 250)
+            await helper.sleepRd(300, 800)
 
             return true
         }

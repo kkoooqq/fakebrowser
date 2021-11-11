@@ -19,17 +19,34 @@ class Plugin extends PuppeteerExtraPlugin {
     }
 
     mainFunction = (utils, opts) => {
+        const _Reflect = utils.cache.Reflect;
+
         utils.replaceWithProxy(
             HTMLMediaElement.prototype,
             'canPlayType',
             {
                 apply: function (target, thisArg, args) {
                     if (!args || !args.length) {
-                        return target.apply(thisArg, args);
+                        return _Reflect.apply(target, thisArg, args);
                     }
 
                     const type = args[0];
-                    const mimeType = opts.data.find(e => e.mimeType === type);
+                    let trimmedType = type.trim();
+                    if (trimmedType.endsWith(trimmedType)) {
+                        trimmedType = trimmedType.substr(0, trimmedType.length - 1);
+                    }
+
+                    // akamai uses Object.create(HTMLMediaElement.prototype) to create the abstract Object and test the types
+                    // check this ObjectType and the type if matched or not
+                    if (!trimmedType
+                        || thisArg.constructor.name === 'HTMLMediaElement' // Object.create(HTMLMediaElement.prototype) sht
+                        || thisArg.constructor.name === 'HTMLVideoElement' && !trimmedType.startsWith('video')
+                        || thisArg.constructor.name === 'HTMLAudioElement' && !trimmedType.startsWith('audio')
+                    ) {
+                        return _Reflect.apply(target, thisArg, args);
+                    }
+
+                    const mimeType = opts.data.find(e => e.mimeType === trimmedType);
                     if (mimeType) {
                         if (thisArg instanceof HTMLVideoElement) {
                             return mimeType.videoPlayType;
@@ -37,7 +54,7 @@ class Plugin extends PuppeteerExtraPlugin {
                             return mimeType.audioPlayType;
                         }
                     } else {
-                        return '';
+                        return _Reflect.apply(target, thisArg, args);
                     }
                 },
             },
@@ -49,15 +66,20 @@ class Plugin extends PuppeteerExtraPlugin {
             {
                 apply: function (target, thisArg, args) {
                     if (!args || !args.length) {
-                        return target.apply(thisArg, args);
+                        return _Reflect.apply(target, thisArg, args);
                     }
 
                     const type = args[0];
-                    const mimeType = opts.data.find(e => e.mimeType === type);
+                    let trimmedType = type.trim();
+                    if (trimmedType.endsWith(trimmedType)) {
+                        trimmedType = trimmedType.substr(0, trimmedType.length - 1);
+                    }
+
+                    const mimeType = opts.data.find(e => e.mimeType === trimmedType);
                     if (mimeType) {
                         return mimeType.mediaSource;
                     } else {
-                        return false;
+                        return _Reflect.apply(target, thisArg, args);
                     }
                 },
             },
@@ -70,15 +92,20 @@ class Plugin extends PuppeteerExtraPlugin {
                 {
                     apply: function (target, thisArg, args) {
                         if (!args || !args.length) {
-                            return target.apply(thisArg, args);
+                            return _Reflect.apply(target, thisArg, args);
                         }
 
                         const type = args[0];
-                        const mimeType = opts.data.find(e => e.mimeType === type);
+                        let trimmedType = type.trim();
+                        if (trimmedType.endsWith(trimmedType)) {
+                            trimmedType = trimmedType.substr(0, trimmedType.length - 1);
+                        }
+
+                        const mimeType = opts.data.find(e => e.mimeType === trimmedType);
                         if (mimeType) {
                             return mimeType.mediaRecorder;
                         } else {
-                            return false;
+                            return _Reflect.apply(target, thisArg, args);
                         }
                     },
                 },

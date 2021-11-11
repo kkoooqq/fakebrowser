@@ -78,6 +78,10 @@ class Plugin extends PuppeteerExtraPlugin {
         if (!window.chrome) {
             // Use the exact property descriptor found in headful Chrome
             // fetch it via `Object.getOwnPropertyDescriptor(window, 'chrome')`
+            // FIXME: order of 'chrome' in window, cannot by modified
+            // when defining this property, 'chrome' becomes the most bottom of the property list
+            // inspired by creepjs
+
             utils.cache.Object.defineProperty(window, 'chrome', {
                 writable: true,
                 enumerable: true,
