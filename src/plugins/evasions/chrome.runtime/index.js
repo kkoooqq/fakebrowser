@@ -99,7 +99,7 @@ class Plugin extends PuppeteerExtraPlugin {
             } catch (ignore) {
             }
 
-            console.warn(ex);
+            // console.warn(ex);
         }
 
         if (existsAlready || (isNotSecure && !opts.runOnInsecureOrigins)) {

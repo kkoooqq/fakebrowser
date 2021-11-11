@@ -35,11 +35,11 @@ class Plugin extends PuppeteerExtraPlugin {
 
                     // Listening user events and draw
                     document.addEventListener('keydown', (e) => {
-                        console.log('key DOWN alt:' + e.altKey + ' shift:' + e.shiftKey + ' ctrl:' + e.ctrlKey + ' meta:' + e.metaKey + ' code:' + e.code);
+                        // console.log('key DOWN alt:' + e.altKey + ' shift:' + e.shiftKey + ' ctrl:' + e.ctrlKey + ' meta:' + e.metaKey + ' code:' + e.code);
                     });
 
                     document.addEventListener('keyup', (e) => {
-                        console.log('key UP alt:' + e.altKey + ' shift:' + e.shiftKey + ' ctrl:' + e.ctrlKey + ' meta:' + e.metaKey + ' code:' + e.code);
+                        // console.log('key UP alt:' + e.altKey + ' shift:' + e.shiftKey + ' ctrl:' + e.ctrlKey + ' meta:' + e.metaKey + ' code:' + e.code);
                     });
 
                     document.addEventListener('mousemove', (e) => {

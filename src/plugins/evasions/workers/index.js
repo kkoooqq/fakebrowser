@@ -25,7 +25,7 @@ class Plugin extends PuppeteerExtraPlugin {
 
                     utils.replaceWithProxy('undefined' === typeof window ? globalThis : window, 'Worker', {
                         construct: function (target, args) {
-                            console.log(`worker is registered in the browser, ${args[0]}`);
+                            // console.log(`worker is registered in the browser, ${args[0]}`);
                             const relUrl = window.location.href;
                             const workerUrl = args[0];
 
@@ -66,7 +66,7 @@ class Plugin extends PuppeteerExtraPlugin {
 
                     utils.replaceWithProxy('undefined' === typeof window ? globalThis : window, 'SharedWorker', {
                         construct: function (target, args) {
-                            console.log(`sharedWorker is registered in the browser, ${args[0]}`);
+                            // console.log(`sharedWorker is registered in the browser, ${args[0]}`);
                             const relUrl = window.location.href;
                             const workerUrl = args[0];
 

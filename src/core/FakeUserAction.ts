@@ -525,7 +525,7 @@ export class FakeUserAction {
 
             // if a Chinese character
             const isCh = ch.match(/^[\u4e00-\u9fa5]/)
-            const delay = isCh ? helper.rd(300, 1000) : helper.rd(80, 250)
+            const delay = isCh ? helper.rd(200, 800) : helper.rd(30, 100)
 
             await currPage.keyboard.type('' + ch, {delay})
 
@@ -534,7 +534,7 @@ export class FakeUserAction {
                 await currPage.keyboard.up('ShiftLeft')
             }
 
-            await helper.sleepRd(50, 150)
+            await helper.sleepRd(30, 100)
         }
 
         if (options && options.pauseAfterLastKeyUp) {

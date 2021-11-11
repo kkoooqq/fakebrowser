@@ -40,7 +40,9 @@ module.exports = (plugin, page) => ({
              }) => {
                 // Add this point we cannot use our utililty functions as they're just strings, we need to materialize them first
                 const utils = Object.fromEntries(
-                    Object.entries(_utilsFns).map(([key, value]) => [key, eval(value)]), // eslint-disable-line no-eval
+                    Object.entries(_utilsFns).map(
+                        ([key, value]) => [key, eval(value)],
+                    ), // eslint-disable-line no-eval
                 );
 
                 utils.init();

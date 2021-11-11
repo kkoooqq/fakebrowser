@@ -40,7 +40,7 @@ class Plugin extends PuppeteerExtraPlugin {
 
         const interceptPatchIFrameSrc = (iframe, src) => {
             if (src && src.trim().toLowerCase().startsWith('javascript:')) {
-                console.log('!!! h00k iframe src: ' + src);
+                // console.log('!!! h00k iframe src: ' + src);
 
                 iframeSrcCache.push({
                     v: iframe,
@@ -127,7 +127,7 @@ class Plugin extends PuppeteerExtraPlugin {
                     const cache = iframeSrcCache.find(e => e.v === iframe);
 
                     if (cache) {
-                        console.log('h00k iframe: iframe was added to dom!');
+                        // console.log('h00k iframe: iframe was added to dom!');
 
                         try {
                             let src = cache.src.trim();
@@ -139,11 +139,11 @@ class Plugin extends PuppeteerExtraPlugin {
                             }
 
                             iframe.addEventListener('load', function () {
-                                iframe.contentWindow.eval(`console.log('h00k iframe, script executed here');`);
+                                // iframe.contentWindow.eval(`console.log('h00k iframe, script executed here');`);
                                 iframe.contentWindow.eval(src);
                             }, true);
                         } catch (ex) {
-                            console.warn('h00k iframe, contentWindow error', ex);
+                            // console.warn('h00k iframe, contentWindow error', ex);
                         }
 
                     }

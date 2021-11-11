@@ -119,6 +119,8 @@ function buildAcceptLanguage(deviceDesc: DeviceDescriptor): string {
 
         if (langs.length > 1) {
             result += `;q=0.${counter}`
+
+            // Extreme situations: en,zh;q=0.9,fr;q=0.8,es;q=0.7,zh-CN;q=0.6,pt-BR;q=0.5,pt;q=0.4,sq;q=0.3,ar;q=0.2,an;q=0.1,am;q=0.1,az;q=0.1,ast;q=0.1,ga;q=0.1,et;q=0.1,oc;q=0.1,or;q=0.1,om;q=0.1,eu;q=0.1,be;q=0.1,bg;q=0.1
             counter = Math.max(--counter, 1)
         }
     }

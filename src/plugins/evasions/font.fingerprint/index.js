@@ -607,7 +607,7 @@ class Plugin extends PuppeteerExtraPlugin {
                         }
                     }
                 } catch (ex) {
-                    console.error('hook font Failed to process fonts', ex);
+                    // console.warn('hook font Failed to process fonts', ex);
                 }
             }
 

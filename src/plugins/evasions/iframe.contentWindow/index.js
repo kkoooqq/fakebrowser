@@ -41,7 +41,7 @@ class Plugin extends PuppeteerExtraPlugin {
                 if (!iframe.contentWindow) {
                     const proxy = utils.newProxyInstance(window, {
                         get(target, key) {
-                            console.log(`!!!!!! hook !! get subframe key: ${key}`);
+                            // console.log(`!!!!!! hook !! get subframe key: ${key}`);
 
                             // Now to the interesting part:
                             // We actually make this thing behave like a regular iframe window,
@@ -147,7 +147,7 @@ class Plugin extends PuppeteerExtraPlugin {
             // Let's go
             addIframeCreationSniffer();
         } catch (err) {
-            console.warn(err);
+            // console.warn(err);
         }
     };
 

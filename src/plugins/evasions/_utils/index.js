@@ -278,7 +278,7 @@ utils.patchError = (err, trap) => {
         return err;
     }
 
-    err.__stack = err.stack.split('\n').join('\n');
+    // err.__stack = err.stack.split('\n').join('\n');
 
     // When something throws within one of our traps the Proxy will show up in error stacks
     // An earlier implementation of this code would simply strip lines with a blacklist,
@@ -319,7 +319,7 @@ utils.patchError = (err, trap) => {
 
         // Strip everything from the top until we reach the anchor line
         // Note: We're keeping the 1st line (zero index) as it's unrelated (e.g. `TypeError`)
-        stackArr.splice(1, anchorIndex);
+        stackArr.splice(2, anchorIndex);
 
         return stackArr.join('\n');
     };
