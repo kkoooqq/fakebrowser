@@ -75,6 +75,7 @@ utils._preloadCache = () => {
             },
             window: {
                 getComputedStyle: ('undefined' !== typeof window) && window.getComputedStyle,
+                eval: window.eval,
             },
             OffscreenCanvas: {
                 prototype: {

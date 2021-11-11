@@ -7,8 +7,8 @@ const withUtils = require('../_utils/withUtils');
 const withWorkerUtils = require('../_utils/withWorkerUtils');
 
 class Plugin extends PuppeteerExtraPlugin {
-    constructor(opts = {}) {
-        super(opts);
+    constructor() {
+        super();
     }
 
     get name() {
@@ -22,18 +22,16 @@ class Plugin extends PuppeteerExtraPlugin {
     async onPageCreated(page) {
         await withUtils(this, page).evaluateOnNewDocument(
             this.mainFunction,
-            this.opts,
         );
     }
 
     onServiceWorkerContent(jsContent) {
         return withWorkerUtils(this, jsContent).evaluate(
             this.mainFunction,
-            this.opts,
         );
     }
 
-    mainFunction = (utils, opts) => {
+    mainFunction = (utils) => {
         utils.removeTempVariables();
     };
 
