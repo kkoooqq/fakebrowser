@@ -42,6 +42,8 @@ utils._preloadCache = () => {
     }
 
     OffscreenCanvas.prototype.constructor.__$cache = utils.cache = {
+        // Used in `makeNativeString`
+        nativeToStringStr: Function.toString + '', // => `function toString() { [native code] }`
         // Used in our proxies
         Reflect: {
             get: Reflect.get.bind(Reflect),
@@ -51,74 +53,75 @@ utils._preloadCache = () => {
             getOwnPropertyDescriptor: Reflect.getOwnPropertyDescriptor.bind(Reflect),
             setPrototypeOf: Reflect.setPrototypeOf.bind(Reflect),
         },
-        // Used in `makeNativeString`
-        nativeToStringStr: Function.toString + '', // => `function toString() { [native code] }`
-        Prototype: {
-            Object: {
-                setPrototypeOf: Object.setPrototypeOf,
-                getPrototypeOf: Object.getPrototypeOf,
-                getOwnPropertyDescriptors: Object.getOwnPropertyDescriptors,
-                getOwnPropertyDescriptor: Object.getOwnPropertyDescriptor,
-                entries: Object.entries,
-                fromEntries: Object.fromEntries,
-                defineProperty: Object.defineProperty,
-                defineProperties: Object.defineProperties,
-                getOwnPropertyNames: Object.getOwnPropertyNames,
-                create: Object.create,
-                keys: Object.keys,
-                values: Object.values,
+        Object: {
+            setPrototypeOf: Object.setPrototypeOf.bind(Object),
+            getPrototypeOf: Object.getPrototypeOf.bind(Object),
+            getOwnPropertyDescriptors: Object.getOwnPropertyDescriptors.bind(Object),
+            getOwnPropertyDescriptor: Object.getOwnPropertyDescriptor.bind(Object),
+            entries: Object.entries.bind(Object),
+            fromEntries: Object.fromEntries.bind(Object),
+            defineProperty: Object.defineProperty.bind(Object),
+            defineProperties: Object.defineProperties.bind(Object),
+            getOwnPropertyNames: Object.getOwnPropertyNames.bind(Object),
+            create: Object.create.bind(Object),
+            keys: Object.keys.bind(Object),
+            values: Object.values.bind(Object),
+        },
+        Function: {
+            prototype: {
+                toString: Function.prototype.toString,
             },
-            Function: {
-                prototype: {
-                    toString: Function.prototype.toString,
-                },
+        },
+        window: {
+            getComputedStyle: ('undefined' !== typeof window) && window.getComputedStyle.bind(window),
+            eval: ('undefined' !== typeof window) ? window.eval.bind(window) : (globalThis ? globalThis.eval.bind(globalThis) : undefined),
+            navigator: ('undefined' !== typeof window) ? window.navigator : (globalThis ? globalThis.navigator : undefined),
+        },
+        OffscreenCanvas: {
+            prototype: {
+                getContext: ('undefined' !== typeof OffscreenCanvas) && OffscreenCanvas.prototype.getContext,
             },
-            window: {
-                getComputedStyle: ('undefined' !== typeof window) && window.getComputedStyle,
-                eval: window.eval,
-            },
-            OffscreenCanvas: {
-                prototype: {
-                    getContext: ('undefined' !== typeof OffscreenCanvas) && OffscreenCanvas.prototype.getContext,
-                },
-            },
-            HTMLCanvasElement: {
-                prototype: {
-                    getContext: ('undefined' !== typeof HTMLCanvasElement) && HTMLCanvasElement.prototype.getContext,
-                },
+        },
+        HTMLCanvasElement: {
+            prototype: {
+                getContext: ('undefined' !== typeof HTMLCanvasElement) && HTMLCanvasElement.prototype.getContext,
             },
         },
         Descriptor: {},
     };
 
-    const cacheDescriptors = (obj, objName, propertyKeys) => {
-        let cacheObj = utils.cache.Descriptor;
-        for (const objNamePart of objName.split('.')) {
-            let subCacheObj = cacheObj[objNamePart] || {};
-            cacheObj[objNamePart] = subCacheObj;
-            cacheObj = subCacheObj;
+    const cacheDescriptors = (objPath, propertyKeys) => {
+        // get obj from path
+        const objPaths = objPath.split('.');
+        let obj = 'undefined' !== typeof window ? window : globalThis;
+        let descObj = utils.cache.Descriptor;
+
+        for (const part of objPaths) {
+            if (obj) {
+                // noinspection JSUnresolvedFunction
+                if (!Object.hasOwn(obj, part)) {
+                    obj = undefined;
+                } else {
+                    obj = obj[part];
+                }
+            }
+
+            const subCacheObj = descObj[part] || {};
+            descObj[part] = subCacheObj;
+            descObj = subCacheObj;
         }
 
         for (const key of propertyKeys) {
-            cacheObj[key] = Object.getOwnPropertyDescriptor(obj, key);
+            descObj[key] = obj ? Object.getOwnPropertyDescriptor(obj, key) : undefined;
         }
     };
 
-    if ('undefined' !== typeof window) {
-        cacheDescriptors(window, 'window', ['alert']);
-    }
-
-    if ('undefined' !== typeof HTMLElement) {
-        cacheDescriptors(HTMLElement.prototype, 'HTMLElement.prototype', ['style']);
-    }
-
-    if ('undefined' !== typeof CSSStyleDeclaration) {
-        cacheDescriptors(CSSStyleDeclaration.prototype, 'CSSStyleDeclaration.prototype', ['setProperty']);
-    }
-
-    if ('undefined' !== typeof FontFace) {
-        cacheDescriptors(FontFace.prototype, 'FontFace.prototype', ['load']);
-    }
+    cacheDescriptors('window', ['alert']);
+    cacheDescriptors('Navigator.prototype', ['webdriver']);
+    cacheDescriptors('WorkerNavigator.prototype', ['webdriver']);
+    cacheDescriptors('HTMLElement.prototype', ['style']);
+    cacheDescriptors('CSSStyleDeclaration.prototype', ['setProperty']);
+    cacheDescriptors('FontFace.prototype', ['load']);
 };
 
 utils._preloadGlobalVariables = () => {
@@ -167,7 +170,7 @@ utils._hookObjectPrototype = () => {
     }
 
     utils.objHooked = OffscreenCanvas.prototype.constructor.__$objHooked = true;
-    const _Object = utils.cache.Prototype.Object;
+    const _Object = utils.cache.Object;
 
     // setPrototypeOf
     utils.replaceWithProxy(Object, 'setPrototypeOf', {
@@ -238,7 +241,7 @@ utils._hookObjectPrototype = () => {
     utils.replaceWithProxy(Object, 'create', {
         apply(target, thisArg, args) {
             if (args[0] === toStringProxy) {
-                args[0] = utils.cache.Prototype.Function.prototype.toString;
+                args[0] = utils.cache.Function.prototype.toString;
             }
 
             return utils.cache.Reflect.apply(target, thisArg, args);
@@ -351,7 +354,7 @@ utils.patchError = (err, trap) => {
  * @param {object} handler - The JS Proxy handler to wrap
  */
 utils.stripProxyFromErrors = (handler = {}) => {
-    const _Object = utils.cache.Prototype.Object;
+    const _Object = utils.cache.Object;
 
     const newHandler = {
         setPrototypeOf: function (target, proto) {
@@ -422,7 +425,7 @@ utils.stripErrorWithAnchor = (err, anchor) => {
  * @param {object} descriptorOverrides - e.g. { value: "alice" }
  */
 utils.replaceProperty = (obj, propName, descriptorOverrides = {}) => {
-    const _Object = utils.cache.Prototype.Object;
+    const _Object = utils.cache.Object;
     const descriptors = _Object.getOwnPropertyDescriptor(obj, propName) || {};
 
     if (propName !== 'toString') {
@@ -545,7 +548,7 @@ utils.replaceWithProxy = (obj, propName, handler) => {
  * @param {object} handler - The JS Proxy handler to use
  */
 utils.replaceGetterWithProxy = (obj, propName, handler) => {
-    const fn = utils.cache.Prototype.Object.getOwnPropertyDescriptor(obj, propName).get;
+    const fn = utils.cache.Object.getOwnPropertyDescriptor(obj, propName).get;
     const fnStr = fn.toString(); // special getter function string
     const proxyObj = utils.newProxyInstance(fn, utils.stripProxyFromErrors(handler));
 
@@ -556,7 +559,7 @@ utils.replaceGetterWithProxy = (obj, propName, handler) => {
 };
 
 utils.replaceSetterWithProxy = (obj, propName, handler) => {
-    const fn = utils.cache.Prototype.Object.getOwnPropertyDescriptor(obj, propName).set;
+    const fn = utils.cache.Object.getOwnPropertyDescriptor(obj, propName).set;
     const fnStr = fn.toString(); // special setter function string
     const proxyObj = utils.newProxyInstance(fn, utils.stripProxyFromErrors(handler));
 
@@ -861,7 +864,7 @@ utils.isUUID = (str) => {
 // utils.isSequence(new Int8Array())        ===>  true
 // utils.isSequence(new Set())              ===>  true
 utils.isSequence = (obj) => {
-    const _Object = utils.cache.Prototype.Object;
+    const _Object = utils.cache.Object;
     let desc = null;
 
     for (;
@@ -925,7 +928,7 @@ utils.makePseudoClass = (
     pseudoTarget,
     parentClass,
 ) => {
-    const _Object = utils.cache.Prototype.Object;
+    const _Object = utils.cache.Object;
 
     const result = new Proxy(
         pseudoTarget || function () {
@@ -1007,10 +1010,10 @@ utils.findRenderingContextIndex = (canvas) => {
     for (let contextId of contextIds) {
         let context = null;
 
-        if (utils.cache.Prototype.Object.getPrototypeOf(canvas) === OffscreenCanvas.prototype) {
-            context = utils.cache.Prototype.OffscreenCanvas.prototype.getContext.call(canvas, contextId);
+        if (utils.cache.Object.getPrototypeOf(canvas) === OffscreenCanvas.prototype) {
+            context = utils.cache.OffscreenCanvas.prototype.getContext.call(canvas, contextId);
         } else {
-            context = utils.cache.Prototype.HTMLCanvasElement.prototype.getContext.call(canvas, contextId);
+            context = utils.cache.HTMLCanvasElement.prototype.getContext.call(canvas, contextId);
         }
 
         const contextIndex = utils.variables.renderingContextWithOperators.findIndex(e => e.context === context);

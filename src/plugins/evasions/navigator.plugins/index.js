@@ -175,7 +175,7 @@ class Plugin extends PuppeteerExtraPlugin {
     mainFunction = (utils, {fns, plugins: pluginsData}) => {
         fns = utils.materializeFns(fns);
 
-        const _Object = utils.cache.Prototype.Object;
+        const _Object = utils.cache.Object;
 
         // That means we're running headful
         // const hasPlugins = 'plugins' in navigator && navigator.plugins.length

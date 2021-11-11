@@ -53,7 +53,7 @@ class Plugin extends PuppeteerExtraPlugin {
     }
 
     mainFunction = (utils, opts) => {
-        const _Object = utils.cache.Prototype.Object;
+        const _Object = utils.cache.Object;
 
         if ('undefined' !== typeof Notification) {
             utils.replaceGetterWithProxy(Notification, 'permission', {

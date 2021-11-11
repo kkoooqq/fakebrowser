@@ -13,7 +13,7 @@ module.exports.generateMagicArray = (utils, fns) =>
         itemProto = MimeType.prototype,
         itemMainProp = 'type',
     ) {
-        const _Object = utils.cache.Prototype.Object;
+        const _Object = utils.cache.Object;
 
         // Quick helper to set props with the same descriptors vanilla is using
         const defineProp = (obj, prop, value) =>

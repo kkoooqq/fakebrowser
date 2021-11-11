@@ -67,7 +67,7 @@ class Plugin extends PuppeteerExtraPlugin {
                 }
 
                 // Check if the original has this property
-                const desc = utils.cache.Prototype.Object.getOwnPropertyDescriptor(obj, name);
+                const desc = utils.cache.Object.getOwnPropertyDescriptor(obj, name);
                 if (!desc) {
                     // Does not exist, just exit
                     // console.warn('!!! Property not found:' + o.constructor.name + ' propertyKey:' + key);

@@ -25,7 +25,7 @@ class Plugin extends PuppeteerExtraPlugin {
         if (!window.chrome) {
             // Use the exact property descriptor found in headful Chrome
             // fetch it via `Object.getOwnPropertyDescriptor(window, 'chrome')`
-            utils.cache.Prototype.Object.defineProperty(window, 'chrome', {
+            utils.cache.Object.defineProperty(window, 'chrome', {
                 writable: true,
                 enumerable: true,
                 configurable: false, // note!

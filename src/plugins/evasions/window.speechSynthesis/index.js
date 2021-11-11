@@ -19,7 +19,7 @@ class Plugin extends PuppeteerExtraPlugin {
     }
 
     mainFunction = (utils, opts) => {
-        const _Object = utils.cache.Prototype.Object;
+        const _Object = utils.cache.Object;
 
         if (window.speechSynthesis) {
             // SpeechSynthesisVoice

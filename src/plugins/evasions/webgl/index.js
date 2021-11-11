@@ -24,7 +24,7 @@ class Plugin extends PuppeteerExtraPlugin {
     }
 
     mainFunction = (utils, data) => {
-        const _Object = utils.cache.Prototype.Object;
+        const _Object = utils.cache.Object;
 
         const shaderPrecisionFormats = [];
         const WebGLShaderPrecisionFormat_prototype_rangeMin_get = _Object.getOwnPropertyDescriptor(WebGLShaderPrecisionFormat.prototype, 'rangeMin').get;

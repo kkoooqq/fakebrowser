@@ -56,7 +56,7 @@ class Plugin extends PuppeteerExtraPlugin {
             return;
         }
 
-        const _Object = utils.cache.Prototype.Object;
+        const _Object = utils.cache.Object;
 
         /**
          * Known services enum

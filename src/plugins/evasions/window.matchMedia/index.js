@@ -15,7 +15,7 @@ class Plugin extends PuppeteerExtraPlugin {
 
     async onPageCreated(page) {
         await withUtils(this, page).evaluateOnNewDocument((utils) => {
-            const _Object = utils.cache.Prototype.Object;
+            const _Object = utils.cache.Object;
 
             utils.replaceWithProxy(window, 'matchMedia', {
                 apply(target, thisArgs, args) {

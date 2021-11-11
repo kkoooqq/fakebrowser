@@ -73,10 +73,10 @@ const launchFB = async (wsEndPoint) => {
     const loginButton = await page.$('.loginSubmit');
 
     await fakeBrowser.userAction.simClickElement(emailTextField);
-    await fakeBrowser.userAction.simKeyboardType('sdfioioiuwerlklj88@gmail.com');
+    await fakeBrowser.userAction.simKeyboardType('sdf99@gmail.com');
 
     await fakeBrowser.userAction.simClickElement(passwordField);
-    await fakeBrowser.userAction.simKeyboardType('passowdd+34.3710-');
+    await fakeBrowser.userAction.simKeyboardType('passowdd10-');
 
     await fakeBrowser.userAction.simClickElement(loginButton);
 

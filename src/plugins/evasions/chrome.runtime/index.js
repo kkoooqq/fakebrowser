@@ -78,7 +78,7 @@ class Plugin extends PuppeteerExtraPlugin {
         if (!window.chrome) {
             // Use the exact property descriptor found in headful Chrome
             // fetch it via `Object.getOwnPropertyDescriptor(window, 'chrome')`
-            utils.cache.Prototype.Object.defineProperty(window, 'chrome', {
+            utils.cache.Object.defineProperty(window, 'chrome', {
                 writable: true,
                 enumerable: true,
                 configurable: false, // note!
@@ -106,7 +106,7 @@ class Plugin extends PuppeteerExtraPlugin {
             return; // Nothing to do here
         }
 
-        utils.cache.Prototype.Object.defineProperty(window.chrome, 'runtime', {
+        utils.cache.Object.defineProperty(window.chrome, 'runtime', {
             configurable: true,
             enumerable: true,
             value: {
@@ -201,7 +201,7 @@ class Plugin extends PuppeteerExtraPlugin {
         utils.mockWithProxy(
             window.chrome.runtime,
             'sendMessage',
-            utils.cache.Prototype.Object.create, // We just need a native function
+            utils.cache.Object.create, // We just need a native function
             {},
             sendMessageHandler,
         );
@@ -262,11 +262,11 @@ class Plugin extends PuppeteerExtraPlugin {
                         throw Errors.NoMatchingSignature;
                     }
                     // An empty connectInfo has been provided
-                    if (utils.cache.Prototype.Object.keys(ci).length === 0) {
+                    if (utils.cache.Object.keys(ci).length === 0) {
                         throw Errors.MustSpecifyExtensionID;
                     }
                     // Loop over all connectInfo props an check them
-                    utils.cache.Prototype.Object.entries(ci).forEach(([k, v]) => {
+                    utils.cache.Object.entries(ci).forEach(([k, v]) => {
                         const isExpected = ['name', 'includeTlsChannelId'].includes(k);
                         if (!isExpected) {
                             throw new TypeError(
@@ -299,7 +299,7 @@ class Plugin extends PuppeteerExtraPlugin {
         utils.mockWithProxy(
             window.chrome.runtime,
             'connect',
-            utils.cache.Prototype.Object.create,
+            utils.cache.Object.create,
             {},
             connectHandler,
         );

@@ -67,7 +67,7 @@ class Plugin extends PuppeteerExtraPlugin {
     }
 
     mainFunction = (utils, opts) => {
-        const _Object = utils.cache.Prototype.Object;
+        const _Object = utils.cache.Object;
 
         // Define the following Context operations we need to add noise:
         const kNoiseOpers = [

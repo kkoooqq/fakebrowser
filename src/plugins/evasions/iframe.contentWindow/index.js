@@ -33,7 +33,7 @@ class Plugin extends PuppeteerExtraPlugin {
     }
 
     mainFunction = (utils, {opts}) => {
-        const _Object = utils.cache.Prototype.Object;
+        const _Object = utils.cache.Object;
 
         try {
             // Adds a contentWindow proxy to the provided iframe element

@@ -402,8 +402,8 @@ class Plugin extends PuppeteerExtraPlugin {
             throw new Error('Missing required font-size.');
         }
 
-        const _Object = utils.cache.Prototype.Object;
-        const _window = utils.cache.Prototype.window;
+        const _Object = utils.cache.Object;
+        const _window = utils.cache.window;
 
         const markRenderingContextOperator = utils.markRenderingContextOperator;
 
