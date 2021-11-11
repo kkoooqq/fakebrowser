@@ -304,10 +304,11 @@ export class FakeUserAction {
 
             // Pause
             await helper.sleepRd(100, 250)
+
+            return true
         }
 
         return false
-
     }
 
     async simClickElement(
