@@ -1,6 +1,7 @@
 'use strict';
 
 const {PuppeteerExtraPlugin} = require('puppeteer-extra-plugin');
+const withUtils = require('../_utils/withUtils');
 const withWorkerUtils = require('../_utils/withWorkerUtils');
 
 /**
@@ -17,7 +18,7 @@ class Plugin extends PuppeteerExtraPlugin {
     }
 
     async onPageCreated(page) {
-        await page.evaluateOnNewDocument(this.mainFunction);
+        await withUtils(this, page).evaluateOnNewDocument(this.mainFunction);
     }
 
     // Post Chrome 88.0.4291.0
@@ -42,7 +43,6 @@ class Plugin extends PuppeteerExtraPlugin {
         // akamai set Object.defineProperty(navigator, 'webdriver', {value:'false'})
         // we cannot delete it
 
-        const _Object = utils.cache.Object;
         // noinspection JSUnresolvedVariable
         const webdriverDesc = utils.cache.Descriptor.Navigator.prototype.webdriver
             || utils.cache.Descriptor.WorkerNavigator.prototype.webdriver;
