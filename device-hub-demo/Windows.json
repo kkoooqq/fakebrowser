@@ -58,202 +58,6 @@
     "vendor": "Google Inc. (Unknown)",
     "renderer": "ANGLE (Unknown, Parallels Display Adapter (WDDM) Direct3D11 vs_5_0 ps_5_0, D3D11-9.18.10.49183)"
   },
-  "webgl": {
-    "supportedExtensions": [
-      "ANGLE_instanced_arrays",
-      "EXT_blend_minmax",
-      "EXT_color_buffer_half_float",
-      "EXT_disjoint_timer_query",
-      "EXT_float_blend",
-      "EXT_frag_depth",
-      "EXT_shader_texture_lod",
-      "EXT_texture_compression_bptc",
-      "EXT_texture_compression_rgtc",
-      "EXT_texture_filter_anisotropic",
-      "WEBKIT_EXT_texture_filter_anisotropic",
-      "EXT_sRGB",
-      "KHR_parallel_shader_compile",
-      "OES_element_index_uint",
-      "OES_fbo_render_mipmap",
-      "OES_standard_derivatives",
-      "OES_texture_float",
-      "OES_texture_float_linear",
-      "OES_texture_half_float",
-      "OES_texture_half_float_linear",
-      "OES_vertex_array_object",
-      "WEBGL_color_buffer_float",
-      "WEBGL_compressed_texture_s3tc",
-      "WEBKIT_WEBGL_compressed_texture_s3tc",
-      "WEBGL_compressed_texture_s3tc_srgb",
-      "WEBGL_debug_renderer_info",
-      "WEBGL_debug_shaders",
-      "WEBGL_depth_texture",
-      "WEBKIT_WEBGL_depth_texture",
-      "WEBGL_draw_buffers",
-      "WEBGL_lose_context",
-      "WEBKIT_WEBGL_lose_context",
-      "WEBGL_multi_draw"
-    ],
-    "antialias": true,
-    "contextAttributes": {
-      "alpha": true,
-      "antialias": true,
-      "depth": true,
-      "desynchronized": false,
-      "failIfMajorPerformanceCaveat": false,
-      "powerPreference": "default",
-      "premultipliedAlpha": true,
-      "preserveDrawingBuffer": false,
-      "stencil": false,
-      "xrCompatible": false
-    },
-    "blueBits": 8,
-    "depthBits": 24,
-    "greenBits": 8,
-    "maxAnisotropy": 16,
-    "maxCombinedTextureImageUnits": 32,
-    "maxCubeMapTextureSize": 16384,
-    "maxFragmentUniformVectors": 1024,
-    "maxRenderbufferSize": 16384,
-    "maxTextureImageUnits": 16,
-    "maxTextureSize": 16384,
-    "maxVaryingVectors": 30,
-    "maxVertexAttribs": 16,
-    "maxVertexTextureImageUnits": 16,
-    "maxVertexUniformVectors": 4096,
-    "shadingLanguageVersion": "WebGL GLSL ES 1.0 (OpenGL ES GLSL ES 1.0 Chromium)",
-    "stencilBits": 0,
-    "version": "WebGL 1.0 (OpenGL ES 2.0 Chromium)",
-    "aliasedLineWidthRange": {
-      "0": 1,
-      "1": 1
-    },
-    "aliasedPointSizeRange": {
-      "0": 1,
-      "1": 1024
-    },
-    "maxViewportDims": {
-      "0": 32767,
-      "1": 32767
-    },
-    "alphaBits": 8,
-    "redBits": 8,
-    "renderer": "WebKit WebGL",
-    "vendor": "WebKit",
-    "webgl_37445": null,
-    "webgl_37446": null,
-    "webgl_34047": 16,
-    "shaderPrecisionFormats": [
-      {
-        "shaderType": 35633,
-        "precisionType": 36338,
-        "r": {
-          "rangeMin": 127,
-          "rangeMax": 127,
-          "precision": 23
-        }
-      },
-      {
-        "shaderType": 35633,
-        "precisionType": 36337,
-        "r": {
-          "rangeMin": 127,
-          "rangeMax": 127,
-          "precision": 23
-        }
-      },
-      {
-        "shaderType": 35633,
-        "precisionType": 36336,
-        "r": {
-          "rangeMin": 127,
-          "rangeMax": 127,
-          "precision": 23
-        }
-      },
-      {
-        "shaderType": 35633,
-        "precisionType": 36341,
-        "r": {
-          "rangeMin": 31,
-          "rangeMax": 30,
-          "precision": 0
-        }
-      },
-      {
-        "shaderType": 35633,
-        "precisionType": 36340,
-        "r": {
-          "rangeMin": 31,
-          "rangeMax": 30,
-          "precision": 0
-        }
-      },
-      {
-        "shaderType": 35633,
-        "precisionType": 36339,
-        "r": {
-          "rangeMin": 31,
-          "rangeMax": 30,
-          "precision": 0
-        }
-      },
-      {
-        "shaderType": 35632,
-        "precisionType": 36338,
-        "r": {
-          "rangeMin": 127,
-          "rangeMax": 127,
-          "precision": 23
-        }
-      },
-      {
-        "shaderType": 35632,
-        "precisionType": 36337,
-        "r": {
-          "rangeMin": 127,
-          "rangeMax": 127,
-          "precision": 23
-        }
-      },
-      {
-        "shaderType": 35632,
-        "precisionType": 36336,
-        "r": {
-          "rangeMin": 127,
-          "rangeMax": 127,
-          "precision": 23
-        }
-      },
-      {
-        "shaderType": 35632,
-        "precisionType": 36341,
-        "r": {
-          "rangeMin": 31,
-          "rangeMax": 30,
-          "precision": 0
-        }
-      },
-      {
-        "shaderType": 35632,
-        "precisionType": 36340,
-        "r": {
-          "rangeMin": 31,
-          "rangeMax": 30,
-          "precision": 0
-        }
-      },
-      {
-        "shaderType": 35632,
-        "precisionType": 36339,
-        "r": {
-          "rangeMin": 31,
-          "rangeMax": 30,
-          "precision": 0
-        }
-      }
-    ]
-  },
   "defaultCS": {
     "0": "accent-color",
     "1": "align-content",
@@ -1152,6 +956,7 @@
     "cssFloat": "none"
   },
   "windowVersion": [
+    "0",
     "Object",
     "Function",
     "Array",
@@ -2017,6 +1822,9 @@
     "HIDConnectionEvent",
     "HIDDevice",
     "HIDInputReportEvent",
+    "Mojo",
+    "MojoHandle",
+    "MojoWatcher",
     "OTPCredential",
     "PaymentAddress",
     "PaymentRequest",
@@ -2136,7 +1944,48 @@
     "openDatabase",
     "webkitRequestFileSystem",
     "webkitResolveLocalFileSystemURL",
-    "dumpFingerprint"
+    "ShadyCSS",
+    "loadTimeData",
+    "mojo",
+    "mojoBase",
+    "skia",
+    "url",
+    "realbox",
+    "cr",
+    "mostVisited",
+    "newTabPage",
+    "chromeCart",
+    "drive",
+    "taskModule",
+    "promoBrowserCommand",
+    "dd",
+    "dir",
+    "dirxml",
+    "profile",
+    "profileEnd",
+    "table",
+    "keys",
+    "values",
+    "debug",
+    "undebug",
+    "monitor",
+    "unmonitor",
+    "inspect",
+    "copy",
+    "queryObjects",
+    "$0",
+    "$1",
+    "$2",
+    "$3",
+    "$4",
+    "getEventListeners",
+    "getAccessibleName",
+    "getAccessibleRole",
+    "monitorEvents",
+    "unmonitorEvents",
+    "$",
+    "$$",
+    "$x"
   ],
   "htmlElementVersion": [
     "version",
@@ -2438,6 +2287,1274 @@
     "dispatchEvent",
     "removeEventListener"
   ],
+  "webgl": {
+    "supportedExtensions": [
+      "ANGLE_instanced_arrays",
+      "EXT_blend_minmax",
+      "EXT_color_buffer_half_float",
+      "EXT_disjoint_timer_query",
+      "EXT_float_blend",
+      "EXT_frag_depth",
+      "EXT_shader_texture_lod",
+      "EXT_texture_compression_bptc",
+      "EXT_texture_compression_rgtc",
+      "EXT_texture_filter_anisotropic",
+      "WEBKIT_EXT_texture_filter_anisotropic",
+      "EXT_sRGB",
+      "KHR_parallel_shader_compile",
+      "OES_element_index_uint",
+      "OES_fbo_render_mipmap",
+      "OES_standard_derivatives",
+      "OES_texture_float",
+      "OES_texture_float_linear",
+      "OES_texture_half_float",
+      "OES_texture_half_float_linear",
+      "OES_vertex_array_object",
+      "WEBGL_color_buffer_float",
+      "WEBGL_compressed_texture_s3tc",
+      "WEBKIT_WEBGL_compressed_texture_s3tc",
+      "WEBGL_compressed_texture_s3tc_srgb",
+      "WEBGL_debug_renderer_info",
+      "WEBGL_debug_shaders",
+      "WEBGL_depth_texture",
+      "WEBKIT_WEBGL_depth_texture",
+      "WEBGL_draw_buffers",
+      "WEBGL_lose_context",
+      "WEBKIT_WEBGL_lose_context",
+      "WEBGL_multi_draw"
+    ],
+    "contextAttributes": {
+      "alpha": true,
+      "antialias": true,
+      "depth": true,
+      "desynchronized": false,
+      "failIfMajorPerformanceCaveat": false,
+      "powerPreference": "default",
+      "premultipliedAlpha": true,
+      "preserveDrawingBuffer": false,
+      "stencil": false,
+      "xrCompatible": false
+    },
+    "maxAnisotropy": 16,
+    "params": {
+      "2849": {
+        "type": "Number",
+        "value": 1
+      },
+      "2884": {
+        "type": "",
+        "value": false
+      },
+      "2885": {
+        "type": "Number",
+        "value": 1029
+      },
+      "2886": {
+        "type": "Number",
+        "value": 2305
+      },
+      "2928": {
+        "type": "Float32Array",
+        "value": {
+          "0": 0,
+          "1": 1
+        }
+      },
+      "2929": {
+        "type": "",
+        "value": false
+      },
+      "2930": {
+        "type": "Boolean",
+        "value": true
+      },
+      "2931": {
+        "type": "Number",
+        "value": 1
+      },
+      "2932": {
+        "type": "Number",
+        "value": 513
+      },
+      "2960": {
+        "type": "",
+        "value": false
+      },
+      "2961": {
+        "type": "",
+        "value": 0
+      },
+      "2962": {
+        "type": "Number",
+        "value": 519
+      },
+      "2963": {
+        "type": "Number",
+        "value": 2147483647
+      },
+      "2964": {
+        "type": "Number",
+        "value": 7680
+      },
+      "2965": {
+        "type": "Number",
+        "value": 7680
+      },
+      "2966": {
+        "type": "Number",
+        "value": 7680
+      },
+      "2967": {
+        "type": "",
+        "value": 0
+      },
+      "2968": {
+        "type": "Number",
+        "value": 2147483647
+      },
+      "2978": {
+        "type": "Int32Array",
+        "value": {
+          "0": 0,
+          "1": 0,
+          "2": 300,
+          "3": 150
+        }
+      },
+      "3024": {
+        "type": "Boolean",
+        "value": true
+      },
+      "3042": {
+        "type": "",
+        "value": false
+      },
+      "3088": {
+        "type": "Int32Array",
+        "value": {
+          "0": 0,
+          "1": 0,
+          "2": 300,
+          "3": 150
+        }
+      },
+      "3089": {
+        "type": "",
+        "value": false
+      },
+      "3106": {
+        "type": "Float32Array",
+        "value": {
+          "0": 0,
+          "1": 0,
+          "2": 0,
+          "3": 0
+        }
+      },
+      "3107": {
+        "type": "Array",
+        "value": [
+          true,
+          true,
+          true,
+          true
+        ]
+      },
+      "3317": {
+        "type": "Number",
+        "value": 4
+      },
+      "3333": {
+        "type": "Number",
+        "value": 4
+      },
+      "3379": {
+        "type": "Number",
+        "value": 16384
+      },
+      "3386": {
+        "type": "Int32Array",
+        "value": {
+          "0": 32767,
+          "1": 32767
+        }
+      },
+      "3408": {
+        "type": "Number",
+        "value": 4
+      },
+      "3410": {
+        "type": "Number",
+        "value": 8
+      },
+      "3411": {
+        "type": "Number",
+        "value": 8
+      },
+      "3412": {
+        "type": "Number",
+        "value": 8
+      },
+      "3413": {
+        "type": "Number",
+        "value": 8
+      },
+      "3414": {
+        "type": "Number",
+        "value": 24
+      },
+      "3415": {
+        "type": "",
+        "value": 0
+      },
+      "7936": {
+        "type": "String",
+        "value": "WebKit"
+      },
+      "7937": {
+        "type": "String",
+        "value": "WebKit WebGL"
+      },
+      "7938": {
+        "type": "String",
+        "value": "WebGL 1.0 (OpenGL ES 2.0 Chromium)"
+      },
+      "10752": {
+        "type": "",
+        "value": 0
+      },
+      "32773": {
+        "type": "Float32Array",
+        "value": {
+          "0": 0,
+          "1": 0,
+          "2": 0,
+          "3": 0
+        }
+      },
+      "32777": {
+        "type": "Number",
+        "value": 32774
+      },
+      "32823": {
+        "type": "",
+        "value": false
+      },
+      "32824": {
+        "type": "",
+        "value": 0
+      },
+      "32873": {
+        "type": "",
+        "value": null
+      },
+      "32883": {
+        "type": "",
+        "value": null
+      },
+      "32936": {
+        "type": "Number",
+        "value": 1
+      },
+      "32937": {
+        "type": "Number",
+        "value": 4
+      },
+      "32938": {
+        "type": "Number",
+        "value": 1
+      },
+      "32939": {
+        "type": "",
+        "value": false
+      },
+      "32968": {
+        "type": "",
+        "value": 0
+      },
+      "32969": {
+        "type": "Number",
+        "value": 1
+      },
+      "32970": {
+        "type": "",
+        "value": 0
+      },
+      "32971": {
+        "type": "Number",
+        "value": 1
+      },
+      "33170": {
+        "type": "Number",
+        "value": 4352
+      },
+      "33901": {
+        "type": "Float32Array",
+        "value": {
+          "0": 1,
+          "1": 1024
+        }
+      },
+      "33902": {
+        "type": "Float32Array",
+        "value": {
+          "0": 1,
+          "1": 1
+        }
+      },
+      "34016": {
+        "type": "Number",
+        "value": 33984
+      },
+      "34024": {
+        "type": "Number",
+        "value": 16384
+      },
+      "34045": {
+        "type": "",
+        "value": null
+      },
+      "34047": {
+        "type": "Number",
+        "value": 16
+      },
+      "34068": {
+        "type": "",
+        "value": null
+      },
+      "34076": {
+        "type": "Number",
+        "value": 16384
+      },
+      "34467": {
+        "type": "Uint32Array",
+        "value": {}
+      },
+      "34816": {
+        "type": "Number",
+        "value": 519
+      },
+      "34817": {
+        "type": "Number",
+        "value": 7680
+      },
+      "34818": {
+        "type": "Number",
+        "value": 7680
+      },
+      "34819": {
+        "type": "Number",
+        "value": 7680
+      },
+      "34852": {
+        "type": "",
+        "value": null
+      },
+      "34877": {
+        "type": "Number",
+        "value": 32774
+      },
+      "34921": {
+        "type": "Number",
+        "value": 16
+      },
+      "34930": {
+        "type": "Number",
+        "value": 16
+      },
+      "34964": {
+        "type": "",
+        "value": null
+      },
+      "34965": {
+        "type": "",
+        "value": null
+      },
+      "35071": {
+        "type": "",
+        "value": null
+      },
+      "35076": {
+        "type": "",
+        "value": null
+      },
+      "35077": {
+        "type": "",
+        "value": null
+      },
+      "35371": {
+        "type": "",
+        "value": null
+      },
+      "35373": {
+        "type": "",
+        "value": null
+      },
+      "35374": {
+        "type": "",
+        "value": null
+      },
+      "35375": {
+        "type": "",
+        "value": null
+      },
+      "35376": {
+        "type": "",
+        "value": null
+      },
+      "35377": {
+        "type": "",
+        "value": null
+      },
+      "35379": {
+        "type": "",
+        "value": null
+      },
+      "35380": {
+        "type": "",
+        "value": null
+      },
+      "35657": {
+        "type": "",
+        "value": null
+      },
+      "35658": {
+        "type": "",
+        "value": null
+      },
+      "35659": {
+        "type": "",
+        "value": null
+      },
+      "35660": {
+        "type": "Number",
+        "value": 16
+      },
+      "35661": {
+        "type": "Number",
+        "value": 32
+      },
+      "35724": {
+        "type": "String",
+        "value": "WebGL GLSL ES 1.0 (OpenGL ES GLSL ES 1.0 Chromium)"
+      },
+      "35725": {
+        "type": "",
+        "value": null
+      },
+      "35968": {
+        "type": "",
+        "value": null
+      },
+      "35978": {
+        "type": "",
+        "value": null
+      },
+      "35979": {
+        "type": "",
+        "value": null
+      },
+      "36003": {
+        "type": "",
+        "value": 0
+      },
+      "36004": {
+        "type": "Number",
+        "value": 2147483647
+      },
+      "36005": {
+        "type": "Number",
+        "value": 2147483647
+      },
+      "36006": {
+        "type": "",
+        "value": null
+      },
+      "36007": {
+        "type": "",
+        "value": null
+      },
+      "36063": {
+        "type": "",
+        "value": null
+      },
+      "36183": {
+        "type": "",
+        "value": null
+      },
+      "36347": {
+        "type": "Number",
+        "value": 4096
+      },
+      "36348": {
+        "type": "Number",
+        "value": 30
+      },
+      "36349": {
+        "type": "Number",
+        "value": 1024
+      },
+      "37154": {
+        "type": "",
+        "value": null
+      },
+      "37157": {
+        "type": "",
+        "value": null
+      },
+      "37440": {
+        "type": "",
+        "value": false
+      },
+      "37441": {
+        "type": "",
+        "value": false
+      },
+      "37443": {
+        "type": "Number",
+        "value": 37444
+      }
+    },
+    "shaderPrecisionFormats": [
+      {
+        "shaderType": 35633,
+        "precisionType": 36338,
+        "r": {
+          "rangeMin": 127,
+          "rangeMax": 127,
+          "precision": 23
+        }
+      },
+      {
+        "shaderType": 35633,
+        "precisionType": 36337,
+        "r": {
+          "rangeMin": 127,
+          "rangeMax": 127,
+          "precision": 23
+        }
+      },
+      {
+        "shaderType": 35633,
+        "precisionType": 36336,
+        "r": {
+          "rangeMin": 127,
+          "rangeMax": 127,
+          "precision": 23
+        }
+      },
+      {
+        "shaderType": 35633,
+        "precisionType": 36341,
+        "r": {
+          "rangeMin": 31,
+          "rangeMax": 30,
+          "precision": 0
+        }
+      },
+      {
+        "shaderType": 35633,
+        "precisionType": 36340,
+        "r": {
+          "rangeMin": 31,
+          "rangeMax": 30,
+          "precision": 0
+        }
+      },
+      {
+        "shaderType": 35633,
+        "precisionType": 36339,
+        "r": {
+          "rangeMin": 31,
+          "rangeMax": 30,
+          "precision": 0
+        }
+      },
+      {
+        "shaderType": 35632,
+        "precisionType": 36338,
+        "r": {
+          "rangeMin": 127,
+          "rangeMax": 127,
+          "precision": 23
+        }
+      },
+      {
+        "shaderType": 35632,
+        "precisionType": 36337,
+        "r": {
+          "rangeMin": 127,
+          "rangeMax": 127,
+          "precision": 23
+        }
+      },
+      {
+        "shaderType": 35632,
+        "precisionType": 36336,
+        "r": {
+          "rangeMin": 127,
+          "rangeMax": 127,
+          "precision": 23
+        }
+      },
+      {
+        "shaderType": 35632,
+        "precisionType": 36341,
+        "r": {
+          "rangeMin": 31,
+          "rangeMax": 30,
+          "precision": 0
+        }
+      },
+      {
+        "shaderType": 35632,
+        "precisionType": 36340,
+        "r": {
+          "rangeMin": 31,
+          "rangeMax": 30,
+          "precision": 0
+        }
+      },
+      {
+        "shaderType": 35632,
+        "precisionType": 36339,
+        "r": {
+          "rangeMin": 31,
+          "rangeMax": 30,
+          "precision": 0
+        }
+      }
+    ]
+  },
+  "webgl2": {
+    "supportedExtensions": [
+      "EXT_color_buffer_float",
+      "EXT_color_buffer_half_float",
+      "EXT_disjoint_timer_query_webgl2",
+      "EXT_float_blend",
+      "EXT_texture_compression_bptc",
+      "EXT_texture_compression_rgtc",
+      "EXT_texture_filter_anisotropic",
+      "EXT_texture_norm16",
+      "KHR_parallel_shader_compile",
+      "OES_texture_float_linear",
+      "WEBGL_compressed_texture_s3tc",
+      "WEBGL_compressed_texture_s3tc_srgb",
+      "WEBGL_debug_renderer_info",
+      "WEBGL_debug_shaders",
+      "WEBGL_lose_context",
+      "WEBGL_multi_draw",
+      "OVR_multiview2"
+    ],
+    "contextAttributes": {
+      "alpha": true,
+      "antialias": true,
+      "depth": true,
+      "desynchronized": false,
+      "failIfMajorPerformanceCaveat": false,
+      "powerPreference": "default",
+      "premultipliedAlpha": true,
+      "preserveDrawingBuffer": false,
+      "stencil": false,
+      "xrCompatible": false
+    },
+    "maxAnisotropy": 16,
+    "params": {
+      "2849": {
+        "type": "Number",
+        "value": 1
+      },
+      "2884": {
+        "type": "",
+        "value": false
+      },
+      "2885": {
+        "type": "Number",
+        "value": 1029
+      },
+      "2886": {
+        "type": "Number",
+        "value": 2305
+      },
+      "2928": {
+        "type": "Float32Array",
+        "value": {
+          "0": 0,
+          "1": 1
+        }
+      },
+      "2929": {
+        "type": "",
+        "value": false
+      },
+      "2930": {
+        "type": "Boolean",
+        "value": true
+      },
+      "2931": {
+        "type": "Number",
+        "value": 1
+      },
+      "2932": {
+        "type": "Number",
+        "value": 513
+      },
+      "2960": {
+        "type": "",
+        "value": false
+      },
+      "2961": {
+        "type": "",
+        "value": 0
+      },
+      "2962": {
+        "type": "Number",
+        "value": 519
+      },
+      "2963": {
+        "type": "Number",
+        "value": 2147483647
+      },
+      "2964": {
+        "type": "Number",
+        "value": 7680
+      },
+      "2965": {
+        "type": "Number",
+        "value": 7680
+      },
+      "2966": {
+        "type": "Number",
+        "value": 7680
+      },
+      "2967": {
+        "type": "",
+        "value": 0
+      },
+      "2968": {
+        "type": "Number",
+        "value": 2147483647
+      },
+      "2978": {
+        "type": "Int32Array",
+        "value": {
+          "0": 0,
+          "1": 0,
+          "2": 300,
+          "3": 150
+        }
+      },
+      "3024": {
+        "type": "Boolean",
+        "value": true
+      },
+      "3042": {
+        "type": "",
+        "value": false
+      },
+      "3088": {
+        "type": "Int32Array",
+        "value": {
+          "0": 0,
+          "1": 0,
+          "2": 300,
+          "3": 150
+        }
+      },
+      "3089": {
+        "type": "",
+        "value": false
+      },
+      "3106": {
+        "type": "Float32Array",
+        "value": {
+          "0": 0,
+          "1": 0,
+          "2": 0,
+          "3": 0
+        }
+      },
+      "3107": {
+        "type": "Array",
+        "value": [
+          true,
+          true,
+          true,
+          true
+        ]
+      },
+      "3317": {
+        "type": "Number",
+        "value": 4
+      },
+      "3333": {
+        "type": "Number",
+        "value": 4
+      },
+      "3379": {
+        "type": "Number",
+        "value": 16384
+      },
+      "3386": {
+        "type": "Int32Array",
+        "value": {
+          "0": 32767,
+          "1": 32767
+        }
+      },
+      "3408": {
+        "type": "Number",
+        "value": 4
+      },
+      "3410": {
+        "type": "Number",
+        "value": 8
+      },
+      "3411": {
+        "type": "Number",
+        "value": 8
+      },
+      "3412": {
+        "type": "Number",
+        "value": 8
+      },
+      "3413": {
+        "type": "Number",
+        "value": 8
+      },
+      "3414": {
+        "type": "Number",
+        "value": 24
+      },
+      "3415": {
+        "type": "",
+        "value": 0
+      },
+      "7936": {
+        "type": "String",
+        "value": "WebKit"
+      },
+      "7937": {
+        "type": "String",
+        "value": "WebKit WebGL"
+      },
+      "7938": {
+        "type": "String",
+        "value": "WebGL 2.0 (OpenGL ES 3.0 Chromium)"
+      },
+      "10752": {
+        "type": "",
+        "value": 0
+      },
+      "32773": {
+        "type": "Float32Array",
+        "value": {
+          "0": 0,
+          "1": 0,
+          "2": 0,
+          "3": 0
+        }
+      },
+      "32777": {
+        "type": "Number",
+        "value": 32774
+      },
+      "32823": {
+        "type": "",
+        "value": false
+      },
+      "32824": {
+        "type": "",
+        "value": 0
+      },
+      "32873": {
+        "type": "",
+        "value": null
+      },
+      "32883": {
+        "type": "Number",
+        "value": 2048
+      },
+      "32936": {
+        "type": "Number",
+        "value": 1
+      },
+      "32937": {
+        "type": "Number",
+        "value": 4
+      },
+      "32938": {
+        "type": "Number",
+        "value": 1
+      },
+      "32939": {
+        "type": "",
+        "value": false
+      },
+      "32968": {
+        "type": "",
+        "value": 0
+      },
+      "32969": {
+        "type": "Number",
+        "value": 1
+      },
+      "32970": {
+        "type": "",
+        "value": 0
+      },
+      "32971": {
+        "type": "Number",
+        "value": 1
+      },
+      "33170": {
+        "type": "Number",
+        "value": 4352
+      },
+      "33901": {
+        "type": "Float32Array",
+        "value": {
+          "0": 1,
+          "1": 1024
+        }
+      },
+      "33902": {
+        "type": "Float32Array",
+        "value": {
+          "0": 1,
+          "1": 1
+        }
+      },
+      "34016": {
+        "type": "Number",
+        "value": 33984
+      },
+      "34024": {
+        "type": "Number",
+        "value": 16384
+      },
+      "34045": {
+        "type": "Number",
+        "value": 2
+      },
+      "34047": {
+        "type": "Number",
+        "value": 16
+      },
+      "34068": {
+        "type": "",
+        "value": null
+      },
+      "34076": {
+        "type": "Number",
+        "value": 16384
+      },
+      "34467": {
+        "type": "Uint32Array",
+        "value": {}
+      },
+      "34816": {
+        "type": "Number",
+        "value": 519
+      },
+      "34817": {
+        "type": "Number",
+        "value": 7680
+      },
+      "34818": {
+        "type": "Number",
+        "value": 7680
+      },
+      "34819": {
+        "type": "Number",
+        "value": 7680
+      },
+      "34852": {
+        "type": "Number",
+        "value": 8
+      },
+      "34877": {
+        "type": "Number",
+        "value": 32774
+      },
+      "34921": {
+        "type": "Number",
+        "value": 16
+      },
+      "34930": {
+        "type": "Number",
+        "value": 16
+      },
+      "34964": {
+        "type": "",
+        "value": null
+      },
+      "34965": {
+        "type": "",
+        "value": null
+      },
+      "35071": {
+        "type": "Number",
+        "value": 2048
+      },
+      "35076": {
+        "type": "Number",
+        "value": -8
+      },
+      "35077": {
+        "type": "Number",
+        "value": 7
+      },
+      "35371": {
+        "type": "Number",
+        "value": 12
+      },
+      "35373": {
+        "type": "Number",
+        "value": 12
+      },
+      "35374": {
+        "type": "Number",
+        "value": 24
+      },
+      "35375": {
+        "type": "Number",
+        "value": 24
+      },
+      "35376": {
+        "type": "Number",
+        "value": 65536
+      },
+      "35377": {
+        "type": "Number",
+        "value": 212992
+      },
+      "35379": {
+        "type": "Number",
+        "value": 200704
+      },
+      "35380": {
+        "type": "Number",
+        "value": 256
+      },
+      "35657": {
+        "type": "Number",
+        "value": 4096
+      },
+      "35658": {
+        "type": "Number",
+        "value": 16384
+      },
+      "35659": {
+        "type": "Number",
+        "value": 120
+      },
+      "35660": {
+        "type": "Number",
+        "value": 16
+      },
+      "35661": {
+        "type": "Number",
+        "value": 32
+      },
+      "35724": {
+        "type": "String",
+        "value": "WebGL GLSL ES 3.00 (OpenGL ES GLSL ES 3.0 Chromium)"
+      },
+      "35725": {
+        "type": "",
+        "value": null
+      },
+      "35968": {
+        "type": "Number",
+        "value": 4
+      },
+      "35978": {
+        "type": "Number",
+        "value": 120
+      },
+      "35979": {
+        "type": "Number",
+        "value": 4
+      },
+      "36003": {
+        "type": "",
+        "value": 0
+      },
+      "36004": {
+        "type": "Number",
+        "value": 2147483647
+      },
+      "36005": {
+        "type": "Number",
+        "value": 2147483647
+      },
+      "36006": {
+        "type": "",
+        "value": null
+      },
+      "36007": {
+        "type": "",
+        "value": null
+      },
+      "36063": {
+        "type": "Number",
+        "value": 8
+      },
+      "36183": {
+        "type": "Number",
+        "value": 8
+      },
+      "36347": {
+        "type": "Number",
+        "value": 4096
+      },
+      "36348": {
+        "type": "Number",
+        "value": 30
+      },
+      "36349": {
+        "type": "Number",
+        "value": 1024
+      },
+      "37154": {
+        "type": "Number",
+        "value": 120
+      },
+      "37157": {
+        "type": "Number",
+        "value": 120
+      },
+      "37440": {
+        "type": "",
+        "value": false
+      },
+      "37441": {
+        "type": "",
+        "value": false
+      },
+      "37443": {
+        "type": "Number",
+        "value": 37444
+      }
+    },
+    "shaderPrecisionFormats": [
+      {
+        "shaderType": 35633,
+        "precisionType": 36338,
+        "r": {
+          "rangeMin": 127,
+          "rangeMax": 127,
+          "precision": 23
+        }
+      },
+      {
+        "shaderType": 35633,
+        "precisionType": 36337,
+        "r": {
+          "rangeMin": 127,
+          "rangeMax": 127,
+          "precision": 23
+        }
+      },
+      {
+        "shaderType": 35633,
+        "precisionType": 36336,
+        "r": {
+          "rangeMin": 127,
+          "rangeMax": 127,
+          "precision": 23
+        }
+      },
+      {
+        "shaderType": 35633,
+        "precisionType": 36341,
+        "r": {
+          "rangeMin": 31,
+          "rangeMax": 30,
+          "precision": 0
+        }
+      },
+      {
+        "shaderType": 35633,
+        "precisionType": 36340,
+        "r": {
+          "rangeMin": 31,
+          "rangeMax": 30,
+          "precision": 0
+        }
+      },
+      {
+        "shaderType": 35633,
+        "precisionType": 36339,
+        "r": {
+          "rangeMin": 31,
+          "rangeMax": 30,
+          "precision": 0
+        }
+      },
+      {
+        "shaderType": 35632,
+        "precisionType": 36338,
+        "r": {
+          "rangeMin": 127,
+          "rangeMax": 127,
+          "precision": 23
+        }
+      },
+      {
+        "shaderType": 35632,
+        "precisionType": 36337,
+        "r": {
+          "rangeMin": 127,
+          "rangeMax": 127,
+          "precision": 23
+        }
+      },
+      {
+        "shaderType": 35632,
+        "precisionType": 36336,
+        "r": {
+          "rangeMin": 127,
+          "rangeMax": 127,
+          "precision": 23
+        }
+      },
+      {
+        "shaderType": 35632,
+        "precisionType": 36341,
+        "r": {
+          "rangeMin": 31,
+          "rangeMax": 30,
+          "precision": 0
+        }
+      },
+      {
+        "shaderType": 35632,
+        "precisionType": 36340,
+        "r": {
+          "rangeMin": 31,
+          "rangeMax": 30,
+          "precision": 0
+        }
+      },
+      {
+        "shaderType": 35632,
+        "precisionType": 36339,
+        "r": {
+          "rangeMin": 31,
+          "rangeMax": 30,
+          "precision": 0
+        }
+      }
+    ]
+  },
+  "battery": {
+    "charging": true,
+    "chargingTime": null,
+    "dischargingTime": null,
+    "level": 0.87
+  },
   "navigator": {
     "languages": [
       "zh-CN",
@@ -2471,7 +3588,7 @@
     "userLanguage": "_$obj!_undefined_//+_"
   },
   "window": {
-    "innerWidth": 1680,
+    "innerWidth": 969,
     "innerHeight": 901,
     "outerWidth": 1680,
     "outerHeight": 972,
@@ -2514,73 +3631,17 @@
     "pixelDepth": 24
   },
   "body": {
-    "clientWidth": 1664,
-    "clientHeight": 0
+    "clientWidth": 969,
+    "clientHeight": 901
   },
   "mediaDevices": [
     {
       "deviceId": "",
       "kind": "audiooutput",
       "label": "",
-      "groupId": "64363afe686a4585466a35bd8ca1ea3fb4df61fa4e6d5b9416d48fd850e15fb9"
+      "groupId": "bc683a0bfd76f96cfa941ce85ac55e6e17c73907c5f1dbe6fcf2347e2cab0e36"
     }
   ],
-  "battery": {
-    "charging": true,
-    "chargingTime": null,
-    "dischargingTime": null,
-    "level": 0.98
-  },
-  "keyboard": {
-    "KeyA": "a",
-    "KeyB": "b",
-    "KeyC": "c",
-    "KeyD": "d",
-    "KeyE": "e",
-    "KeyF": "f",
-    "KeyG": "g",
-    "KeyH": "h",
-    "KeyI": "i",
-    "KeyJ": "j",
-    "KeyK": "k",
-    "KeyL": "l",
-    "KeyM": "m",
-    "KeyN": "n",
-    "KeyO": "o",
-    "KeyP": "p",
-    "KeyQ": "q",
-    "KeyR": "r",
-    "KeyS": "s",
-    "KeyT": "t",
-    "KeyU": "u",
-    "KeyV": "v",
-    "KeyW": "w",
-    "KeyX": "x",
-    "KeyY": "y",
-    "KeyZ": "z",
-    "Digit1": "1",
-    "Digit2": "2",
-    "Digit3": "3",
-    "Digit4": "4",
-    "Digit5": "5",
-    "Digit6": "6",
-    "Digit7": "7",
-    "Digit8": "8",
-    "Digit9": "9",
-    "Digit0": "0",
-    "Minus": "-",
-    "Equal": "=",
-    "BracketLeft": "[",
-    "BracketRight": "]",
-    "Backslash": "\\",
-    "Semicolon": ";",
-    "Quote": "'",
-    "Backquote": "`",
-    "Comma": ",",
-    "Period": ".",
-    "Slash": "/",
-    "IntlBackslash": "\\"
-  },
   "voices": [
     {
       "default": true,
@@ -2758,6 +3819,161 @@
       "voiceURI": "Google 國語（臺灣）"
     }
   ],
+  "keyboard": {
+    "KeyA": "a",
+    "KeyB": "b",
+    "KeyC": "c",
+    "KeyD": "d",
+    "KeyE": "e",
+    "KeyF": "f",
+    "KeyG": "g",
+    "KeyH": "h",
+    "KeyI": "i",
+    "KeyJ": "j",
+    "KeyK": "k",
+    "KeyL": "l",
+    "KeyM": "m",
+    "KeyN": "n",
+    "KeyO": "o",
+    "KeyP": "p",
+    "KeyQ": "q",
+    "KeyR": "r",
+    "KeyS": "s",
+    "KeyT": "t",
+    "KeyU": "u",
+    "KeyV": "v",
+    "KeyW": "w",
+    "KeyX": "x",
+    "KeyY": "y",
+    "KeyZ": "z",
+    "Digit1": "1",
+    "Digit2": "2",
+    "Digit3": "3",
+    "Digit4": "4",
+    "Digit5": "5",
+    "Digit6": "6",
+    "Digit7": "7",
+    "Digit8": "8",
+    "Digit9": "9",
+    "Digit0": "0",
+    "Minus": "-",
+    "Equal": "=",
+    "BracketLeft": "[",
+    "BracketRight": "]",
+    "Backslash": "\\",
+    "Semicolon": ";",
+    "Quote": "'",
+    "Backquote": "`",
+    "Comma": ",",
+    "Period": ".",
+    "Slash": "/",
+    "IntlBackslash": "\\"
+  },
+  "permissions": {
+    "storage-access": {
+      "exType": "TypeError",
+      "msg": "Failed to execute 'query' on 'Permissions': The Storage Access API is not enabled."
+    },
+    "push": {
+      "exType": "DOMException",
+      "msg": "Failed to execute 'query' on 'Permissions': Push Permission without userVisibleOnly:true isn't supported yet."
+    },
+    "speaker": {
+      "exType": "TypeError",
+      "msg": "Failed to execute 'query' on 'Permissions': Failed to read the 'name' property from 'PermissionDescriptor': The provided value 'speaker' is not a valid enum value of type PermissionName."
+    },
+    "device-info": {
+      "exType": "TypeError",
+      "msg": "Failed to execute 'query' on 'Permissions': Failed to read the 'name' property from 'PermissionDescriptor': The provided value 'device-info' is not a valid enum value of type PermissionName."
+    },
+    "bluetooth": {
+      "exType": "TypeError",
+      "msg": "Failed to execute 'query' on 'Permissions': Failed to read the 'name' property from 'PermissionDescriptor': The provided value 'bluetooth' is not a valid enum value of type PermissionName."
+    },
+    "clipboard": {
+      "exType": "TypeError",
+      "msg": "Failed to execute 'query' on 'Permissions': Failed to read the 'name' property from 'PermissionDescriptor': The provided value 'clipboard' is not a valid enum value of type PermissionName."
+    },
+    "display-capture": {
+      "exType": "TypeError",
+      "msg": "Failed to execute 'query' on 'Permissions': Display Capture is not enabled."
+    },
+    "ambient-light-sensor": {
+      "exType": "TypeError",
+      "msg": "Failed to execute 'query' on 'Permissions': GenericSensorExtraClasses flag is not enabled."
+    },
+    "accessibility-events": {
+      "exType": "TypeError",
+      "msg": "Failed to execute 'query' on 'Permissions': Accessibility Object Model is not enabled."
+    },
+    "nfc": {
+      "exType": "TypeError",
+      "msg": "Failed to execute 'query' on 'Permissions': Web NFC is not enabled."
+    },
+    "system-wake-lock": {
+      "exType": "TypeError",
+      "msg": "Failed to execute 'query' on 'Permissions': System Wake Lock is not enabled."
+    },
+    "window-placement": {
+      "exType": "TypeError",
+      "msg": "Failed to execute 'query' on 'Permissions': Window Placement is not enabled."
+    },
+    "font-access": {
+      "exType": "TypeError",
+      "msg": "Failed to execute 'query' on 'Permissions': Font Access is not enabled."
+    },
+    "midi": {
+      "state": "granted"
+    },
+    "background-fetch": {
+      "state": "granted"
+    },
+    "background-sync": {
+      "state": "granted"
+    },
+    "accelerometer": {
+      "state": "granted"
+    },
+    "gyroscope": {
+      "state": "granted"
+    },
+    "magnetometer": {
+      "state": "granted"
+    },
+    "screen-wake-lock": {
+      "state": "granted"
+    },
+    "clipboard-read": {
+      "state": "prompt"
+    },
+    "clipboard-write": {
+      "state": "granted"
+    },
+    "payment-handler": {
+      "state": "granted"
+    },
+    "periodic-background-sync": {
+      "state": "denied"
+    },
+    "geolocation": {
+      "state": "prompt"
+    },
+    "notifications": {
+      "state": "denied"
+    },
+    "camera": {
+      "state": "prompt"
+    },
+    "microphone": {
+      "state": "prompt"
+    },
+    "persistent-storage": {
+      "state": "prompt"
+    },
+    "idle-detection": {
+      "state": "prompt"
+    }
+  },
   "mimeTypes": [
     {
       "mimeType": "application/ogg",
@@ -2797,6 +4013,11 @@
       "videoPlayType": "probably"
     },
     {
+      "mimeType": "audio/mp4; codecs=\"mp4a.40\"",
+      "audioPlayType": "maybe",
+      "videoPlayType": "maybe"
+    },
+    {
       "mimeType": "audio/mp4; codecs=\"mp4a.40.2\"",
       "audioPlayType": "probably",
       "videoPlayType": "probably",
@@ -2813,11 +4034,6 @@
       "audioPlayType": "probably",
       "videoPlayType": "probably",
       "mediaSource": true
-    },
-    {
-      "mimeType": "audio/mp4; codecs=\"mp4a.40\"",
-      "audioPlayType": "maybe",
-      "videoPlayType": "maybe"
     },
     {
       "mimeType": "audio/mp4; codecs=\"mp4a.66\"",
@@ -2930,6 +4146,11 @@
       "audioPlayType": "probably",
       "videoPlayType": "probably",
       "mediaSource": true
+    },
+    {
+      "mimeType": "video/mp4; codecs=\"avc1\"",
+      "audioPlayType": "maybe",
+      "videoPlayType": "maybe"
     },
     {
       "mimeType": "video/mp4; codecs=\"avc1.42000a\"",
@@ -3226,6 +4447,12 @@
       "mediaSource": true
     },
     {
+      "mimeType": "video/mp4; codecs=\"avc1.42E01E\"",
+      "audioPlayType": "probably",
+      "videoPlayType": "probably",
+      "mediaSource": true
+    },
+    {
       "mimeType": "video/mp4; codecs=\"avc1.42E01E, mp4a.40.2\"",
       "audioPlayType": "probably",
       "videoPlayType": "probably",
@@ -3239,6 +4466,18 @@
     },
     {
       "mimeType": "video/mp4; codecs=\"avc1.42F01E\"",
+      "audioPlayType": "probably",
+      "videoPlayType": "probably",
+      "mediaSource": true
+    },
+    {
+      "mimeType": "video/mp4; codecs=\"avc1.42c00d\"",
+      "audioPlayType": "probably",
+      "videoPlayType": "probably",
+      "mediaSource": true
+    },
+    {
+      "mimeType": "video/mp4; codecs=\"avc1.4D001E\"",
       "audioPlayType": "probably",
       "videoPlayType": "probably",
       "mediaSource": true
@@ -3287,12 +4526,6 @@
     },
     {
       "mimeType": "video/mp4; codecs=\"avc1.4d001e\"",
-      "audioPlayType": "probably",
-      "videoPlayType": "probably",
-      "mediaSource": true
-    },
-    {
-      "mimeType": "video/mp4; codecs=\"avc1.4D001E\"",
       "audioPlayType": "probably",
       "videoPlayType": "probably",
       "mediaSource": true
@@ -4439,6 +5672,12 @@
     },
     {
       "mimeType": "video/mp4; codecs=\"avc1.640016\"",
+      "audioPlayType": "probably",
+      "videoPlayType": "probably",
+      "mediaSource": true
+    },
+    {
+      "mimeType": "video/mp4; codecs=\"avc1.64001E, mp4a.40.2\"",
       "audioPlayType": "probably",
       "videoPlayType": "probably",
       "mediaSource": true
@@ -5842,7 +7081,7 @@
       "mediaSource": true
     },
     {
-      "mimeType": "video/mp4; codecs=\"avc1\"",
+      "mimeType": "video/mp4; codecs=\"avc3\"",
       "audioPlayType": "maybe",
       "videoPlayType": "maybe"
     },
@@ -5851,11 +7090,6 @@
       "audioPlayType": "probably",
       "videoPlayType": "probably",
       "mediaSource": true
-    },
-    {
-      "mimeType": "video/mp4; codecs=\"avc3\"",
-      "audioPlayType": "maybe",
-      "videoPlayType": "maybe"
     },
     {
       "mimeType": "video/mp4; codecs=\"flac\"",
@@ -5900,19 +7134,25 @@
       "mediaSource": true
     },
     {
-      "mimeType": "video/mp4; codecs=\"vp09.01.20.08.01.01.01.01.00\"",
-      "audioPlayType": "probably",
-      "videoPlayType": "probably",
-      "mediaSource": true
-    },
-    {
       "mimeType": "video/mp4; codecs=\"vp09.01.20.08.01\"",
       "audioPlayType": "probably",
       "videoPlayType": "probably",
       "mediaSource": true
     },
     {
+      "mimeType": "video/mp4; codecs=\"vp09.01.20.08.01.01.01.01.00\"",
+      "audioPlayType": "probably",
+      "videoPlayType": "probably",
+      "mediaSource": true
+    },
+    {
       "mimeType": "video/mp4; codecs=\"vp09.02.10.10.01.09.16.09.01\"",
+      "audioPlayType": "probably",
+      "videoPlayType": "probably",
+      "mediaSource": true
+    },
+    {
+      "mimeType": "video/mp4; codecs=mp4a.40.2",
       "audioPlayType": "probably",
       "videoPlayType": "probably",
       "mediaSource": true
@@ -5928,6 +7168,11 @@
       "videoPlayType": "probably"
     },
     {
+      "mimeType": "video/ogg; codecs=\"theora\"",
+      "audioPlayType": "probably",
+      "videoPlayType": "probably"
+    },
+    {
       "mimeType": "video/ogg; codecs=\"theora, flac\"",
       "audioPlayType": "probably",
       "videoPlayType": "probably"
@@ -5938,12 +7183,12 @@
       "videoPlayType": "probably"
     },
     {
-      "mimeType": "video/ogg; codecs=\"theora\"",
+      "mimeType": "video/ogg; codecs=\"vp8\"",
       "audioPlayType": "probably",
       "videoPlayType": "probably"
     },
     {
-      "mimeType": "video/ogg; codecs=\"vp8\"",
+      "mimeType": "video/ogg; codecs=opus",
       "audioPlayType": "probably",
       "videoPlayType": "probably"
     },
@@ -5966,10 +7211,23 @@
       "mediaSource": true
     },
     {
+      "mimeType": "video/webm; codecs=\"vorbis,vp9\"",
+      "audioPlayType": "probably",
+      "videoPlayType": "probably",
+      "mediaSource": true
+    },
+    {
       "mimeType": "video/webm; codecs=\"vp09.02.10.08\"",
       "audioPlayType": "probably",
       "videoPlayType": "probably",
       "mediaSource": true
+    },
+    {
+      "mimeType": "video/webm; codecs=\"vp8\"",
+      "audioPlayType": "probably",
+      "videoPlayType": "probably",
+      "mediaSource": true,
+      "mediaRecorder": true
     },
     {
       "mimeType": "video/webm; codecs=\"vp8, opus\"",
@@ -5985,18 +7243,18 @@
       "mediaSource": true
     },
     {
-      "mimeType": "video/webm; codecs=\"vp8.0, vorbis\"",
-      "audioPlayType": "probably",
-      "videoPlayType": "probably"
-    },
-    {
       "mimeType": "video/webm; codecs=\"vp8.0\"",
       "audioPlayType": "probably",
       "videoPlayType": "probably",
       "mediaRecorder": true
     },
     {
-      "mimeType": "video/webm; codecs=\"vp8\"",
+      "mimeType": "video/webm; codecs=\"vp8.0, vorbis\"",
+      "audioPlayType": "probably",
+      "videoPlayType": "probably"
+    },
+    {
+      "mimeType": "video/webm; codecs=\"vp9\"",
       "audioPlayType": "probably",
       "videoPlayType": "probably",
       "mediaSource": true,
@@ -6016,11 +7274,10 @@
       "mediaSource": true
     },
     {
-      "mimeType": "video/webm; codecs=\"vp9\"",
+      "mimeType": "video/webm; codecs=vorbis",
       "audioPlayType": "probably",
       "videoPlayType": "probably",
-      "mediaSource": true,
-      "mediaRecorder": true
+      "mediaSource": true
     },
     {
       "mimeType": "video/x-m4v",
@@ -6035,6 +7292,21 @@
     {
       "mimeType": "video/x-matroska",
       "mediaRecorder": true
+    }
+  ],
+  "rtc": [
+    {
+      "candidate": "candidate:4016281746 1 udp 2113937151 44801cc9-0e67-4d08-abc3-a9e2cc6486ab.local 49546 typ host generation 0 ufrag 5SXb network-cost 999",
+      "reg": null
+    },
+    {
+      "candidate": "candidate:842163049 1 udp 1677729535 76.67.143.197 60798 typ srflx raddr 0.0.0.0 rport 0 generation 0 ufrag 5SXb network-cost 999",
+      "reg": [
+        "76.67.143.197",
+        "76.67.143.197",
+        ".197",
+        null
+      ]
     }
   ],
   "allFonts": [
@@ -6471,6 +7743,10 @@
       "exists": 1
     },
     {
+      "name": "Roboto",
+      "exists": 1
+    },
+    {
       "name": "Slabo 13px",
       "exists": 1
     },
@@ -6702,109 +7978,5 @@
       "name": "ＭＳ Ｐゴシック",
       "exists": 1
     }
-  ],
-  "permissions": {
-    "storage-access": {
-      "exType": "TypeError",
-      "msg": "Failed to execute 'query' on 'Permissions': The Storage Access API is not enabled."
-    },
-    "push": {
-      "exType": "DOMException",
-      "msg": "Failed to execute 'query' on 'Permissions': Push Permission without userVisibleOnly:true isn't supported yet."
-    },
-    "speaker": {
-      "exType": "TypeError",
-      "msg": "Failed to execute 'query' on 'Permissions': Failed to read the 'name' property from 'PermissionDescriptor': The provided value 'speaker' is not a valid enum value of type PermissionName."
-    },
-    "device-info": {
-      "exType": "TypeError",
-      "msg": "Failed to execute 'query' on 'Permissions': Failed to read the 'name' property from 'PermissionDescriptor': The provided value 'device-info' is not a valid enum value of type PermissionName."
-    },
-    "bluetooth": {
-      "exType": "TypeError",
-      "msg": "Failed to execute 'query' on 'Permissions': Failed to read the 'name' property from 'PermissionDescriptor': The provided value 'bluetooth' is not a valid enum value of type PermissionName."
-    },
-    "clipboard": {
-      "exType": "TypeError",
-      "msg": "Failed to execute 'query' on 'Permissions': Failed to read the 'name' property from 'PermissionDescriptor': The provided value 'clipboard' is not a valid enum value of type PermissionName."
-    },
-    "ambient-light-sensor": {
-      "exType": "TypeError",
-      "msg": "Failed to execute 'query' on 'Permissions': GenericSensorExtraClasses flag is not enabled."
-    },
-    "accessibility-events": {
-      "exType": "TypeError",
-      "msg": "Failed to execute 'query' on 'Permissions': Accessibility Object Model is not enabled."
-    },
-    "nfc": {
-      "exType": "TypeError",
-      "msg": "Failed to execute 'query' on 'Permissions': Web NFC is not enabled."
-    },
-    "system-wake-lock": {
-      "exType": "TypeError",
-      "msg": "Failed to execute 'query' on 'Permissions': System Wake Lock is not enabled."
-    },
-    "window-placement": {
-      "exType": "TypeError",
-      "msg": "Failed to execute 'query' on 'Permissions': Window Placement is not enabled."
-    },
-    "font-access": {
-      "exType": "TypeError",
-      "msg": "Failed to execute 'query' on 'Permissions': Font Access is not enabled."
-    },
-    "midi": {
-      "state": "granted"
-    },
-    "background-fetch": {
-      "state": "granted"
-    },
-    "background-sync": {
-      "state": "granted"
-    },
-    "accelerometer": {
-      "state": "granted"
-    },
-    "gyroscope": {
-      "state": "granted"
-    },
-    "magnetometer": {
-      "state": "granted"
-    },
-    "screen-wake-lock": {
-      "state": "granted"
-    },
-    "clipboard-read": {
-      "state": "prompt"
-    },
-    "clipboard-write": {
-      "state": "granted"
-    },
-    "payment-handler": {
-      "state": "granted"
-    },
-    "periodic-background-sync": {
-      "state": "denied"
-    },
-    "geolocation": {
-      "state": "prompt"
-    },
-    "notifications": {
-      "state": "prompt"
-    },
-    "camera": {
-      "state": "prompt"
-    },
-    "microphone": {
-      "state": "prompt"
-    },
-    "display-capture": {
-      "state": "prompt"
-    },
-    "persistent-storage": {
-      "state": "prompt"
-    },
-    "idle-detection": {
-      "state": "prompt"
-    }
-  }
+  ]
 }

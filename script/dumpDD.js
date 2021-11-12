@@ -4,7 +4,7 @@
  * Get browser fingerprint
  *
  * How to use:
- * Add obfuscated code dumpDD.min.js to your web page,
+ * use https://obfuscator.io to obfuscate this file and add it to your web page
  * then execute the following code to get browser fingerprint,
  * and finally upload to your server for collection.
  *
