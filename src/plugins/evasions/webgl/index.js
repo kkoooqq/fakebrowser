@@ -70,8 +70,9 @@ class Plugin extends PuppeteerExtraPlugin {
                             break;
                     }
 
+                    // We must call this primitive method, and akamai will listen to see if this primitive method is called
+                    const orgResult = _Reflect.apply(target, thisArg, args);
                     if (result === undefined) {
-                        const orgResult = _Reflect.apply(target, thisArg, args);
                         result = orgResult;
                     }
 

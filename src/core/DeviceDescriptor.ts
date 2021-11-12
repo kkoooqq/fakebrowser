@@ -170,6 +170,11 @@ export interface WebGLDescriptor {
         "stencil": boolean,
         "xrCompatible": boolean
     },
+    "maxAnisotropy": number,
+    "params": Record<string, {
+        "type": string,
+        "value": null | string | number | Array<number> | Record<string, number>
+    }>,
     "shaderPrecisionFormats": Array<{
         "shaderType": number,
         "precisionType": number,
@@ -178,10 +183,6 @@ export interface WebGLDescriptor {
             "rangeMax": number,
             "precision": number,
         }
-    }>,
-    "params": Record<string, {
-        "type": string,
-        "value": null | string | number | Array<number> | Record<string, number>
     }>
 }
 
