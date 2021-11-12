@@ -118,64 +118,8 @@ export interface DeviceDescriptor {
         "clientWidth": number,
         "clientHeight": number
     },
-    "webgl": {
-        "supportedExtensions": string[],
-        "antialias": boolean,
-        "contextAttributes": {
-            "alpha": boolean,
-            "antialias": boolean,
-            "depth": boolean,
-            "desynchronized": boolean,
-            "failIfMajorPerformanceCaveat": boolean,
-            "powerPreference": string,
-            "premultipliedAlpha": boolean,
-            "preserveDrawingBuffer": boolean,
-            "stencil": boolean,
-            "xrCompatible": boolean
-        },
-        "blueBits": number,
-        "depthBits": number,
-        "greenBits": number,
-        "maxAnisotropy": number,
-        "maxCombinedTextureImageUnits": number,
-        "maxCubeMapTextureSize": number,
-        "maxFragmentUniformVectors": number,
-        "maxRenderbufferSize": number,
-        "maxTextureImageUnits": number,
-        "maxTextureSize": number,
-        "maxVaryingVectors": number,
-        "maxVertexAttribs": number,
-        "maxVertexTextureImageUnits": number,
-        "maxVertexUniformVectors": number,
-        "shadingLanguageVersion": string,
-        "stencilBits": number,
-        "version": string,
-        "aliasedLineWidthRange": {
-            "0": number,
-            "1": number
-        },
-        "aliasedPointSizeRange": {
-            "0": number,
-            "1": number
-        },
-        "maxViewportDims": {
-            "0": number,
-            "1": number
-        },
-        "alphaBits": number,
-        "redBits": number,
-        "renderer": string,
-        "vendor": string,
-        "shaderPrecisionFormats": Array<{
-            "shaderType": number,
-            "precisionType": number,
-            "r": {
-                "rangeMin": number,
-                "rangeMax": number,
-                "precision": number,
-            }
-        }>
-    },
+    "webgl": WebGLDescriptor,
+    "webgl2": WebGLDescriptor,
     mimeTypes: Array<{
         mimeType: string,
         audioPlayType: string,
@@ -210,6 +154,35 @@ export interface DeviceDescriptor {
         "exType"?: string,
         "msg"?: string,
     }>,
+}
+
+export interface WebGLDescriptor {
+    "supportedExtensions": string[],
+    "contextAttributes": {
+        "alpha": boolean,
+        "antialias": boolean,
+        "depth": boolean,
+        "desynchronized": boolean,
+        "failIfMajorPerformanceCaveat": boolean,
+        "powerPreference": string,
+        "premultipliedAlpha": boolean,
+        "preserveDrawingBuffer": boolean,
+        "stencil": boolean,
+        "xrCompatible": boolean
+    },
+    "shaderPrecisionFormats": Array<{
+        "shaderType": number,
+        "precisionType": number,
+        "r": {
+            "rangeMin": number,
+            "rangeMax": number,
+            "precision": number,
+        }
+    }>,
+    "params": Record<string, {
+        "type": string,
+        "value": null | string | number | Array<number> | Record<string, number>
+    }>
 }
 
 export type ChromeUACHHeaders = {

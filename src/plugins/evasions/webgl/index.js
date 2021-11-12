@@ -25,157 +25,91 @@ class Plugin extends PuppeteerExtraPlugin {
 
     mainFunction = (utils, data) => {
         const _Object = utils.cache.Object;
+        const _Reflect = utils.cache.Reflect;
 
         const shaderPrecisionFormats = [];
         const WebGLShaderPrecisionFormat_prototype_rangeMin_get = _Object.getOwnPropertyDescriptor(WebGLShaderPrecisionFormat.prototype, 'rangeMin').get;
         const WebGLShaderPrecisionFormat_prototype_rangeMax_get = _Object.getOwnPropertyDescriptor(WebGLShaderPrecisionFormat.prototype, 'rangeMax').get;
         const WebGLShaderPrecisionFormat_prototype_precision_get = _Object.getOwnPropertyDescriptor(WebGLShaderPrecisionFormat.prototype, 'precision').get;
 
-        const bindContext = (obj) => {
+        const bindContext = (_WebGLRenderingContext, propName) => {
             // getParameter
-            utils.replaceWithProxy(obj.prototype, 'getParameter', {
+            utils.replaceWithProxy(_WebGLRenderingContext.prototype, 'getParameter', {
                 apply(target, thisArg, args) {
-                    // console.log('webgl getParameter' + args[0]);
+                    const type = args[0];
+                    let result = undefined;
 
-                    switch (args[0]) {
+                    switch (type) {
                         case 37445: /* renderer.UNMASKED_VENDOR_WEBGL */
-                            return data.gpu.vendor;
+                            result = data.gpu.vendor;
+                            break;
 
                         case 37446: /* renderer.UNMASKED_RENDERER_WEBGL */
-                            return data.gpu.renderer;
-
-                        case 34047: /* ext.MAX_TEXTURE_MAX_ANISOTROPY_EXT */
-                            return data.webgl.maxAnisotropy;
-
-                        case 3412: // webgl.BLUE_BITS
-                            return data.webgl.blueBits;
-
-                        case 3414: // webgl.DEPTH_BITS
-                            return data.webgl.depthBits;
-
-                        case 3411: // webgl.GREEN_BITS
-                            return data.webgl.greenBits;
-
-                        case 35661: // webgl.MAX_COMBINED_TEXTURE_IMAGE_UNITS
-                            return data.webgl.maxCombinedTextureImageUnits;
-
-                        case 34076: // webgl.MAX_CUBE_MAP_TEXTURE_SIZE
-                            return data.webgl.maxCubeMapTextureSize;
-
-                        case 36349: // webgl.MAX_FRAGMENT_UNIFORM_VECTORS
-                            return data.webgl.maxFragmentUniformVectors;
-
-                        case 34024: // webgl.MAX_RENDERBUFFER_SIZE
-                            return data.webgl.maxRenderbufferSize;
-
-                        case 34930: // webgl.MAX_TEXTURE_IMAGE_UNITS
-                            return data.webgl.maxTextureImageUnits;
-
-                        case 3379: // webgl.MAX_TEXTURE_SIZE
-                            return data.webgl.maxTextureSize;
-
-                        case 36348: // webgl.MAX_VARYING_VECTORS
-                            return data.webgl.maxVaryingVectors;
-
-                        case 34921: // webgl.MAX_VERTEX_ATTRIBS
-                            return data.webgl.maxVertexAttribs;
-
-                        case 35660: // webgl.MAX_VERTEX_TEXTURE_IMAGE_UNITS
-                            return data.webgl.maxVertexTextureImageUnits;
-
-                        case 36347: // webgl.MAX_VERTEX_UNIFORM_VECTORS
-                            return data.webgl.maxVertexUniformVectors;
-
-                        case 35724: // webgl.SHADING_LANGUAGE_VERSION
-                            return data.webgl.shadingLanguageVersion;
-
-                        case 3415: // webgl.STENCIL_BITS
-                            return data.webgl.stencilBits;
-
-                        case 7938: // webgl.VERSION
-                            return data.webgl.version;
-
-                        case 33902: // aliasedLineWidthRange
-                            if (data.webgl.aliasedLineWidthRange) {
-                                return _Object.values(data.webgl.aliasedLineWidthRange);
-                            }
-                            break;
-
-                        case 33901: // aliasedPointSizeRange
-                            if (data.webgl.aliasedPointSizeRange) {
-                                return _Object.values(data.webgl.aliasedPointSizeRange);
-                            }
-                            break;
-
-                        case 3386: // maxViewportDims
-                            if (data.webgl.maxViewportDims) {
-                                return _Object.values(data.webgl.maxViewportDims);
-                            }
-                            break;
-
-                        case 3413: // alphaBits
-                            if (data.webgl.alphaBits) {
-                                return data.webgl.alphaBits;
-                            }
-                            break;
-
-                        case 3410: // redBits
-                            if (data.webgl.redBits) {
-                                return data.webgl.redBits;
-                            }
-                            break;
-
-                        case 7937: // renderer
-                            if (data.webgl.renderer) {
-                                return data.webgl.renderer;
-                            }
-                            break;
-
-                        case 7936: // vendor
-                            if (data.webgl.vendor) {
-                                return data.webgl.vendor;
-                            }
+                            result = data.gpu.renderer;
                             break;
 
                         default:
+                            const param = data[propName].params[type];
+                            if (param) {
+                                const paramValue = param.value;
+
+                                if (paramValue && paramValue.constructor.name === 'Object') {
+                                    const classType = param.type;
+                                    // Float32Array, Int32Array, ...
+                                    result = new window[classType]();
+
+                                    for (const [key, value] of Object.entries(paramValue)) {
+                                        result[key] = value;
+                                    }
+                                } else {
+                                    // including: null, number, string, array
+                                    result = paramValue;
+                                }
+                            }
+
                             break;
                     }
 
-                    return utils.cache.Reflect.apply(target, thisArg, args);
+                    if (result === undefined) {
+                        const orgResult = _Reflect.apply(target, thisArg, args);
+                        result = orgResult;
+                    }
+
+                    return result;
                 },
             });
 
             // noinspection JSUnusedLocalSymbols
-            utils.replaceWithProxy(obj.prototype, 'getSupportedExtensions', {
+            utils.replaceWithProxy(_WebGLRenderingContext.prototype, 'getSupportedExtensions', {
                 apply(target, thisArg, args) {
-                    return data.webgl.supportedExtensions;
+                    return data[propName].supportedExtensions;
                 },
             });
 
             // getContextAttributes
-            utils.replaceWithProxy(obj.prototype, 'getContextAttributes', {
+            utils.replaceWithProxy(_WebGLRenderingContext.prototype, 'getContextAttributes', {
                 apply(target, thisArg, args) {
-                    const result = utils.cache.Reflect.apply(target, thisArg, args);
+                    const result = _Reflect.apply(target, thisArg, args);
 
-                    result.alpha = data.webgl.alpha;
-                    result.antialias = data.webgl.antialias;
-                    result.depth = data.webgl.depth;
-                    result.desynchronized = data.webgl.desynchronized;
-                    result.failIfMajorPerformanceCaveat = data.webgl.failIfMajorPerformanceCaveat;
-                    result.powerPreference = data.webgl.powerPreference;
-                    result.premultipliedAlpha = data.webgl.premultipliedAlpha;
-                    result.preserveDrawingBuffer = data.webgl.preserveDrawingBuffer;
-                    result.stencil = data.webgl.stencil;
-                    result.xrCompatible = data.webgl.xrCompatible;
+                    result.alpha = data[propName].contextAttributes.alpha;
+                    result.antialias = data[propName].contextAttributes.antialias;
+                    result.depth = data[propName].contextAttributes.depth;
+                    result.desynchronized = data[propName].contextAttributes.desynchronized;
+                    result.failIfMajorPerformanceCaveat = data[propName].contextAttributes.failIfMajorPerformanceCaveat;
+                    result.powerPreference = data[propName].contextAttributes.powerPreference;
+                    result.premultipliedAlpha = data[propName].contextAttributes.premultipliedAlpha;
+                    result.preserveDrawingBuffer = data[propName].contextAttributes.preserveDrawingBuffer;
+                    result.stencil = data[propName].contextAttributes.stencil;
+                    result.xrCompatible = data[propName].contextAttributes.xrCompatible;
 
                     return result;
                 },
             });
 
             // getShaderPrecisionFormat
-            utils.replaceWithProxy(obj.prototype, 'getShaderPrecisionFormat', {
+            utils.replaceWithProxy(_WebGLRenderingContext.prototype, 'getShaderPrecisionFormat', {
                 apply(target, thisArg, args) {
-                    const shaderPrecisionFormat = utils.cache.Reflect.apply(target, thisArg, args);
+                    const shaderPrecisionFormat = _Reflect.apply(target, thisArg, args);
 
                     shaderPrecisionFormats.push({
                         shaderPrecisionFormat,
@@ -192,8 +126,8 @@ class Plugin extends PuppeteerExtraPlugin {
         };
 
         // WebGLRenderingContext.STENCIL_BACK_PASS_DEPTH_FAIL;
-        bindContext(WebGLRenderingContext);
-        bindContext(WebGL2RenderingContext);
+        bindContext(WebGLRenderingContext, 'webgl');
+        bindContext(WebGL2RenderingContext, 'webgl2');
 
         // WebGLShaderPrecisionFormat
         // noinspection JSUnusedLocalSymbols

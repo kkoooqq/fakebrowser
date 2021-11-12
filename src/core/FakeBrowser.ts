@@ -17,7 +17,7 @@ import {BrowserLauncher} from "./BrowserLauncher";
 import {BrowserBuilder} from "./BrowserBuilder";
 import {Touchscreen} from "./TouchScreen";
 
-export const kDefaultWindowsDD = require(path.resolve(__dirname, '../../device-hub/Windows.json'))
+export const kDefaultWindowsDD = require(path.resolve(__dirname, '../../device-hub-demo/Windows.json'))
 
 const kBrowserMaxSurvivalTime = 60 * 1000 * 15
 const kDefaultReferers = ["https://www.google.com", "https://www.bing.com"]

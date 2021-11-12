@@ -267,12 +267,12 @@ window['__$dd'] = async () => {
     };
 
     // webgl
-    const dumpWebGL = async () => {
+    const dumpWebGLCore = async (webglContextId, experimentalWebglContextId) => {
         function getWebGLContext() {
             const canvas = document.createElement('canvas');
             let result = null;
             try {
-                result = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+                result = canvas.getContext(webglContextId) || canvas.getContext(experimentalWebglContextId);
             } catch (ex) {
             }
 
@@ -282,15 +282,15 @@ window['__$dd'] = async () => {
 
         const webglContext = getWebGLContext();
 
-        function getMaxAnisotropy(webgl) {
-            if (webgl) {
+        function getMaxAnisotropy(ctx) {
+            if (ctx) {
                 const ext =
-                    webgl.getExtension('EXT_texture_filter_anisotropic')
-                    || webgl.getExtension('WEBKIT_EXT_texture_filter_anisotropic')
-                    || webgl.getExtension('MOZ_EXT_texture_filter_anisotropic');
+                    ctx.getExtension('EXT_texture_filter_anisotropic')
+                    || ctx.getExtension('WEBKIT_EXT_texture_filter_anisotropic')
+                    || ctx.getExtension('MOZ_EXT_texture_filter_anisotropic');
 
                 if (ext) {
-                    return webgl.getParameter(ext.MAX_TEXTURE_MAX_ANISOTROPY_EXT);
+                    return ctx.getParameter(ext.MAX_TEXTURE_MAX_ANISOTROPY_EXT);
                 }
             }
 
@@ -301,39 +301,25 @@ window['__$dd'] = async () => {
             return {};
         }
 
+        const glEnums = [2849, 2849, 2884, 2884, 2885, 2885, 2886, 2886, 2928, 2928, 2929, 2929, 2930, 2930, 2931, 2931, 2932, 2932, 2960, 2960, 2961, 2961, 2962, 2962, 2963, 2963, 2964, 2964, 2965, 2965, 2966, 2966, 2967, 2967, 2968, 2968, 2978, 2978, 3024, 3024, 3042, 3042, 3088, 3088, 3089, 3089, 3106, 3106, 3107, 3107, 3317, 3317, 3333, 3333, 3379, 3386, 3408, 3408, 3410, 3411, 3412, 3413, 3414, 3415, 3415, 3415, 7936, 7937, 7938, 10752, 10752, 32773, 32773, 32777, 32777, 32823, 32823, 32824, 32824, 32873, 32873, 32883, 32883, 32936, 32936, 32937, 32937, 32938, 32938, 32939, 32939, 32968, 32968, 32969, 32969, 32970, 32970, 32971, 32971, 33170, 33170, 33901, 33902, 34016, 34016, 34024, 34045, 34045, 34047, 34068, 34068, 34076, 34467, 34467, 34816, 34816, 34817, 34817, 34818, 34818, 34819, 34819, 34852, 34852, 34877, 34877, 34921, 34930, 34964, 34964, 34965, 34965, 35071, 35071, 35076, 35076, 35077, 35077, 35371, 35371, 35373, 35373, 35374, 35374, 35375, 35375, 35376, 35376, 35377, 35377, 35379, 35379, 35380, 35380, 35657, 35657, 35658, 35658, 35659, 35659, 35660, 35661, 35724, 35725, 35725, 35968, 35968, 35978, 35978, 35979, 35979, 36003, 36003, 36004, 36004, 36005, 36005, 36006, 36006, 36007, 36007, 36063, 36063, 36183, 36183, 36347, 36348, 36349, 37154, 37154, 37157, 37157, 37440, 37440, 37441, 37441, 37443, 37443];
         const result = {
             'supportedExtensions': webglContext.getSupportedExtensions() || [],
-            'antialias': webglContext.getContextAttributes().antialias,
             'contextAttributes': webglContext.getContextAttributes(),
-            'blueBits': webglContext.getParameter(webglContext.BLUE_BITS), // 3412
-            'depthBits': webglContext.getParameter(webglContext.DEPTH_BITS), // 3414
-            'greenBits': webglContext.getParameter(webglContext.GREEN_BITS), // 3411
             'maxAnisotropy': getMaxAnisotropy(webglContext),
-            'maxCombinedTextureImageUnits': webglContext.getParameter(webglContext.MAX_COMBINED_TEXTURE_IMAGE_UNITS), // 35661
-            'maxCubeMapTextureSize': webglContext.getParameter(webglContext.MAX_CUBE_MAP_TEXTURE_SIZE), // 34076
-            'maxFragmentUniformVectors': webglContext.getParameter(webglContext.MAX_FRAGMENT_UNIFORM_VECTORS), // 36349
-            'maxRenderbufferSize': webglContext.getParameter(webglContext.MAX_RENDERBUFFER_SIZE), // 34024
-            'maxTextureImageUnits': webglContext.getParameter(webglContext.MAX_TEXTURE_IMAGE_UNITS), // 34930
-            'maxTextureSize': webglContext.getParameter(webglContext.MAX_TEXTURE_SIZE), // 3379
-            'maxVaryingVectors': webglContext.getParameter(webglContext.MAX_VARYING_VECTORS), // 36348
-            'maxVertexAttribs': webglContext.getParameter(webglContext.MAX_VERTEX_ATTRIBS), // 34921
-            'maxVertexTextureImageUnits': webglContext.getParameter(webglContext.MAX_VERTEX_TEXTURE_IMAGE_UNITS), // 35660
-            'maxVertexUniformVectors': webglContext.getParameter(webglContext.MAX_VERTEX_UNIFORM_VECTORS), // 36347
-            'shadingLanguageVersion': webglContext.getParameter(webglContext.SHADING_LANGUAGE_VERSION), // 35724
-            'stencilBits': webglContext.getParameter(webglContext.STENCIL_BITS), // 3415
-            'version': webglContext.getParameter(webglContext.VERSION), // 7938
-            'aliasedLineWidthRange': webglContext.getParameter(webglContext.ALIASED_LINE_WIDTH_RANGE), // 33902
-            'aliasedPointSizeRange': webglContext.getParameter(webglContext.ALIASED_POINT_SIZE_RANGE), // 33901
-            'maxViewportDims': webglContext.getParameter(webglContext.MAX_VIEWPORT_DIMS), // 3386
-            'alphaBits': webglContext.getParameter(webglContext.ALPHA_BITS), // 3413
-            'redBits': webglContext.getParameter(webglContext.RED_BITS), // 3410
-            'renderer': webglContext.getParameter(webglContext.RENDERER), // 7937
-            'vendor': webglContext.getParameter(webglContext.VENDOR), // 7936
-            'webgl_37445': webglContext.getParameter(37445), // 37445
-            'webgl_37446': webglContext.getParameter(37446), // 37446
-            'webgl_34047': webglContext.getParameter(34047), // 34047
+            'params': {},
         };
 
+        for (const glEnum of glEnums) {
+            try {
+                const parmValue = webglContext.getParameter(glEnum);
+                result.params[glEnum] = {
+                    'type': parmValue ? parmValue.constructor.name : '',
+                    'value': parmValue,
+                };
+            } catch (ignored) {
+                debugger;
+            }
+        }
 
         //
         const args = [
@@ -369,6 +355,14 @@ window['__$dd'] = async () => {
         }
 
         return result;
+    };
+
+    const dumpWebGL = async () => {
+        return await dumpWebGLCore('webgl', 'experimental-webgl');
+    };
+
+    const dumpWebGL2 = async () => {
+        return await dumpWebGLCore('webgl2', 'experimental-webgl2');
     };
 
     // mimeTypes
@@ -681,6 +675,7 @@ window['__$dd'] = async () => {
         setDDProp(dd, 'screen', dumpScreenProps),
         setDDProp(dd, 'body', dumpBodyProps),
         setDDProp(dd, 'webgl', dumpWebGL),
+        setDDProp(dd, 'webgl2', dumpWebGL2),
         setDDProp(dd, 'mimeTypes', dumpMimeTypes),
         setDDProp(dd, 'mediaDevices', dumpMediaDevices),
         setDDProp(dd, 'defaultCS', dumpDefaultCS),
