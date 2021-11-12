@@ -8,7 +8,7 @@ const {FakeBrowser} = require('fakebrowser');
 
 !(async () => {
     // [Optional]: Select a fake device description
-    const windowsDD = require('./node_modules/fakebrowser/device-hub/Windows.json');
+    const windowsDD = require('./node_modules/fakebrowser/device-hub-demo/Windows.json');
 
     const builder = new FakeBrowser.Builder()
         // [Optional]: Set the fake device description

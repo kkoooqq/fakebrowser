@@ -55,7 +55,7 @@ const {FakeBrowser} = require('fakebrowser');
 
 !(async () => {
     // [Optional]: Select a fake device description
-    const windowsDD = require('./node_modules/fakebrowser/device-hub/Windows.json');
+    const windowsDD = require('./node_modules/fakebrowser/device-hub-demo/Windows.json');
 
     const builder = new FakeBrowser.Builder()
         // [Optional]: Set the fake device description
@@ -92,8 +92,8 @@ const {FakeBrowser} = require('fakebrowser');
 
 There are two ways:
 * [demo2-diff-fp1.js](demo/demo2-diff-fp1.js) Create multiple instances of FakeBrowser and set userDataDir to different folders.
-* [demo2-diff-fp2.js](demo/demo2-diff-fp2.js) Create FakeBrowser instances with different DeviceDescriptor (retrieved from [device-hub](device-hub)).
-* Too few device descriptions in device-hub? Please use [dumpDD.js](script/dumpDD.js) to crawl the real user's fingerprint by yourself 😜.
+* [demo2-diff-fp2.js](demo/demo2-diff-fp2.js) Create FakeBrowser instances with different DeviceDescriptor (retrieved from [device-hub-demo](device-hub-demo)).
+* Too few device descriptions in device-hub-demo? Please use [dumpDD.js](script/dumpDD.js) to crawl the real user's fingerprint by yourself 😜.
 
 ---
 

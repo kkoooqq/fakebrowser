@@ -12,7 +12,7 @@ const userDataDir = path.resolve(__dirname, './fakeBrowserUserData');
 execSync(`rm -rf ${userDataDir}`);
 execSync(`mkdir ${userDataDir}`);
 
-const dd = require('../device-hub/macOS.json');
+const dd = require('../device-hub-demo/macOS.json');
 const child = spawn('/Applications/Google Chrome 93.0.4577.82.app/Contents/MacOS/Google Chrome',
     [
         '--no-default-browser-check',
@@ -48,7 +48,7 @@ const launchFBPure = async (wsEndPoint) => {
 const launchFB = async (wsEndPoint) => {
     const builder = new FakeBrowser.Builder()
         .deviceDescriptor(dd)
-        .displayUserActionLayer(false)
+        .displayUserActionLayer(true)
         .doNotHook(false)
         .vanillaConnectOptions({
             browserWSEndpoint: wsEndPoint,
@@ -73,10 +73,10 @@ const launchFB = async (wsEndPoint) => {
     const loginButton = await page.$('.loginSubmit');
 
     await fakeBrowser.userAction.simClickElement(emailTextField);
-    await fakeBrowser.userAction.simKeyboardType('sdf99@gmail.com');
+    await fakeBrowser.userAction.simKeyboardType('sdf9@gmail.com');
 
     await fakeBrowser.userAction.simClickElement(passwordField);
-    await fakeBrowser.userAction.simKeyboardType('passowdd10-');
+    await fakeBrowser.userAction.simKeyboardType('pass-');
 
     await fakeBrowser.userAction.simClickElement(loginButton);
 

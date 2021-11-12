@@ -20,13 +20,13 @@ const {FakeBrowser} = require('fakebrowser');
     };
 
     createBrowserAndGoto(
-        require('./node_modules/fakebrowser/device-hub/Windows.json'),
+        require('./node_modules/fakebrowser/device-hub-demo/Windows.json'),
         './fakeBrowserUserData3',
         'https://fingerprintjs.github.io/fingerprintjs/',
     ).then(e => e);
 
     createBrowserAndGoto(
-        require('./node_modules/fakebrowser/device-hub/macOS.json'),
+        require('./node_modules/fakebrowser/device-hub-demo/macOS.json'),
         './fakeBrowserUserData4',
         'https://fingerprintjs.github.io/fingerprintjs/',
     ).then(e => e);

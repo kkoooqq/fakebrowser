@@ -10,7 +10,7 @@ const DIR = path.join(os.tmpdir(), 'testFakeBrowserUserData');
 module.exports = async function () {
     console.log('Setup FakeBrowser');
 
-    const windowsDD = require('../../device-hub/Windows.json');
+    const windowsDD = require('../../device-hub-demo/Windows.json');
 
     // build fb
     const builder = new FakeBrowser.Builder()
