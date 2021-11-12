@@ -122,6 +122,7 @@ utils._preloadCache = () => {
     cacheDescriptors('HTMLElement.prototype', ['style']);
     cacheDescriptors('CSSStyleDeclaration.prototype', ['setProperty']);
     cacheDescriptors('FontFace.prototype', ['load']);
+    cacheDescriptors('WebGLShaderPrecisionFormat.prototype', ['rangeMin', 'rangeMax', 'precision']);
 };
 
 utils._preloadGlobalVariables = () => {
