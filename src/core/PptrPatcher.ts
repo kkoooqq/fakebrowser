@@ -172,7 +172,8 @@ export class PptrPatcher {
         const Plugin = require(path.resolve(__dirname, '../plugins/evasions/webgl'))
         const plugin = Plugin({
             gpu: params.fakeDeviceDesc.gpu,
-            webgl: params.fakeDeviceDesc.webgl
+            webgl: params.fakeDeviceDesc.webgl,
+            webgl2: params.fakeDeviceDesc.webgl2,
         })
 
         pptr.use(plugin)

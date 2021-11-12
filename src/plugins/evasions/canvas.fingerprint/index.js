@@ -252,11 +252,9 @@ class Plugin extends PuppeteerExtraPlugin {
 
                 // If the context is webgl, or if it is a 2d canvas and a specific draw function is called, we need to add noise
                 if (!(
-                    context.contextId === 'webgl' ||
-                    context.contextId === 'experimental-webgl' ||
-                    context.contextId === 'webgl2' ||
-                    context.contextId === 'experimental-webgl2' ||
-                    Object.keys(context.operators).length !== 0
+                    (context.contextId === 'webgl' || context.contextId === 'experimental-webgl')
+                    || (context.contextId === 'webgl2' || context.contextId === 'experimental-webgl2')
+                    || Object.keys(context.operators).length !== 0
                 )) {
                     return canvas;
                 }

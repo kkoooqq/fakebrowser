@@ -27,7 +27,15 @@ class Plugin extends PuppeteerExtraPlugin {
         const _Object = utils.cache.Object;
         const _Reflect = utils.cache.Reflect;
 
+        // shaderPrecisionFormat: shaderPrecisionFormat itself
+        // webglPropName
+        // shaderType
+        // precisionType,
+        // rangeMin
+        // rangeMax
+        // precision
         const shaderPrecisionFormats = [];
+
         const WebGLShaderPrecisionFormat_prototype_rangeMin_get = utils.cache.Descriptor.WebGLShaderPrecisionFormat.prototype.rangeMin.get;
         const WebGLShaderPrecisionFormat_prototype_rangeMax_get = utils.cache.Descriptor.WebGLShaderPrecisionFormat.prototype.rangeMax.get;
         const WebGLShaderPrecisionFormat_prototype_precision_get = utils.cache.Descriptor.WebGLShaderPrecisionFormat.prototype.precision.get;
@@ -114,6 +122,7 @@ class Plugin extends PuppeteerExtraPlugin {
 
                     shaderPrecisionFormats.push({
                         shaderPrecisionFormat,
+                        webglPropName: propName,
                         shaderType: args[0],
                         precisionType: args[1],
                         rangeMin: WebGLShaderPrecisionFormat_prototype_rangeMin_get.call(shaderPrecisionFormat),
@@ -138,12 +147,27 @@ class Plugin extends PuppeteerExtraPlugin {
                     e => e.shaderPrecisionFormat === thisArg,
                 );
 
-                const fake_r = data.webgl.shaderPrecisionFormats.find(
-                    e => e.shaderType === r.shaderType
-                        && e.precisionType === r.precisionType,
+                // webglPropName
+                // shaderType
+                // precisionType,
+                // rangeMin
+                // rangeMax
+                // precision
+                const {
+                    webglPropName,
+                    shaderType,
+                    precisionType,
+                    rangeMin,
+                    rangeMax,
+                    precision,
+                } = r;
+
+                const fake_r = data[webglPropName].shaderPrecisionFormats.find(
+                    e => e.shaderType === shaderType
+                        && e.precisionType === precisionType,
                 );
 
-                const result = fake_r ? fake_r.r.precision : r.precision;
+                const result = fake_r ? fake_r.r.precision : precisionType;
                 return result;
             },
         });
@@ -155,12 +179,21 @@ class Plugin extends PuppeteerExtraPlugin {
                     e => e.shaderPrecisionFormat === thisArg,
                 );
 
-                const fake_r = data.webgl.shaderPrecisionFormats.find(
-                    e => e.shaderType === r.shaderType
-                        && e.precisionType === r.precisionType,
+                const {
+                    webglPropName,
+                    shaderType,
+                    precisionType,
+                    rangeMin,
+                    rangeMax,
+                    precision,
+                } = r;
+
+                const fake_r = data[webglPropName].shaderPrecisionFormats.find(
+                    e => e.shaderType === shaderType
+                        && e.precisionType === precisionType,
                 );
 
-                const result = fake_r ? fake_r.r.rangeMin : r.rangeMin;
+                const result = fake_r ? fake_r.r.rangeMin : rangeMin;
                 return result;
             },
         });
@@ -172,12 +205,21 @@ class Plugin extends PuppeteerExtraPlugin {
                     e => e.shaderPrecisionFormat === thisArg,
                 );
 
-                const fake_r = data.webgl.shaderPrecisionFormats.find(
-                    e => e.shaderType === r.shaderType
-                        && e.precisionType === r.precisionType,
+                const {
+                    webglPropName,
+                    shaderType,
+                    precisionType,
+                    rangeMin,
+                    rangeMax,
+                    precision,
+                } = r;
+
+                const fake_r = data[webglPropName].shaderPrecisionFormats.find(
+                    e => e.shaderType === shaderType
+                        && e.precisionType === precisionType,
                 );
 
-                const result = fake_r ? fake_r.r.rangeMax : r.rangeMax;
+                const result = fake_r ? fake_r.r.rangeMax : rangeMax;
                 return result;
             },
         });
