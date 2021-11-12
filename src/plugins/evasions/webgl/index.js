@@ -44,6 +44,8 @@ class Plugin extends PuppeteerExtraPlugin {
             // getParameter
             utils.replaceWithProxy(_WebGLRenderingContext.prototype, 'getParameter', {
                 apply(target, thisArg, args) {
+                    // We must call this primitive method, and akamai will listen to see if this primitive method is called
+                    const orgResult = _Reflect.apply(target, thisArg, args);
                     const type = args[0];
                     let result = undefined;
 
@@ -78,8 +80,6 @@ class Plugin extends PuppeteerExtraPlugin {
                             break;
                     }
 
-                    // We must call this primitive method, and akamai will listen to see if this primitive method is called
-                    const orgResult = _Reflect.apply(target, thisArg, args);
                     if (result === undefined) {
                         result = orgResult;
                     }
@@ -91,6 +91,7 @@ class Plugin extends PuppeteerExtraPlugin {
             // noinspection JSUnusedLocalSymbols
             utils.replaceWithProxy(_WebGLRenderingContext.prototype, 'getSupportedExtensions', {
                 apply(target, thisArg, args) {
+                    _Reflect.apply(target, thisArg, args);
                     return data[propName].supportedExtensions;
                 },
             });
@@ -143,6 +144,8 @@ class Plugin extends PuppeteerExtraPlugin {
         // noinspection JSUnusedLocalSymbols
         utils.replaceGetterWithProxy(WebGLShaderPrecisionFormat.prototype, 'precision', {
             apply(target, thisArg, args) {
+                _Reflect.apply(target, thisArg, args);
+
                 const r = shaderPrecisionFormats.find(
                     e => e.shaderPrecisionFormat === thisArg,
                 );
@@ -175,6 +178,8 @@ class Plugin extends PuppeteerExtraPlugin {
         // noinspection JSUnusedLocalSymbols
         utils.replaceGetterWithProxy(WebGLShaderPrecisionFormat.prototype, 'rangeMin', {
             apply(target, thisArg, args) {
+                _Reflect.apply(target, thisArg, args);
+
                 const r = shaderPrecisionFormats.find(
                     e => e.shaderPrecisionFormat === thisArg,
                 );
@@ -201,6 +206,8 @@ class Plugin extends PuppeteerExtraPlugin {
         // noinspection JSUnusedLocalSymbols
         utils.replaceGetterWithProxy(WebGLShaderPrecisionFormat.prototype, 'rangeMax', {
             apply(target, thisArg, args) {
+                _Reflect.apply(target, thisArg, args);
+
                 const r = shaderPrecisionFormats.find(
                     e => e.shaderPrecisionFormat === thisArg,
                 );

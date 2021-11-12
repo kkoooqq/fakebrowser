@@ -16,11 +16,12 @@ class Plugin extends PuppeteerExtraPlugin {
     async onPageCreated(page) {
         await withUtils(this, page).evaluateOnNewDocument((utils) => {
             const _Object = utils.cache.Object;
+            const _Reflect = utils.cache.Reflect;
 
             utils.replaceWithProxy(window, 'matchMedia', {
-                apply(target, thisArgs, args) {
+                apply(target, thisArg, args) {
                     // console.log(`hook window matchMedia ${args.join('|')}`);
-                    return utils.cache.Reflect.apply(target, thisArgs, args);
+                    return _Reflect.apply(target, thisArg, args);
                 },
             });
         });

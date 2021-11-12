@@ -20,6 +20,7 @@ class Plugin extends PuppeteerExtraPlugin {
 
     mainFunction = (utils, opts) => {
         const _Object = utils.cache.Object;
+        const _Reflect = utils.cache.Reflect;
 
         if (window.speechSynthesis) {
             // SpeechSynthesisVoice
@@ -117,6 +118,8 @@ class Plugin extends PuppeteerExtraPlugin {
                 'getVoices',
                 {
                     apply(target, thisArg, args) {
+                        _Reflect.apply(target, thisArg, args);
+
                         if (!voicesWarnup) {
                             return [];
                         }
@@ -131,6 +134,8 @@ class Plugin extends PuppeteerExtraPlugin {
                 'onvoiceschanged',
                 {
                     apply(target, thisArg, args) {
+                        _Reflect.apply(target, thisArg, args);
+
                         if (args && args[0] instanceof Function) {
                             onvoiceschangedHandler = args[0];
 

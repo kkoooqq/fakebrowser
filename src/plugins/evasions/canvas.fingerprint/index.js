@@ -68,6 +68,7 @@ class Plugin extends PuppeteerExtraPlugin {
 
     mainFunction = (utils, opts) => {
         const _Object = utils.cache.Object;
+        const _Reflect = utils.cache.Reflect;
 
         // Define the following Context operations we need to add noise:
         const kNoiseOpers = [
@@ -206,7 +207,7 @@ class Plugin extends PuppeteerExtraPlugin {
                 apply(target, thisArg, args) {
                     // noinspection JSUnusedLocalSymbols
                     const [contextId, options] = args;
-                    const context = utils.cache.Reflect.apply(target, thisArg, args);
+                    const context = _Reflect.apply(target, thisArg, args);
 
                     // Whenever a program calls getContext, we cache the context and record the program's operations on the context.
                     utils.variables.renderingContextWithOperators.push({
@@ -227,7 +228,7 @@ class Plugin extends PuppeteerExtraPlugin {
                 utils.replaceWithProxy(_CanvasRenderingContext2D.prototype, noiseOper, {
                     apply(target, thisArg, args) {
                         utils.markRenderingContextOperator(thisArg, noiseOper);
-                        return utils.cache.Reflect.apply(target, thisArg, args);
+                        return _Reflect.apply(target, thisArg, args);
                     },
                 });
             }
@@ -332,7 +333,7 @@ class Plugin extends PuppeteerExtraPlugin {
                         canvas = getNoisifyCanvas(thisArg);
                     }
 
-                    return utils.cache.Reflect.apply(target, canvas, args);
+                    return _Reflect.apply(target, canvas, args);
                 },
             });
 
@@ -350,7 +351,7 @@ class Plugin extends PuppeteerExtraPlugin {
                     //     context: context.operators,
                     // }) : '') + ' canvas toBlob args:' + Array.from(args).join('|'));
 
-                    return utils.cache.Reflect.apply(target, canvas, args);
+                    return _Reflect.apply(target, canvas, args);
                 },
             });
 
@@ -368,7 +369,7 @@ class Plugin extends PuppeteerExtraPlugin {
                     //     context: context.operators,
                     // }) : '') + ' canvas convertToBlob args:' + Array.from(args).join('|'));
 
-                    return utils.cache.Reflect.apply(target, canvas, args);
+                    return _Reflect.apply(target, canvas, args);
                 },
             });
 
@@ -388,7 +389,7 @@ class Plugin extends PuppeteerExtraPlugin {
                     //     context: context.operators,
                     // }) : '') + ' canvas getImageData args:' + Array.from(args).join('|'));
 
-                    return utils.cache.Reflect.apply(target, context, args);
+                    return _Reflect.apply(target, context, args);
                 },
             });
         }

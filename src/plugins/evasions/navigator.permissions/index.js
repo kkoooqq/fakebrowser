@@ -54,10 +54,12 @@ class Plugin extends PuppeteerExtraPlugin {
 
     mainFunction = (utils, opts) => {
         const _Object = utils.cache.Object;
+        const _Reflect = utils.cache.Reflect;
 
         if ('undefined' !== typeof Notification) {
             utils.replaceGetterWithProxy(Notification, 'permission', {
-                apply() {
+                apply(target, thisArg, args) {
+                    _Reflect.apply(target, thisArg, args);
                     return 'default';
                 },
             });
@@ -94,7 +96,7 @@ class Plugin extends PuppeteerExtraPlugin {
                         }
                     }
 
-                    utils.cache.Reflect.apply(...arguments).then(result => {
+                    _Reflect.apply(...arguments).then(result => {
                         return resolve(result);
                     }).catch(ex => {
                         return reject(utils.patchError(ex, 'query'));

@@ -41,6 +41,7 @@ class Plugin extends PuppeteerExtraPlugin {
         // RTCSessionDescription.prototype.sdp get function
         // RTCSessionDescription.prototype.toJSON value function
 
+        const _Reflect = utils.cache.Reflect;
         const {proxyExportIP, fakeIPs} = opts;
 
         if (!proxyExportIP || !fakeIPs || !fakeIPs.length) {
@@ -59,7 +60,7 @@ class Plugin extends PuppeteerExtraPlugin {
 
         utils.replaceGetterWithProxy(RTCIceCandidate.prototype, 'candidate', {
             apply(target, thisArg, args) {
-                const org = utils.cache.Reflect.apply(target, thisArg, args);
+                const org = _Reflect.apply(target, thisArg, args);
                 const dest = replaceIps(org);
 
                 // console.log('!!! h00k RTCIceCandidate_prototype_candidate_get:' + org + ' dest:' + dest);
@@ -70,7 +71,7 @@ class Plugin extends PuppeteerExtraPlugin {
 
         utils.replaceGetterWithProxy(RTCIceCandidate.prototype, 'address', {
             apply(target, thisArg, args) {
-                const org = utils.cache.Reflect.apply(target, thisArg, args);
+                const org = _Reflect.apply(target, thisArg, args);
                 const dest = replaceIps(org);
 
                 // console.log('!!! h00k RTCIceCandidate_prototype_address_get:' + org + ' dest:' + dest);
@@ -81,7 +82,7 @@ class Plugin extends PuppeteerExtraPlugin {
 
         utils.replaceWithProxy(RTCIceCandidate.prototype, 'toJSON', {
             apply(target, thisArg, args) {
-                const org = JSON.stringify(utils.cache.Reflect.apply(target, thisArg, args));
+                const org = JSON.stringify(_Reflect.apply(target, thisArg, args));
                 const dest = replaceIps(org);
 
                 // console.log('!!! h00k RTCIceCandidate_prototype_toJSON_value:' + org + ' dest:' + dest);
@@ -92,7 +93,7 @@ class Plugin extends PuppeteerExtraPlugin {
 
         utils.replaceGetterWithProxy(RTCSessionDescription.prototype, 'sdp', {
             apply(target, thisArg, args) {
-                const org = utils.cache.Reflect.apply(target, thisArg, args);
+                const org = _Reflect.apply(target, thisArg, args);
                 const dest = replaceIps(org);
 
                 // console.log('!!! h00k RTCSessionDescription_prototype_sdp_get:' + org + ' dest:' + dest);
@@ -103,7 +104,7 @@ class Plugin extends PuppeteerExtraPlugin {
 
         utils.replaceWithProxy(RTCSessionDescription.prototype, 'toJSON', {
             apply(target, thisArg, args) {
-                const org = JSON.stringify(utils.cache.Reflect.apply(target, thisArg, args));
+                const org = JSON.stringify(_Reflect.apply(target, thisArg, args));
                 const dest = replaceIps(org);
 
                 // console.log('!!! h00k RTCSessionDescription_prototype_toJSON_value:' + org + ' dest:' + dest);

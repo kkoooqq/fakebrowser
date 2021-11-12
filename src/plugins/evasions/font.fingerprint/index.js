@@ -404,6 +404,7 @@ class Plugin extends PuppeteerExtraPlugin {
 
         const _Object = utils.cache.Object;
         const _window = utils.cache.window;
+        const _Reflect = utils.cache.Reflect;
 
         const markRenderingContextOperator = utils.markRenderingContextOperator;
 
@@ -660,7 +661,7 @@ class Plugin extends PuppeteerExtraPlugin {
                             return setFontList[contextIndex].orgFont;
                         }
 
-                        return utils.cache.Reflect.apply(target, thisArg, args);
+                        return _Reflect.apply(target, thisArg, args);
                     },
                 });
 
@@ -682,7 +683,7 @@ class Plugin extends PuppeteerExtraPlugin {
                             args[0] = newFont.font;
                         }
 
-                        return utils.cache.Reflect.apply(target, thisArg, args);
+                        return _Reflect.apply(target, thisArg, args);
                     },
                 });
             }
@@ -744,7 +745,7 @@ class Plugin extends PuppeteerExtraPlugin {
                 if (!hookConfig) {
                     // Get the original value
                     // noinspection JSUnresolvedVariable
-                    const styleDeclaration = utils.cache.Reflect.apply(utils.cache.Descriptor.HTMLElement.prototype.style.get, domNode, []);
+                    const styleDeclaration = _Reflect.apply(utils.cache.Descriptor.HTMLElement.prototype.style.get, domNode, []);
 
                     // Saved objects
                     // The style property of this object
@@ -763,13 +764,14 @@ class Plugin extends PuppeteerExtraPlugin {
 
                     const handler = {
                         get: (target, property, receiver) => {
+                            const orgResult = _Reflect.get(utils.getProxyTarget(target), property, receiver);
                             let result;
 
                             if (_Object.getOwnPropertyDescriptor(target, property)) {
                                 if (hookAttribs.includes(property)) {
                                     result = hookConfig.userSettings[property];
                                 } else {
-                                    result = utils.cache.Reflect.get(utils.getProxyTarget(target), property, receiver);
+                                    result = orgResult;
                                 }
                             } else {
                                 // If the property is in the prototype
@@ -791,7 +793,7 @@ class Plugin extends PuppeteerExtraPlugin {
                                     handle = handleUserSetFontStyle(
                                         () => {
                                             setterInvoked = true;
-                                            return utils.cache.Reflect.set(utils.getProxyTarget(target), property, value, receiver);
+                                            return _Reflect.set(utils.getProxyTarget(target), property, value, receiver);
                                         },
                                         styleDeclaration,
                                         property,
@@ -799,7 +801,7 @@ class Plugin extends PuppeteerExtraPlugin {
                                 }
 
                                 if (!handle && !setterInvoked) {
-                                    return utils.cache.Reflect.set(utils.getProxyTarget(target), property, value, receiver);
+                                    return _Reflect.set(utils.getProxyTarget(target), property, value, receiver);
                                 }
                             } else {
                                 // If the property is in the prototype
@@ -809,7 +811,7 @@ class Plugin extends PuppeteerExtraPlugin {
                             return true;
                         },
                         apply: (target, thisArg, args) => {
-                            return utils.cache.Reflect.apply(target, thisArg, args);
+                            return _Reflect.apply(target, thisArg, args);
                         },
                     };
 
@@ -1001,6 +1003,7 @@ class Plugin extends PuppeteerExtraPlugin {
             if ('undefined' !== typeof HTMLElement) {
                 utils.replaceGetterWithProxy(HTMLElement.prototype, 'style', {
                     apply(target, thisArg, args) {
+                        _Reflect.apply(target, thisArg, args);
                         return hookStyle(thisArg);
                     },
                 });
@@ -1013,7 +1016,7 @@ class Plugin extends PuppeteerExtraPlugin {
             // if ('setProperty' === target) {
             //     debugger;
             //     handle = handleUserSetFontStyle(
-            //         () => utils.cache.Reflect.apply(target, thisArg, args),
+            //         () => _Reflect.apply(target, thisArg, args),
             //         null,
             //         thisArg,
             //         args && args[0],
@@ -1022,7 +1025,7 @@ class Plugin extends PuppeteerExtraPlugin {
             // }
             //
             // if (!handle) {
-            //     utils.cache.Reflect.apply(target, thisArg, args).bind(target);
+            //     _Reflect.apply(target, thisArg, args).bind(target);
             // }
 
             if ('undefined' !== typeof CSSStyleDeclaration) {
@@ -1033,7 +1036,7 @@ class Plugin extends PuppeteerExtraPlugin {
                         const handle = handleUserSetFontStyle(
                             () => {
                                 return _CSSStyleDeclaration_prototype_setProperty.apply(utils.getProxyTarget(thisArg), args);
-                                // return utils.cache.Reflect.apply(target, thisArg, args);
+                                // return _Reflect.apply(target, thisArg, args);
                             },
                             thisArg,
                             args && args[0],
@@ -1041,7 +1044,7 @@ class Plugin extends PuppeteerExtraPlugin {
                         );
 
                         if (!handle) {
-                            // utils.cache.Reflect.apply(target, thisArg, args);
+                            // _Reflect.apply(target, thisArg, args);
                             return _CSSStyleDeclaration_prototype_setProperty.apply(utils.getProxyTarget(thisArg), args);
                         }
                     },
@@ -1050,7 +1053,7 @@ class Plugin extends PuppeteerExtraPlugin {
 
             // utils.replaceSetterWithProxy(HTMLElement.prototype, 'style', {
             //     apply(target, thisArg, args) {
-            //         const result = utils.cache.Reflect.apply(target, thisArg, args);
+            //         const result = _Reflect.apply(target, thisArg, args);
             //         hookStyle(thisArg, args[0]);
             //
             //         return result;
@@ -1099,7 +1102,7 @@ class Plugin extends PuppeteerExtraPlugin {
 
                     try {
                         // noinspection JSUnresolvedVariable
-                        result = await utils.cache.Descriptor.FontFace.prototype.load.value.call(thisArg); //utils.cache.Reflect.apply(target, thisArg, args);
+                        result = await utils.cache.Descriptor.FontFace.prototype.load.value.call(thisArg); //_Reflect.apply(target, thisArg, args);
                     } catch (ex) {
                         err = ex;
 
@@ -1110,14 +1113,19 @@ class Plugin extends PuppeteerExtraPlugin {
                     }
 
                     // Find the font configuration
-                    const fontFaceConfig = fontFaceConfigCache.find(e => e.fontFace === thisArg);
+                    const fontFaceConfig = fontFaceConfigCache.find(
+                        e => e.fontFace === thisArg,
+                    );
+
                     if (fontFaceConfig) {
                         // Get font configuration
                         const fontExists = existFonts.includes(fontFaceConfig.fontFamily);
                         if (fontExists) {
                             return Promise.resolve(thisArg);
                         } else {
-                            return Promise.reject(utils.patchError(new DOMException('A network error occurred.'), 'load'));
+                            return Promise.reject(
+                                utils.patchError(new DOMException('A network error occurred.'), 'load'),
+                            );
                         }
                     }
 
@@ -1126,7 +1134,9 @@ class Plugin extends PuppeteerExtraPlugin {
                             return Promise.reject(err);
                         } else {
                             // FIXME: Theoretically it should not result in non-existent
-                            return Promise.reject(utils.patchError(new DOMException('A network error occurred.'), 'load'));
+                            return Promise.reject(
+                                utils.patchError(new DOMException('A network error occurred.'), 'load'),
+                            );
                         }
                     }
 
@@ -1141,6 +1151,8 @@ class Plugin extends PuppeteerExtraPlugin {
 
             utils.replaceWithProxy(_FontFaceSet_prototype, 'check', {
                 apply(target, thisArg, args) {
+                    _Reflect.apply(target, thisArg, args);
+
                     // args[0] is the font to be checked
                     const font = args[0];
                     let family = [];

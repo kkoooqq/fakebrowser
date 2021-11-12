@@ -26,8 +26,10 @@ class Plugin extends PuppeteerExtraPlugin {
             'canPlayType',
             {
                 apply: function (target, thisArg, args) {
+                    const orgResult = _Reflect.apply(target, thisArg, args);
+
                     if (!args || !args.length) {
-                        return _Reflect.apply(target, thisArg, args);
+                        return orgResult;
                     }
 
                     const type = args[0];
@@ -43,7 +45,7 @@ class Plugin extends PuppeteerExtraPlugin {
                         || thisArg.constructor.name === 'HTMLVideoElement' && !trimmedType.startsWith('video')
                         || thisArg.constructor.name === 'HTMLAudioElement' && !trimmedType.startsWith('audio')
                     ) {
-                        return _Reflect.apply(target, thisArg, args);
+                        return orgResult;
                     }
 
                     const mimeType = opts.data.find(e => e.mimeType === trimmedType);
@@ -54,7 +56,7 @@ class Plugin extends PuppeteerExtraPlugin {
                             return mimeType.audioPlayType;
                         }
                     } else {
-                        return _Reflect.apply(target, thisArg, args);
+                        return orgResult;
                     }
                 },
             },
@@ -65,8 +67,10 @@ class Plugin extends PuppeteerExtraPlugin {
             'isTypeSupported',
             {
                 apply: function (target, thisArg, args) {
+                    const orgResult = _Reflect.apply(target, thisArg, args);
+
                     if (!args || !args.length) {
-                        return _Reflect.apply(target, thisArg, args);
+                        return orgResult;
                     }
 
                     const type = args[0];
@@ -79,7 +83,7 @@ class Plugin extends PuppeteerExtraPlugin {
                     if (mimeType) {
                         return mimeType.mediaSource;
                     } else {
-                        return _Reflect.apply(target, thisArg, args);
+                        return orgResult;
                     }
                 },
             },
@@ -91,8 +95,10 @@ class Plugin extends PuppeteerExtraPlugin {
                 'isTypeSupported',
                 {
                     apply: function (target, thisArg, args) {
+                        const orgResult = _Reflect.apply(target, thisArg, args);
+
                         if (!args || !args.length) {
-                            return _Reflect.apply(target, thisArg, args);
+                            return orgResult;
                         }
 
                         const type = args[0];
@@ -105,7 +111,7 @@ class Plugin extends PuppeteerExtraPlugin {
                         if (mimeType) {
                             return mimeType.mediaRecorder;
                         } else {
-                            return _Reflect.apply(target, thisArg, args);
+                            return orgResult;
                         }
                     },
                 },
