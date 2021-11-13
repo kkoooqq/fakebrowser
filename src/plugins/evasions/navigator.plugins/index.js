@@ -218,10 +218,17 @@ class Plugin extends PuppeteerExtraPlugin {
             });
         }
 
-        utils.replaceGetterWithProxy(Navigator.prototype, 'plugins', utils.makeHandler().getterValue(plugins));
-        utils.replaceGetterWithProxy(Navigator.prototype, 'mimeTypes', utils.makeHandler().getterValue(mimeTypes));
+        utils.replaceGetterWithProxy(
+            Navigator.prototype,
+            'plugins',
+            utils.makeHandler().getterValue(plugins),
+        );
 
-        // All done
+        utils.replaceGetterWithProxy(
+            Navigator.prototype,
+            'mimeTypes',
+            utils.makeHandler().getterValue(mimeTypes),
+        );
     };
 
 }

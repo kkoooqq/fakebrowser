@@ -32,6 +32,6 @@
   "exclude": [
     "dist",
     "node_modules",
-    "src/test"
+    "test"
   ]
 }

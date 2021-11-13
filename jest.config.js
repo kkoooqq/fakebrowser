@@ -1,5 +1,5 @@
 module.exports = {
-    globalSetup: './src/test/setup.js',
-    globalTeardown: './src/test/teardown.js',
-    testEnvironment: './src/test/fakebrowserEnv.js',
+    globalSetup: './test/setup.js',
+    globalTeardown: './test/teardown.js',
+    testEnvironment: './test/fakebrowserEnv.js',
 };
