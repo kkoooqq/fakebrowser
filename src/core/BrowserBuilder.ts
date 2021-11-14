@@ -6,12 +6,12 @@ import {
     LaunchParameters,
     ProxyServer,
     VanillaConnectOptions,
-    VanillaLaunchOptions
-} from "./Driver.js";
+    VanillaLaunchOptions,
+} from './Driver.js'
 
-import {DeviceDescriptor} from "./DeviceDescriptor.js";
-import {BrowserLauncher} from "./BrowserLauncher";
-import {FakeBrowser, kDefaultWindowsDD} from "./FakeBrowser";
+import {DeviceDescriptor} from './DeviceDescriptor.js'
+import {BrowserLauncher} from './BrowserLauncher'
+import {FakeBrowser, kDefaultWindowsDD} from './FakeBrowser'
 
 export class BrowserBuilder {
 
@@ -21,7 +21,7 @@ export class BrowserBuilder {
         this._driverParams = {
             doNotHook: false,
             deviceDesc: kDefaultWindowsDD,
-            userDataDir: ""
+            userDataDir: '',
         }
     }
 

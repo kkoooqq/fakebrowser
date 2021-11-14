@@ -1,6 +1,6 @@
 // noinspection JSUnusedGlobalSymbols
 
-import axios from "axios";
+import axios from 'axios'
 
 /**
  * setTimeout async wrapper
@@ -22,7 +22,7 @@ function sleepRd(a: number, b: number) {
  * @param pon random positive or negative
  */
 function _rd(min: number, max: number, pon = false): number {
-    const c = max - min + 1;
+    const c = max - min + 1
     return Math.floor(Math.random() * c + min) * (pon ? _pon() : 1)
 }
 
@@ -42,15 +42,15 @@ function _pon(): number {
 }
 
 function inMac() {
-    return process.platform == 'darwin';
+    return process.platform == 'darwin'
 }
 
 function inLinux() {
-    return process.platform == 'linux';
+    return process.platform == 'linux'
 }
 
 function inWindow() {
-    return process.platform == 'win32';
+    return process.platform == 'win32'
 }
 
 async function waitFor<T>(func: () => T, timeout: number): Promise<T | null> {
@@ -85,7 +85,7 @@ function arrShuffle<T>(arr: T[]): T[] {
 }
 
 function objClone<T>(obj: T): T {
-    return JSON.parse(JSON.stringify(obj)) as T;
+    return JSON.parse(JSON.stringify(obj)) as T
 }
 
 /**
@@ -96,12 +96,12 @@ function objClone<T>(obj: T): T {
  * @param {Array} cp Control Points
  */
 function twoBezier(t: number, p1: number[], cp: number[], p2: number[]): number[] {
-    const [x1, y1] = p1;
-    const [cx, cy] = cp;
-    const [x2, y2] = p2;
-    let x = (1 - t) * (1 - t) * x1 + 2 * t * (1 - t) * cx + t * t * x2;
-    let y = (1 - t) * (1 - t) * y1 + 2 * t * (1 - t) * cy + t * t * y2;
-    return [x, y];
+    const [x1, y1] = p1
+    const [cx, cy] = cp
+    const [x2, y2] = p2
+    let x = (1 - t) * (1 - t) * x1 + 2 * t * (1 - t) * cx + t * t * x2
+    let y = (1 - t) * (1 - t) * y1 + 2 * t * (1 - t) * cy + t * t * y2
+    return [x, y]
 }
 
 /**
@@ -113,21 +113,21 @@ function twoBezier(t: number, p1: number[], cp: number[], p2: number[]): number[
  * @param {Array} cp2 Second Control Points
  */
 function threeBezier(t: number, p1: number[], cp1: number[], cp2: number[], p2: number[]): number[] {
-    const [x1, y1] = p1;
-    const [x2, y2] = p2;
-    const [cx1, cy1] = cp1;
-    const [cx2, cy2] = cp2;
+    const [x1, y1] = p1
+    const [x2, y2] = p2
+    const [cx1, cy1] = cp1
+    const [cx2, cy2] = cp2
     let x =
         x1 * (1 - t) * (1 - t) * (1 - t) +
         3 * cx1 * t * (1 - t) * (1 - t) +
         3 * cx2 * t * t * (1 - t) +
-        x2 * t * t * t;
+        x2 * t * t * t
     let y =
         y1 * (1 - t) * (1 - t) * (1 - t) +
         3 * cy1 * t * (1 - t) * (1 - t) +
         3 * cy2 * t * t * (1 - t) +
-        y2 * t * t * t;
-    return [x, y];
+        y2 * t * t * t
+    return [x, y]
 }
 
 export const helper = {

@@ -72,6 +72,7 @@ utils._preloadCache = () => {
                 toString: Function.prototype.toString,
             },
         },
+        global: 'undefined' !== typeof window ? window : globalThis,
         window: {
             getComputedStyle: ('undefined' !== typeof window) && window.getComputedStyle.bind(window),
             eval: ('undefined' !== typeof window) ? window.eval.bind(window) : (globalThis ? globalThis.eval.bind(globalThis) : undefined),
@@ -93,16 +94,16 @@ utils._preloadCache = () => {
     const cacheDescriptors = (objPath, propertyKeys) => {
         // get obj from path
         const objPaths = objPath.split('.');
-        let obj = 'undefined' !== typeof window ? window : globalThis;
+        let _global = utils.cache.global;
         let descObj = utils.cache.Descriptor;
 
         for (const part of objPaths) {
-            if (obj) {
+            if (_global) {
                 // noinspection JSUnresolvedFunction
-                if (!Object.hasOwn(obj, part)) {
-                    obj = undefined;
+                if (!Object.hasOwn(_global, part)) {
+                    _global = undefined;
                 } else {
-                    obj = obj[part];
+                    _global = _global[part];
                 }
             }
 
@@ -112,7 +113,7 @@ utils._preloadCache = () => {
         }
 
         for (const key of propertyKeys) {
-            descObj[key] = obj ? Object.getOwnPropertyDescriptor(obj, key) : undefined;
+            descObj[key] = _global ? Object.getOwnPropertyDescriptor(_global, key) : undefined;
         }
     };
 

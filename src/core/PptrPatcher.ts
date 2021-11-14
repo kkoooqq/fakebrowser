@@ -1,15 +1,15 @@
 // noinspection JSUnusedLocalSymbols,JSUnusedGlobalSymbols
 
-import * as path from "path";
-import {strict as assert} from 'assert';
+import * as path from 'path'
+import {strict as assert} from 'assert'
 
-import axios from "axios";
-import {CDPSession, Protocol} from "puppeteer";
-import {PuppeteerExtra, PuppeteerExtraPlugin} from "puppeteer-extra";
+import axios from 'axios'
+import {CDPSession, Protocol} from 'puppeteer'
+import {PuppeteerExtra, PuppeteerExtraPlugin} from 'puppeteer-extra'
 
-import {DriverParameters} from "./Driver";
-import {helper} from "./helper";
-import {FakeBrowser} from "./FakeBrowser";
+import {DriverParameters} from './Driver'
+import {helper} from './helper'
+import {FakeBrowser} from './FakeBrowser'
 
 export class PptrPatcher {
 
@@ -38,7 +38,7 @@ export class PptrPatcher {
         await this.patchCanvas2DFingerprint(uuid, pptr, params)
         await this.patchUserAgent(uuid, pptr, params)
         await this.patchIFrame(uuid, pptr, params)
-        await this.patchPropertiesGetters(uuid, pptr, params);
+        await this.patchPropertiesGetters(uuid, pptr, params)
         await this.patchFonts(uuid, pptr, params)
         await this.patchEmojis(uuid, pptr, params)
         await this.patchSpeechSynthesis(uuid, pptr, params)
@@ -57,8 +57,8 @@ export class PptrPatcher {
         const plugin = Plugin({
             env: {
                 uuid: uuid,
-                internalHttpServerPort: FakeBrowser.globalConfig.internalHttpServerPort
-            }
+                internalHttpServerPort: FakeBrowser.globalConfig.internalHttpServerPort,
+            },
         })
 
         pptr.use(plugin)
@@ -88,7 +88,7 @@ export class PptrPatcher {
             'chrome.csi',
             'chrome.loadTimes',
             'chrome.runtime',
-        ];
+        ]
 
         for (const evasion of availableEvasions) {
             const Plugin = require(path.resolve(__dirname, `../plugins/evasions/${evasion}`))
@@ -155,7 +155,7 @@ export class PptrPatcher {
         //
         const Plugin = require(path.resolve(__dirname, '../plugins/evasions/navigator.plugins-native'))
         const plugin = Plugin({
-            plugins: params.fakeDeviceDesc.plugins
+            plugins: params.fakeDeviceDesc.plugins,
         })
 
         pptr.use(plugin)
@@ -189,7 +189,7 @@ export class PptrPatcher {
 
         const Plugin = require(path.resolve(__dirname, '../plugins/evasions/mimeTypes'))
         const plugin = Plugin({
-            data: params.fakeDeviceDesc.mimeTypes
+            data: params.fakeDeviceDesc.mimeTypes,
         })
 
         pptr.use(plugin)
@@ -205,7 +205,7 @@ export class PptrPatcher {
 
         const Plugin = require(path.resolve(__dirname, '../plugins/evasions/navigator.mediaDevices'))
         const plugin = Plugin({
-            data: params.fakeDeviceDesc.mediaDevices
+            data: params.fakeDeviceDesc.mediaDevices,
         })
 
         pptr.use(plugin)
@@ -233,7 +233,7 @@ export class PptrPatcher {
 
         const Plugin = require(path.resolve(__dirname, '../plugins/evasions/navigator.permissions'))
         const plugin = Plugin({
-            permissions: params.fakeDeviceDesc.permissions
+            permissions: params.fakeDeviceDesc.permissions,
         })
 
         pptr.use(plugin)
@@ -249,7 +249,7 @@ export class PptrPatcher {
 
         const Plugin = require(path.resolve(__dirname, '../plugins/evasions/navigator.batteryManager'))
         const plugin = Plugin({
-            battery: params.fakeDeviceDesc.battery
+            battery: params.fakeDeviceDesc.battery,
         })
 
         pptr.use(plugin)
@@ -277,7 +277,7 @@ export class PptrPatcher {
             const Plugin = require(path.resolve(__dirname, '../plugins/evasions/webrtc'))
             const plugin = Plugin({
                 proxyExportIP: params.proxy.exportIP,
-                fakeIPs
+                fakeIPs,
             })
 
             pptr.use(plugin)
@@ -359,8 +359,8 @@ export class PptrPatcher {
         const plugin = Plugin({
             env: {
                 uuid: uuid,
-                internalHttpServerPort: FakeBrowser.globalConfig.internalHttpServerPort
-            }
+                internalHttpServerPort: FakeBrowser.globalConfig.internalHttpServerPort,
+            },
         })
 
         pptr.use(plugin)
@@ -428,7 +428,7 @@ export class PptrPatcher {
             navigator: params.fakeDeviceDesc.navigator,
             window: params.fakeDeviceDesc.window,
             document: params.fakeDeviceDesc.document,
-            screen: params.fakeDeviceDesc.screen
+            screen: params.fakeDeviceDesc.screen,
         })
 
         pptr.use(plugin)
@@ -451,7 +451,7 @@ export class PptrPatcher {
      * @param jsContent
      */
     static async patchWorkerJsContent(browser: FakeBrowser, jsContent: string) {
-        const jsPatch = await this.evasionsCode(browser);
+        const jsPatch = await this.evasionsCode(browser)
         jsContent = jsPatch + jsContent
 
         return jsContent
@@ -459,26 +459,26 @@ export class PptrPatcher {
 
     static async evasionsCode(browser: FakeBrowser) {
         let jsPatch = ''
-        const utils = require('../plugins/evasions/_utils');
+        const utils = require('../plugins/evasions/_utils')
 
         // utils
-        let utilsContent = `const utils = {};\n`;
+        let utilsContent = `const utils = {};\n`
 
         for (const [key, value] of Object.entries(utils) as [string, string][]) {
-            utilsContent += `utils.${key} = ${value.toString()}; \n`;
+            utilsContent += `utils.${key} = ${value.toString()}; \n`
         }
 
-        utilsContent += `utils.init(); \n`;
+        utilsContent += `utils.init(); \n`
 
         // code from puppeteer-extra
         const plugins: PuppeteerExtraPlugin[] = browser.pptrExtra.plugins
         const runLast = plugins
             .filter(p => p.requirements.has('runLast'))
-            .map(p => p.name);
+            .map(p => p.name)
 
         for (const name of runLast) {
-            const index = plugins.findIndex(p => p.name === name);
-            plugins.push(plugins.splice(index, 1)[0]);
+            const index = plugins.findIndex(p => p.name === name)
+            plugins.push(plugins.splice(index, 1)[0])
         }
 
         for (const plugin of plugins) {
@@ -512,14 +512,14 @@ tmpVarNames.forEach(e => {
         requestId: Protocol.Network.RequestId,
         request: Protocol.Network.Request,
         responseHeaders: Protocol.Fetch.HeaderEntry[],
-        client: CDPSession
+        client: CDPSession,
     ) {
         try {
             let base64Encoded = true
             let jsContent: string
 
             if (responseHeaders && responseHeaders.length) {
-                let body: string;
+                let body: string
                 ;({body, base64Encoded} = await client.send('Fetch.getResponseBody', {requestId}))
                 jsContent = base64Encoded ? Buffer.from(body, 'base64').toString('utf-8') : body
             } else {
@@ -529,9 +529,9 @@ tmpVarNames.forEach(e => {
 
                 responseHeaders =
                     Object.entries(
-                        jsResp.headers
+                        jsResp.headers,
                     ).map(
-                        e => ({name: e[0], value: e[1] as string})
+                        e => ({name: e[0], value: e[1] as string}),
                     )
             }
 
@@ -547,7 +547,7 @@ tmpVarNames.forEach(e => {
 
             return true
         } catch (ex: any) {
-            console.error('SW inject failed', ex);
+            console.error('SW inject failed', ex)
             await client.send('Fetch.failRequest', {requestId, errorReason: 'Aborted'})
         }
 

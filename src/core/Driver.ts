@@ -1,12 +1,12 @@
-import {strict as assert} from 'assert';
-import * as fs from "fs-extra";
+import {strict as assert} from 'assert'
+import * as fs from 'fs-extra'
 
-import {addExtra, PuppeteerExtra} from "puppeteer-extra";
-import {Browser, BrowserConnectOptions, BrowserLaunchArgumentOptions, ConnectOptions, LaunchOptions} from "puppeteer";
+import {addExtra, PuppeteerExtra} from 'puppeteer-extra'
+import {Browser, BrowserConnectOptions, BrowserLaunchArgumentOptions, ConnectOptions, LaunchOptions} from 'puppeteer'
 
-import DeviceDescriptorHelper, {DeviceDescriptor, FakeDeviceDescriptor} from "./DeviceDescriptor.js";
-import {UserAgentHelper} from "./UserAgentHelper.js";
-import {PptrPatcher} from "./PptrPatcher";
+import DeviceDescriptorHelper, {DeviceDescriptor, FakeDeviceDescriptor} from './DeviceDescriptor.js'
+import {UserAgentHelper} from './UserAgentHelper.js'
+import {PptrPatcher} from './PptrPatcher'
 
 export interface ProxyServer {
     proxyType: 'socks5' | 'socks4' | 'http' | 'https',
@@ -89,11 +89,11 @@ export default class Driver {
         assert(!!fakeDD)
 
         const browser: Browser = await pptr.connect(params.connectOptions)
-        await this.patchUAFromLaunchedBrowser(browser, fakeDD);
+        await this.patchUAFromLaunchedBrowser(browser, fakeDD)
 
         return {
             vanillaBrowser: browser,
-            pptrExtra: pptr
+            pptrExtra: pptr,
         }
     }
 
@@ -138,11 +138,11 @@ export default class Driver {
         assert(!!fakeDD)
 
         const browser: Browser = await pptr.launch(params.launchOptions)
-        await this.patchUAFromLaunchedBrowser(browser, fakeDD);
+        await this.patchUAFromLaunchedBrowser(browser, fakeDD)
 
         return {
             vanillaBrowser: browser,
-            pptrExtra: pptr
+            pptrExtra: pptr,
         }
     }
 
@@ -177,7 +177,7 @@ export default class Driver {
             ignoreHTTPSErrors: true,
             ignoreDefaultArgs: [
                 '--enable-automation',
-                '--enable-blink-features=IdleDetection'
+                '--enable-blink-features=IdleDetection',
             ],
             handleSIGINT: false,
             handleSIGTERM: false,
@@ -208,21 +208,21 @@ export default class Driver {
         // proxy
         if (launchParams.proxy) {
             args.push(
-                `--proxy-server=${launchParams.proxy.proxy}`
+                `--proxy-server=${launchParams.proxy.proxy}`,
             )
         }
 
         // browser language
         const lang = UserAgentHelper.buildAcceptLanguage(fakeDD)
         args.push(
-            `--lang=${lang}`
+            `--lang=${lang}`,
         )
 
         const userDataDir = launchParams.userDataDir
         fs.mkdirSync(userDataDir, {recursive: true}) // throw exception
 
         args.push(
-            `--user-data-dir=${userDataDir}`
+            `--user-data-dir=${userDataDir}`,
         )
 
         // window position & window size
@@ -232,7 +232,7 @@ export default class Driver {
             innerWidth,
             innerHeight,
             outerWidth,
-            outerHeight
+            outerHeight,
         } = fakeDD.window
 
         outerWidth = outerWidth || innerWidth
@@ -276,7 +276,7 @@ export default class Driver {
         try {
             const pages = await browser.pages()
             for (const page of pages) {
-                await page.close();
+                await page.close()
             }
         } catch (ignored) {
         }

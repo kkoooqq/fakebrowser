@@ -1,14 +1,14 @@
 // noinspection JSUnusedGlobalSymbols,JSUnusedLocalSymbols,PointlessArithmeticExpressionJS
 
-import {strict as assert} from 'assert';
+import {strict as assert} from 'assert'
 
-import {BoundingBox, ElementHandle, KeyInput, Page, Point} from "puppeteer";
+import {BoundingBox, ElementHandle, KeyInput, Page, Point} from 'puppeteer'
 
-import {helper} from "./helper";
-import {FakeBrowser} from "./FakeBrowser";
-import {PptrToolkit} from "./PptrToolkit";
-import {FakeDeviceDescriptor} from "./DeviceDescriptor";
-import {Touchscreen} from "./TouchScreen";
+import {helper} from './helper'
+import {FakeBrowser} from './FakeBrowser'
+import {PptrToolkit} from './PptrToolkit'
+import {FakeDeviceDescriptor} from './DeviceDescriptor'
+import {Touchscreen} from './TouchScreen'
 
 export class FakeUserAction {
 
@@ -62,7 +62,7 @@ export class FakeUserAction {
 
         const p1 = [
             startPos.x,
-            startPos.y
+            startPos.y,
         ]
         const cp1 = [
             (startPos.x + endPos.x) / 2 + helper.rd(30, 100, true) * cpDelta,
@@ -75,7 +75,7 @@ export class FakeUserAction {
         ]
         const p2 = [
             endPos.x,
-            endPos.y
+            endPos.y,
         ]
 
         for (let num of nums) {
@@ -102,7 +102,7 @@ export class FakeUserAction {
             options.startPos,
             options.endPos,
             options.maxPoints || helper.rd(15, 30),
-            options.cpDelta || 1
+            options.cpDelta || 1,
         )
 
         for (let n = 0; n < points.length; n += 1) {
@@ -110,7 +110,7 @@ export class FakeUserAction {
             await page.mouse.move(
                 point.x,
                 point.y,
-                {steps: helper.rd(1, 2)}
+                {steps: helper.rd(1, 2)},
             )
 
             await helper.sleep((options.timestamp || helper.rd(300, 800)) / points.length)
@@ -166,14 +166,14 @@ export class FakeUserAction {
             endPos: closeToEndPos,
             maxPoints,
             timestamp,
-            cpDelta
+            cpDelta,
         })
 
         // The last pos must correction
         await currPage.mouse.move(
             endPos.x,
             endPos.y,
-            {steps: helper.rd(5, 13)}
+            {steps: helper.rd(5, 13)},
         )
 
         this._mouseCurrPos = endPos
@@ -218,7 +218,7 @@ export class FakeUserAction {
     }
 
     async simClick(options = {
-        pauseAfterMouseUp: true
+        pauseAfterMouseUp: true,
     }): Promise<boolean> {
         const fb = this.fakeBrowser
         if (!fb) {
@@ -247,8 +247,8 @@ export class FakeUserAction {
     async simMoveToAndClick(
         endPos: Point,
         options = {
-            pauseAfterMouseUp: true
-        }
+            pauseAfterMouseUp: true,
+        },
     ): Promise<boolean> {
         const fb = this.fakeBrowser
         if (!fb) {
@@ -263,7 +263,7 @@ export class FakeUserAction {
             await currPage.mouse.move(
                 endPos.x + helper.rd(-10, 10),
                 endPos.y,
-                {steps: helper.rd(8, 20)}
+                {steps: helper.rd(8, 20)},
             )
         }
 
@@ -315,8 +315,8 @@ export class FakeUserAction {
     async simClickElement(
         eh: ElementHandle,
         options = {
-            pauseAfterMouseUp: true
-        }
+            pauseAfterMouseUp: true,
+        },
     ): Promise<boolean> {
         const moveToEl = await this.simMouseMoveToElement(eh)
         if (!moveToEl) {
@@ -334,7 +334,7 @@ export class FakeUserAction {
     private static async adjustElementPositionWithMouse(
         eh: ElementHandle<Element>,
         currPage: Page,
-        fakeDD: FakeDeviceDescriptor
+        fakeDD: FakeDeviceDescriptor,
     ): Promise<BoundingBox | null> {
         let box = null
         for (; ;) {
@@ -362,7 +362,7 @@ export class FakeUserAction {
 
                     deltaY = Math.min(
                         -(box.y - 30) - 0,
-                        helper.rd(150, 300)
+                        helper.rd(150, 300),
                     )
 
                     deltaY = -deltaY
@@ -372,7 +372,7 @@ export class FakeUserAction {
 
                     deltaY = Math.min(
                         box.y + box.height + 30 - fakeDD.window.innerHeight,
-                        helper.rd(150, 300)
+                        helper.rd(150, 300),
                     )
 
                     viewportAdjust = true
@@ -401,13 +401,13 @@ export class FakeUserAction {
             }
         }
 
-        return box;
+        return box
     }
 
     private static async adjustElementPositionWithTouchscreen(
         eh: ElementHandle<Element>,
         currPage: Page,
-        fakeDD: FakeDeviceDescriptor
+        fakeDD: FakeDeviceDescriptor,
     ): Promise<BoundingBox | null> {
         let box = null
         for (; ;) {
@@ -451,9 +451,9 @@ export class FakeUserAction {
                     }
 
                     await touchscreen.drag({
-                        x: startX, y: startY
+                        x: startX, y: startY,
                     }, {
-                        x: endX, y: endY
+                        x: endX, y: endY,
                     })
 
                     await helper.sleepRd(100, 300)
@@ -465,14 +465,14 @@ export class FakeUserAction {
             }
         }
 
-        return box;
+        return box
     }
 
     async simKeyboardPress(
         text: KeyInput,
         options = {
-            pauseAfterKeyUp: true
-        }
+            pauseAfterKeyUp: true,
+        },
     ): Promise<boolean> {
         const fb = this.fakeBrowser
         if (!fb) {
@@ -492,13 +492,13 @@ export class FakeUserAction {
     }
 
     async simKeyboardEnter(options = {
-        pauseAfterKeyUp: true
+        pauseAfterKeyUp: true,
     }): Promise<boolean> {
         return await this.simKeyboardPress('Enter', options)
     }
 
     async simKeyboardEsc(options = {
-        pauseAfterKeyUp: true
+        pauseAfterKeyUp: true,
     }): Promise<boolean> {
         return await this.simKeyboardPress('Escape', options)
     }
@@ -506,8 +506,8 @@ export class FakeUserAction {
     async simKeyboardType(
         text: string,
         options = {
-            pauseAfterLastKeyUp: true
-        }
+            pauseAfterLastKeyUp: true,
+        },
     ): Promise<boolean> {
         const fb = this.fakeBrowser
         if (!fb) {

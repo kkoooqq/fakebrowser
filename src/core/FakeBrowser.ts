@@ -1,26 +1,26 @@
 // noinspection JSUnusedGlobalSymbols,JSUnusedLocalSymbols
 
-import * as path from "path";
-import {strict as assert} from 'assert';
+import * as path from 'path'
+import {strict as assert} from 'assert'
 
-import {Browser, CDPSession, Page, Target, WebWorker} from "puppeteer";
-import {PuppeteerExtra} from "puppeteer-extra";
+import {Browser, CDPSession, Page, Target, WebWorker} from 'puppeteer'
+import {PuppeteerExtra} from 'puppeteer-extra'
 
-import {helper} from "./helper";
-import {PptrToolkit} from "./PptrToolkit";
-import {ConnectParameters, DriverParameters, LaunchParameters} from "./Driver.js";
-import {ChromeUACHHeaders} from "./DeviceDescriptor.js";
-import {PptrPatcher} from "./PptrPatcher";
-import {UserAgentHelper} from "./UserAgentHelper";
-import {FakeUserAction} from "./FakeUserAction";
-import {BrowserLauncher} from "./BrowserLauncher";
-import {BrowserBuilder} from "./BrowserBuilder";
-import {Touchscreen} from "./TouchScreen";
+import {helper} from './helper'
+import {PptrToolkit} from './PptrToolkit'
+import {ConnectParameters, DriverParameters, LaunchParameters} from './Driver.js'
+import {ChromeUACHHeaders} from './DeviceDescriptor.js'
+import {PptrPatcher} from './PptrPatcher'
+import {UserAgentHelper} from './UserAgentHelper'
+import {FakeUserAction} from './FakeUserAction'
+import {BrowserLauncher} from './BrowserLauncher'
+import {BrowserBuilder} from './BrowserBuilder'
+import {Touchscreen} from './TouchScreen'
 
 export const kDefaultWindowsDD = require(path.resolve(__dirname, '../../device-hub-demo/Windows.json'))
 
 const kBrowserMaxSurvivalTime = 60 * 1000 * 15
-const kDefaultReferers = ["https://www.google.com", "https://www.bing.com"]
+const kDefaultReferers = ['https://www.google.com', 'https://www.bing.com']
 const kInternalHttpServerPort = 17311
 
 // chromium startup parameters
@@ -140,14 +140,6 @@ export class FakeBrowser {
         defaultLaunchArgs: kDefaultLaunchArgs,
     }
 
-    readonly driverParams: DriverParameters
-    readonly vanillaBrowser: Browser
-    readonly pptrExtra: PuppeteerExtra
-    /**
-     * Browser instance launch time or connection time
-     */
-    readonly bindingTime: number
-    readonly uuid: string
     readonly isMobileBrowser: boolean
     readonly userAction: FakeUserAction
 
@@ -186,24 +178,19 @@ export class FakeBrowser {
     }
 
     constructor(
-        params: DriverParameters,
-        vanillaBrowser: Browser,
-        pptrExtra: PuppeteerExtra,
-        bindingTime: number,
-        uuid: string,
+        public readonly driverParams: DriverParameters,
+        public readonly vanillaBrowser: Browser,
+        public readonly pptrExtra: PuppeteerExtra,
+        public readonly bindingTime: number,
+        public readonly uuid: string,
     ) {
-        this.driverParams = params
-        this.vanillaBrowser = vanillaBrowser
-        this.pptrExtra = pptrExtra
-        this.bindingTime = bindingTime
-
         assert(
-            params.deviceDesc
-            && params.deviceDesc.navigator
-            && params.deviceDesc.navigator.userAgent
+            driverParams.deviceDesc
+            && driverParams.deviceDesc.navigator
+            && driverParams.deviceDesc.navigator.userAgent,
         )
 
-        this.isMobileBrowser = UserAgentHelper.isMobile(params.deviceDesc.navigator.userAgent)
+        this.isMobileBrowser = UserAgentHelper.isMobile(driverParams.deviceDesc.navigator.userAgent)
         this.uuid = uuid
         this.userAction = new FakeUserAction(this)
 
@@ -212,7 +199,7 @@ export class FakeBrowser {
 
         vanillaBrowser.on('disconnected', this.onDisconnected.bind(this))
 
-        if (!params.doNotHook) {
+        if (!driverParams.doNotHook) {
             vanillaBrowser.on('targetcreated', this.onTargetCreated.bind(this))
         }
     }
@@ -234,7 +221,7 @@ export class FakeBrowser {
             || targetType === 'other' && (target.url().startsWith('http'))
         ) {
             const cdpSession = await target.createCDPSession()
-            await this.interceptTarget(target, cdpSession);
+            await this.interceptTarget(target, cdpSession)
         } else if (targetType === 'page') {
             await this.interceptPage((await target.page())!)
         }
@@ -255,7 +242,7 @@ export class FakeBrowser {
         const injectJs: string = await PptrPatcher.evasionsCode(this)
 
         await client.send('Runtime.evaluate', {
-            expression: injectJs
+            expression: injectJs,
         })
     }
 
@@ -275,7 +262,7 @@ export class FakeBrowser {
             await page.authenticate({
                 username: this.driverParams.proxy.username,
                 password: this.driverParams.proxy.password,
-            });
+            })
         }
 
         // cdp
@@ -296,7 +283,7 @@ export class FakeBrowser {
             }
 
             Object.defineProperty(page, '_patchTouchscreen', {
-                value: new Touchscreen(page['_client'], page.keyboard)
+                value: new Touchscreen(page['_client'], page.keyboard),
             })
         }
 
@@ -363,7 +350,7 @@ export class FakeBrowser {
         const pages = await this.vanillaBrowser.pages()
         if (pages.length > 0) {
             abandonedPageTargetIds.push(
-                ...pages.map(e => e.target()['_targetId'])
+                ...pages.map(e => e.target()['_targetId']),
             )
         }
 
@@ -375,12 +362,12 @@ export class FakeBrowser {
                     // Maybe browser is created based on connect, with different instances
                     // so can only compare TargetId
                     pages = pages.filter(
-                        e => !abandonedPageTargetIds.includes(e.target()['_targetId'])
+                        e => !abandonedPageTargetIds.includes(e.target()['_targetId']),
                     )
 
                     return pages
-                }
-            })
+                },
+            }),
         })
 
     }

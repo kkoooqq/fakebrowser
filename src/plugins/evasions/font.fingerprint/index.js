@@ -1063,10 +1063,10 @@ class Plugin extends PuppeteerExtraPlugin {
 
         // font-face
         // noinspection JSUnresolvedVariable
-        if ('undefined' != typeof window && 'undefined' !== window.FontFace) {
+        if ('undefined' !== utils.cache.global.FontFace) {
             const fontFaceConfigCache = [];
 
-            utils.replaceWithProxy(window, 'FontFace', {
+            utils.replaceWithProxy(utils.cache.global, 'FontFace', {
                 construct(target, args) {
                     if (0) {
                         console.log('hook font fontFace constructor called', args);

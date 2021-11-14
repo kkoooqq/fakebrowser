@@ -1,18 +1,18 @@
-import * as fs from "fs-extra";
-import * as path from "path";
+import * as fs from 'fs-extra'
+import * as path from 'path'
 import * as URLToolkit from 'url-toolkit'
-import * as http from "http";
-import {IncomingMessage, ServerResponse} from "http";
-import * as url from "url";
+import * as http from 'http'
+import {IncomingMessage, ServerResponse} from 'http'
+import * as url from 'url'
 
-import axios from "axios";
-import {Agent} from "https";
-import {strict as assert} from 'assert';
+import axios from 'axios'
+import {Agent} from 'https'
+import {strict as assert} from 'assert'
 
-import Driver, {ConnectParameters, DriverParameters, LaunchParameters, VanillaLaunchOptions} from "./Driver.js";
-import DeviceDescriptorHelper, {FakeDeviceDescriptor} from "./DeviceDescriptor.js";
-import {PptrPatcher} from "./PptrPatcher";
-import {FakeBrowser} from "./FakeBrowser";
+import Driver, {ConnectParameters, DriverParameters, LaunchParameters, VanillaLaunchOptions} from './Driver.js'
+import DeviceDescriptorHelper, {FakeDeviceDescriptor} from './DeviceDescriptor.js'
+import {PptrPatcher} from './PptrPatcher'
+import {FakeBrowser} from './FakeBrowser'
 
 const kFakeDDFileName = '__fakebrowser_fakeDD.json'
 const kInternalHttpServerHeartbeatMagic = '__fakebrowser__&88ff22--'
@@ -33,11 +33,11 @@ export class BrowserLauncher {
             '--user-data-dir',
             '--lang',
             '--window-position',
-            '--window-size'
+            '--window-size',
         ]
 
         if (options.args.filter(
-            e => externalCannotSetArgs.includes(e.toLocaleLowerCase().split('=')[0])
+            e => externalCannotSetArgs.includes(e.toLocaleLowerCase().split('=')[0]),
         ).length > 0) {
             throw new TypeError(`${externalCannotSetArgs} cannot be set in options.args`)
         }
@@ -82,7 +82,7 @@ export class BrowserLauncher {
 
         const {
             fakeDeviceDesc,
-            needsUpdate
+            needsUpdate,
         } = DeviceDescriptorHelper.buildFakeDeviceDescriptor(tempFakeDD)
 
         if (needsUpdate) {
@@ -101,10 +101,10 @@ export class BrowserLauncher {
         const uuid = DeviceDescriptorHelper.deviceUUID(params.fakeDeviceDesc)
         const {
             vanillaBrowser,
-            pptrExtra
+            pptrExtra,
         } = await Driver.connect(
             uuid,
-            params
+            params,
         )
 
         const launchTime = new Date().getTime()
@@ -113,7 +113,7 @@ export class BrowserLauncher {
             vanillaBrowser,
             pptrExtra,
             launchTime,
-            uuid
+            uuid,
         )
 
         // pages 0 cannot be hook, lets drop it
@@ -123,7 +123,7 @@ export class BrowserLauncher {
     }
 
     static async launch(params: LaunchParameters): Promise<FakeBrowser> {
-        this.bootBrowserSurvivalChecker();
+        this.bootBrowserSurvivalChecker()
         await this.bootInternalHTTPServer()
 
         // deviceDesc, userDataDir cannot be empty
@@ -135,11 +135,11 @@ export class BrowserLauncher {
         const uuid = DeviceDescriptorHelper.deviceUUID(params.fakeDeviceDesc)
         const {
             vanillaBrowser,
-            pptrExtra
+            pptrExtra,
         } = await Driver.launch(
             uuid,
             FakeBrowser.globalConfig.defaultLaunchArgs,
-            params
+            params,
         )
 
         const launchTime = new Date().getTime()
@@ -148,7 +148,7 @@ export class BrowserLauncher {
             vanillaBrowser,
             pptrExtra,
             launchTime,
-            uuid
+            uuid,
         )
 
         // pages 0 cannot be hook, lets drop it
@@ -185,22 +185,22 @@ export class BrowserLauncher {
                     // Object.fromEntries ES2019
                     const reqHeaders = Object.fromEntries(
                         Object.entries(
-                            req.headers
+                            req.headers,
                         ).map(
-                            e => ([e[0], e[1]![0]])
-                        )
+                            e => ([e[0], e[1]![0]]),
+                        ),
                     )
 
-                    delete reqHeaders.host
+                    delete reqHeaders['host']
 
                     // TODO: get through proxy
                     const jsResp = await axios.get(
                         fullUrl, {
                             headers: reqHeaders,
                             httpsAgent: new Agent({
-                                rejectUnauthorized: false
-                            })
-                        }
+                                rejectUnauthorized: false,
+                            }),
+                        },
                     )
 
                     let jsContent = jsResp.data
@@ -210,10 +210,13 @@ export class BrowserLauncher {
                         jsContent = await PptrPatcher.patchWorkerJsContent(browser, jsContent)
                     }
 
+                    const respHeaders = jsResp.headers as NodeJS.Dict<string>
+                    delete respHeaders['content-length']
+
                     res.writeHead(
                         jsResp.status,
                         jsResp.statusText,
-                        jsResp.headers as NodeJS.Dict<string>
+                        respHeaders,
                     )
 
                     res.write(jsContent)
@@ -251,7 +254,7 @@ export class BrowserLauncher {
                 const killThese = this._fakeBrowserInstances.filter(
                     e =>
                         (e.launchParams.maxSurvivalTime > 0)
-                        && (new Date().getTime() > e.bindingTime + e.launchParams.maxSurvivalTime)
+                        && (new Date().getTime() > e.bindingTime + e.launchParams.maxSurvivalTime),
                 )
 
                 const p: Promise<void>[] = []

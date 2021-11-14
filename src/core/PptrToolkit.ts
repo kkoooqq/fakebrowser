@@ -1,14 +1,14 @@
-import {BoundingBox, Browser, ElementHandle, Frame, Page} from "puppeteer";
+import {BoundingBox, Browser, ElementHandle, Frame, Page} from 'puppeteer'
 
-import {helper} from "./helper";
-import {FakeDeviceDescriptor} from "./DeviceDescriptor";
+import {helper} from './helper'
+import {FakeDeviceDescriptor} from './DeviceDescriptor'
 
 export class PptrToolkit {
     static async waitForSelectorWithRegex(
         page: Page | Frame,
         reg: RegExp,
         attributeToSearch?: string | null,
-        options = {timeout: 30 * 1000}
+        options = {timeout: 30 * 1000},
     ): Promise<ElementHandle[]> {
         const timestamp = new Date().getTime()
         for (; ;) {
@@ -34,7 +34,7 @@ export class PptrToolkit {
     static async querySelectorAllWithRegex(
         page: Page | Frame,
         reg: RegExp,
-        attributeToSearch: string | null = 'class'
+        attributeToSearch: string | null = 'class',
     ): Promise<ElementHandle[]> {
         if (attributeToSearch) {
             const doms = await page.$$(`[${attributeToSearch}]`)
@@ -47,7 +47,7 @@ export class PptrToolkit {
 
                 // @ts-ignore
                 if (reg.test(attrib)) {
-                    output.push(e);
+                    output.push(e)
                 }
             }
 
@@ -61,7 +61,7 @@ export class PptrToolkit {
                 for (let attribute of attribs) {
                     // @ts-ignore
                     if (reg.test(attribute.value)) {
-                        output.push(e);
+                        output.push(e)
                     }
                 }
             }
@@ -72,12 +72,12 @@ export class PptrToolkit {
 
     static async stopLoading(page: Page) {
         try {
-            await page['_client'].send("Page.stopLoading");
+            await page['_client'].send('Page.stopLoading')
         } catch (ex: any) {
         }
 
         try {
-            await page.evaluate(() => window.stop());
+            await page.evaluate(() => window.stop())
         } catch (ex: any) {
         }
     }
@@ -92,23 +92,23 @@ export class PptrToolkit {
     } | null> {
         try {
             const {model} = await eh._client.send('DOM.getBoxModel', {
-                objectId: eh._remoteObject.objectId
-            });
+                objectId: eh._remoteObject.objectId,
+            })
 
             if (!model) {
                 return null
             }
 
             const calculatePos = function (quad: number[]) {
-                const x = Math.min(quad[0], quad[2], quad[4], quad[6]);
-                const y = Math.min(quad[1], quad[3], quad[5], quad[7]);
+                const x = Math.min(quad[0], quad[2], quad[4], quad[6])
+                const y = Math.min(quad[1], quad[3], quad[5], quad[7])
                 return {
                     x: x,
                     y: y,
                     width: Math.max(quad[0], quad[2], quad[4], quad[6]) - x,
-                    height: Math.max(quad[1], quad[3], quad[5], quad[7]) - y
-                };
-            };
+                    height: Math.max(quad[1], quad[3], quad[5], quad[7]) - y,
+                }
+            }
 
             return {
                 border: calculatePos(model.border),
@@ -116,10 +116,10 @@ export class PptrToolkit {
                 margin: calculatePos(model.margin),
                 padding: calculatePos(model.padding),
                 width: model.width,
-                height: model.height
-            };
+                height: model.height,
+            }
         } catch (ignored: any) {
-            return null;
+            return null
         }
     }
 
@@ -141,7 +141,7 @@ export class PptrToolkit {
 
     static async intersectingViewport(
         eh: ElementHandle,
-        fakeDD: FakeDeviceDescriptor
+        fakeDD: FakeDeviceDescriptor,
     ): Promise<BoundingBox | null> {
         if (!(await eh.isIntersectingViewport())) {
             return null
@@ -181,6 +181,6 @@ export class PptrToolkit {
             }
         }
 
-        throw "Unable to get active page"
+        throw 'Unable to get active page'
     }
 }

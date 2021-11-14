@@ -1,6 +1,6 @@
-import {strict as assert} from 'assert';
+import {strict as assert} from 'assert'
 
-import {DeviceDescriptor} from "./DeviceDescriptor";
+import {DeviceDescriptor} from './DeviceDescriptor'
 
 function isMobile(ua: string): boolean {
     try {
@@ -25,9 +25,9 @@ export type BrowserTypes =
     | 'Unknown'
 
 function browserType(userAgent: string): BrowserTypes {
-    userAgent = userAgent.toLowerCase();
+    userAgent = userAgent.toLowerCase()
 
-    let result: BrowserTypes = 'Unknown';
+    let result: BrowserTypes = 'Unknown'
     const browserArray: { [key: string]: boolean } = {
         'IE': userAgent.includes('msie') || userAgent.includes('trident'), // IE
         'Chrome': userAgent.indexOf('chrome') > -1 && userAgent.indexOf('safari') > -1, // Chrome
@@ -37,15 +37,15 @@ function browserType(userAgent: string): BrowserTypes {
         'Edge': userAgent.indexOf('edge') > -1 || userAgent.indexOf('edg/') > -1, // Edge
         'QQBrowser': /qqbrowser/.test(userAgent), // qq browser
         'WeixinBrowser': /MicroMessenger/i.test(userAgent), // wechat browser
-    };
+    }
 
     for (const i in browserArray) {
         if (browserArray[i]) {
-            result = i as BrowserTypes;
+            result = i as BrowserTypes
         }
     }
 
-    return result;
+    return result
 }
 
 function chromeMajorVersion(userAgent: string): number | null {
@@ -70,7 +70,7 @@ export type OSTypes = 'Windows' | 'macOS' | 'Linux' | 'iPhone' | 'iPod' | 'iPad'
 
 function os(userAgent: string): OSTypes | null {
     // https://wicg.github.io/ua-client-hints/#sec-ch-ua-platform
-    let result = null;
+    let result = null
     const OSArray: { [key: string]: boolean } = {
         'Windows': false,
         'macOS': false,
@@ -79,25 +79,25 @@ function os(userAgent: string): OSTypes | null {
         'iPod': false,
         'iPad': false,
         'Android': false,
-    };
+    }
 
-    userAgent = userAgent.toLowerCase();
+    userAgent = userAgent.toLowerCase()
 
-    OSArray['Windows'] = userAgent.includes('win32') || userAgent.includes('win64') || userAgent.includes('windows');
-    OSArray['macOS'] = userAgent.includes('macintosh') || userAgent.includes('mac68k') || userAgent.includes('macppc') || userAgent.includes('macintosh');
-    OSArray['Linux'] = userAgent.includes('linux');
-    OSArray['iPhone'] = userAgent.includes('iphone');
-    OSArray['iPod'] = userAgent.includes('ipod');
-    OSArray['iPad'] = userAgent.includes('ipad');
-    OSArray['Android'] = userAgent.includes('android');
+    OSArray['Windows'] = userAgent.includes('win32') || userAgent.includes('win64') || userAgent.includes('windows')
+    OSArray['macOS'] = userAgent.includes('macintosh') || userAgent.includes('mac68k') || userAgent.includes('macppc') || userAgent.includes('macintosh')
+    OSArray['Linux'] = userAgent.includes('linux')
+    OSArray['iPhone'] = userAgent.includes('iphone')
+    OSArray['iPod'] = userAgent.includes('ipod')
+    OSArray['iPad'] = userAgent.includes('ipad')
+    OSArray['Android'] = userAgent.includes('android')
 
     for (const i in OSArray) {
         if (OSArray[i]) {
-            result = i;
+            result = i
         }
     }
 
-    return result as OSTypes | null;
+    return result as OSTypes | null
 }
 
 function buildAcceptLanguage(deviceDesc: DeviceDescriptor): string {

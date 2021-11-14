@@ -66,7 +66,7 @@ class Plugin extends PuppeteerExtraPlugin {
                                 if (paramValue && paramValue.constructor.name === 'Object') {
                                     const classType = param.type;
                                     // Float32Array, Int32Array, ...
-                                    result = new window[classType](Object.values(paramValue));
+                                    result = new utils.cache.global[classType](Object.values(paramValue));
                                 } else {
                                     // including: null, number, string, array
                                     result = paramValue;
