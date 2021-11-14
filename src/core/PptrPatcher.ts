@@ -153,7 +153,7 @@ export class PptrPatcher {
         assert(params.fakeDeviceDesc)
 
         //
-        const Plugin = require(path.resolve(__dirname, '../plugins/evasions/navigator.plugins'))
+        const Plugin = require(path.resolve(__dirname, '../plugins/evasions/navigator.plugins-native'))
         const plugin = Plugin({
             plugins: params.fakeDeviceDesc.plugins
         })

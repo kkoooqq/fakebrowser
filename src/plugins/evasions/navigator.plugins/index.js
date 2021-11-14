@@ -177,12 +177,6 @@ class Plugin extends PuppeteerExtraPlugin {
 
         const _Object = utils.cache.Object;
 
-        // That means we're running headful
-        // const hasPlugins = 'plugins' in navigator && navigator.plugins.length
-        // if (hasPlugins) {
-        //   return // nothing to do here
-        // }
-
         const mimeTypes = fns.generateMimeTypeArray(utils, fns)(pluginsData.mimeTypes);
         const plugins = fns.generatePluginArray(utils, fns)(pluginsData.plugins);
 

@@ -422,14 +422,14 @@ utils.stripErrorWithAnchor = (err, anchor) => {
  * replaceProperty(Object.getPrototypeOf(navigator), 'languages', { get: () => ['en-US', 'en'] })
  *
  * @param {object} obj - The object which has the property to replace
- * @param {string} propName - The property name to replace
+ * @param {string | Symbol} propName - The property name to replace
  * @param {object} descriptorOverrides - e.g. { value: "alice" }
  */
 utils.replaceProperty = (obj, propName, descriptorOverrides = {}) => {
     const _Object = utils.cache.Object;
     const descriptors = _Object.getOwnPropertyDescriptor(obj, propName) || {};
 
-    if (propName !== 'toString') {
+    if (propName !== 'toString' && propName !== Symbol.toStringTag) {
         // noinspection JSUnusedLocalSymbols
         for (const [key, value] of _Object.entries(descriptorOverrides)) {
             if (descriptors[key]) {
@@ -511,7 +511,7 @@ utils.redirectToString = (proxyObj, originalObj) => {
  * replaceWithProxy(WebGLRenderingContext.prototype, 'getParameter', proxyHandler)
  *
  * @param {object} obj - The object which has the property to replace
- * @param {string} propName - The name of the property to replace
+ * @param {string | Symbol} propName - The name of the property to replace
  * @param {object} handler - The JS Proxy handler to use
  */
 utils.replaceWithProxy = (obj, propName, handler) => {
