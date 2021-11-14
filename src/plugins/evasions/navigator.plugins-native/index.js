@@ -211,7 +211,7 @@ class Plugin extends PuppeteerExtraPlugin {
 
                     if (mimeType) {
                         // make new nativeMimeType
-                        const nativeMimeType = makeNativeMimeType(mimeType, target);
+                        const nativeMimeType = makeNativeMimeType(mimeType, nativePlugin);
                         return nativeMimeType;
                     }
 
@@ -254,8 +254,8 @@ class Plugin extends PuppeteerExtraPlugin {
                 __pluginName,
             } = mimeTypeData;
 
-            const enabledPlugin = pluginCorrs.find(e => e.pluginData.name === __pluginName);
-            const nativeMimeType = makeNativeMimeType(type, enabledPlugin);
+            const pluginCorr = pluginCorrs.find(e => e.pluginData.name === __pluginName);
+            const nativeMimeType = makeNativeMimeType(type, pluginCorr.nativePlugin);
 
             // index
             _Object.defineProperty(nativeMimeTypeArray, '' + mimeTypeCounter, {
