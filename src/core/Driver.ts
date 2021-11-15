@@ -213,7 +213,7 @@ export default class Driver {
         }
 
         // browser language
-        const lang = UserAgentHelper.buildAcceptLanguage(fakeDD)
+        const lang = DeviceDescriptorHelper.buildAcceptLanguage(fakeDD)
         args.push(
             `--lang=${lang}`,
         )

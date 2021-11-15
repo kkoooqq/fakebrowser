@@ -1,7 +1,3 @@
-import {strict as assert} from 'assert'
-
-import {DeviceDescriptor} from './DeviceDescriptor'
-
 function isMobile(ua: string): boolean {
     try {
         let userAgent = ua || ''
@@ -66,11 +62,11 @@ function chromeVersion(userAgent: string): string | null {
     return null
 }
 
-export type OSTypes = 'Windows' | 'macOS' | 'Linux' | 'iPhone' | 'iPod' | 'iPad' | 'Android'
+export type OSTypes = 'Windows' | 'macOS' | 'Linux' | 'iPhone' | 'iPod' | 'iPad' | 'Android' | 'Unknown'
 
-function os(userAgent: string): OSTypes | null {
+function os(userAgent: string): OSTypes {
     // https://wicg.github.io/ua-client-hints/#sec-ch-ua-platform
-    let result = null
+    let result: OSTypes = 'Unknown'
     const OSArray: { [key: string]: boolean } = {
         'Windows': false,
         'macOS': false,
@@ -93,35 +89,7 @@ function os(userAgent: string): OSTypes | null {
 
     for (const i in OSArray) {
         if (OSArray[i]) {
-            result = i
-        }
-    }
-
-    return result as OSTypes | null
-}
-
-function buildAcceptLanguage(deviceDesc: DeviceDescriptor): string {
-    // referer: https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Accept-Language
-    // https://developer.mozilla.org/zh-CN/docs/Glossary/Quality_values
-
-    assert(deviceDesc.navigator)
-    assert(deviceDesc.navigator.languages)
-
-    const langs = deviceDesc.navigator.languages
-    let result = ''
-    let counter = 9
-    for (const lang of langs) {
-        if (result) {
-            result += ','
-        }
-
-        result += lang
-
-        if (langs.length > 1) {
-            result += `;q=0.${counter}`
-
-            // Extreme situations: en,zh;q=0.9,fr;q=0.8,es;q=0.7,zh-CN;q=0.6,pt-BR;q=0.5,pt;q=0.4,sq;q=0.3,ar;q=0.2,an;q=0.1,am;q=0.1,az;q=0.1,ast;q=0.1,ga;q=0.1,et;q=0.1,oc;q=0.1,or;q=0.1,om;q=0.1,eu;q=0.1,be;q=0.1,bg;q=0.1
-            counter = Math.max(--counter, 1)
+            result = i as OSTypes
         }
     }
 
@@ -134,5 +102,4 @@ export const UserAgentHelper = {
     chromeMajorVersion,
     chromeVersion,
     os,
-    buildAcceptLanguage,
 }
