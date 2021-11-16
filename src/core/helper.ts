@@ -1,6 +1,15 @@
 // noinspection JSUnusedGlobalSymbols
 
 import axios from 'axios'
+import crypto from 'crypto'
+
+function md5(data: string): string {
+    const md5 = crypto.createHash('md5')
+    const result = md5.update(data).digest('hex')
+
+    return result
+}
+
 
 /**
  * setTimeout async wrapper
@@ -131,6 +140,7 @@ function threeBezier(t: number, p1: number[], cp1: number[], cp2: number[], p2: 
 }
 
 export const helper = {
+    md5,
     sleep,
     sleepRd,
     rd: _rd,

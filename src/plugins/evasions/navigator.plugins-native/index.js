@@ -167,7 +167,9 @@ class Plugin extends PuppeteerExtraPlugin {
         const nativeMimeTypeArray = _Object.create(MimeTypeArray.prototype);
 
         const makeNativeMimeType = (mimeType, bindNativePlugin) => {
-            const mimeTypeData = pluginsData.mimeTypes.find(e => e.type === mimeType);
+            const mimeTypeData = pluginsData.mimeTypes.find(
+                e => e.type === mimeType,
+            );
 
             // always make new native object
             const nativeMimeType = _Object.create(MimeType.prototype);
@@ -219,7 +221,11 @@ class Plugin extends PuppeteerExtraPlugin {
                 },
             });
 
-            pluginCorrs.push({nativePlugin, nativePluginInner, pluginData});
+            pluginCorrs.push({
+                nativePlugin,
+                nativePluginInner,
+                pluginData,
+            });
 
             // define own properties of nativePluginArray
             // Object.getOwnPropertyNames(navigator.plugins)
@@ -254,7 +260,10 @@ class Plugin extends PuppeteerExtraPlugin {
                 __pluginName,
             } = mimeTypeData;
 
-            const pluginCorr = pluginCorrs.find(e => e.pluginData.name === __pluginName);
+            const pluginCorr = pluginCorrs.find(
+                e => e.pluginData.name === __pluginName,
+            );
+
             const nativeMimeType = makeNativeMimeType(type, pluginCorr.nativePlugin);
 
             // index
@@ -280,9 +289,12 @@ class Plugin extends PuppeteerExtraPlugin {
         // like: Object.getOwnPropertyDescriptors(navigator.plugins[0])
         for (const {nativePluginInner, pluginData} of pluginCorrs) {
             const {__mimeTypes} = pluginData;
+
             for (let n = 0; n < __mimeTypes.length; ++n) {
                 const mimeType = __mimeTypes[n];
-                const nativeMimeType = mimeTypeCorrs.find(e => e.mimeTypeData.type === mimeType).nativeMimeType;
+                const nativeMimeType = mimeTypeCorrs.find(
+                    e => e.mimeTypeData.type === mimeType,
+                ).nativeMimeType;
 
                 _Object.defineProperty(nativePluginInner, '' + n, {
                     configurable: true,
@@ -313,7 +325,7 @@ class Plugin extends PuppeteerExtraPlugin {
                     orgResult = _Reflect.apply(target, thisArg, args);
                 } catch (ex) {
                     if (thisArg !== nativePluginArray) {
-                        throw ex;
+                        throw utils.patchError(ex, 'item');
                     }
                 }
 
@@ -341,12 +353,12 @@ class Plugin extends PuppeteerExtraPlugin {
                     orgResult = _Reflect.apply(target, thisArg, args);
                 } catch (ex) {
                     if (thisArg !== nativePluginArray) {
-                        throw ex;
+                        throw utils.patchError(ex, 'length');
                     }
                 }
 
                 if (thisArg === nativePluginArray) {
-                    return pluginCorrs.length;
+                    return pluginsData.plugins.length;
                 }
 
                 return orgResult;
@@ -361,7 +373,7 @@ class Plugin extends PuppeteerExtraPlugin {
                     orgResult = _Reflect.apply(target, thisArg, args);
                 } catch (ex) {
                     if (thisArg !== nativePluginArray) {
-                        throw ex;
+                        throw utils.patchError(ex, 'namedItem');
                     }
                 }
 
@@ -388,7 +400,7 @@ class Plugin extends PuppeteerExtraPlugin {
                     orgResult = _Reflect.apply(target, thisArg, args);
                 } catch (ex) {
                     if (thisArg !== nativePluginArray) {
-                        throw ex;
+                        throw utils.patchError(ex, 'refresh');
                     }
                 }
 
@@ -408,7 +420,7 @@ class Plugin extends PuppeteerExtraPlugin {
                     orgResult = _Reflect.apply(target, thisArg, args);
                 } catch (ex) {
                     if (thisArg !== nativePluginArray) {
-                        throw ex;
+                        throw utils.patchError(ex, 'Symbol.iterator');
                     }
                 }
 
@@ -429,7 +441,7 @@ class Plugin extends PuppeteerExtraPlugin {
                     orgResult = _Reflect.apply(target, thisArg, args);
                 } catch (ex) {
                     if (thisArg !== nativeMimeTypeArray) {
-                        throw ex;
+                        throw utils.patchError(ex, 'item');
                     }
                 }
 
@@ -455,12 +467,12 @@ class Plugin extends PuppeteerExtraPlugin {
                     orgResult = _Reflect.apply(target, thisArg, args);
                 } catch (ex) {
                     if (thisArg !== nativeMimeTypeArray) {
-                        throw ex;
+                        throw utils.patchError(ex, 'length');
                     }
                 }
 
                 if (thisArg === nativeMimeTypeArray) {
-                    return mimeTypeCorrs.length;
+                    return pluginsData.mimeTypes.length;
                 }
 
                 return orgResult;
@@ -475,7 +487,7 @@ class Plugin extends PuppeteerExtraPlugin {
                     orgResult = _Reflect.apply(target, thisArg, args);
                 } catch (ex) {
                     if (thisArg !== nativeMimeTypeArray) {
-                        throw ex;
+                        throw utils.patchError(ex, 'namedItem');
                     }
                 }
 
@@ -502,7 +514,7 @@ class Plugin extends PuppeteerExtraPlugin {
                     orgResult = _Reflect.apply(target, thisArg, args);
                 } catch (ex) {
                     if (thisArg !== nativeMimeTypeArray) {
-                        throw ex;
+                        throw utils.patchError(ex, 'Symbol.iterator');
                     }
                 }
 
@@ -523,7 +535,7 @@ class Plugin extends PuppeteerExtraPlugin {
                     orgResult = _Reflect.apply(target, thisArg, args);
                 } catch (ex) {
                     if (thisArg === Plugin.prototype) {
-                        throw ex;
+                        throw utils.patchError(ex, 'description');
                     }
                 }
 
@@ -544,7 +556,7 @@ class Plugin extends PuppeteerExtraPlugin {
                     orgResult = _Reflect.apply(target, thisArg, args);
                 } catch (ex) {
                     if (thisArg === Plugin.prototype) {
-                        throw ex;
+                        throw utils.patchError(ex, 'filename');
                     }
                 }
 
@@ -565,7 +577,7 @@ class Plugin extends PuppeteerExtraPlugin {
                     orgResult = _Reflect.apply(target, thisArg, args);
                 } catch (ex) {
                     if (thisArg === Plugin.prototype) {
-                        throw ex;
+                        throw utils.patchError(ex, 'item');
                     }
                 }
 
@@ -595,7 +607,7 @@ class Plugin extends PuppeteerExtraPlugin {
                     orgResult = _Reflect.apply(target, thisArg, args);
                 } catch (ex) {
                     if (thisArg === Plugin.prototype) {
-                        throw ex;
+                        throw utils.patchError(ex, 'length');
                     }
                 }
 
@@ -616,7 +628,7 @@ class Plugin extends PuppeteerExtraPlugin {
                     orgResult = _Reflect.apply(target, thisArg, args);
                 } catch (ex) {
                     if (thisArg === Plugin.prototype) {
-                        throw ex;
+                        throw utils.patchError(ex, 'name');
                     }
                 }
 
@@ -637,7 +649,7 @@ class Plugin extends PuppeteerExtraPlugin {
                     orgResult = _Reflect.apply(target, thisArg, args);
                 } catch (ex) {
                     if (thisArg === Plugin.prototype) {
-                        throw ex;
+                        throw utils.patchError(ex, 'namedItem');
                     }
                 }
 
@@ -664,7 +676,7 @@ class Plugin extends PuppeteerExtraPlugin {
                     orgResult = _Reflect.apply(target, thisArg, args);
                 } catch (ex) {
                     if (thisArg === Plugin.prototype) {
-                        throw ex;
+                        throw utils.patchError(ex, 'Symbol.iterator');
                     }
                 }
 
@@ -691,7 +703,7 @@ class Plugin extends PuppeteerExtraPlugin {
                     orgResult = _Reflect.apply(target, thisArg, args);
                 } catch (ex) {
                     if (thisArg === MimeType.prototype) {
-                        throw ex;
+                        throw utils.patchError(ex, 'description');
                     }
                 }
 
@@ -712,7 +724,7 @@ class Plugin extends PuppeteerExtraPlugin {
                     orgResult = _Reflect.apply(target, thisArg, args);
                 } catch (ex) {
                     if (thisArg === MimeType.prototype) {
-                        throw ex;
+                        throw utils.patchError(ex, 'enabledPlugin');
                     }
                 }
 
@@ -733,7 +745,7 @@ class Plugin extends PuppeteerExtraPlugin {
                     orgResult = _Reflect.apply(target, thisArg, args);
                 } catch (ex) {
                     if (thisArg === MimeType.prototype) {
-                        throw ex;
+                        throw utils.patchError(ex, 'suffixes');
                     }
                 }
 
@@ -754,7 +766,7 @@ class Plugin extends PuppeteerExtraPlugin {
                     orgResult = _Reflect.apply(target, thisArg, args);
                 } catch (ex) {
                     if (thisArg === MimeType.prototype) {
-                        throw ex;
+                        throw utils.patchError(ex, 'type');
                     }
                 }
 
