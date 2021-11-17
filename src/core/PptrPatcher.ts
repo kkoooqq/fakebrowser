@@ -10,6 +10,7 @@ import {PuppeteerExtra, PuppeteerExtraPlugin} from 'puppeteer-extra'
 import {DriverParameters} from './Driver'
 import {helper} from './helper'
 import {FakeBrowser} from './FakeBrowser'
+import DeviceDescriptorHelper from './DeviceDescriptor'
 
 export class PptrPatcher {
 
@@ -393,7 +394,9 @@ export class PptrPatcher {
         const Plugin = require(path.resolve(__dirname, '../plugins/evasions/user-agent-override'))
         const plugin = Plugin({
             userAgent: params.fakeDeviceDesc.navigator.userAgent,
-            locale: params.fakeDeviceDesc.navigator.languages.join(','),
+            // Network.setUserAgentOverride acceptLanguage with qvalue
+            // https://github.com/berstend/puppeteer-extra/issues/132
+            locale: DeviceDescriptorHelper.buildAcceptLanguage(params.fakeDeviceDesc),
             maskLinux: true,
         })
 
