@@ -173,6 +173,7 @@ utils._hookObjectPrototype = () => {
 
     utils.objHooked = OffscreenCanvas.prototype.constructor.__$objHooked = true;
     const _Object = utils.cache.Object;
+    const _Reflect = utils.cache.Reflect;
 
     // setPrototypeOf
     utils.replaceWithProxy(Object, 'setPrototypeOf', {
@@ -180,7 +181,7 @@ utils._hookObjectPrototype = () => {
             args[0] = utils.getProxyTarget(args[0]);
             args[1] = utils.getProxyTarget(args[1]);
 
-            return utils.cache.Reflect.apply(target, thisArg, args);
+            return _Reflect.apply(target, thisArg, args);
         },
     });
 
@@ -195,7 +196,10 @@ utils._hookObjectPrototype = () => {
                 }
 
                 // toStringPatch
-                const toStringPatchObj = utils.variables.toStringPatchObjs.find(e => e.obj === thisArg);
+                const toStringPatchObj = utils.variables.toStringPatchObjs.find(
+                    e => e.obj === thisArg,
+                );
+
                 if (toStringPatchObj) {
                     // `toString` targeted at our proxied Object detected
                     // We either return the optional string verbatim or derive the most desired result automatically
@@ -203,7 +207,10 @@ utils._hookObjectPrototype = () => {
                 }
 
                 // toStringRedirect
-                const toStringRedirectObj = utils.variables.toStringRedirectObjs.find(e => e.proxyObj === thisArg);
+                const toStringRedirectObj = utils.variables.toStringRedirectObjs.find(
+                    e => e.proxyObj === thisArg
+                );
+
                 if (toStringRedirectObj) {
                     const {proxyObj, originalObj} = toStringRedirectObj;
                     const fallback = () =>
@@ -246,7 +253,7 @@ utils._hookObjectPrototype = () => {
                 args[0] = utils.cache.Function.prototype.toString;
             }
 
-            return utils.cache.Reflect.apply(target, thisArg, args);
+            return _Reflect.apply(target, thisArg, args);
         },
     });
 };
@@ -325,7 +332,7 @@ utils.patchError = (err, trap) => {
 
         // Strip everything from the top until we reach the anchor line
         // Note: We're keeping the 1st line (zero index) as it's unrelated (e.g. `TypeError`)
-        stackArr.splice(2, anchorIndex);
+        stackArr.splice(1, anchorIndex);
 
         return stackArr.join('\n');
     };
@@ -357,6 +364,7 @@ utils.patchError = (err, trap) => {
  */
 utils.stripProxyFromErrors = (handler = {}) => {
     const _Object = utils.cache.Object;
+    const _Reflect = utils.cache.Reflect;
 
     const newHandler = {
         setPrototypeOf: function (target, proto) {
@@ -366,7 +374,7 @@ utils.stripProxyFromErrors = (handler = {}) => {
                 throw new TypeError('Cyclic __proto__ value');
             }
 
-            return utils.cache.Reflect.setPrototypeOf(target, proto);
+            return _Reflect.setPrototypeOf(target, proto);
         },
     };
 
@@ -378,8 +386,7 @@ utils.stripProxyFromErrors = (handler = {}) => {
                 // Forward the call to the defined proxy handler
                 return handler[trap].apply(this, arguments || []);
             } catch (err) {
-                utils.patchError(err, trap);
-                throw err; // Re-throw our now sanitized error
+                throw utils.patchError(err, trap);
             }
         };
     });
@@ -517,6 +524,7 @@ utils.redirectToString = (proxyObj, originalObj) => {
  */
 utils.replaceWithProxy = (obj, propName, handler) => {
     const originalObj = obj[propName];
+    const _Reflect = utils.cache.Reflect;
 
     if (!originalObj) {
         return false;
@@ -527,7 +535,7 @@ utils.replaceWithProxy = (obj, propName, handler) => {
             ...handler,
             // Make toString() native
             get(target, key) {
-                return utils.cache.Reflect.get(target, key);
+                return _Reflect.get(target, key);
             },
         };
     }
@@ -586,13 +594,15 @@ utils.replaceSetterWithProxy = (obj, propName, handler) => {
  * @param {object} handler - The JS Proxy handler to use
  */
 utils.mockWithProxy = (obj, propName, pseudoTarget, descriptorOverrides, handler) => {
+    const _Reflect = utils.cache.Reflect;
+
     if (!handler.get) {
         handler.get = (target, property, receiver) => {
             if (property === 'name') {
                 return propName;
             }
 
-            return utils.cache.Reflect.get(target, property, receiver);
+            return _Reflect.get(target, property, receiver);
         };
     }
 
@@ -611,6 +621,8 @@ utils.mockWithProxy = (obj, propName, pseudoTarget, descriptorOverrides, handler
 };
 
 utils.mockGetterWithProxy = (obj, propName, pseudoTarget, descriptorOverrides, handler) => {
+    const _Reflect = utils.cache.Reflect;
+
     if (!handler.get) {
         handler.get = (target, property, receiver) => {
             if (property === 'name') {
@@ -621,7 +633,7 @@ utils.mockGetterWithProxy = (obj, propName, pseudoTarget, descriptorOverrides, h
                 return 0;
             }
 
-            return utils.cache.Reflect.get(target, property, receiver);
+            return _Reflect.get(target, property, receiver);
         };
     }
 
@@ -640,6 +652,8 @@ utils.mockGetterWithProxy = (obj, propName, pseudoTarget, descriptorOverrides, h
 };
 
 utils.mockSetterWithProxy = (obj, propName, pseudoTarget, descriptorOverrides, handler) => {
+    const _Reflect = utils.cache.Reflect;
+
     if (!handler.get) {
         handler.get = (target, property, receiver) => {
             if (property === 'name') {
@@ -650,7 +664,7 @@ utils.mockSetterWithProxy = (obj, propName, pseudoTarget, descriptorOverrides, h
                 return 1;
             }
 
-            return utils.cache.Reflect.get(target, property, receiver);
+            return _Reflect.get(target, property, receiver);
         };
     }
 
@@ -804,9 +818,11 @@ utils.makeHandler = () => ({
     // Used by simple `navigator` getter evasions
     getterValue: value => ({
         apply(target, thisArg, args) {
+            const _Reflect = utils.cache.Reflect;
+
             // Let's fetch the value first, to trigger and escalate potential errors
             // Illegal invocations like `navigator.__proto__.vendor` will throw here
-            utils.cache.Reflect.apply(...arguments);
+            _Reflect.apply(...arguments);
             return value;
         },
     }),

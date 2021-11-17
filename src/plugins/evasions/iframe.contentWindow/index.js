@@ -34,6 +34,7 @@ class Plugin extends PuppeteerExtraPlugin {
 
     mainFunction = (utils, {opts}) => {
         const _Object = utils.cache.Object;
+        const _Reflect = utils.cache.Reflect;
 
         try {
             // Adds a contentWindow proxy to the provided iframe element
@@ -62,7 +63,7 @@ class Plugin extends PuppeteerExtraPlugin {
                                 return undefined;
                             }
 
-                            let result = utils.cache.Reflect.get(target, key);
+                            let result = _Reflect.get(target, key);
                             if (!result) {
                                 result = target[key];
                             }
@@ -130,7 +131,7 @@ class Plugin extends PuppeteerExtraPlugin {
                     {
                         // Make toString() native
                         get(target, key) {
-                            return utils.cache.Reflect.get(target, key);
+                            return _Reflect.get(target, key);
                         },
                         apply: function (target, thisArg, args) {
                             const isIframe = args && args.length && `${args[0]}`.toLowerCase() === 'iframe';

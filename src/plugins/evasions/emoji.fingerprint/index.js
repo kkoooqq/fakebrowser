@@ -35,9 +35,11 @@ class Plugin extends PuppeteerExtraPlugin {
     }
 
     mainFunction = (utils, opts) => {
+        const _Reflect = utils.cache.Reflect
+
         utils.replaceWithProxy(String, 'fromCodePoint', {
             apply(target, thisArg, args) {
-                const result = utils.cache.Reflect.apply(target, thisArg, args);
+                const result = _Reflect.apply(target, thisArg, args);
                 return result;
             },
         });

@@ -52,6 +52,9 @@ class Plugin extends PuppeteerExtraPlugin {
     }
 
     mainFunction = (utils, opts) => {
+        const _Object = utils.cache.Object;
+        const _Reflect = utils.cache.Reflect;
+
         /* Define variables */
         const kObjPlaceHolder = '_$obj!_//+_';
         const kObjUndefinedPlaceHolder = '_$obj!_undefined_//+_';
@@ -67,7 +70,7 @@ class Plugin extends PuppeteerExtraPlugin {
                 }
 
                 // Check if the original has this property
-                const desc = utils.cache.Object.getOwnPropertyDescriptor(obj, name);
+                const desc = _Object.getOwnPropertyDescriptor(obj, name);
                 if (!desc) {
                     // Does not exist, just exit
                     // console.warn('!!! Property not found:' + o.constructor.name + ' propertyKey:' + key);
@@ -112,7 +115,7 @@ class Plugin extends PuppeteerExtraPlugin {
 
                 func(obj, name, {
                     apply(target, thisArgs, args) {
-                        utils.cache.Reflect.apply(target, thisArgs, args);
+                        _Reflect.apply(target, thisArgs, args);
                         return newPropValue;
                     },
                 });

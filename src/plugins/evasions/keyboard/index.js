@@ -30,6 +30,8 @@ class Plugin extends PuppeteerExtraPlugin {
     }
 
     mainFunction = (utils, opts) => {
+        const _Reflect = utils.cache.Reflect;
+
         if (
             opts.keyboard
             && 'undefined' !== typeof KeyboardLayoutMap
@@ -40,7 +42,7 @@ class Plugin extends PuppeteerExtraPlugin {
                         return opts.keyboard[args[0]];
                     }
 
-                    return utils.cache.Reflect.apply(target, thisArg, args);
+                    return _Reflect.apply(target, thisArg, args);
                 },
             });
         }

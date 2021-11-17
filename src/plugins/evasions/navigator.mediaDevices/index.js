@@ -1,3 +1,5 @@
+// noinspection JSUnusedLocalSymbols
+
 'use strict';
 
 const {PuppeteerExtraPlugin} = require('puppeteer-extra-plugin');
@@ -30,6 +32,7 @@ class Plugin extends PuppeteerExtraPlugin {
     }
 
     mainFunction = (utils, {mediaDevices}) => {
+        const _Object = utils.cache.Object;
         const _Reflect = utils.cache.Reflect;
 
         if ('undefined' !== typeof MediaDevices) {
@@ -101,7 +104,7 @@ class Plugin extends PuppeteerExtraPlugin {
                             return undefined;
                         }
 
-                        return utils.cache.Reflect.getOwnPropertyDescriptor(target, prop);
+                        return _Reflect.getOwnPropertyDescriptor(target, prop);
                     },
                 });
 

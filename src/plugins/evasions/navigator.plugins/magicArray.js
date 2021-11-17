@@ -1,4 +1,5 @@
 /* global MimeType MimeTypeArray Plugin PluginArray  */
+// noinspection JSUnusedLocalSymbols
 
 /**
  * Generate a convincing and functional MimeType or Plugin array from scratch.
@@ -14,6 +15,7 @@ module.exports.generateMagicArray = (utils, fns) =>
         itemMainProp = 'type',
     ) {
         const _Object = utils.cache.Object;
+        const _Reflect = utils.cache.Reflect;
 
         // Quick helper to set props with the same descriptors vanilla is using
         const defineProp = (obj, prop, value) =>
@@ -62,14 +64,14 @@ module.exports.generateMagicArray = (utils, fns) =>
             const blacklist = [..._Object.keys(data), 'length', 'enabledPlugin'];
             return utils.newProxyInstance(obj, {
                 ownKeys(target) {
-                    return utils.cache.Reflect.ownKeys(target).filter(k => !blacklist.includes(k));
+                    return _Reflect.ownKeys(target).filter(k => !blacklist.includes(k));
                 },
                 getOwnPropertyDescriptor(target, prop) {
                     if (blacklist.includes(prop)) {
                         return undefined;
                     }
 
-                    return utils.cache.Reflect.getOwnPropertyDescriptor(target, prop);
+                    return _Reflect.getOwnPropertyDescriptor(target, prop);
                 },
             });
         };
@@ -144,7 +146,7 @@ module.exports.generateMagicArray = (utils, fns) =>
                 }
 
                 // Everything else can pass through as normal
-                return utils.cache.Reflect.get(...arguments);
+                return _Reflect.get(...arguments);
             },
             set(target, key, value) {
                 if (key === 'item') {
@@ -160,7 +162,7 @@ module.exports.generateMagicArray = (utils, fns) =>
                     magicArrayObAttributeValues.refresh = value;
                 }
 
-                return utils.cache.Reflect.set(target, key, value);
+                return _Reflect.set(target, key, value);
             },
             ownKeys(target) {
                 // There are a couple of quirks where the original property demonstrates "magical" behavior that makes no sense
@@ -181,7 +183,7 @@ module.exports.generateMagicArray = (utils, fns) =>
                     return undefined;
                 }
 
-                return utils.cache.Reflect.getOwnPropertyDescriptor(target, prop);
+                return _Reflect.getOwnPropertyDescriptor(target, prop);
             },
         });
 

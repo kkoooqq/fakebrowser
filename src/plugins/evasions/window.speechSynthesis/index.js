@@ -59,7 +59,7 @@ class Plugin extends PuppeteerExtraPlugin {
                         {
                             ownKeys(target) {
                                 // 'constructor' not in the prototype of SpeechSynthesisVoice
-                                return utils.cache.Reflect.ownKeys(target).filter(
+                                return _Reflect.ownKeys(target).filter(
                                     e => e !== 'constructor',
                                 );
                             },
@@ -69,7 +69,7 @@ class Plugin extends PuppeteerExtraPlugin {
                                     return _Object.getPrototypeOf(voiceObj);
                                 }
 
-                                return utils.cache.Reflect.get(target, property, receiver);
+                                return _Reflect.get(target, property, receiver);
                             },
                         },
                     ),

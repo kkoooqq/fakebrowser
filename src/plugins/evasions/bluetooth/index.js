@@ -57,6 +57,7 @@ class Plugin extends PuppeteerExtraPlugin {
         }
 
         const _Object = utils.cache.Object;
+        const _Reflect = utils.cache.Reflect;
 
         /**
          * Known services enum
@@ -395,7 +396,7 @@ class Plugin extends PuppeteerExtraPlugin {
                         return 1;
                     }
 
-                    return utils.cache.Reflect.get(target, property, receiver);
+                    return _Reflect.get(target, property, receiver);
                 },
                 apply(target, thisArg, args) {
                     if (args.length === 0) {
@@ -435,7 +436,7 @@ class Plugin extends PuppeteerExtraPlugin {
                         return 1;
                     }
 
-                    return utils.cache.Reflect.get(target, property, receiver);
+                    return _Reflect.get(target, property, receiver);
                 },
                 apply(target, thisArg, args) {
                     if (args.length === 0) {
@@ -488,7 +489,7 @@ class Plugin extends PuppeteerExtraPlugin {
                         return 1;
                     }
 
-                    return utils.cache.Reflect.get(target, property, receiver);
+                    return _Reflect.get(target, property, receiver);
                 },
                 apply(target, thisArg, args) {
                     if (args.length === 0) {
@@ -541,7 +542,7 @@ class Plugin extends PuppeteerExtraPlugin {
                         return 1;
                     }
 
-                    return utils.cache.Reflect.get(target, property, receiver);
+                    return _Reflect.get(target, property, receiver);
                 },
                 apply(target, thisArg, args) {
                     if (args.length === 0) {
@@ -600,7 +601,7 @@ class Plugin extends PuppeteerExtraPlugin {
                         return 0;
                     }
 
-                    return utils.cache.Reflect.get(target, property, receiver);
+                    return _Reflect.get(target, property, receiver);
                 },
                 apply(target, thisArg, args) {
                     if (thisArg === window.Bluetooth.prototype) {
@@ -634,7 +635,7 @@ class Plugin extends PuppeteerExtraPlugin {
                         return 0;
                     }
 
-                    return utils.cache.Reflect.get(target, property, receiver);
+                    return _Reflect.get(target, property, receiver);
                 },
                 apply(target, thisArg, args) {
                     return new Promise((resolve, reject) => {
@@ -860,10 +861,10 @@ class Plugin extends PuppeteerExtraPlugin {
                                     return undefined;
                                 }
 
-                                return utils.cache.Reflect.getOwnPropertyDescriptor(target, propertyKey);
+                                return _Reflect.getOwnPropertyDescriptor(target, propertyKey);
                             },
                             ownKeys: (target) => {
-                                let result = utils.cache.Reflect.ownKeys(target);
+                                let result = _Reflect.ownKeys(target);
                                 result = Array.from(
                                     utils.differenceABSet(result, eventTargetFuncNames),
                                 );
@@ -1451,7 +1452,7 @@ class Plugin extends PuppeteerExtraPlugin {
                                     return visit.get.length;
                                 }
 
-                                return utils.cache.Reflect.get(target, property, receiver);
+                                return _Reflect.get(target, property, receiver);
                             },
                             apply: (target, thisArg, args) => {
                                 throw utils.patchError(
@@ -1479,7 +1480,7 @@ class Plugin extends PuppeteerExtraPlugin {
                                     return visit.value.length;
                                 }
 
-                                return utils.cache.Reflect.get(target, property, receiver);
+                                return _Reflect.get(target, property, receiver);
                             },
                             apply: (target, thisArg, args) => {
                                 throw utils.patchError(
@@ -1507,7 +1508,7 @@ class Plugin extends PuppeteerExtraPlugin {
                                     return visit.set.length;
                                 }
 
-                                return utils.cache.Reflect.get(target, property, receiver);
+                                return _Reflect.get(target, property, receiver);
                             },
                             apply: (target, thisArg, args) => {
                                 throw utils.patchError(

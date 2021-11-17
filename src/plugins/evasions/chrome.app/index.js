@@ -94,6 +94,7 @@ class Plugin extends PuppeteerExtraPlugin {
                 return 'cannot_run';
             },
         };
+
         utils.patchToStringNested(window.chrome.app);
     };
 

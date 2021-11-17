@@ -156,6 +156,8 @@ class Plugin extends PuppeteerExtraPlugin {
     mainFunction = (utils, pluginsData) => {
         const _Object = utils.cache.Object;
         const _Reflect = utils.cache.Reflect;
+        const _origPlugins = utils.cache.window.navigator.plugins;
+        const _origMimeTypes = utils.cache.window.navigator.mimeTypes;
 
         // object correlations
         // pluginsData.plugins => pluginsCorr
@@ -785,6 +787,7 @@ class Plugin extends PuppeteerExtraPlugin {
                 const orgResult = _Reflect.apply(target, thisArg, args);
                 if (thisArg === utils.cache.window.navigator) {
                     return nativePluginArray;
+                    // return _origPlugins;
                 }
 
                 return orgResult;
@@ -796,6 +799,7 @@ class Plugin extends PuppeteerExtraPlugin {
                 const orgResult = _Reflect.apply(target, thisArg, args);
                 if (thisArg === utils.cache.window.navigator) {
                     return nativeMimeTypeArray;
+                    // return _origMimeTypes;
                 }
 
                 return orgResult;

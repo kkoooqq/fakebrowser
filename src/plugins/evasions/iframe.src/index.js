@@ -28,6 +28,9 @@ class Plugin extends PuppeteerExtraPlugin {
     }
 
     mainFunction = (utils) => {
+        const _Reflect = utils.cache.Reflect;
+        const _Object = utils.cache.Object;
+
         const Element_Prototype_remove = Element.prototype.remove;
 
         // Cache actual src of iframe
@@ -68,7 +71,7 @@ class Plugin extends PuppeteerExtraPlugin {
                 const src = args[0];
 
                 if (!interceptPatchIFrameSrc(thisArg, src)) {
-                    return utils.cache.Reflect.apply(target, thisArg, args);
+                    return _Reflect.apply(target, thisArg, args);
                 }
             },
         });
@@ -78,7 +81,7 @@ class Plugin extends PuppeteerExtraPlugin {
             apply(target, thisArg, args) {
                 let result = getIFrameOriginalSrc(thisArg);
                 if (!result) {
-                    result = utils.cache.Reflect.apply(target, thisArg, args);
+                    result = _Reflect.apply(target, thisArg, args);
                 }
 
                 return result;
@@ -96,7 +99,7 @@ class Plugin extends PuppeteerExtraPlugin {
                     }
                 }
 
-                return utils.cache.Reflect.apply(target, thisArg, args);
+                return _Reflect.apply(target, thisArg, args);
             },
         });
 
@@ -110,7 +113,7 @@ class Plugin extends PuppeteerExtraPlugin {
                 }
 
                 if (!result) {
-                    result = utils.cache.Reflect.apply(target, thisArg, args);
+                    result = _Reflect.apply(target, thisArg, args);
                 }
 
                 return result;
@@ -119,7 +122,7 @@ class Plugin extends PuppeteerExtraPlugin {
 
         utils.replaceWithProxy(Element.prototype, 'appendChild', {
             apply(target, thisArg, args) {
-                const result = utils.cache.Reflect.apply(target, thisArg, args);
+                const result = _Reflect.apply(target, thisArg, args);
 
                 // if an iframe has been added
                 if (args && args[0] instanceof HTMLIFrameElement) {
