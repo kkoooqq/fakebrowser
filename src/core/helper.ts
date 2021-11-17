@@ -10,7 +10,6 @@ function md5(data: string): string {
     return result
 }
 
-
 /**
  * setTimeout async wrapper
  * @param ms sleep timeout
@@ -139,6 +138,15 @@ function threeBezier(t: number, p1: number[], cp1: number[], cp2: number[], p2: 
     return [x, y]
 }
 
+function makeFuncName(len = 4) {
+    let result = ''
+    for (let n = 0; n < len; ++n) {
+        result += String.fromCharCode(_rd(65, 132))
+    }
+
+    return result
+}
+
 export const helper = {
     md5,
     sleep,
@@ -155,4 +163,5 @@ export const helper = {
     objClone,
     twoBezier,
     threeBezier,
+    makeFuncName,
 }

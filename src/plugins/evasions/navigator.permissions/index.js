@@ -71,7 +71,7 @@ class Plugin extends PuppeteerExtraPlugin {
                 const param = (args || [])[0];
                 const paramName = param && param.name;
 
-                return new Promise((resolve, reject) => {
+                return new utils.cache.Promise((resolve, reject) => {
                     const permissions = opts.permissions;
                     const permission = permissions[paramName];
 
@@ -83,7 +83,7 @@ class Plugin extends PuppeteerExtraPlugin {
                             }
 
                             return reject(
-                                utils.patchError(new globalThis[exType](permission.msg), 'query'),
+                                utils.patchError(new globalThis[exType](permission.msg), 'apply'),
                             );
                         }
 
@@ -99,7 +99,7 @@ class Plugin extends PuppeteerExtraPlugin {
                     _Reflect.apply(...arguments).then(result => {
                         return resolve(result);
                     }).catch(ex => {
-                        return reject(utils.patchError(ex, 'query'));
+                        return reject(utils.patchError(ex, 'apply'));
                     });
                 });
             },

@@ -41,6 +41,9 @@ utils._preloadCache = () => {
         return;
     }
 
+    class ɵɵɵɵPromise extends Promise {
+    }
+
     OffscreenCanvas.prototype.constructor.__$cache = utils.cache = {
         // Used in `makeNativeString`
         nativeToStringStr: Function.toString + '', // => `function toString() { [native code] }`
@@ -53,6 +56,7 @@ utils._preloadCache = () => {
             getOwnPropertyDescriptor: Reflect.getOwnPropertyDescriptor.bind(Reflect),
             setPrototypeOf: Reflect.setPrototypeOf.bind(Reflect),
         },
+        Promise: ɵɵɵɵPromise,
         Object: {
             setPrototypeOf: Object.setPrototypeOf.bind(Object),
             getPrototypeOf: Object.getPrototypeOf.bind(Object),
@@ -189,7 +193,7 @@ utils._hookObjectPrototype = () => {
     const toStringProxy = utils.newProxyInstance(
         Function.prototype.toString,
         utils.stripProxyFromErrors({
-            apply: function (target, thisArg) {
+            apply: function (target, thisArg, args) {
                 // This fixes e.g. `HTMLMediaElement.prototype.canPlayType.toString + ""`
                 if (thisArg === Function.prototype.toString) {
                     return utils.makeNativeString('toString');
@@ -208,7 +212,7 @@ utils._hookObjectPrototype = () => {
 
                 // toStringRedirect
                 const toStringRedirectObj = utils.variables.toStringRedirectObjs.find(
-                    e => e.proxyObj === thisArg
+                    e => e.proxyObj === thisArg,
                 );
 
                 if (toStringRedirectObj) {
@@ -223,7 +227,7 @@ utils._hookObjectPrototype = () => {
                 }
 
                 if (typeof thisArg === 'undefined' || thisArg === null) {
-                    return target.call(thisArg);
+                    return _Reflect.apply(target, thisArg, args);
                 }
 
                 // Check if the toString protype of the context is the same as the global prototype,
@@ -237,7 +241,7 @@ utils._hookObjectPrototype = () => {
                     return thisArg.toString();
                 }
 
-                return target.call(thisArg);
+                return _Reflect.apply(target, thisArg, args);
             },
         }),
     );
@@ -286,71 +290,138 @@ utils.getProxyTarget = (proxy) => {
 };
 
 utils.patchError = (err, trap) => {
-    // Stack traces differ per browser, we only support chromium based ones currently
+
+    //0: "TypeError: Failed to execute 'query' on 'Permissions': Failed to read the 'name' property from 'PermissionDescriptor': The provided value 'speaker' is not a valid enum value of type PermissionName."
+    // 1: "    at eval (eval at <anonymous> (:15:24), <anonymous>:32:50)"
+    // 2: "    at new Promise (<anonymous>)"
+    // 3: "    at new ɵɵɵɵPromise (eval at <anonymous> (:10:49), <anonymous>:11:5)"
+    // 4: "    at Object.apply (eval at <anonymous> (:15:24), <anonymous>:20:24)"
+    // 5: "    at Object.ɵɵɵɵnewHandler.<computed> [as apply] (eval at <anonymous> (:10:49), <anonymous>:23:38)"
+    // 6: "    at e (https://www.n
+    // 7: "    at https://www.n
+    // 8: "    at Array.map (<anonymous>)"
+    // 9: "    at Object.np (https://www.ni
+    // 10: "    at Object.bpd (https://www.ni
+
+    // call stack:
+    // 	eval	                    @	VM2999:32
+    // ɵɵɵɵPromise	                @	VM2324:11
+    // apply	                    @	VM2999:20
+    // ɵɵɵɵnewHandler.<computed>	@	VM2966:23
+    // e	                        @	G2IB:1
+    // (anonymous)	                @	G2IB:1
+    // np	                        @	G2IB:1
+    // bpd	                        @	G2IB:1
+    // startTracking	            @	G2IB:1
+    // (anonymous)	                @	G2IB:1
+
+    // 0: "TypeError: Illegal invocation"
+    // 1: "    at Object.apply (eval at <anonymous> (:15:24), <anonymous>:23:48)"
+    // 2: "    at Object.ɵɵɵɵnewHandler.<computed> [as apply] (eval at <anonymous> (:10:49), <anonymous>:23:38)"
+    // 3: "    at https://api.ni
+    // 4: "    at j (https://api.ni
+    // 5: "    at Object.epk (https://api.ni
+    // 6: "    at https://api.n
+    // 7: "    at https://api.nik
+
+    // apply	                    @	VM6234:23
+    // ɵɵɵɵnewHandler.<computed>	@	VM6201:23
+    // (anonymous)	                @	ips.js?ak_bmsc_nke-2…K9HsrXz4ZcCIkpl4a:1
+    // j	                        @	ips.js?ak_bmsc_nke-2…K9HsrXz4ZcCIkpl4a:1
+    // epk	                        @	ips.js?ak_bmsc_nke-2…K9HsrXz4ZcCIkpl4a:1
+    // (anonymous)	                @	ips.js?ak_bmsc_nke-2…K9HsrXz4ZcCIkpl4a:1
+    // (anonymous)	                @	ips.js?ak_bmsc_nke-2…9HsrXz4ZcCIkpl4a:52
+
+    // Replacement logics:
+    // 1 -- * First, detect ``at Object.ɵɵɵɵnewHandler.<computed> [as ``
+    // 1.1 ---- ``ɵɵɵɵnewHandler`` may be used by the anti-bot system (fakebrowser is open source code :D  ), so we need replace ``ɵɵɵɵ`` in utils.js with new random string
+    // 1.2 ---- save the line number eg: :10:49, :23:38 => fbCodeStackLineNumbers.push()
+    // 2 -- use regex to find ``apply``, save apply as variable ${realTrap}
+    // 3 -- Check that the next line of code is: ``at Object.${realTrap} (eval at <anonymous>)``
+    // 3.1 ---- save the line number from this line of code => fbCodeStackLineNumbers.push()
+    // 4 -- remove the line corresponding to ``at new ɵɵɵɵPromise (eval at <anonymous>`` (replacing ``ɵɵɵɵ`` with another string)
+    // 4.1 -- check next line is ``at new Promise (<anonymous>)`` ? remove it.
+    // 5 -- delete the lines containing line numbers from fbCodeStackLineNumbers, and add the line numbers contained in those lines to fbCodeStackLineNumbers
+    // 6 -- fin
+
     if (!err || !err.stack || !err.stack.includes(`at `)) {
         return err;
     }
 
-    // err.__stack = err.stack.split('\n').join('\n');
+    // 1
+    let realTrap = '';
+    let stackLines = err.stack.split('\n');
 
-    // When something throws within one of our traps the Proxy will show up in error stacks
-    // An earlier implementation of this code would simply strip lines with a blacklist,
-    // but it makes sense to be more surgical here and only remove lines related to our Proxy.
-    // We try to use a known "anchor" line for that and strip it with everything above it.
-    // If the anchor line cannot be found for some reason we fall back to our blacklist approach.
-
-    const stripWithBlacklist = (stack, stripFirstLine = true) => {
-        const blacklist = [
-            'eval at <anonymous>',
-            'at new Promise (<anonymous>)',
-            `at Reflect.${trap} `, // e.g. Reflect.get or Reflect.apply
-            `at Object.${trap} `, // e.g. Object.get or Object.apply
-            `at Object.ɵɵnewHandler0.<computed> [as ${trap}] `, // caused by this very wrapper :-)
-        ];
-        return (
-            err.stack
-                .split('\n')
-                // Always remove the first (file) line in the stack (guaranteed to be our proxy)
-                .filter((line, index) => !(index === 1 && stripFirstLine))
-                // Check if the line starts with one of our blacklisted strings
-                .filter(line => !blacklist.some(bl => line.trim().includes(bl)))
-                .join('\n')
-        );
-    };
-
-    const stripWithAnchor = (stack, anchor) => {
-        const stackArr = stack.split('\n');
-        anchor = anchor || `at Object.ɵɵnewHandler0.<computed> [as ${trap}] `; // Known first Proxy line in chromium
-
-        const anchorIndex = stackArr.findIndex(line =>
-            line.trim().startsWith(anchor),
-        );
-
-        if (anchorIndex === -1) {
-            return false; // 404, anchor not found
+    let lineIndex = stackLines.findIndex(e => {
+        const matches = e.match(/Object\.ɵɵɵɵnewHandler\.<computed> \[as (.*)]/);
+        if (matches && matches[1]) {
+            // 2
+            realTrap = matches[1];
+            return true;
         }
 
-        // Strip everything from the top until we reach the anchor line
-        // Note: We're keeping the 1st line (zero index) as it's unrelated (e.g. `TypeError`)
-        stackArr.splice(1, anchorIndex);
+        return false;
+    });
 
-        return stackArr.join('\n');
-    };
-
-    // Special cases due to our nested toString proxies
-    err.stack = err.stack.replace(
-        'at Object.toString (',
-        'at Function.toString (',
-    );
-
-    if ((err.stack || '').includes('at Function.toString (')) {
-        err.stack = stripWithBlacklist(err.stack, false);
-
+    if (lineIndex < 0 || !realTrap) {
         return err;
     }
 
-    // Try using the anchor method, fallback to blacklist if necessary
-    err.stack = stripWithAnchor(err.stack) || stripWithBlacklist(err.stack);
+    // let's start
+    const fbCodeStackLineNumbers = [];
+
+    const dumpLineNumbers = (line, add) => {
+        // in   ===> Object.ɵɵɵɵnewHandler.<computed> [as apply] (eval at <anonymous> (:10:49), <anonymous>:23:38)
+        // out  ===> array([':10:49', ':23:38'])
+        // really don't know what those two numbers mean, caller? called? Whatever.
+
+        // assert?
+        const result = line.match(/:[0-9]+:[0-9]+/g) || [];
+        if (add) {
+            fbCodeStackLineNumbers.push(...result);
+        }
+
+        return result;
+    };
+
+    // 1.2
+    dumpLineNumbers(stackLines[lineIndex], true);
+    stackLines.splice(lineIndex, 1);
+
+    // 3
+    --lineIndex;
+    if (stackLines[lineIndex].includes(`at Object.${realTrap} (eval at <anonymous>`)) {
+        // 3.1
+        dumpLineNumbers(stackLines[lineIndex], true);
+        stackLines.splice(lineIndex, 1);
+    }
+
+    for (let n = lineIndex - 1; n >= 0; --n) {
+        const line = stackLines[n];
+
+        // 4
+        if (line.includes(`at new ɵɵɵɵPromise (eval at <anonymous>`)) {
+            stackLines.splice(n, 1);
+
+            // 4.1
+            if (stackLines[n - 1] && stackLines[n - 1].includes(`at new Promise (<anonymous>)`)) {
+                --n;
+                stackLines.splice(n, 1);
+            }
+
+            continue;
+        }
+
+        // 5
+        const lineNums = dumpLineNumbers(line, false);
+        if (utils.intersectionSet(lineNums, fbCodeStackLineNumbers).size > 0) {
+            fbCodeStackLineNumbers.push(...lineNums);
+            stackLines.splice(n, 1);
+        }
+    }
+
+    // 6
+    err.stack = stackLines.join('\n');
 
     return err;
 };
@@ -366,7 +437,7 @@ utils.stripProxyFromErrors = (handler = {}) => {
     const _Object = utils.cache.Object;
     const _Reflect = utils.cache.Reflect;
 
-    const ɵɵnewHandler0 = {
+    const ɵɵɵɵnewHandler = {
         setPrototypeOf: function (target, proto) {
             if (proto === null)
                 throw new TypeError('Cannot convert object to primitive value');
@@ -381,17 +452,18 @@ utils.stripProxyFromErrors = (handler = {}) => {
     // We wrap each trap in the handler in a try/catch and modify the error stack if they throw
     const traps = _Object.getOwnPropertyNames(handler);
     traps.forEach(trap => {
-        ɵɵnewHandler0[trap] = function () {
+        ɵɵɵɵnewHandler[trap] = function () {
             try {
                 // Forward the call to the defined proxy handler
                 return handler[trap].apply(this, arguments || []);
             } catch (err) {
-                throw utils.patchError(err, trap);
+                err = utils.patchError(err, trap);
+                throw err;
             }
         };
     });
 
-    return ɵɵnewHandler0;
+    return ɵɵɵɵnewHandler;
 };
 
 /**
@@ -530,15 +602,12 @@ utils.replaceWithProxy = (obj, propName, handler) => {
         return false;
     }
 
-    if (!handler.get) {
-        handler = {
-            ...handler,
-            // Make toString() native
-            get(target, key) {
-                return _Reflect.get(target, key);
-            },
-        };
-    }
+    // if (!handler.get) {
+    //     handler.get = function getɵɵɵɵ(target, property, receiver) {
+    //         debugger;
+    //         return _Reflect.get(target, property, receiver);
+    //     }
+    // }
 
     const proxyObj = utils.newProxyInstance(originalObj, utils.stripProxyFromErrors(handler));
 
@@ -597,7 +666,7 @@ utils.mockWithProxy = (obj, propName, pseudoTarget, descriptorOverrides, handler
     const _Reflect = utils.cache.Reflect;
 
     if (!handler.get) {
-        handler.get = (target, property, receiver) => {
+        handler.get = function getɵɵɵɵ(target, property, receiver) {
             if (property === 'name') {
                 return propName;
             }
@@ -624,7 +693,7 @@ utils.mockGetterWithProxy = (obj, propName, pseudoTarget, descriptorOverrides, h
     const _Reflect = utils.cache.Reflect;
 
     if (!handler.get) {
-        handler.get = (target, property, receiver) => {
+        handler.get = function getɵɵɵɵ(target, property, receiver) {
             if (property === 'name') {
                 return `get ${propName}`;
             }
@@ -655,7 +724,7 @@ utils.mockSetterWithProxy = (obj, propName, pseudoTarget, descriptorOverrides, h
     const _Reflect = utils.cache.Reflect;
 
     if (!handler.get) {
-        handler.get = (target, property, receiver) => {
+        handler.get = function getɵɵɵɵ(target, property, receiver) {
             if (property === 'name') {
                 return `set ${propName}`;
             }
@@ -698,7 +767,7 @@ utils.mockSetterWithProxy = (obj, propName, pseudoTarget, descriptorOverrides, h
 utils.createProxy = (pseudoTarget, handler) => {
     const proxyObj = utils.newProxyInstance(
         pseudoTarget,
-        utils.stripProxyFromErrors(handler)
+        utils.stripProxyFromErrors(handler),
     );
 
     utils.patchToString(proxyObj);
@@ -793,7 +862,7 @@ utils.stringifyFns = (fnObj = {hello: () => 'world'}) => {
     return (Object.fromEntries || fromEntries)(
         Object.entries(fnObj)
             .filter(([key, value]) => typeof value === 'function')
-            .map(([key, value]) => [key, value.toString()]), // eslint-disable-line no-eval
+            .map(([key, value]) => [key, value.toString().replace('ɵɵɵɵ', utils.makeFuncName())]), // eslint-disable-line no-eval
     );
 };
 
@@ -833,7 +902,7 @@ utils.makeHandler = () => ({
 });
 
 utils.sleep = (ms) => {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new utils.cache.Promise(resolve => setTimeout(resolve, ms));
 };
 
 utils.random = (a, b) => {
@@ -920,6 +989,15 @@ utils.differenceABSet = (a, b) => {
     }
 
     return new Set([...a].filter(x => !b.has(x)));
+};
+
+utils.makeFuncName = (len = 4) => {
+    let result = '';
+    for (let n = 0; n < len; ++n) {
+        result += String.fromCharCode(utils.random(65, 132));
+    }
+
+    return result;
 };
 
 utils.getCurrentScriptPath = () => {

@@ -17,6 +17,7 @@ module.exports = (plugin, page) => ({
                 const utils = Object.fromEntries(
                     Object.entries(_utilsFns).map(([key, value]) => [key, eval(value)]), // eslint-disable-line no-eval
                 );
+
                 utils.init();
                 return eval(_mainFunction)(utils, ..._args); // eslint-disable-line no-eval
             },

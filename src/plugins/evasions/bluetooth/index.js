@@ -638,7 +638,7 @@ class Plugin extends PuppeteerExtraPlugin {
                     return _Reflect.get(target, property, receiver);
                 },
                 apply(target, thisArg, args) {
-                    return new Promise((resolve, reject) => {
+                    return new utils.cache.Promise((resolve, reject) => {
                         if (thisArg === window.Bluetooth.prototype) {
                             // Want to call it directly from window.Bluetooth.prototype.requestDevice()? No way!
                             return reject(utils.patchError(
