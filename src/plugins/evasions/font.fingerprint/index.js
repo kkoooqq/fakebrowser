@@ -821,7 +821,11 @@ class Plugin extends PuppeteerExtraPlugin {
                     }
 
                     // Return the new proxy
-                    const proxy = utils.newProxyInstance(styleDeclaration, utils.stripProxyFromErrors(handler));
+                    const proxy = utils.newProxyInstance(
+                        styleDeclaration,
+                        utils.stripProxyFromErrors(handler)
+                    );
+
                     utils.redirectToString(proxy, styleDeclaration);
 
                     hookConfig.proxy = proxy;

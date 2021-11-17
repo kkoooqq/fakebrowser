@@ -305,7 +305,7 @@ utils.patchError = (err, trap) => {
             'at new Promise (<anonymous>)',
             `at Reflect.${trap} `, // e.g. Reflect.get or Reflect.apply
             `at Object.${trap} `, // e.g. Object.get or Object.apply
-            `at Object.newHandler.<computed> [as ${trap}] `, // caused by this very wrapper :-)
+            `at Object.ɵɵnewHandler0.<computed> [as ${trap}] `, // caused by this very wrapper :-)
         ];
         return (
             err.stack
@@ -320,7 +320,7 @@ utils.patchError = (err, trap) => {
 
     const stripWithAnchor = (stack, anchor) => {
         const stackArr = stack.split('\n');
-        anchor = anchor || `at Object.newHandler.<computed> [as ${trap}] `; // Known first Proxy line in chromium
+        anchor = anchor || `at Object.ɵɵnewHandler0.<computed> [as ${trap}] `; // Known first Proxy line in chromium
 
         const anchorIndex = stackArr.findIndex(line =>
             line.trim().startsWith(anchor),
@@ -366,7 +366,7 @@ utils.stripProxyFromErrors = (handler = {}) => {
     const _Object = utils.cache.Object;
     const _Reflect = utils.cache.Reflect;
 
-    const newHandler = {
+    const ɵɵnewHandler0 = {
         setPrototypeOf: function (target, proto) {
             if (proto === null)
                 throw new TypeError('Cannot convert object to primitive value');
@@ -381,7 +381,7 @@ utils.stripProxyFromErrors = (handler = {}) => {
     // We wrap each trap in the handler in a try/catch and modify the error stack if they throw
     const traps = _Object.getOwnPropertyNames(handler);
     traps.forEach(trap => {
-        newHandler[trap] = function () {
+        ɵɵnewHandler0[trap] = function () {
             try {
                 // Forward the call to the defined proxy handler
                 return handler[trap].apply(this, arguments || []);
@@ -391,7 +391,7 @@ utils.stripProxyFromErrors = (handler = {}) => {
         };
     });
 
-    return newHandler;
+    return ɵɵnewHandler0;
 };
 
 /**
@@ -696,7 +696,11 @@ utils.mockSetterWithProxy = (obj, propName, pseudoTarget, descriptorOverrides, h
  * @param {object} handler - The JS Proxy handler to use
  */
 utils.createProxy = (pseudoTarget, handler) => {
-    const proxyObj = utils.newProxyInstance(pseudoTarget, utils.stripProxyFromErrors(handler));
+    const proxyObj = utils.newProxyInstance(
+        pseudoTarget,
+        utils.stripProxyFromErrors(handler)
+    );
+
     utils.patchToString(proxyObj);
 
     return proxyObj;
