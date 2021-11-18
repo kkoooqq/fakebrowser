@@ -315,6 +315,8 @@ utils.patchError = (err, trap) => {
     // startTracking	            @	G2IB:1
     // (anonymous)	                @	G2IB:1
 
+    // ===
+
     // 0: "TypeError: Illegal invocation"
     // 1: "    at Object.apply (eval at <anonymous> (:15:24), <anonymous>:23:48)"
     // 2: "    at Object.ɵɵɵɵnewHandler.<computed> [as apply] (eval at <anonymous> (:10:49), <anonymous>:23:38)"
@@ -332,12 +334,40 @@ utils.patchError = (err, trap) => {
     // (anonymous)	                @	ips.js?ak_bmsc_nke-2…K9HsrXz4ZcCIkpl4a:1
     // (anonymous)	                @	ips.js?ak_bmsc_nke-2…9HsrXz4ZcCIkpl4a:52
 
+    // ===
+
+    // 0: "TypeError: Function.prototype.toString requires that 'this' be a Function"
+    // 1: "    at Function.toString (<anonymous>)"
+    // 2: "    at Object.apply (<anonymous>:215:33)"
+    // 3: "    at Object.ɵɵɵɵnewHandler.<computed> [as apply] (<anonymous>:492:38)"
+    // 4: "    at getNewObjectToStringTypeErrorLie (https://abrahamjuliot.github.io/creepjs/creepworker.js:223:31)"
+    // 5: "    at getLies (https://abrahamjuliot.github.io/creepjs/creepworker.js:317:38)"
+    // 6: "    at https://abrahamjuliot.github.io/creepjs/creepworker.js:379:16"
+    // 7: "    at Array.forEach (<anonymous>)"
+    // 8: "    at searchLies (https://abrahamjuliot.github.io/creepjs/creepworker.js:357:17)"
+    // 9: "    at getPrototypeLies (https://abrahamjuliot.github.io/creepjs/creepworker.js:424:2)"
+    // 10: "    at getWorkerData (https://abrahamjuliot.github.io/creepjs/creepworker.js:1009:6)"
+
+    // apply	                        @	VM3:215
+    // ɵɵɵɵnewHandler.<computed>	    @	VM3:492
+    // getNewObjectToStringTypeErrorLie	@	creepworker.js:223
+    // getLies	                        @	creepworker.js:317
+    // (anonymous)	                    @	creepworker.js:379
+    // searchLies	                    @	creepworker.js:357
+    // getPrototypeLies	                @	creepworker.js:424
+    // getWorkerData	                @	creepworker.js:1009
+    // async function (async)
+    // getWorkerData	                @	creepworker.js:896
+    // (anonymous)	                    @	creepworker.js:1095
+
+    // ===
+
     // Replacement logics:
     // 1 -- * First, detect ``at Object.ɵɵɵɵnewHandler.<computed> [as ``
-    // 1.1 ---- ``ɵɵɵɵnewHandler`` may be used by the anti-bot system (fakebrowser is open source code :D  ), so we need replace ``ɵɵɵɵ`` in utils.js with new random string
+    // 1.1 ---- ``ɵɵɵɵnewHandler`` may be used by the anti-bot system (fakebrowser is open source code :D  ), TODO: so we need replace ``ɵɵɵɵ`` in utils.js with new random string
     // 1.2 ---- save the line number eg: :10:49, :23:38 => fbCodeStackLineNumbers.push()
     // 2 -- use regex to find ``apply``, save apply as variable ${realTrap}
-    // 3 -- Check that the next line of code is: ``at Object.${realTrap} (eval at <anonymous>)``
+    // 3 -- Check that the next line of code is: ``at Object.${realTrap} (``
     // 3.1 ---- save the line number from this line of code => fbCodeStackLineNumbers.push()
     // 4 -- remove the line corresponding to ``at new ɵɵɵɵPromise (eval at <anonymous>`` (replacing ``ɵɵɵɵ`` with another string)
     // 4.1 -- check next line is ``at new Promise (<anonymous>)`` ? remove it.
@@ -347,6 +377,12 @@ utils.patchError = (err, trap) => {
     if (!err || !err.stack || !err.stack.includes(`at `)) {
         return err;
     }
+
+    // Special cases due to our nested toString proxies
+    err.stack = err.stack.replace(
+        'at Object.toString (',
+        'at Function.toString (',
+    );
 
     // 1
     let realTrap = '';
@@ -390,7 +426,7 @@ utils.patchError = (err, trap) => {
 
     // 3
     --lineIndex;
-    if (stackLines[lineIndex].includes(`at Object.${realTrap} (eval at <anonymous>`)) {
+    if (stackLines[lineIndex].includes(`at Object.${realTrap} (`)) {
         // 3.1
         dumpLineNumbers(stackLines[lineIndex], true);
         stackLines.splice(lineIndex, 1);
@@ -603,7 +639,7 @@ utils.replaceWithProxy = (obj, propName, handler) => {
     }
 
     // if (!handler.get) {
-    //     handler.get = function getɵɵɵɵ(target, property, receiver) {
+    //     handler.get = function ɵɵɵɵget(target, property, receiver) {
     //         debugger;
     //         return _Reflect.get(target, property, receiver);
     //     }
@@ -666,7 +702,7 @@ utils.mockWithProxy = (obj, propName, pseudoTarget, descriptorOverrides, handler
     const _Reflect = utils.cache.Reflect;
 
     if (!handler.get) {
-        handler.get = function getɵɵɵɵ(target, property, receiver) {
+        handler.get = function ɵɵɵɵget(target, property, receiver) {
             if (property === 'name') {
                 return propName;
             }
@@ -693,7 +729,7 @@ utils.mockGetterWithProxy = (obj, propName, pseudoTarget, descriptorOverrides, h
     const _Reflect = utils.cache.Reflect;
 
     if (!handler.get) {
-        handler.get = function getɵɵɵɵ(target, property, receiver) {
+        handler.get = function ɵɵɵɵget(target, property, receiver) {
             if (property === 'name') {
                 return `get ${propName}`;
             }
@@ -724,7 +760,7 @@ utils.mockSetterWithProxy = (obj, propName, pseudoTarget, descriptorOverrides, h
     const _Reflect = utils.cache.Reflect;
 
     if (!handler.get) {
-        handler.get = function getɵɵɵɵ(target, property, receiver) {
+        handler.get = function ɵɵɵɵget(target, property, receiver) {
             if (property === 'name') {
                 return `set ${propName}`;
             }
@@ -861,8 +897,13 @@ utils.stringifyFns = (fnObj = {hello: () => 'world'}) => {
     // noinspection JSUnusedLocalSymbols
     return (Object.fromEntries || fromEntries)(
         Object.entries(fnObj)
-            .filter(([key, value]) => typeof value === 'function')
-            .map(([key, value]) => [key, value.toString().replace('ɵɵɵɵ', utils.makeFuncName())]), // eslint-disable-line no-eval
+            .filter(
+                ([key, value]) => typeof value === 'function',
+            )
+            .map(([key, value]) => [
+                key,
+                value.toString(),
+            ]),
     );
 };
 
@@ -991,10 +1032,14 @@ utils.differenceABSet = (a, b) => {
     return new Set([...a].filter(x => !b.has(x)));
 };
 
-utils.makeFuncName = (len = 4) => {
+utils.makeFuncName = (len) => {
+    if (!len) {
+        len = 4;
+    }
+
     let result = '';
     for (let n = 0; n < len; ++n) {
-        result += String.fromCharCode(utils.random(65, 132));
+        result += String.fromCharCode(utils.random(65, 90));
     }
 
     return result;

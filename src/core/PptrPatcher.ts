@@ -468,7 +468,7 @@ export class PptrPatcher {
         let utilsContent = `const utils = {};\n`
 
         for (const [key, value] of Object.entries(utils) as [string, string][]) {
-            const utilsFuncCode = value.toString().replace('ɵɵɵɵ', helper.makeFuncName())
+            const utilsFuncCode = value.toString()
             utilsContent += `utils.${key} = ${utilsFuncCode}; \n`
         }
 
