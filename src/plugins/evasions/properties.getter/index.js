@@ -17,43 +17,60 @@ class Plugin extends PuppeteerExtraPlugin {
     }
 
     async onBrowser(browser, opts) {
-        if (
-            this.opts.navigator
-            && this.opts.navigator.userAgent
-        ) {
-            const orgUA = await browser.userAgent();
-
-            function chromeVersion(userAgent) {
-                const chromeVersionPart = userAgent.match(/Chrome\/(.*?) /);
-                if (chromeVersionPart) {
-                    return chromeVersionPart[1];
-                }
-
-                return null;
-            }
-
-            const orgVersion = chromeVersion(orgUA);
-            const fakeVersion = chromeVersion(this.opts.navigator.userAgent);
-
-            this.opts.navigator.userAgent = this.opts.navigator.userAgent.replace(fakeVersion, orgVersion);
-
-            if (this.opts.navigator.appVersion) {
-                this.opts.navigator.appVersion = this.opts.navigator.appVersion.replace(fakeVersion, orgVersion);
-            }
-        }
+        this.opts.realUA = await browser.userAgent();
     }
 
     async onPageCreated(page) {
-        await withUtils(this, page).evaluateOnNewDocument(this.mainFunction, this.opts);
+        await withUtils(this, page).evaluateOnNewDocument(this.mainFunction, {
+            realUA: this.opts.realUA,
+            fakeNavigator: this.opts.fakeDD.navigator,
+            fakeWindow: this.opts.fakeDD.window,
+            fakeDocument: this.opts.fakeDD.document,
+            fakeScreen: this.opts.fakeDD.screen,
+            fakeBody: this.opts.fakeDD.body,
+        });
     }
 
     onServiceWorkerContent(jsContent) {
-        return withWorkerUtils(this, jsContent).evaluate(this.mainFunction, this.opts);
+        return withWorkerUtils(this, jsContent).evaluate(this.mainFunction, {
+            realUA: this.opts.realUA,
+            fakeNavigator: this.opts.fakeDD.navigator,
+            fakeWindow: this.opts.fakeDD.window,
+            fakeDocument: this.opts.fakeDD.document,
+            fakeScreen: this.opts.fakeDD.screen,
+            fakeBody: this.opts.fakeDD.body,
+        });
     }
 
-    mainFunction = (utils, opts) => {
+    mainFunction = (utils, {
+        realUA,
+        fakeNavigator,
+        fakeWindow,
+        fakeDocument,
+        fakeScreen,
+        fakeBody,
+    }) => {
         const _Object = utils.cache.Object;
         const _Reflect = utils.cache.Reflect;
+
+        // replace Chrome version of fakeDDs' userAgent and appVersion with real version
+        function chromeVersion(userAgent) {
+            const chromeVersionPart = userAgent.match(/Chrome\/(.*?) /);
+            if (chromeVersionPart) {
+                return chromeVersionPart[1];
+            }
+
+            return null;
+        }
+
+        const realVersion = chromeVersion(realUA);
+        const fakeVersion = chromeVersion(fakeNavigator.userAgent);
+
+        fakeNavigator.userAgent = fakeNavigator.userAgent.replace(fakeVersion, realVersion);
+
+        if (fakeNavigator.appVersion) {
+            fakeNavigator.appVersion = fakeNavigator.appVersion.replace(fakeVersion, realVersion);
+        }
 
         /* Define variables */
         const kObjPlaceHolder = '_$obj!_//+_';
@@ -123,27 +140,27 @@ class Plugin extends PuppeteerExtraPlugin {
         };
 
         if ('undefined' !== typeof WorkerNavigator) {
-            overwriteObjectProperties(WorkerNavigator.prototype, opts.navigator);
+            overwriteObjectProperties(WorkerNavigator.prototype, fakeNavigator);
         }
 
         if ('undefined' !== typeof Navigator) {
-            overwriteObjectProperties(Navigator.prototype, opts.navigator);
+            overwriteObjectProperties(Navigator.prototype, fakeNavigator);
         }
 
         if ('undefined' !== typeof window) {
-            overwriteObjectProperties(window, opts.window, ['pageXOffset', 'pageYOffset']);
+            overwriteObjectProperties(window, fakeWindow, ['pageXOffset', 'pageYOffset']);
         }
 
         if ('undefined' !== typeof Document) {
-            overwriteObjectProperties(Document.prototype, opts.document);
+            overwriteObjectProperties(Document.prototype, fakeDocument);
         }
 
         if ('undefined' !== typeof HTMLBodyElement) {
-            overwriteObjectProperties(HTMLBodyElement.prototype, opts.body, ['clientWidth', 'clientHeight']);
+            overwriteObjectProperties(HTMLBodyElement.prototype, fakeBody, ['clientWidth', 'clientHeight']);
         }
 
         if ('undefined' !== typeof Screen) {
-            overwriteObjectProperties(Screen.prototype, opts.screen);
+            overwriteObjectProperties(Screen.prototype, fakeScreen);
         }
     };
 

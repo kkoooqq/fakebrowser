@@ -50,6 +50,7 @@ class Plugin extends PuppeteerExtraPlugin {
                     'Runtime.evaluate': 'expression',
                     'Runtime.callFunctionOn': 'functionDeclaration',
                 };
+
                 const SOURCE_URL_SUFFIX =
                     '//# sourceURL=__puppeteer_evaluation_script__';
 

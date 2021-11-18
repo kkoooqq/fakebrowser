@@ -21,21 +21,17 @@ class Plugin extends PuppeteerExtraPlugin {
     }
 
     async onPageCreated(page) {
-        await withUtils(this, page).evaluateOnNewDocument(
-            this.mainFunction,
-            this.opts,
-        );
+        await withUtils(this, page).evaluateOnNewDocument(this.mainFunction);
     }
 
     onServiceWorkerContent(jsContent) {
         return withWorkerUtils(this, jsContent).evaluate(
             this.mainFunction,
-            this.opts,
         );
     }
 
-    mainFunction = (utils, opts) => {
-        const _Reflect = utils.cache.Reflect
+    mainFunction = (utils) => {
+        const _Reflect = utils.cache.Reflect;
 
         utils.replaceWithProxy(String, 'fromCodePoint', {
             apply(target, thisArg, args) {

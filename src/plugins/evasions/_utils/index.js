@@ -1,4 +1,4 @@
-// noinspection JSUnusedLocalSymbols,JSUnusedGlobalSymbols,JSUnresolvedVariable
+// noinspection JSUnusedLocalSymbols,JSUnusedGlobalSymbols,JSUnresolvedVariable,JSNonASCIINames,NonAsciiCharacters
 
 /**
  * A set of shared utility functions specifically for the purpose of modifying native browser APIs without leaving traces.
@@ -145,6 +145,7 @@ utils._preloadGlobalVariables = () => {
         toStringPatchObjs: [],
         toStringRedirectObjs: [],
         renderingContextWithOperators: [],
+        taskData: {},
     };
 };
 

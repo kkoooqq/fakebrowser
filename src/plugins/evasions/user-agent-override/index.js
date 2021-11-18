@@ -9,15 +9,13 @@ const withWorkerUtils = require('../_utils/withWorkerUtils');
 
 class Plugin extends PuppeteerExtraPlugin {
 
-    _override = null;
-
     constructor(opts = {}) {
         super(opts);
         this._headless = false;
     }
 
     async onBrowser(browser, opts) {
-        this._override = await this.getOverride(browser);
+        this.opts.override = await this.getOverride(browser);
     }
 
     getOverride = async (browser) => {
@@ -182,7 +180,7 @@ class Plugin extends PuppeteerExtraPlugin {
     }
 
     async onPageCreated(page) {
-        const override = this._override;
+        const override = this.opts.override;
         await withUtils(this, page).evaluateOnNewDocument(this.mainFunction, override);
 
         try {
@@ -193,7 +191,7 @@ class Plugin extends PuppeteerExtraPlugin {
     }
 
     onServiceWorkerContent(jsContent) {
-        const override = this._override;
+        const override = this.opts.override;
 
         if (override) {
             return withWorkerUtils(this, jsContent).evaluate(this.mainFunction, override);

@@ -30,29 +30,29 @@ class Plugin extends PuppeteerExtraPlugin {
         //     "msg"?: string,
         // }>
 
-        await withUtils(this, page).evaluateOnNewDocument(this.mainFunction, this.opts);
+        await withUtils(this, page).evaluateOnNewDocument(this.mainFunction, this.opts.fakeDD.permissions);
 
-        // invoke CDP setPermission
-        const permissions = this.opts.permissions;
-        for (const name in permissions) {
-            const permission = permissions[name];
-            if (permission.state) {
-                try {
-                    await page['_client'].send('Browser.setPermission', {
-                        permission: {name},
-                        setting: permission.state,
-                    });
-                } catch (ignore) {
-                }
-            }
-        }
+        // // invoke CDP setPermission
+        // const permissions = this.opts.permissions;
+        // for (const name in permissions) {
+        //     const permission = permissions[name];
+        //     if (permission.state) {
+        //         try {
+        //             await page['_client'].send('Browser.setPermission', {
+        //                 permission: {name},
+        //                 setting: permission.state,
+        //             });
+        //         } catch (ignore) {
+        //         }
+        //     }
+        // }
     }
 
     onServiceWorkerContent(jsContent) {
-        return withWorkerUtils(this, jsContent).evaluate(this.mainFunction, this.opts);
+        return withWorkerUtils(this, jsContent).evaluate(this.mainFunction, this.opts.fakeDD.permissions);
     }
 
-    mainFunction = (utils, opts) => {
+    mainFunction = (utils, fakePermissions) => {
         const _Object = utils.cache.Object;
         const _Reflect = utils.cache.Reflect;
 
@@ -72,8 +72,7 @@ class Plugin extends PuppeteerExtraPlugin {
                 const paramName = param && param.name;
 
                 return new utils.cache.Promise((resolve, reject) => {
-                    const permissions = opts.permissions;
-                    const permission = permissions[paramName];
+                    const permission = fakePermissions[paramName];
 
                     if (permission) {
                         let exType = permission.exType;

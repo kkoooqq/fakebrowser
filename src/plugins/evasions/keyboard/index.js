@@ -16,30 +16,24 @@ class Plugin extends PuppeteerExtraPlugin {
     }
 
     async onPageCreated(page) {
-        await withUtils(this, page).evaluateOnNewDocument(
-            this.mainFunction,
-            this.opts,
-        );
+        await withUtils(this, page).evaluateOnNewDocument(this.mainFunction, this.opts.fakeDD.keyboard);
     }
 
     onServiceWorkerContent(jsContent) {
-        return withWorkerUtils(this, jsContent).evaluate(
-            this.mainFunction,
-            this.opts,
-        );
+        return withWorkerUtils(this, jsContent).evaluate(this.mainFunction, this.opts.fakeDD.keyboard);
     }
 
-    mainFunction = (utils, opts) => {
+    mainFunction = (utils, fakeKeyboard) => {
         const _Reflect = utils.cache.Reflect;
 
         if (
-            opts.keyboard
+            fakeKeyboard
             && 'undefined' !== typeof KeyboardLayoutMap
         ) {
             utils.replaceWithProxy(KeyboardLayoutMap.prototype, 'get', {
                 apply(target, thisArg, args) {
                     if (args && args.length) {
-                        return opts.keyboard[args[0]];
+                        return fakeKeyboard[args[0]];
                     }
 
                     return _Reflect.apply(target, thisArg, args);

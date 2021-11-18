@@ -21,20 +21,14 @@ class Plugin extends PuppeteerExtraPlugin {
     }
 
     async onPageCreated(page) {
-        await withUtils(this, page).evaluateOnNewDocument(
-            this.mainFunction,
-            this.opts,
-        );
+        await withUtils(this, page).evaluateOnNewDocument(this.mainFunction, this.opts.fakeDD.fontSalt);
     }
 
     onServiceWorkerContent(jsContent) {
-        return withWorkerUtils(this, jsContent).evaluate(
-            this.mainFunction,
-            this.opts,
-        );
+        return withWorkerUtils(this, jsContent).evaluate(this.mainFunction, this.opts.fakeDD.fontSalt);
     }
 
-    mainFunction = (utils, opts) => {
+    mainFunction = (utils, fontSalt) => {
         // Thanks to: https://github.com/dy/css-font
         function parseFont(value) {
             if (typeof value !== 'string') throw new Error('Font argument must be a string.');
@@ -454,10 +448,10 @@ class Plugin extends PuppeteerExtraPlugin {
         // };
 
         // Get out the font that exists
-        const allFonts = _Object.keys(opts.fontSalt)
+        const allFonts = _Object.keys(fontSalt)
             .map(e => e.toLowerCase());
 
-        const existFonts = _Object.entries(opts.fontSalt)
+        const existFonts = _Object.entries(fontSalt)
             .filter(e => e[1].exists)
             .map(e => e[0].toLowerCase());
 
@@ -470,7 +464,7 @@ class Plugin extends PuppeteerExtraPlugin {
 
         // All lowercase
         const fontSaltWithLowerCaseName = _Object.fromEntries(
-            _Object.entries(opts.fontSalt).map(e => {
+            _Object.entries(fontSalt).map(e => {
                 e[0] = e[0].toLowerCase();
                 return e;
             }));
@@ -823,7 +817,7 @@ class Plugin extends PuppeteerExtraPlugin {
                     // Return the new proxy
                     const proxy = utils.newProxyInstance(
                         styleDeclaration,
-                        utils.stripProxyFromErrors(handler)
+                        utils.stripProxyFromErrors(handler),
                     );
 
                     utils.redirectToString(proxy, styleDeclaration);

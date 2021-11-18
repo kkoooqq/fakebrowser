@@ -14,7 +14,7 @@ class Plugin extends PuppeteerExtraPlugin {
 
     async onPageCreated(page) {
         await withUtils(this, page).evaluateOnNewDocument(
-            (utils, {historyLength}) => {
+            (utils, historyLength) => {
                 for (let n = 0; n < historyLength; ++n) {
                     if (window.history.length >= historyLength) {
                         break;
@@ -23,9 +23,7 @@ class Plugin extends PuppeteerExtraPlugin {
                     window.history.pushState(null, '');
                 }
             },
-            {
-                historyLength: this.opts.historyLength,
-            },
+            this.opts.historyLength,
         );
     }
 }

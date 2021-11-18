@@ -16,22 +16,14 @@ class Plugin extends PuppeteerExtraPlugin {
     }
 
     async onPageCreated(page) {
-        await withUtils(this, page).evaluateOnNewDocument(
-            this.mainFunction,
-            {
-                mediaDevices: this.opts.data,
-            },
-        );
+        await withUtils(this, page).evaluateOnNewDocument(this.mainFunction, this.opts.fakeDD.mediaDevices);
     }
 
     onServiceWorkerContent(jsContent) {
-        return withWorkerUtils(this, jsContent).evaluate(this.mainFunction,
-            {
-                mediaDevices: this.opts.data,
-            });
+        return withWorkerUtils(this, jsContent).evaluate(this.mainFunction, this.opts.fakeDD.mediaDevices);
     }
 
-    mainFunction = (utils, {mediaDevices}) => {
+    mainFunction = (utils, fakeMediaDevices) => {
         const _Object = utils.cache.Object;
         const _Reflect = utils.cache.Reflect;
 
@@ -42,7 +34,7 @@ class Plugin extends PuppeteerExtraPlugin {
             const index = 4 + Math.floor(Math.random() * 32);
 
             const tempMediaDeviceObjs = [];
-            for (let mediaDevice of mediaDevices) {
+            for (let mediaDevice of fakeMediaDevices) {
                 const json = JSON.stringify(mediaDevice);
                 mediaDevice.groupId = mediaDevice.groupId.substr(0, index) + to + mediaDevice.groupId.substr(index + 1);
 
@@ -126,7 +118,6 @@ class Plugin extends PuppeteerExtraPlugin {
             });
         }
     };
-
 }
 
 module.exports = function (pluginConfig) {

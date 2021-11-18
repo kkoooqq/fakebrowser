@@ -1,3 +1,5 @@
+// noinspection JSUnusedLocalSymbols
+
 'use strict';
 
 const {PuppeteerExtraPlugin} = require('puppeteer-extra-plugin');
@@ -16,14 +18,22 @@ class Plugin extends PuppeteerExtraPlugin {
 
     /* global WebGLRenderingContext WebGL2RenderingContext */
     async onPageCreated(page) {
-        await withUtils(this, page).evaluateOnNewDocument(this.mainFunction, this.opts);
+        await withUtils(this, page).evaluateOnNewDocument(this.mainFunction, {
+            gpu: this.opts.fakeDD.gpu,
+            webgl: this.opts.fakeDD.webgl,
+            webgl2: this.opts.fakeDD.webgl2,
+        });
     }
 
     onServiceWorkerContent(jsContent) {
-        return withWorkerUtils(this, jsContent).evaluate(this.mainFunction, this.opts);
+        return withWorkerUtils(this, jsContent).evaluate(this.mainFunction, {
+            gpu: this.opts.fakeDD.gpu,
+            webgl: this.opts.fakeDD.webgl,
+            webgl2: this.opts.fakeDD.webgl2,
+        });
     }
 
-    mainFunction = (utils, data) => {
+    mainFunction = (utils, fakeDD) => {
         const _Object = utils.cache.Object;
         const _Reflect = utils.cache.Reflect;
 
@@ -40,7 +50,7 @@ class Plugin extends PuppeteerExtraPlugin {
         const WebGLShaderPrecisionFormat_prototype_rangeMax_get = utils.cache.Descriptor.WebGLShaderPrecisionFormat.prototype.rangeMax.get;
         const WebGLShaderPrecisionFormat_prototype_precision_get = utils.cache.Descriptor.WebGLShaderPrecisionFormat.prototype.precision.get;
 
-        const bindContext = (_WebGLRenderingContext, propName) => {
+        const bindContext = (_WebGLRenderingContext, fakeDDPropName) => {
             // getParameter
             utils.replaceWithProxy(_WebGLRenderingContext.prototype, 'getParameter', {
                 apply(target, thisArg, args) {
@@ -51,15 +61,15 @@ class Plugin extends PuppeteerExtraPlugin {
 
                     switch (type) {
                         case 37445: /* renderer.UNMASKED_VENDOR_WEBGL */
-                            result = data.gpu.vendor;
+                            result = fakeDD.gpu.vendor;
                             break;
 
                         case 37446: /* renderer.UNMASKED_RENDERER_WEBGL */
-                            result = data.gpu.renderer;
+                            result = fakeDD.gpu.renderer;
                             break;
 
                         default:
-                            const param = data[propName].params[type];
+                            const param = fakeDD[fakeDDPropName].params[type];
                             if (param) {
                                 const paramValue = param.value;
 
@@ -88,7 +98,7 @@ class Plugin extends PuppeteerExtraPlugin {
             utils.replaceWithProxy(_WebGLRenderingContext.prototype, 'getSupportedExtensions', {
                 apply(target, thisArg, args) {
                     _Reflect.apply(target, thisArg, args);
-                    return data[propName].supportedExtensions;
+                    return fakeDD[fakeDDPropName].supportedExtensions;
                 },
             });
 
@@ -97,16 +107,16 @@ class Plugin extends PuppeteerExtraPlugin {
                 apply(target, thisArg, args) {
                     const result = _Reflect.apply(target, thisArg, args);
 
-                    result.alpha = data[propName].contextAttributes.alpha;
-                    result.antialias = data[propName].contextAttributes.antialias;
-                    result.depth = data[propName].contextAttributes.depth;
-                    result.desynchronized = data[propName].contextAttributes.desynchronized;
-                    result.failIfMajorPerformanceCaveat = data[propName].contextAttributes.failIfMajorPerformanceCaveat;
-                    result.powerPreference = data[propName].contextAttributes.powerPreference;
-                    result.premultipliedAlpha = data[propName].contextAttributes.premultipliedAlpha;
-                    result.preserveDrawingBuffer = data[propName].contextAttributes.preserveDrawingBuffer;
-                    result.stencil = data[propName].contextAttributes.stencil;
-                    result.xrCompatible = data[propName].contextAttributes.xrCompatible;
+                    result.alpha = fakeDD[fakeDDPropName].contextAttributes.alpha;
+                    result.antialias = fakeDD[fakeDDPropName].contextAttributes.antialias;
+                    result.depth = fakeDD[fakeDDPropName].contextAttributes.depth;
+                    result.desynchronized = fakeDD[fakeDDPropName].contextAttributes.desynchronized;
+                    result.failIfMajorPerformanceCaveat = fakeDD[fakeDDPropName].contextAttributes.failIfMajorPerformanceCaveat;
+                    result.powerPreference = fakeDD[fakeDDPropName].contextAttributes.powerPreference;
+                    result.premultipliedAlpha = fakeDD[fakeDDPropName].contextAttributes.premultipliedAlpha;
+                    result.preserveDrawingBuffer = fakeDD[fakeDDPropName].contextAttributes.preserveDrawingBuffer;
+                    result.stencil = fakeDD[fakeDDPropName].contextAttributes.stencil;
+                    result.xrCompatible = fakeDD[fakeDDPropName].contextAttributes.xrCompatible;
 
                     return result;
                 },
@@ -119,7 +129,7 @@ class Plugin extends PuppeteerExtraPlugin {
 
                     shaderPrecisionFormats.push({
                         shaderPrecisionFormat,
-                        webglPropName: propName,
+                        webglPropName: fakeDDPropName,
                         shaderType: args[0],
                         precisionType: args[1],
                         rangeMin: WebGLShaderPrecisionFormat_prototype_rangeMin_get.call(shaderPrecisionFormat),
@@ -161,7 +171,7 @@ class Plugin extends PuppeteerExtraPlugin {
                     precision,
                 } = r;
 
-                const fake_r = data[webglPropName].shaderPrecisionFormats.find(
+                const fake_r = fakeDD[webglPropName].shaderPrecisionFormats.find(
                     e => e.shaderType === shaderType
                         && e.precisionType === precisionType,
                 );
@@ -189,7 +199,7 @@ class Plugin extends PuppeteerExtraPlugin {
                     precision,
                 } = r;
 
-                const fake_r = data[webglPropName].shaderPrecisionFormats.find(
+                const fake_r = fakeDD[webglPropName].shaderPrecisionFormats.find(
                     e => e.shaderType === shaderType
                         && e.precisionType === precisionType,
                 );
@@ -217,7 +227,7 @@ class Plugin extends PuppeteerExtraPlugin {
                     precision,
                 } = r;
 
-                const fake_r = data[webglPropName].shaderPrecisionFormats.find(
+                const fake_r = fakeDD[webglPropName].shaderPrecisionFormats.find(
                     e => e.shaderType === shaderType
                         && e.precisionType === precisionType,
                 );

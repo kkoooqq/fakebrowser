@@ -16,37 +16,31 @@ class Plugin extends PuppeteerExtraPlugin {
     }
 
     async onPageCreated(page) {
-        await withUtils(this, page).evaluateOnNewDocument(
-            this.mainFunction,
-            {
-                opts: this.opts,
-            },
-        );
+        await withUtils(this, page).evaluateOnNewDocument(this.mainFunction, {
+            proxyExportIP: this.opts.proxyExportIP,
+            myRealExportIP: this.opts.myRealExportIP,
+        });
     }
 
     // SW does not support RTC
     // onServiceWorkerContent(jsContent) {
-    //     return withWorkerUtils(this, jsContent).evaluate(
-    //         this.mainFunction,
-    //         {
-    //             opts: this.opts,
-    //         },
-    //     );
+    //     return withWorkerUtils(this, jsContent).evaluate(this.mainFunction);
     // }
 
-    mainFunction = (utils, {opts}) => {
+    mainFunction = (utils, {proxyExportIP, myRealExportIP}) => {
         // RTCIceCandidate.prototype.candidate get function
         // RTCIceCandidate.prototype.address get function
         // RTCIceCandidate.prototype.toJSON value function
         // RTCSessionDescription.prototype.sdp get function
         // RTCSessionDescription.prototype.toJSON value function
 
-        const _Reflect = utils.cache.Reflect;
-        const {proxyExportIP, fakeIPs} = opts;
+        const fakeIPs = [myRealExportIP];
 
         if (!proxyExportIP || !fakeIPs || !fakeIPs.length) {
             return;
         }
+
+        const _Reflect = utils.cache.Reflect;
 
         const replaceIps = (str) => {
             if (fakeIPs && proxyExportIP) {

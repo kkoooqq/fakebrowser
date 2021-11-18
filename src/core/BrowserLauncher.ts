@@ -48,6 +48,7 @@ export class BrowserLauncher {
         // or create it if it does not exist.
 
         const userDataDir = params.userDataDir
+        assert(userDataDir)
 
         if (!fs.existsSync(userDataDir)) {
             // may throw

@@ -66,7 +66,7 @@ class Plugin extends PuppeteerExtraPlugin {
         return 'evasions/canvas.fingerprint';
     }
 
-    mainFunction = (utils, opts) => {
+    mainFunction = (utils, canvasSalt) => {
         const _Object = utils.cache.Object;
         const _Reflect = utils.cache.Reflect;
 
@@ -306,11 +306,11 @@ class Plugin extends PuppeteerExtraPlugin {
 
                         // The surrounding 4 pixels are not the same color before adding the noise.
                         if (p00 !== p01 || p00 !== p10 || p00 !== p11) {
-                            const salt = opts.canvasSalt[saltIndex];
+                            const salt = canvasSalt[saltIndex];
                             imageUint8Data[pos] += salt;
 
                             ++saltIndex;
-                            if (saltIndex >= opts.canvasSalt.length) {
+                            if (saltIndex >= canvasSalt.length) {
                                 saltIndex = 0;
                             }
                         }
@@ -396,11 +396,11 @@ class Plugin extends PuppeteerExtraPlugin {
     };
 
     async onPageCreated(page) {
-        await withUtils(this, page).evaluateOnNewDocument(this.mainFunction, this.opts);
+        await withUtils(this, page).evaluateOnNewDocument(this.mainFunction, this.opts.fakeDD.canvasSalt);
     }
 
     onServiceWorkerContent(jsContent) {
-        return withWorkerUtils(this, jsContent).evaluate(this.mainFunction, this.opts);
+        return withWorkerUtils(this, jsContent).evaluate(this.mainFunction, this.opts.fakeDD.canvasSalt);
     }
 }
 

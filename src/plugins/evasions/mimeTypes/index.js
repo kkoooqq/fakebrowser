@@ -1,3 +1,5 @@
+// noinspection JSUnusedLocalSymbols
+
 'use strict';
 
 const {PuppeteerExtraPlugin} = require('puppeteer-extra-plugin');
@@ -15,10 +17,11 @@ class Plugin extends PuppeteerExtraPlugin {
     }
 
     async onPageCreated(page) {
-        await withUtils(this, page).evaluateOnNewDocument(this.mainFunction, this.opts);
+        await withUtils(this, page).evaluateOnNewDocument(this.mainFunction, this.opts.fakeDD.mimeTypes);
     }
 
-    mainFunction = (utils, opts) => {
+    mainFunction = (utils, fakeMimeTypes) => {
+        const _Object = utils.cache.Object;
         const _Reflect = utils.cache.Reflect;
 
         utils.replaceWithProxy(
@@ -48,7 +51,7 @@ class Plugin extends PuppeteerExtraPlugin {
                         return orgResult;
                     }
 
-                    const mimeType = opts.data.find(e => e.mimeType === trimmedType);
+                    const mimeType = fakeMimeTypes.find(e => e.mimeType === trimmedType);
                     if (mimeType) {
                         if (thisArg instanceof HTMLVideoElement) {
                             return mimeType.videoPlayType;
@@ -79,7 +82,7 @@ class Plugin extends PuppeteerExtraPlugin {
                         trimmedType = trimmedType.substr(0, trimmedType.length - 1);
                     }
 
-                    const mimeType = opts.data.find(e => e.mimeType === trimmedType);
+                    const mimeType = fakeMimeTypes.find(e => e.mimeType === trimmedType);
                     if (mimeType) {
                         return mimeType.mediaSource;
                     } else {
@@ -107,7 +110,7 @@ class Plugin extends PuppeteerExtraPlugin {
                             trimmedType = trimmedType.substr(0, trimmedType.length - 1);
                         }
 
-                        const mimeType = opts.data.find(e => e.mimeType === trimmedType);
+                        const mimeType = fakeMimeTypes.find(e => e.mimeType === trimmedType);
                         if (mimeType) {
                             return mimeType.mediaRecorder;
                         } else {

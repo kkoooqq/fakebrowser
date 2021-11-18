@@ -1,5 +1,7 @@
 // noinspection JSUnusedGlobalSymbols
 
+import * as path from 'path'
+
 import {
     ConnectParameters,
     DriverParameters,
@@ -15,29 +17,53 @@ import {FakeBrowser, kDefaultWindowsDD} from './FakeBrowser'
 
 export class BrowserBuilder {
 
-    private readonly _driverParams: DriverParameters
+    public readonly driverParams: DriverParameters
 
     constructor() {
-        this._driverParams = {
+        this.driverParams = {
             doNotHook: false,
             deviceDesc: kDefaultWindowsDD,
             userDataDir: '',
+            evasionPaths: [
+                'chrome.app',
+                'chrome.csi',
+                'chrome.loadTimes',
+                'chrome.runtime',
+                'window.history.length',
+                'window.matchMedia',
+                'navigator.webdriver',
+                'sourceurl',
+                'navigator.plugins-native',
+                'webgl',
+                'mimeTypes',
+                'navigator.mediaDevices',
+                'bluetooth',
+                'navigator.permissions',
+                'navigator.batteryManager',
+                'webrtc',
+                'canvas.fingerprint',
+                'user-agent-override',
+                'iframe.contentWindow',
+                'iframe.src',
+                'properties.getter',
+                'font.fingerprint',
+                'emoji.fingerprint',
+                'window.speechSynthesis',
+                'workers',
+                'keyboard',
+            ].map(e => path.resolve(__dirname, `../plugins/evasions/${e}`)),
         }
     }
 
-    get driverParams(): DriverParameters {
-        return this._driverParams
-    }
-
     get launchParams(): LaunchParameters {
-        const result = this._driverParams as LaunchParameters
+        const result = this.driverParams as LaunchParameters
         result.launchOptions = result.launchOptions || {}
 
         return result
     }
 
     get connectParams(): ConnectParameters {
-        const result = this._driverParams as ConnectParameters
+        const result = this.driverParams as ConnectParameters
         result.connectOptions = result.connectOptions || {}
 
         return result
@@ -54,27 +80,27 @@ export class BrowserBuilder {
     }
 
     deviceDescriptor(value: DeviceDescriptor) {
-        this._driverParams.deviceDesc = value
+        this.driverParams.deviceDesc = value
         return this
     }
 
     displayUserActionLayer(value: boolean) {
-        this._driverParams.displayUserActionLayer = value
+        this.driverParams.displayUserActionLayer = value
         return this
     }
 
     userDataDir(value: string) {
-        this._driverParams.userDataDir = value
+        this.driverParams.userDataDir = value
         return this
     }
 
     log(value: boolean) {
-        this._driverParams.log = value
+        this.driverParams.log = value
         return this
     }
 
     proxy(value: ProxyServer) {
-        this._driverParams.proxy = value
+        this.driverParams.proxy = value
         return this
     }
 
@@ -85,6 +111,11 @@ export class BrowserBuilder {
 
     vanillaConnectOptions(value: VanillaConnectOptions) {
         this.connectParams.connectOptions = value
+        return this
+    }
+
+    evasionPaths(value: string[]) {
+        this.driverParams.evasionPaths = value
         return this
     }
 

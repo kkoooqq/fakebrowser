@@ -27,7 +27,8 @@ export interface DriverParameters {
     displayUserActionLayer?: boolean,
     log?: boolean,
     proxy?: ProxyServer,
-    userDataDir: string,
+    userDataDir?: string,
+    evasionPaths: string[],
 }
 
 export interface LaunchParameters extends DriverParameters {
@@ -213,12 +214,13 @@ export default class Driver {
         }
 
         // browser language
-        const lang = DeviceDescriptorHelper.buildAcceptLanguage(fakeDD)
+        assert(fakeDD.acceptLanguage)
         args.push(
-            `--lang=${lang}`,
+            `--lang=${fakeDD.acceptLanguage}`,
         )
 
         const userDataDir = launchParams.userDataDir
+        assert(userDataDir)
         fs.mkdirSync(userDataDir, {recursive: true}) // throw exception
 
         args.push(

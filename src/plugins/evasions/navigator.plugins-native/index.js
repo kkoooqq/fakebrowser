@@ -7,111 +7,6 @@ const {PuppeteerExtraPlugin} = require('puppeteer-extra-plugin');
 const utils = require('../_utils');
 const withUtils = require('../_utils/withUtils');
 
-const kPluginsLessThen93 = {
-    'mimeTypes': [
-        {
-            'type': 'application/pdf',
-            'suffixes': 'pdf',
-            'description': '',
-            '__pluginName': 'Chrome PDF Viewer',
-        },
-        {
-            'type': 'application/x-google-chrome-pdf',
-            'suffixes': 'pdf',
-            'description': 'Portable Document Format',
-            '__pluginName': 'Chrome PDF Plugin',
-        },
-        {
-            'type': 'application/x-nacl',
-            'suffixes': '',
-            'description': 'Native Client Executable',
-            '__pluginName': 'Native Client',
-        },
-        {
-            'type': 'application/x-pnacl',
-            'suffixes': '',
-            'description': 'Portable Native Client Executable',
-            '__pluginName': 'Native Client',
-        },
-    ],
-    'plugins': [
-        {
-            'name': 'Chrome PDF Plugin',
-            'filename': 'internal-pdf-viewer',
-            'description': 'Portable Document Format',
-            '__mimeTypes': [
-                'application/x-google-chrome-pdf',
-            ],
-        },
-        {
-            'name': 'Chrome PDF Viewer',
-            'filename': 'mhjfbmdgcfjbbpaeojofohoefgiehjai',
-            'description': '',
-            '__mimeTypes': [
-                'application/pdf',
-            ],
-        },
-        {
-            'name': 'Native Client',
-            'filename': 'internal-nacl-plugin',
-            'description': '',
-            '__mimeTypes': [
-                'application/x-nacl',
-                'application/x-pnacl',
-            ],
-        },
-    ],
-};
-
-const kPluginsGreaterThen93 = {
-    mimeTypes: [
-        {
-            type: 'application/pdf',
-            suffixes: 'pdf',
-            description: 'Portable Document Format',
-            __pluginName: 'PDF Viewer',
-        },
-        {
-            type: 'text/pdf',
-            suffixes: 'pdf',
-            description: 'Portable Document Format',
-            __pluginName: 'PDF Viewer',
-        },
-    ],
-    plugins: [
-        {
-            name: 'PDF Viewer',
-            filename: 'internal-pdf-viewer',
-            description: 'Portable Document Format',
-            __mimeTypes: ['application/pdf', 'text/pdf'],
-        },
-        {
-            name: 'Chrome PDF Viewer',
-            filename: 'internal-pdf-viewer',
-            description: 'Portable Document Format',
-            __mimeTypes: ['application/pdf', 'text/pdf'],
-        },
-        {
-            name: 'Chromium PDF Viewer',
-            filename: 'internal-pdf-viewer',
-            description: 'Portable Document Format',
-            __mimeTypes: ['application/pdf', 'text/pdf'],
-        },
-        {
-            name: 'Microsoft Edge PDF Viewer',
-            filename: 'internal-pdf-viewer',
-            description: 'Portable Document Format',
-            __mimeTypes: ['application/pdf', 'text/pdf'],
-        },
-        {
-            name: 'WebKit built-in PDF',
-            filename: 'internal-pdf-viewer',
-            description: 'Portable Document Format',
-            __mimeTypes: ['application/pdf', 'text/pdf'],
-        },
-    ],
-};
-
 /**
  * @see https://developer.mozilla.org/en-US/docs/Web/API/NavigatorPlugins/mimeTypes
  * @see https://developer.mozilla.org/en-US/docs/Web/API/MimeTypeArray
@@ -119,8 +14,7 @@ const kPluginsGreaterThen93 = {
  * @see https://developer.mozilla.org/en-US/docs/Web/API/PluginArray
  */
 class Plugin extends PuppeteerExtraPlugin {
-
-    constructor(opts = {plugins: kPluginsLessThen93}) {
+    constructor(opts = {}) {
         super(opts);
     }
 
@@ -141,19 +35,130 @@ class Plugin extends PuppeteerExtraPlugin {
         const orgUA = await browser.userAgent();
 
         // https://www.chromestatus.com/feature/5741884322349056#details
-        if (chromeMajorVersion(orgUA) > 93) {
-            this.opts.plugins = kPluginsGreaterThen93;
-        }
+        this.opts.chromeMajorVersion = chromeMajorVersion(orgUA);
     }
 
     async onPageCreated(page) {
         await withUtils(this, page).evaluateOnNewDocument(
             this.mainFunction,
-            this.opts.plugins,
+            {
+                chromeMajorVersion: this.opts.chromeMajorVersion,
+                fakePlugins: this.opts.fakeDD.plugins,
+            },
         );
     }
 
-    mainFunction = (utils, pluginsData) => {
+    mainFunction = (utils, {chromeMajorVersion, fakePlugins}) => {
+        const kPluginsLessThen93 = {
+            'mimeTypes': [
+                {
+                    'type': 'application/pdf',
+                    'suffixes': 'pdf',
+                    'description': '',
+                    '__pluginName': 'Chrome PDF Viewer',
+                },
+                {
+                    'type': 'application/x-google-chrome-pdf',
+                    'suffixes': 'pdf',
+                    'description': 'Portable Document Format',
+                    '__pluginName': 'Chrome PDF Plugin',
+                },
+                {
+                    'type': 'application/x-nacl',
+                    'suffixes': '',
+                    'description': 'Native Client Executable',
+                    '__pluginName': 'Native Client',
+                },
+                {
+                    'type': 'application/x-pnacl',
+                    'suffixes': '',
+                    'description': 'Portable Native Client Executable',
+                    '__pluginName': 'Native Client',
+                },
+            ],
+            'plugins': [
+                {
+                    'name': 'Chrome PDF Plugin',
+                    'filename': 'internal-pdf-viewer',
+                    'description': 'Portable Document Format',
+                    '__mimeTypes': [
+                        'application/x-google-chrome-pdf',
+                    ],
+                },
+                {
+                    'name': 'Chrome PDF Viewer',
+                    'filename': 'mhjfbmdgcfjbbpaeojofohoefgiehjai',
+                    'description': '',
+                    '__mimeTypes': [
+                        'application/pdf',
+                    ],
+                },
+                {
+                    'name': 'Native Client',
+                    'filename': 'internal-nacl-plugin',
+                    'description': '',
+                    '__mimeTypes': [
+                        'application/x-nacl',
+                        'application/x-pnacl',
+                    ],
+                },
+            ],
+        };
+
+        const kPluginsGreaterThen93 = {
+            mimeTypes: [
+                {
+                    type: 'application/pdf',
+                    suffixes: 'pdf',
+                    description: 'Portable Document Format',
+                    __pluginName: 'PDF Viewer',
+                },
+                {
+                    type: 'text/pdf',
+                    suffixes: 'pdf',
+                    description: 'Portable Document Format',
+                    __pluginName: 'PDF Viewer',
+                },
+            ],
+            plugins: [
+                {
+                    name: 'PDF Viewer',
+                    filename: 'internal-pdf-viewer',
+                    description: 'Portable Document Format',
+                    __mimeTypes: ['application/pdf', 'text/pdf'],
+                },
+                {
+                    name: 'Chrome PDF Viewer',
+                    filename: 'internal-pdf-viewer',
+                    description: 'Portable Document Format',
+                    __mimeTypes: ['application/pdf', 'text/pdf'],
+                },
+                {
+                    name: 'Chromium PDF Viewer',
+                    filename: 'internal-pdf-viewer',
+                    description: 'Portable Document Format',
+                    __mimeTypes: ['application/pdf', 'text/pdf'],
+                },
+                {
+                    name: 'Microsoft Edge PDF Viewer',
+                    filename: 'internal-pdf-viewer',
+                    description: 'Portable Document Format',
+                    __mimeTypes: ['application/pdf', 'text/pdf'],
+                },
+                {
+                    name: 'WebKit built-in PDF',
+                    filename: 'internal-pdf-viewer',
+                    description: 'Portable Document Format',
+                    __mimeTypes: ['application/pdf', 'text/pdf'],
+                },
+            ],
+        };
+
+        const pluginsData =
+            chromeMajorVersion > 93
+                ? kPluginsGreaterThen93
+                : fakePlugins;
+
         const _Object = utils.cache.Object;
         const _Reflect = utils.cache.Reflect;
         const _origPlugins = utils.cache.window.navigator.plugins;

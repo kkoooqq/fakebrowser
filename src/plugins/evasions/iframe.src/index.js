@@ -1,3 +1,5 @@
+// noinspection JSUnusedLocalSymbols
+
 'use strict';
 
 const {PuppeteerExtraPlugin} = require('puppeteer-extra-plugin');

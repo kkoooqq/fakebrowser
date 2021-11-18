@@ -38,20 +38,14 @@ class Plugin extends PuppeteerExtraPlugin {
     }
 
     async onPageCreated(page) {
-        await withUtils(this, page).evaluateOnNewDocument(
-            this.mainFunction,
-            this.opts,
-        );
+        await withUtils(this, page).evaluateOnNewDocument(this.mainFunction);
     }
 
     // onServiceWorkerContent(jsContent) {
-    //     return withWorkerUtils(this, jsContent).evaluate(
-    //         this.mainFunction,
-    //         this.opts,
-    //     );
+    //     return withWorkerUtils(this, jsContent).evaluate(this.mainFunction);
     // }
 
-    mainFunction = (utils, opts) => {
+    mainFunction = (utils) => {
         if ('undefined' !== typeof window.Bluetooth) {
             return;
         }

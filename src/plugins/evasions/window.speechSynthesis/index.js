@@ -15,10 +15,10 @@ class Plugin extends PuppeteerExtraPlugin {
     }
 
     async onPageCreated(page) {
-        await withUtils(this, page).evaluateOnNewDocument(this.mainFunction, this.opts);
+        await withUtils(this, page).evaluateOnNewDocument(this.mainFunction, this.opts.fakeDD.voices);
     }
 
-    mainFunction = (utils, opts) => {
+    mainFunction = (utils, fakeVoices) => {
         const _Object = utils.cache.Object;
         const _Reflect = utils.cache.Reflect;
 
@@ -48,7 +48,7 @@ class Plugin extends PuppeteerExtraPlugin {
             const voiceObjs = [];
 
             // With the configuration, construct voices object and then we hook the properties with Proxy
-            for (const voice of opts.voices) {
+            for (const voice of fakeVoices) {
                 const voiceObj = new SpeechSynthesisVoice();
                 voiceObjs.push(voiceObj);
 
@@ -101,7 +101,7 @@ class Plugin extends PuppeteerExtraPlugin {
                                 }
                             }
 
-                            return opts.voices[voiceObjs.indexOf(thisArg)][prop];
+                            return fakeVoices[voiceObjs.indexOf(thisArg)][prop];
                         },
                     },
                 );

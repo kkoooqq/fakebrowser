@@ -1,9 +1,10 @@
+// noinspection JSUnusedLocalSymbols
+
 'use strict';
 
 const {PuppeteerExtraPlugin} = require('puppeteer-extra-plugin');
 
 const withUtils = require('../_utils/withUtils');
-
 const withWorkerUtils = require('../_utils/withWorkerUtils');
 
 /**
@@ -27,12 +28,10 @@ class Plugin extends PuppeteerExtraPlugin {
     }
 
     async onPageCreated(page) {
-        await withUtils(this, page).evaluateOnNewDocument(this.mainFunction, {
-            opts: this.opts,
-        });
+        await withUtils(this, page).evaluateOnNewDocument(this.mainFunction);
     }
 
-    mainFunction = (utils, {opts}) => {
+    mainFunction = (utils) => {
         const _Object = utils.cache.Object;
         const _Reflect = utils.cache.Reflect;
 

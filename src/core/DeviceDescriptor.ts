@@ -220,13 +220,14 @@ export type IFontSalt = {
 }
 
 export interface FakeDeviceDescriptor extends DeviceDescriptor {
-    canvasSalt: number[],
+    canvasSalt?: number[],
     // TODO: I should make a correspondence between user's existing fonts and required fonts,
     //  but I don't have time to do it for now.
     // fakeFonts: Array<FakeFont>,
-    fontSalt: {
+    fontSalt?: {
         [key: string]: IFontSalt
     },
+    acceptLanguage?: string,
 }
 
 export default class DeviceDescriptorHelper {
@@ -471,13 +472,18 @@ export default class DeviceDescriptorHelper {
             needsUpdate = true
         }
 
+        // acceptLanguage
+        if (!fakeDD.acceptLanguage) {
+            fakeDD.acceptLanguage = this.buildAcceptLanguage(fakeDD)
+        }
+
         return {
             fakeDeviceDesc: fakeDD,
             needsUpdate,
         }
     }
 
-    static buildAcceptLanguage(deviceDesc: DeviceDescriptor): string {
+    private static buildAcceptLanguage(deviceDesc: DeviceDescriptor): string {
         // referer: https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Accept-Language
         // https://developer.mozilla.org/zh-CN/docs/Glossary/Quality_values
 
