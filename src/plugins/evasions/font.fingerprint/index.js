@@ -758,7 +758,7 @@ class Plugin extends PuppeteerExtraPlugin {
 
                     const handler = {
                         get: (target, property, receiver) => {
-                            const orgResult = _Reflect.get(utils.getProxyTarget(target), property, receiver);
+                            const orgResult = _Reflect.get(utils.getProxyTarget(target), property);
                             let result;
 
                             if (_Object.getOwnPropertyDescriptor(target, property)) {
@@ -787,7 +787,7 @@ class Plugin extends PuppeteerExtraPlugin {
                                     handle = handleUserSetFontStyle(
                                         () => {
                                             setterInvoked = true;
-                                            return _Reflect.set(utils.getProxyTarget(target), property, value, receiver);
+                                            return _Reflect.set(utils.getProxyTarget(target), property, value);
                                         },
                                         styleDeclaration,
                                         property,
@@ -795,7 +795,7 @@ class Plugin extends PuppeteerExtraPlugin {
                                 }
 
                                 if (!handle && !setterInvoked) {
-                                    return _Reflect.set(utils.getProxyTarget(target), property, value, receiver);
+                                    return _Reflect.set(utils.getProxyTarget(target), property, value);
                                 }
                             } else {
                                 // If the property is in the prototype
