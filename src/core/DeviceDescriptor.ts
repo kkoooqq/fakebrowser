@@ -475,6 +475,7 @@ export default class DeviceDescriptorHelper {
         // acceptLanguage
         if (!fakeDD.acceptLanguage) {
             fakeDD.acceptLanguage = this.buildAcceptLanguage(fakeDD)
+            needsUpdate = true
         }
 
         return {

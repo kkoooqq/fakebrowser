@@ -15,45 +15,29 @@ class Plugin extends PuppeteerExtraPlugin {
     }
 
     async onBrowser(browser, opts) {
-        this.opts.override = await this.getOverride(browser);
+        this.opts.override = await this.getOverride(browser, this.opts);
     }
 
-    getOverride = async (browser) => {
+    getOverride = async (browser, opts) => {
         // read major version from the launched browser and replace dd.userAgent
-        if (this.opts.userAgent) {
-            const orgUA = await browser.userAgent();
+        const orgUA = await browser.userAgent();
 
-            function chromeVersion(userAgent) {
-                const chromeVersionPart = userAgent.match(/Chrome\/(.*?) /);
-                if (chromeVersionPart) {
-                    return chromeVersionPart[1];
-                }
-
-                return null;
+        function chromeVersion(userAgent) {
+            const chromeVersionPart = userAgent.match(/Chrome\/(.*?) /);
+            if (chromeVersionPart) {
+                return chromeVersionPart[1];
             }
 
-            const orgVersion = chromeVersion(orgUA);
-            const fakeVersion = chromeVersion(this.opts.userAgent);
-
-            this.opts.userAgent = this.opts.userAgent.replace(fakeVersion, orgVersion);
-        }
-
-        // Determine the full user agent string, strip the "Headless" part
-        let ua =
-            this.opts.userAgent ||
-            browser && (await browser.userAgent()).replace('HeadlessChrome/', 'Chrome/');
-
-        if (!ua) {
             return null;
         }
 
-        if (
-            this.opts.maskLinux &&
-            ua.includes('Linux') &&
-            !ua.includes('Android') // Skip Android user agents since they also contain Linux
-        ) {
-            ua = ua.replace(/\(([^)]+)\)/, '(Windows NT 10.0; Win64; x64)'); // Replace the first part in parentheses with Windows data
-        }
+        const orgVersion = chromeVersion(orgUA);
+        const fakeVersion = chromeVersion(opts.fakeDD.navigator.userAgent);
+
+        opts.fakeDD.navigator.userAgent = opts.fakeDD.navigator.userAgent.replace(fakeVersion, orgVersion);
+
+        // Determine the full user agent string, strip the "Headless" part
+        let ua = opts.fakeDD.navigator.userAgent;
 
         // Full version number from Chrome
         const uaVersion = ua.includes('Chrome/')
@@ -152,7 +136,7 @@ class Plugin extends PuppeteerExtraPlugin {
         // This is not preferred, as it messed up the header order.
         // On headful, we set the user preference language setting instead.
         if (this._headless) {
-            override.acceptLanguage = this.opts.locale || 'en-US,en';
+            override.acceptLanguage = opts.fakeDD.acceptLanguage || 'en-US,en';
         }
 
         this.debug('onPageCreated - Will set these user agent options', {
@@ -175,7 +159,6 @@ class Plugin extends PuppeteerExtraPlugin {
         return {
             userAgent: null,
             locale: 'en-US,en',
-            maskLinux: true,
         };
     }
 
