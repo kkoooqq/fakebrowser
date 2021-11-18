@@ -34,7 +34,7 @@ class Plugin extends PuppeteerExtraPlugin {
                 construct: function (target, args) {
                     // console.log(`worker is registered in the browser, ${args[0]}`);
                     const relUrl = window.location.href;
-                    const workerUrl = args[0];
+                    const workerUrl = args[0].toString();
 
                     // fix: The worker's relative path is relative to the current page path.
                     // reference: https://github.com/shehua/Alice/blob/master/w3c/html5-web-workers.md
@@ -75,7 +75,7 @@ class Plugin extends PuppeteerExtraPlugin {
                 construct: function (target, args) {
                     // console.log(`sharedWorker is registered in the browser, ${args[0]}`);
                     const relUrl = window.location.href;
-                    const workerUrl = args[0];
+                    const workerUrl = args[0].toString();
 
                     // noinspection LoopStatementThatDoesntLoopJS
                     for (; ;) {
