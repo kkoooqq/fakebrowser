@@ -6,7 +6,6 @@ import {strict as assert} from 'assert'
 import {Browser, CDPSession, Page, Target, WebWorker} from 'puppeteer'
 import {PuppeteerExtra} from 'puppeteer-extra'
 
-import {helper} from './helper'
 import {UserAgentHelper} from './UserAgentHelper'
 import {PptrToolkit} from './PptrToolkit'
 import {ConnectParameters, DriverParameters, LaunchParameters} from './Driver.js'
@@ -43,6 +42,7 @@ export const kDefaultLaunchArgs = [
     '--disable-print-preview',
     '--disable-voice-input',
     '--disable-wake-on-wifi',
+    '--disable-cookie-encryption',
     '--ignore-gpu-blocklist',
     '--enable-async-dns',
     '--enable-simple-cache-backend',
@@ -122,11 +122,11 @@ export const kDefaultLaunchArgs = [
     // '--disable-notifications',                       // Cannot be disabled: notification-api not available, fingerprints will be dirty
 ]
 
-if (helper.inLinux()) {
-    kDefaultLaunchArgs.push(...[
-        '--single-process',              // Chrome does not run with single process in windows / macos, but it runs very well in linux (from Anton bro).
-    ])
-}
+// if (helper.inLinux()) {
+//     kDefaultLaunchArgs.push(...[
+//         '--single-process',              // Chrome does not run with single process in windows / macos, but it runs very well in linux (from Anton bro).
+//     ])
+// }
 
 // Is there a friend class similar to C++ ?
 // friend class BrowserLauncher

@@ -546,14 +546,14 @@ utils.replaceProperty = (obj, propName, descriptorOverrides = {}) => {
     const _Object = utils.cache.Object;
     const descriptors = _Object.getOwnPropertyDescriptor(obj, propName) || {};
 
-    if (propName !== 'toString' && propName !== Symbol.toStringTag) {
-        // noinspection JSUnusedLocalSymbols
-        for (const [key, value] of _Object.entries(descriptorOverrides)) {
-            if (descriptors[key]) {
-                utils.redirectToString(descriptorOverrides[key], descriptors[key]);
-            }
-        }
-    }
+    // if (propName !== 'toString' && propName !== Symbol.toStringTag) {
+    //     // noinspection JSUnusedLocalSymbols
+    //     for (const [key, value] of _Object.entries(descriptorOverrides)) {
+    //         if (descriptors[key]) {
+    //             utils.redirectToString(descriptorOverrides[key], descriptors[key]);
+    //         }
+    //     }
+    // }
 
     return _Object.defineProperty(obj, propName, {
         // Copy over the existing descriptors (writable, enumerable, configurable, etc)
