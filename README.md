@@ -53,6 +53,9 @@ const {FakeBrowser} = require('fakebrowser');
 // import {createRequire} from 'module';
 // const require = createRequire(import.meta.url);
 
+const path = require('path')
+const userDataDir = path.resolve(__dirname, './fakeBrowserUserData')
+
 !(async () => {
     // [Optional]: Select a fake device description
     const windowsDD = require('./node_modules/fakebrowser/device-hub-demo/Windows.json');
@@ -66,12 +69,13 @@ const {FakeBrowser} = require('fakebrowser');
         .vanillaLaunchOptions({
             headless: false,
             executablePath: '/Applications/Google Chrome 93.0.4577.82.app/Contents/MacOS/Google Chrome',
+            userDataDir,
         })
         // Must be set: path to save user data
         // We will create a fake device description (fake browser fingerprint) and save the browser's user cache information to this folder.
         // Note: Once the fake browser fingerprint is created, it will not change, just like a normal user using the browser.
         // If you want to get a different browser fingerprint, see demo2.
-        .userDataDir('./fakeBrowserUserData');
+        .userDataDir(userDataDir);
 
     const fakeBrowser = await builder.launch();
 
