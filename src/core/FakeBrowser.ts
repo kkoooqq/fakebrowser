@@ -99,13 +99,13 @@ export const kDefaultLaunchArgs = [
     '--disable-threaded-scrolling',
     '--disable-checker-imaging',
 
-    '--deterministic-mode',
     '--disable-new-content-rendering-timeout',
     '--disable-image-animation-resync',
     '--disable-partial-raster',
 
     '--blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4',
 
+    // '--deterministic-mode',                          // Some friends commented that with this parameter mouse movement is stuck, so let's comment it out
     // '--disable-web-security',
     // '--disable-cache',                               // cache
     // '--disable-application-cache',
