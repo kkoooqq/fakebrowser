@@ -30,7 +30,13 @@ class Plugin extends PuppeteerExtraPlugin {
         //     "msg"?: string,
         // }>
 
-        await withUtils(this, page).evaluateOnNewDocument(this.mainFunction, this.opts.fakeDD.permissions);
+        await withUtils(this, page).evaluateOnNewDocument(
+            this.mainFunction,
+            {
+                fakePermissions: this.opts.fakeDD.permissions,
+                fakeUA: this.opts.fakeDD.navigator.userAgent,
+            },
+        );
 
         // // invoke CDP setPermission
         // const permissions = this.opts.permissions;
@@ -49,60 +55,72 @@ class Plugin extends PuppeteerExtraPlugin {
     }
 
     onServiceWorkerContent(jsContent) {
-        return withWorkerUtils(this, jsContent).evaluate(this.mainFunction, this.opts.fakeDD.permissions);
+        return withWorkerUtils(this, jsContent).evaluate(
+            this.mainFunction,
+            {
+                fakePermissions: this.opts.fakeDD.permissions,
+                fakeUA: this.opts.fakeDD.navigator.userAgent,
+            },
+        );
     }
 
-    mainFunction = (utils, fakePermissions) => {
+    mainFunction = (utils, {fakePermissions, fakeUA}) => {
         const _Object = utils.cache.Object;
         const _Reflect = utils.cache.Reflect;
 
-        if ('undefined' !== typeof Notification) {
-            utils.replaceGetterWithProxy(Notification, 'permission', {
+        // after test, iOS chrome did not implements `navigator.permissions`
+        const osType = utils.osType(fakeUA)
+        if (osType === 'iPhone' || osType === 'iPad' || osType === 'iPod') {
+            delete _Object.getPrototypeOf(navigator).permission;
+        } else {
+            if ('undefined' !== typeof Notification) {
+                utils.replaceGetterWithProxy(Notification, 'permission', {
+                    apply(target, thisArg, args) {
+                        _Reflect.apply(target, thisArg, args);
+                        return 'default';
+                    },
+                });
+            }
+
+            // We need to handle exceptions
+            utils.replaceWithProxy(Permissions.prototype, 'query', {
                 apply(target, thisArg, args) {
-                    _Reflect.apply(target, thisArg, args);
-                    return 'default';
+                    const param = (args || [])[0];
+                    const paramName = param && param.name;
+
+                    return new utils.cache.Promise((resolve, reject) => {
+                        const permission = fakePermissions[paramName];
+
+                        if (permission) {
+                            let exType = permission.exType;
+                            if (exType) {
+                                if (!globalThis[exType]) {
+                                    exType = 'Error';
+                                }
+
+                                return reject(
+                                    utils.patchError(new globalThis[exType](permission.msg), 'apply'),
+                                );
+                            }
+
+                            let state = permission.state;
+                            if (state) {
+                                return resolve(_Object.setPrototypeOf({
+                                    state: state,
+                                    onchange: null,
+                                }, PermissionStatus.prototype));
+                            }
+                        }
+
+                        _Reflect.apply(...arguments).then(result => {
+                            return resolve(result);
+                        }).catch(ex => {
+                            return reject(utils.patchError(ex, 'apply'));
+                        });
+                    });
                 },
             });
         }
-
-        // We need to handle exceptions
-        utils.replaceWithProxy(Permissions.prototype, 'query', {
-            apply(target, thisArg, args) {
-                const param = (args || [])[0];
-                const paramName = param && param.name;
-
-                return new utils.cache.Promise((resolve, reject) => {
-                    const permission = fakePermissions[paramName];
-
-                    if (permission) {
-                        let exType = permission.exType;
-                        if (exType) {
-                            if (!globalThis[exType]) {
-                                exType = 'Error';
-                            }
-
-                            return reject(
-                                utils.patchError(new globalThis[exType](permission.msg), 'apply'),
-                            );
-                        }
-
-                        let state = permission.state;
-                        if (state) {
-                            return resolve(_Object.setPrototypeOf({
-                                state: state,
-                                onchange: null,
-                            }, PermissionStatus.prototype));
-                        }
-                    }
-
-                    _Reflect.apply(...arguments).then(result => {
-                        return resolve(result);
-                    }).catch(ex => {
-                        return reject(utils.patchError(ex, 'apply'));
-                    });
-                });
-            },
-        });
     };
 }
 

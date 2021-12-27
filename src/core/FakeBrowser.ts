@@ -354,10 +354,11 @@ export class FakeBrowser {
             )
         }
 
+        const pagesFn = Object.getOwnPropertyDescriptor(Object.getPrototypeOf(this.vanillaBrowser), 'pages')!.value.bind(this.vanillaBrowser)
         Object.defineProperty(Object.getPrototypeOf(this.vanillaBrowser), 'pages', {
             value: new Proxy(this.vanillaBrowser.pages, {
                 async apply(target, thisArg, args) {
-                    let pages: Page[] = await Reflect.apply(target, thisArg, args)
+                    let pages: Page[] = await pagesFn()
 
                     // Maybe browser is created based on connect, with different instances
                     // so can only compare TargetId

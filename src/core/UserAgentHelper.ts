@@ -45,7 +45,7 @@ function browserType(userAgent: string): BrowserTypes {
 }
 
 function chromeMajorVersion(userAgent: string): number | null {
-    const chromeVersionPart = userAgent.match(/Chrome\/(.*?)\./)
+    const chromeVersionPart = userAgent.match(/[Chrome|CriOS]\/(.*?)\./)
     if (chromeVersionPart) {
         return parseInt(chromeVersionPart[1])
     }
@@ -54,7 +54,7 @@ function chromeMajorVersion(userAgent: string): number | null {
 }
 
 function chromeVersion(userAgent: string): string | null {
-    const chromeVersionPart = userAgent.match(/Chrome\/(.*?) /)
+    const chromeVersionPart = userAgent.match(/[Chrome|CriOS]\/(.*?) /)
     if (chromeVersionPart) {
         return chromeVersionPart[1]
     }

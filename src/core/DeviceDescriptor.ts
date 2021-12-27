@@ -234,56 +234,69 @@ export default class DeviceDescriptorHelper {
 
     /**
      * Check device descriptor legal based on attributes
-     * @param e
+     * @param dd
      */
-    static checkLegal(e: DeviceDescriptor): boolean {
-        if (!e) {
+    static checkLegal(dd: DeviceDescriptor): boolean {
+        if (!dd) {
             throw new Error('DeviceDescriptor empty')
         }
 
-        if (!e.navigator) {
+        if (!dd.navigator) {
             throw new Error('navigator empty')
         }
 
-        if (!UserAgentHelper.isMobile(e.navigator.userAgent)) {
+        if (!UserAgentHelper.isMobile(dd.navigator.userAgent)) {
             // If not mobile phone, but screen is too small, filter it out
-            if (e.window.innerWidth < 900 || e.window.innerHeight < 450) {
+            if (dd.window.innerWidth < 900 || dd.window.innerHeight < 450) {
                 throw new Error('width and height of windows is too small')
             }
 
             // Screen height greater than width, remove it
-            if (e.window.innerHeight > e.window.innerWidth) {
+            if (dd.window.innerHeight > dd.window.innerWidth) {
                 throw new Error('Height of window is greater than width of window, non-normal browser')
+            }
+
+            if (dd.window.innerHeight > dd.screen.availHeight
+                || dd.window.innerWidth > dd.screen.availWidth) {
+
+                throw new Error('Width of browser window cannot be greater than width of screen and height cannot be greater than height of screen')
             }
 
             // No plugins and mineType information, remove
             // noinspection RedundantIfStatementJS
-            if (!e.plugins || !e.plugins.mimeTypes.length || !e.plugins.plugins.length) {
+            if (!dd.plugins || !dd.plugins.mimeTypes.length || !dd.plugins.plugins.length) {
                 throw new Error('Plugins of desktop browser cannot be empty')
             }
 
             // Ordinary PC computers should not have touch screens
-            if (e.navigator.maxTouchPoints != 0) {
+            if (dd.navigator.maxTouchPoints != 0) {
                 throw new Error('Desktop browsers cannot have touchscreens')
             }
+
+            // mimeTypes
+            if (!dd.mimeTypes || !dd.mimeTypes.length) {
+                throw new Error('mimeTypes cannot be empty')
+            }
+
+            // permissions
+            if (!dd.permissions || Object.keys(dd.permissions).length === 0) {
+                throw new Error('permissions cannot be empty')
+            }
         } else {
-            if (e.navigator.maxTouchPoints === 0) {
+            if (dd.navigator.maxTouchPoints === 0) {
                 throw new Error('Mobile devices must have touch screen')
             }
         }
 
+        assert(dd.navigator.userAgent, 'userAgent cannot be empty')
+        const lowerCaseUserAgent = dd.navigator.userAgent.toLowerCase()
+
         if (
-            !e.navigator.language
-            || !e.navigator.languages
-            || !e.navigator.languages.length
+            !dd.navigator.language
+            || !dd.navigator.languages
+            || !dd.navigator.languages.length
         ) {
             throw new Error('language cannot be empty')
-        }
-
-        if (e.window.innerHeight > e.screen.availHeight
-            || e.window.innerWidth > e.screen.availWidth) {
-
-            throw new Error('Width of browser window cannot be greater than width of screen and height cannot be greater than height of screen')
         }
 
         // if (e.window.screenX != 0 || e.window.screenY != 0) {
@@ -291,45 +304,38 @@ export default class DeviceDescriptorHelper {
         // }
 
         // Only chrome browser is allowed
-        if (!e.navigator.userAgent.toLowerCase().includes('chrome')) {
+        if (
+            !lowerCaseUserAgent.includes('chrome')
+            && !lowerCaseUserAgent.includes('crios')
+        ) {
             throw new Error('Only chrome kernel browsers are supported')
         }
 
         // chrome os
-        if (e.navigator.userAgent.toLowerCase().includes('cros')) {
+        if (lowerCaseUserAgent.includes('cros')) {
             throw new Error('ChromeOS is not supported')
         }
 
         // Googlebot
-        if (e.navigator.userAgent.toLowerCase().includes('googlebot')) {
+        if (lowerCaseUserAgent.includes('googlebot')) {
             throw new Error('google bot')
         }
-        if (e.navigator.userAgent.toLowerCase().includes('adsbot-google')) {
+        if (lowerCaseUserAgent.includes('adsbot-google')) {
             throw new Error('google bot')
         }
 
-        if (e.navigator.userAgent.toLowerCase().includes('mediapartners')) {
+        if (lowerCaseUserAgent.includes('mediapartners')) {
             throw new Error('google bot')
         }
 
         // Chrome-Lighthouse
-        if (e.navigator.userAgent.toLowerCase().includes('chrome-lighthouse')) {
+        if (lowerCaseUserAgent.includes('chrome-lighthouse')) {
             throw new Error('google bot')
         }
 
         // voices
-        if (!e.voices || !e.voices.length) {
+        if (!dd.voices || !dd.voices.length) {
             throw new Error('voices cannot be empty')
-        }
-
-        // mimeTypes
-        if (!e.mimeTypes || !e.mimeTypes.length) {
-            throw new Error('mimeTypes cannot be empty')
-        }
-
-        // permissions
-        if (!e.permissions || Object.keys(e.permissions).length === 0) {
-            throw new Error('permissions cannot be empty')
         }
 
         return true

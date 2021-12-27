@@ -7,6 +7,1325 @@
     "vendor": "Apple Inc.",
     "renderer": "Apple GPU"
   },
+  "navigator": {
+    "languages": [
+      "zh-CN"
+    ],
+    "userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/96.0.4664.101 Mobile/15E148 Safari/604.1",
+    "appCodeName": "Mozilla",
+    "appMinorVersion": "_$obj!_undefined_//+_",
+    "appName": "Netscape",
+    "appVersion": "5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/96.0.4664.101 Mobile/15E148 Safari/604.1",
+    "buildID": "_$obj!_undefined_//+_",
+    "platform": "iPhone",
+    "product": "Gecko",
+    "productSub": "20030107",
+    "hardwareConcurrency": "_$obj!_undefined_//+_",
+    "cpuClass": "_$obj!_undefined_//+_",
+    "maxTouchPoints": 5,
+    "oscpu": "_$obj!_undefined_//+_",
+    "vendor": "Apple Computer, Inc.",
+    "vendorSub": "",
+    "deviceMemory": "_$obj!_undefined_//+_",
+    "doNotTrack": "_$obj!_undefined_//+_",
+    "msDoNotTrack": "_$obj!_undefined_//+_",
+    "vibrate": "_$obj!_undefined_//+_",
+    "credentials": "_$obj!_//+_",
+    "storage": "_$obj!_undefined_//+_",
+    "requestMediaKeySystemAccess": "_$obj!_//+_",
+    "bluetooth": "_$obj!_undefined_//+_",
+    "language": "zh-CN",
+    "systemLanguage": "_$obj!_undefined_//+_",
+    "userLanguage": "_$obj!_undefined_//+_",
+    "pdfViewerEnabled": "_$obj!_undefined_//+_"
+  },
+  "window": {
+    "innerWidth": 980,
+    "innerHeight": 1704,
+    "outerWidth": 414,
+    "outerHeight": 896,
+    "screenX": 0,
+    "screenY": 0,
+    "pageXOffset": 0,
+    "pageYOffset": 0,
+    "Image": "_$obj!_//+_",
+    "isSecureContext": true,
+    "devicePixelRatio": 2,
+    "toolbar": "_$obj!_//+_",
+    "locationbar": "_$obj!_//+_",
+    "ActiveXObject": "_$obj!_undefined_//+_",
+    "external": "_$obj!_undefined_//+_",
+    "mozRTCPeerConnection": "_$obj!_undefined_//+_",
+    "postMessage": "_$obj!_//+_",
+    "webkitRequestAnimationFrame": "_$obj!_//+_",
+    "BluetoothUUID": "_$obj!_undefined_//+_",
+    "netscape": "_$obj!_undefined_//+_",
+    "localStorage": "_$obj!_//+_",
+    "sessionStorage": "_$obj!_//+_",
+    "indexDB": "_$obj!_undefined_//+_",
+    "BarcodeDetector": "_$obj!_undefined_//+_"
+  },
+  "document": {
+    "characterSet": "UTF-8",
+    "compatMode": "CSS1Compat",
+    "documentMode": "_$obj!_undefined_//+_",
+    "layers": "_$obj!_undefined_//+_",
+    "images": "_$obj!_//+_"
+  },
+  "screen": {
+    "availWidth": 414,
+    "availHeight": 896,
+    "availLeft": 0,
+    "availTop": 0,
+    "width": 414,
+    "height": 896,
+    "colorDepth": 32,
+    "pixelDepth": 32
+  },
+  "webgl": {
+    "supportedExtensions": [
+      "EXT_blend_minmax",
+      "EXT_sRGB",
+      "EXT_frag_depth",
+      "OES_texture_float",
+      "OES_texture_float_linear",
+      "OES_texture_half_float",
+      "OES_texture_half_float_linear",
+      "OES_standard_derivatives",
+      "EXT_texture_filter_anisotropic",
+      "OES_vertex_array_object",
+      "OES_element_index_uint",
+      "WEBGL_lose_context",
+      "WEBGL_compressed_texture_astc",
+      "WEBGL_compressed_texture_etc1",
+      "WEBGL_depth_texture",
+      "WEBGL_draw_buffers",
+      "ANGLE_instanced_arrays",
+      "WEBGL_debug_shaders",
+      "WEBGL_debug_renderer_info",
+      "EXT_color_buffer_half_float",
+      "EXT_float_blend",
+      "WEBGL_color_buffer_float",
+      "KHR_parallel_shader_compile",
+      "WEBGL_multi_draw"
+    ],
+    "contextAttributes": {
+      "alpha": true,
+      "antialias": true,
+      "depth": true,
+      "failIfMajorPerformanceCaveat": false,
+      "powerPreference": "default",
+      "premultipliedAlpha": true,
+      "preserveDrawingBuffer": false,
+      "stencil": false
+    },
+    "maxAnisotropy": 16,
+    "params": {
+      "2849": {
+        "type": "Number",
+        "value": 1
+      },
+      "2884": {
+        "type": "",
+        "value": false
+      },
+      "2885": {
+        "type": "Number",
+        "value": 1029
+      },
+      "2886": {
+        "type": "Number",
+        "value": 2305
+      },
+      "2928": {
+        "type": "Float32Array",
+        "value": {
+          "0": 0,
+          "1": 1
+        }
+      },
+      "2929": {
+        "type": "",
+        "value": false
+      },
+      "2930": {
+        "type": "Boolean",
+        "value": true
+      },
+      "2931": {
+        "type": "Number",
+        "value": 1
+      },
+      "2932": {
+        "type": "Number",
+        "value": 513
+      },
+      "2960": {
+        "type": "",
+        "value": false
+      },
+      "2961": {
+        "type": "",
+        "value": 0
+      },
+      "2962": {
+        "type": "Number",
+        "value": 519
+      },
+      "2963": {
+        "type": "Number",
+        "value": 2147483647
+      },
+      "2964": {
+        "type": "Number",
+        "value": 7680
+      },
+      "2965": {
+        "type": "Number",
+        "value": 7680
+      },
+      "2966": {
+        "type": "Number",
+        "value": 7680
+      },
+      "2967": {
+        "type": "",
+        "value": 0
+      },
+      "2968": {
+        "type": "Number",
+        "value": 2147483647
+      },
+      "2978": {
+        "type": "Int32Array",
+        "value": {
+          "0": 0,
+          "1": 0,
+          "2": 300,
+          "3": 150
+        }
+      },
+      "3024": {
+        "type": "Boolean",
+        "value": true
+      },
+      "3042": {
+        "type": "",
+        "value": false
+      },
+      "3088": {
+        "type": "Int32Array",
+        "value": {
+          "0": 0,
+          "1": 0,
+          "2": 300,
+          "3": 150
+        }
+      },
+      "3089": {
+        "type": "",
+        "value": false
+      },
+      "3106": {
+        "type": "Float32Array",
+        "value": {
+          "0": 0,
+          "1": 0,
+          "2": 0,
+          "3": 0
+        }
+      },
+      "3107": {
+        "type": "Array",
+        "value": [
+          true,
+          true,
+          true,
+          true
+        ]
+      },
+      "3317": {
+        "type": "Number",
+        "value": 4
+      },
+      "3333": {
+        "type": "Number",
+        "value": 4
+      },
+      "3379": {
+        "type": "Number",
+        "value": 16384
+      },
+      "3386": {
+        "type": "Int32Array",
+        "value": {
+          "0": 16384,
+          "1": 16384
+        }
+      },
+      "3408": {
+        "type": "Number",
+        "value": 4
+      },
+      "3410": {
+        "type": "Number",
+        "value": 8
+      },
+      "3411": {
+        "type": "Number",
+        "value": 8
+      },
+      "3412": {
+        "type": "Number",
+        "value": 8
+      },
+      "3413": {
+        "type": "Number",
+        "value": 8
+      },
+      "3414": {
+        "type": "Number",
+        "value": 24
+      },
+      "3415": {
+        "type": "",
+        "value": 0
+      },
+      "7936": {
+        "type": "String",
+        "value": "WebKit"
+      },
+      "7937": {
+        "type": "String",
+        "value": "WebKit WebGL"
+      },
+      "7938": {
+        "type": "String",
+        "value": "WebGL 1.0"
+      },
+      "10752": {
+        "type": "",
+        "value": 0
+      },
+      "32773": {
+        "type": "Float32Array",
+        "value": {
+          "0": 0,
+          "1": 0,
+          "2": 0,
+          "3": 0
+        }
+      },
+      "32777": {
+        "type": "Number",
+        "value": 32774
+      },
+      "32823": {
+        "type": "",
+        "value": false
+      },
+      "32824": {
+        "type": "",
+        "value": 0
+      },
+      "32873": {
+        "type": "",
+        "value": null
+      },
+      "32883": {
+        "type": "",
+        "value": null
+      },
+      "32936": {
+        "type": "Number",
+        "value": 1
+      },
+      "32937": {
+        "type": "Number",
+        "value": 4
+      },
+      "32938": {
+        "type": "Number",
+        "value": 1
+      },
+      "32939": {
+        "type": "",
+        "value": false
+      },
+      "32968": {
+        "type": "",
+        "value": 0
+      },
+      "32969": {
+        "type": "Number",
+        "value": 1
+      },
+      "32970": {
+        "type": "",
+        "value": 0
+      },
+      "32971": {
+        "type": "Number",
+        "value": 1
+      },
+      "33170": {
+        "type": "Number",
+        "value": 4352
+      },
+      "33901": {
+        "type": "Float32Array",
+        "value": {
+          "0": 1,
+          "1": 64
+        }
+      },
+      "33902": {
+        "type": "Float32Array",
+        "value": {
+          "0": 1,
+          "1": 1
+        }
+      },
+      "34016": {
+        "type": "Number",
+        "value": 33984
+      },
+      "34024": {
+        "type": "Number",
+        "value": 16384
+      },
+      "34045": {
+        "type": "",
+        "value": null
+      },
+      "34047": {
+        "type": "Number",
+        "value": 16
+      },
+      "34068": {
+        "type": "",
+        "value": null
+      },
+      "34076": {
+        "type": "Number",
+        "value": 16384
+      },
+      "34467": {
+        "type": "Uint32Array",
+        "value": {}
+      },
+      "34816": {
+        "type": "Number",
+        "value": 519
+      },
+      "34817": {
+        "type": "Number",
+        "value": 7680
+      },
+      "34818": {
+        "type": "Number",
+        "value": 7680
+      },
+      "34819": {
+        "type": "Number",
+        "value": 7680
+      },
+      "34852": {
+        "type": "",
+        "value": null
+      },
+      "34877": {
+        "type": "Number",
+        "value": 32774
+      },
+      "34921": {
+        "type": "Number",
+        "value": 16
+      },
+      "34930": {
+        "type": "Number",
+        "value": 16
+      },
+      "34964": {
+        "type": "",
+        "value": null
+      },
+      "34965": {
+        "type": "",
+        "value": null
+      },
+      "35071": {
+        "type": "",
+        "value": null
+      },
+      "35076": {
+        "type": "",
+        "value": null
+      },
+      "35077": {
+        "type": "",
+        "value": null
+      },
+      "35371": {
+        "type": "",
+        "value": null
+      },
+      "35373": {
+        "type": "",
+        "value": null
+      },
+      "35374": {
+        "type": "",
+        "value": null
+      },
+      "35375": {
+        "type": "",
+        "value": null
+      },
+      "35376": {
+        "type": "",
+        "value": null
+      },
+      "35377": {
+        "type": "",
+        "value": null
+      },
+      "35379": {
+        "type": "",
+        "value": null
+      },
+      "35380": {
+        "type": "",
+        "value": null
+      },
+      "35657": {
+        "type": "",
+        "value": null
+      },
+      "35658": {
+        "type": "",
+        "value": null
+      },
+      "35659": {
+        "type": "",
+        "value": null
+      },
+      "35660": {
+        "type": "Number",
+        "value": 16
+      },
+      "35661": {
+        "type": "Number",
+        "value": 32
+      },
+      "35724": {
+        "type": "String",
+        "value": "WebGL GLSL ES 1.0 (1.0)"
+      },
+      "35725": {
+        "type": "",
+        "value": null
+      },
+      "35968": {
+        "type": "",
+        "value": null
+      },
+      "35978": {
+        "type": "",
+        "value": null
+      },
+      "35979": {
+        "type": "",
+        "value": null
+      },
+      "36003": {
+        "type": "",
+        "value": 0
+      },
+      "36004": {
+        "type": "Number",
+        "value": 2147483647
+      },
+      "36005": {
+        "type": "Number",
+        "value": 2147483647
+      },
+      "36006": {
+        "type": "",
+        "value": null
+      },
+      "36007": {
+        "type": "",
+        "value": null
+      },
+      "36063": {
+        "type": "",
+        "value": null
+      },
+      "36183": {
+        "type": "",
+        "value": null
+      },
+      "36347": {
+        "type": "Number",
+        "value": 1024
+      },
+      "36348": {
+        "type": "Number",
+        "value": 31
+      },
+      "36349": {
+        "type": "Number",
+        "value": 1024
+      },
+      "37154": {
+        "type": "",
+        "value": null
+      },
+      "37157": {
+        "type": "",
+        "value": null
+      },
+      "37440": {
+        "type": "",
+        "value": false
+      },
+      "37441": {
+        "type": "",
+        "value": false
+      },
+      "37443": {
+        "type": "Number",
+        "value": 37444
+      }
+    },
+    "shaderPrecisionFormats": [
+      {
+        "shaderType": 35633,
+        "precisionType": 36338,
+        "r": {
+          "rangeMin": 127,
+          "rangeMax": 127,
+          "precision": 23
+        }
+      },
+      {
+        "shaderType": 35633,
+        "precisionType": 36337,
+        "r": {
+          "rangeMin": 127,
+          "rangeMax": 127,
+          "precision": 23
+        }
+      },
+      {
+        "shaderType": 35633,
+        "precisionType": 36336,
+        "r": {
+          "rangeMin": 127,
+          "rangeMax": 127,
+          "precision": 23
+        }
+      },
+      {
+        "shaderType": 35633,
+        "precisionType": 36341,
+        "r": {
+          "rangeMin": 31,
+          "rangeMax": 30,
+          "precision": 0
+        }
+      },
+      {
+        "shaderType": 35633,
+        "precisionType": 36340,
+        "r": {
+          "rangeMin": 31,
+          "rangeMax": 30,
+          "precision": 0
+        }
+      },
+      {
+        "shaderType": 35633,
+        "precisionType": 36339,
+        "r": {
+          "rangeMin": 31,
+          "rangeMax": 30,
+          "precision": 0
+        }
+      },
+      {
+        "shaderType": 35632,
+        "precisionType": 36338,
+        "r": {
+          "rangeMin": 127,
+          "rangeMax": 127,
+          "precision": 23
+        }
+      },
+      {
+        "shaderType": 35632,
+        "precisionType": 36337,
+        "r": {
+          "rangeMin": 127,
+          "rangeMax": 127,
+          "precision": 23
+        }
+      },
+      {
+        "shaderType": 35632,
+        "precisionType": 36336,
+        "r": {
+          "rangeMin": 127,
+          "rangeMax": 127,
+          "precision": 23
+        }
+      },
+      {
+        "shaderType": 35632,
+        "precisionType": 36341,
+        "r": {
+          "rangeMin": 31,
+          "rangeMax": 30,
+          "precision": 0
+        }
+      },
+      {
+        "shaderType": 35632,
+        "precisionType": 36340,
+        "r": {
+          "rangeMin": 31,
+          "rangeMax": 30,
+          "precision": 0
+        }
+      },
+      {
+        "shaderType": 35632,
+        "precisionType": 36339,
+        "r": {
+          "rangeMin": 31,
+          "rangeMax": 30,
+          "precision": 0
+        }
+      }
+    ]
+  },
+  "webgl2": {
+    "supportedExtensions": [
+      "OES_texture_float_linear",
+      "EXT_texture_filter_anisotropic",
+      "WEBGL_compressed_texture_astc",
+      "WEBGL_compressed_texture_etc1",
+      "WEBGL_lose_context",
+      "WEBGL_debug_shaders",
+      "WEBGL_debug_renderer_info",
+      "EXT_color_buffer_float",
+      "EXT_color_buffer_half_float",
+      "EXT_float_blend",
+      "KHR_parallel_shader_compile",
+      "WEBGL_multi_draw"
+    ],
+    "contextAttributes": {
+      "alpha": true,
+      "antialias": true,
+      "depth": true,
+      "failIfMajorPerformanceCaveat": false,
+      "powerPreference": "default",
+      "premultipliedAlpha": true,
+      "preserveDrawingBuffer": false,
+      "stencil": false
+    },
+    "maxAnisotropy": 16,
+    "params": {
+      "2849": {
+        "type": "Number",
+        "value": 1
+      },
+      "2884": {
+        "type": "",
+        "value": false
+      },
+      "2885": {
+        "type": "Number",
+        "value": 1029
+      },
+      "2886": {
+        "type": "Number",
+        "value": 2305
+      },
+      "2928": {
+        "type": "Float32Array",
+        "value": {
+          "0": 0,
+          "1": 1
+        }
+      },
+      "2929": {
+        "type": "",
+        "value": false
+      },
+      "2930": {
+        "type": "Boolean",
+        "value": true
+      },
+      "2931": {
+        "type": "Number",
+        "value": 1
+      },
+      "2932": {
+        "type": "Number",
+        "value": 513
+      },
+      "2960": {
+        "type": "",
+        "value": false
+      },
+      "2961": {
+        "type": "",
+        "value": 0
+      },
+      "2962": {
+        "type": "Number",
+        "value": 519
+      },
+      "2963": {
+        "type": "Number",
+        "value": 2147483647
+      },
+      "2964": {
+        "type": "Number",
+        "value": 7680
+      },
+      "2965": {
+        "type": "Number",
+        "value": 7680
+      },
+      "2966": {
+        "type": "Number",
+        "value": 7680
+      },
+      "2967": {
+        "type": "",
+        "value": 0
+      },
+      "2968": {
+        "type": "Number",
+        "value": 2147483647
+      },
+      "2978": {
+        "type": "Int32Array",
+        "value": {
+          "0": 0,
+          "1": 0,
+          "2": 300,
+          "3": 150
+        }
+      },
+      "3024": {
+        "type": "Boolean",
+        "value": true
+      },
+      "3042": {
+        "type": "",
+        "value": false
+      },
+      "3088": {
+        "type": "Int32Array",
+        "value": {
+          "0": 0,
+          "1": 0,
+          "2": 300,
+          "3": 150
+        }
+      },
+      "3089": {
+        "type": "",
+        "value": false
+      },
+      "3106": {
+        "type": "Float32Array",
+        "value": {
+          "0": 0,
+          "1": 0,
+          "2": 0,
+          "3": 0
+        }
+      },
+      "3107": {
+        "type": "Array",
+        "value": [
+          true,
+          true,
+          true,
+          true
+        ]
+      },
+      "3317": {
+        "type": "Number",
+        "value": 4
+      },
+      "3333": {
+        "type": "Number",
+        "value": 4
+      },
+      "3379": {
+        "type": "Number",
+        "value": 16384
+      },
+      "3386": {
+        "type": "Int32Array",
+        "value": {
+          "0": 16384,
+          "1": 16384
+        }
+      },
+      "3408": {
+        "type": "Number",
+        "value": 4
+      },
+      "3410": {
+        "type": "Number",
+        "value": 8
+      },
+      "3411": {
+        "type": "Number",
+        "value": 8
+      },
+      "3412": {
+        "type": "Number",
+        "value": 8
+      },
+      "3413": {
+        "type": "Number",
+        "value": 8
+      },
+      "3414": {
+        "type": "Number",
+        "value": 24
+      },
+      "3415": {
+        "type": "",
+        "value": 0
+      },
+      "7936": {
+        "type": "String",
+        "value": "WebKit"
+      },
+      "7937": {
+        "type": "String",
+        "value": "WebKit WebGL"
+      },
+      "7938": {
+        "type": "String",
+        "value": "WebGL 2.0"
+      },
+      "10752": {
+        "type": "",
+        "value": 0
+      },
+      "32773": {
+        "type": "Float32Array",
+        "value": {
+          "0": 0,
+          "1": 0,
+          "2": 0,
+          "3": 0
+        }
+      },
+      "32777": {
+        "type": "Number",
+        "value": 32774
+      },
+      "32823": {
+        "type": "",
+        "value": false
+      },
+      "32824": {
+        "type": "",
+        "value": 0
+      },
+      "32873": {
+        "type": "",
+        "value": null
+      },
+      "32883": {
+        "type": "Number",
+        "value": 2048
+      },
+      "32936": {
+        "type": "Number",
+        "value": 1
+      },
+      "32937": {
+        "type": "Number",
+        "value": 4
+      },
+      "32938": {
+        "type": "Number",
+        "value": 1
+      },
+      "32939": {
+        "type": "",
+        "value": false
+      },
+      "32968": {
+        "type": "",
+        "value": 0
+      },
+      "32969": {
+        "type": "Number",
+        "value": 1
+      },
+      "32970": {
+        "type": "",
+        "value": 0
+      },
+      "32971": {
+        "type": "Number",
+        "value": 1
+      },
+      "33170": {
+        "type": "Number",
+        "value": 4352
+      },
+      "33901": {
+        "type": "Float32Array",
+        "value": {
+          "0": 1,
+          "1": 64
+        }
+      },
+      "33902": {
+        "type": "Float32Array",
+        "value": {
+          "0": 1,
+          "1": 1
+        }
+      },
+      "34016": {
+        "type": "Number",
+        "value": 33984
+      },
+      "34024": {
+        "type": "Number",
+        "value": 16384
+      },
+      "34045": {
+        "type": "Number",
+        "value": 2
+      },
+      "34047": {
+        "type": "Number",
+        "value": 16
+      },
+      "34068": {
+        "type": "",
+        "value": null
+      },
+      "34076": {
+        "type": "Number",
+        "value": 16384
+      },
+      "34467": {
+        "type": "Uint32Array",
+        "value": {}
+      },
+      "34816": {
+        "type": "Number",
+        "value": 519
+      },
+      "34817": {
+        "type": "Number",
+        "value": 7680
+      },
+      "34818": {
+        "type": "Number",
+        "value": 7680
+      },
+      "34819": {
+        "type": "Number",
+        "value": 7680
+      },
+      "34852": {
+        "type": "Number",
+        "value": 4
+      },
+      "34877": {
+        "type": "Number",
+        "value": 32774
+      },
+      "34921": {
+        "type": "Number",
+        "value": 16
+      },
+      "34930": {
+        "type": "Number",
+        "value": 16
+      },
+      "34964": {
+        "type": "",
+        "value": null
+      },
+      "34965": {
+        "type": "",
+        "value": null
+      },
+      "35071": {
+        "type": "Number",
+        "value": 2048
+      },
+      "35076": {
+        "type": "Number",
+        "value": -8
+      },
+      "35077": {
+        "type": "Number",
+        "value": 7
+      },
+      "35371": {
+        "type": "Number",
+        "value": 12
+      },
+      "35373": {
+        "type": "Number",
+        "value": 12
+      },
+      "35374": {
+        "type": "Number",
+        "value": 24
+      },
+      "35375": {
+        "type": "Number",
+        "value": 24
+      },
+      "35376": {
+        "type": "Number",
+        "value": 16384
+      },
+      "35377": {
+        "type": "Number",
+        "value": 50176
+      },
+      "35379": {
+        "type": "Number",
+        "value": 50176
+      },
+      "35380": {
+        "type": "Number",
+        "value": 16
+      },
+      "35657": {
+        "type": "Number",
+        "value": 1024
+      },
+      "35658": {
+        "type": "Number",
+        "value": 1024
+      },
+      "35659": {
+        "type": "Number",
+        "value": 124
+      },
+      "35660": {
+        "type": "Number",
+        "value": 16
+      },
+      "35661": {
+        "type": "Number",
+        "value": 32
+      },
+      "35724": {
+        "type": "String",
+        "value": "WebGL GLSL ES 3.00"
+      },
+      "35725": {
+        "type": "",
+        "value": null
+      },
+      "35968": {
+        "type": "Number",
+        "value": 4
+      },
+      "35978": {
+        "type": "Number",
+        "value": 128
+      },
+      "35979": {
+        "type": "Number",
+        "value": 4
+      },
+      "36003": {
+        "type": "",
+        "value": 0
+      },
+      "36004": {
+        "type": "Number",
+        "value": 2147483647
+      },
+      "36005": {
+        "type": "Number",
+        "value": 2147483647
+      },
+      "36006": {
+        "type": "",
+        "value": null
+      },
+      "36007": {
+        "type": "",
+        "value": null
+      },
+      "36063": {
+        "type": "Number",
+        "value": 4
+      },
+      "36183": {
+        "type": "Number",
+        "value": 4
+      },
+      "36347": {
+        "type": "Number",
+        "value": 1024
+      },
+      "36348": {
+        "type": "Number",
+        "value": 31
+      },
+      "36349": {
+        "type": "Number",
+        "value": 1024
+      },
+      "37154": {
+        "type": "Number",
+        "value": 124
+      },
+      "37157": {
+        "type": "Number",
+        "value": 124
+      },
+      "37440": {
+        "type": "",
+        "value": false
+      },
+      "37441": {
+        "type": "",
+        "value": false
+      },
+      "37443": {
+        "type": "Number",
+        "value": 37444
+      }
+    },
+    "shaderPrecisionFormats": [
+      {
+        "shaderType": 35633,
+        "precisionType": 36338,
+        "r": {
+          "rangeMin": 127,
+          "rangeMax": 127,
+          "precision": 23
+        }
+      },
+      {
+        "shaderType": 35633,
+        "precisionType": 36337,
+        "r": {
+          "rangeMin": 127,
+          "rangeMax": 127,
+          "precision": 23
+        }
+      },
+      {
+        "shaderType": 35633,
+        "precisionType": 36336,
+        "r": {
+          "rangeMin": 127,
+          "rangeMax": 127,
+          "precision": 23
+        }
+      },
+      {
+        "shaderType": 35633,
+        "precisionType": 36341,
+        "r": {
+          "rangeMin": 31,
+          "rangeMax": 30,
+          "precision": 0
+        }
+      },
+      {
+        "shaderType": 35633,
+        "precisionType": 36340,
+        "r": {
+          "rangeMin": 31,
+          "rangeMax": 30,
+          "precision": 0
+        }
+      },
+      {
+        "shaderType": 35633,
+        "precisionType": 36339,
+        "r": {
+          "rangeMin": 31,
+          "rangeMax": 30,
+          "precision": 0
+        }
+      },
+      {
+        "shaderType": 35632,
+        "precisionType": 36338,
+        "r": {
+          "rangeMin": 127,
+          "rangeMax": 127,
+          "precision": 23
+        }
+      },
+      {
+        "shaderType": 35632,
+        "precisionType": 36337,
+        "r": {
+          "rangeMin": 127,
+          "rangeMax": 127,
+          "precision": 23
+        }
+      },
+      {
+        "shaderType": 35632,
+        "precisionType": 36336,
+        "r": {
+          "rangeMin": 127,
+          "rangeMax": 127,
+          "precision": 23
+        }
+      },
+      {
+        "shaderType": 35632,
+        "precisionType": 36341,
+        "r": {
+          "rangeMin": 31,
+          "rangeMax": 30,
+          "precision": 0
+        }
+      },
+      {
+        "shaderType": 35632,
+        "precisionType": 36340,
+        "r": {
+          "rangeMin": 31,
+          "rangeMax": 30,
+          "precision": 0
+        }
+      },
+      {
+        "shaderType": 35632,
+        "precisionType": 36339,
+        "r": {
+          "rangeMin": 31,
+          "rangeMax": 30,
+          "precision": 0
+        }
+      }
+    ]
+  },
   "defaultCS": {
     "0": "align-content",
     "1": "align-items",
@@ -1723,11 +3042,16 @@
   },
   "battery": {},
   "windowVersion": [
-    "Infinity",
-    "window",
+    "AutofillFormFieldData",
     "NaN",
+    "goog",
+    "window",
+    "Infinity",
+    "$jscomp$lookupPolyfilledValue",
+    "FormControlElement",
+    "$jscomp",
+    "AutofillFormData",
     "undefined",
-    "dd",
     "document",
     "self",
     "name",
@@ -2470,8 +3794,14 @@
     "FinalizationRegistry",
     "Intl",
     "WebAssembly",
-    "ApplePaySession",
+    "ApplePaySetup",
+    "ApplePaySetupFeature",
+    "Clipboard",
     "ClipboardItem",
+    "Cache",
+    "CacheStorage",
+    "Credential",
+    "CredentialsContainer",
     "MediaKeyMessageEvent",
     "MediaKeySession",
     "MediaKeyStatusMap",
@@ -2493,6 +3823,7 @@
     "BlobEvent",
     "MediaRecorder",
     "MediaRecorderErrorEvent",
+    "MediaDevices",
     "RTCCertificate",
     "RTCDTMFSender",
     "RTCDTMFToneChangeEvent",
@@ -2509,6 +3840,11 @@
     "RTCSessionDescription",
     "RTCStatsReport",
     "RTCTrackEvent",
+    "MerchantValidationEvent",
+    "PaymentAddress",
+    "PaymentMethodChangeEvent",
+    "PaymentRequestUpdateEvent",
+    "PaymentResponse",
     "EnterPictureInPictureEvent",
     "PictureInPictureWindow",
     "RemotePlayback",
@@ -2525,13 +3861,21 @@
     "WritableStreamDefaultWriter",
     "AudioContext",
     "AudioParamMap",
+    "AudioWorklet",
+    "AudioWorkletNode",
     "BaseAudioContext",
     "ConstantSourceNode",
     "IIRFilterNode",
     "OfflineAudioContext",
     "PannerNode",
     "StereoPannerNode",
+    "AuthenticatorAssertionResponse",
+    "AuthenticatorAttestationResponse",
+    "AuthenticatorResponse",
+    "PublicKeyCredential",
     "WebSocket",
+    "CryptoKey",
+    "SubtleCrypto",
     "DataTransferItem",
     "DataTransferItemList",
     "InputEvent",
@@ -2552,12 +3896,16 @@
     "ResizeObserver",
     "ResizeObserverEntry",
     "VisualViewport",
+    "ServiceWorker",
+    "ServiceWorkerContainer",
+    "ServiceWorkerRegistration",
     "ontouchcancel",
     "ontouchend",
     "ontouchmove",
     "ontouchstart",
     "ontouchforcechange",
     "visualViewport",
+    "caches",
     "createImageBitmap"
   ],
   "htmlElementVersion": [
@@ -2844,1302 +4192,20 @@
     "removeEventListener",
     "dispatchEvent"
   ],
-  "navigator": {
-    "languages": [
-      "zh-CN"
-    ],
-    "userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 15_0_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.0 Mobile/15E148 Safari/604.1",
-    "appCodeName": "Mozilla",
-    "appMinorVersion": "_$obj!_undefined_//+_",
-    "appName": "Netscape",
-    "appVersion": "5.0 (iPhone; CPU iPhone OS 15_0_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.0 Mobile/15E148 Safari/604.1",
-    "buildID": "_$obj!_undefined_//+_",
-    "platform": "iPhone",
-    "product": "Gecko",
-    "productSub": "20030107",
-    "hardwareConcurrency": "_$obj!_undefined_//+_",
-    "cpuClass": "_$obj!_undefined_//+_",
-    "maxTouchPoints": 5,
-    "oscpu": "_$obj!_undefined_//+_",
-    "vendor": "Apple Computer, Inc.",
-    "vendorSub": "",
-    "deviceMemory": "_$obj!_undefined_//+_",
-    "doNotTrack": "_$obj!_undefined_//+_",
-    "msDoNotTrack": "_$obj!_undefined_//+_",
-    "vibrate": "_$obj!_undefined_//+_",
-    "credentials": "_$obj!_undefined_//+_",
-    "storage": "_$obj!_undefined_//+_",
-    "requestMediaKeySystemAccess": "_$obj!_//+_",
-    "bluetooth": "_$obj!_undefined_//+_",
-    "language": "zh-CN",
-    "systemLanguage": "_$obj!_undefined_//+_",
-    "userLanguage": "_$obj!_undefined_//+_"
-  },
-  "document": {
-    "characterSet": "GBK",
-    "compatMode": "BackCompat",
-    "documentMode": "_$obj!_undefined_//+_",
-    "layers": "_$obj!_undefined_//+_",
-    "images": "_$obj!_//+_"
-  },
-  "screen": {
-    "availWidth": 414,
-    "availHeight": 896,
-    "availLeft": 0,
-    "availTop": 0,
-    "width": 414,
-    "height": 896,
-    "colorDepth": 32,
-    "pixelDepth": 32
-  },
-  "body": {
-    "clientWidth": 980,
-    "clientHeight": 1693
-  },
-  "webgl": {
-    "supportedExtensions": [
-      "EXT_blend_minmax",
-      "EXT_sRGB",
-      "EXT_frag_depth",
-      "OES_texture_float",
-      "OES_texture_float_linear",
-      "OES_texture_half_float",
-      "OES_texture_half_float_linear",
-      "OES_standard_derivatives",
-      "EXT_texture_filter_anisotropic",
-      "OES_vertex_array_object",
-      "OES_element_index_uint",
-      "WEBGL_lose_context",
-      "WEBGL_compressed_texture_astc",
-      "WEBGL_compressed_texture_etc1",
-      "WEBGL_depth_texture",
-      "WEBGL_draw_buffers",
-      "ANGLE_instanced_arrays",
-      "WEBGL_debug_shaders",
-      "WEBGL_debug_renderer_info",
-      "EXT_color_buffer_half_float",
-      "EXT_float_blend",
-      "WEBGL_color_buffer_float",
-      "KHR_parallel_shader_compile",
-      "WEBGL_multi_draw"
-    ],
-    "contextAttributes": {
-      "alpha": true,
-      "antialias": true,
-      "depth": true,
-      "failIfMajorPerformanceCaveat": false,
-      "powerPreference": "default",
-      "premultipliedAlpha": true,
-      "preserveDrawingBuffer": false,
-      "stencil": false
+  "mediaDevices": [
+    {
+      "deviceId": "",
+      "kind": "audioinput",
+      "label": "",
+      "groupId": ""
     },
-    "maxAnisotropy": 16,
-    "params": {
-      "2849": {
-        "type": "Number",
-        "value": 1
-      },
-      "2884": {
-        "type": "",
-        "value": false
-      },
-      "2885": {
-        "type": "Number",
-        "value": 1029
-      },
-      "2886": {
-        "type": "Number",
-        "value": 2305
-      },
-      "2928": {
-        "type": "Float32Array",
-        "value": {
-          "0": 0,
-          "1": 1
-        }
-      },
-      "2929": {
-        "type": "",
-        "value": false
-      },
-      "2930": {
-        "type": "Boolean",
-        "value": true
-      },
-      "2931": {
-        "type": "Number",
-        "value": 1
-      },
-      "2932": {
-        "type": "Number",
-        "value": 513
-      },
-      "2960": {
-        "type": "",
-        "value": false
-      },
-      "2961": {
-        "type": "",
-        "value": 0
-      },
-      "2962": {
-        "type": "Number",
-        "value": 519
-      },
-      "2963": {
-        "type": "Number",
-        "value": 2147483647
-      },
-      "2964": {
-        "type": "Number",
-        "value": 7680
-      },
-      "2965": {
-        "type": "Number",
-        "value": 7680
-      },
-      "2966": {
-        "type": "Number",
-        "value": 7680
-      },
-      "2967": {
-        "type": "",
-        "value": 0
-      },
-      "2968": {
-        "type": "Number",
-        "value": 2147483647
-      },
-      "2978": {
-        "type": "Int32Array",
-        "value": {
-          "0": 0,
-          "1": 0,
-          "2": 300,
-          "3": 150
-        }
-      },
-      "3024": {
-        "type": "Boolean",
-        "value": true
-      },
-      "3042": {
-        "type": "",
-        "value": false
-      },
-      "3088": {
-        "type": "Int32Array",
-        "value": {
-          "0": 0,
-          "1": 0,
-          "2": 300,
-          "3": 150
-        }
-      },
-      "3089": {
-        "type": "",
-        "value": false
-      },
-      "3106": {
-        "type": "Float32Array",
-        "value": {
-          "0": 0,
-          "1": 0,
-          "2": 0,
-          "3": 0
-        }
-      },
-      "3107": {
-        "type": "Array",
-        "value": [
-          true,
-          true,
-          true,
-          true
-        ]
-      },
-      "3317": {
-        "type": "Number",
-        "value": 4
-      },
-      "3333": {
-        "type": "Number",
-        "value": 4
-      },
-      "3379": {
-        "type": "Number",
-        "value": 16384
-      },
-      "3386": {
-        "type": "Int32Array",
-        "value": {
-          "0": 16384,
-          "1": 16384
-        }
-      },
-      "3408": {
-        "type": "Number",
-        "value": 4
-      },
-      "3410": {
-        "type": "Number",
-        "value": 8
-      },
-      "3411": {
-        "type": "Number",
-        "value": 8
-      },
-      "3412": {
-        "type": "Number",
-        "value": 8
-      },
-      "3413": {
-        "type": "Number",
-        "value": 8
-      },
-      "3414": {
-        "type": "Number",
-        "value": 24
-      },
-      "3415": {
-        "type": "",
-        "value": 0
-      },
-      "7936": {
-        "type": "String",
-        "value": "WebKit"
-      },
-      "7937": {
-        "type": "String",
-        "value": "WebKit WebGL"
-      },
-      "7938": {
-        "type": "String",
-        "value": "WebGL 1.0"
-      },
-      "10752": {
-        "type": "",
-        "value": 0
-      },
-      "32773": {
-        "type": "Float32Array",
-        "value": {
-          "0": 0,
-          "1": 0,
-          "2": 0,
-          "3": 0
-        }
-      },
-      "32777": {
-        "type": "Number",
-        "value": 32774
-      },
-      "32823": {
-        "type": "",
-        "value": false
-      },
-      "32824": {
-        "type": "",
-        "value": 0
-      },
-      "32873": {
-        "type": "",
-        "value": null
-      },
-      "32883": {
-        "type": "",
-        "value": null
-      },
-      "32936": {
-        "type": "Number",
-        "value": 1
-      },
-      "32937": {
-        "type": "Number",
-        "value": 4
-      },
-      "32938": {
-        "type": "Number",
-        "value": 1
-      },
-      "32939": {
-        "type": "",
-        "value": false
-      },
-      "32968": {
-        "type": "",
-        "value": 0
-      },
-      "32969": {
-        "type": "Number",
-        "value": 1
-      },
-      "32970": {
-        "type": "",
-        "value": 0
-      },
-      "32971": {
-        "type": "Number",
-        "value": 1
-      },
-      "33170": {
-        "type": "Number",
-        "value": 4352
-      },
-      "33901": {
-        "type": "Float32Array",
-        "value": {
-          "0": 1,
-          "1": 64
-        }
-      },
-      "33902": {
-        "type": "Float32Array",
-        "value": {
-          "0": 1,
-          "1": 1
-        }
-      },
-      "34016": {
-        "type": "Number",
-        "value": 33984
-      },
-      "34024": {
-        "type": "Number",
-        "value": 16384
-      },
-      "34045": {
-        "type": "",
-        "value": null
-      },
-      "34047": {
-        "type": "Number",
-        "value": 16
-      },
-      "34068": {
-        "type": "",
-        "value": null
-      },
-      "34076": {
-        "type": "Number",
-        "value": 16384
-      },
-      "34467": {
-        "type": "Uint32Array",
-        "value": {}
-      },
-      "34816": {
-        "type": "Number",
-        "value": 519
-      },
-      "34817": {
-        "type": "Number",
-        "value": 7680
-      },
-      "34818": {
-        "type": "Number",
-        "value": 7680
-      },
-      "34819": {
-        "type": "Number",
-        "value": 7680
-      },
-      "34852": {
-        "type": "",
-        "value": null
-      },
-      "34877": {
-        "type": "Number",
-        "value": 32774
-      },
-      "34921": {
-        "type": "Number",
-        "value": 16
-      },
-      "34930": {
-        "type": "Number",
-        "value": 16
-      },
-      "34964": {
-        "type": "",
-        "value": null
-      },
-      "34965": {
-        "type": "",
-        "value": null
-      },
-      "35071": {
-        "type": "",
-        "value": null
-      },
-      "35076": {
-        "type": "",
-        "value": null
-      },
-      "35077": {
-        "type": "",
-        "value": null
-      },
-      "35371": {
-        "type": "",
-        "value": null
-      },
-      "35373": {
-        "type": "",
-        "value": null
-      },
-      "35374": {
-        "type": "",
-        "value": null
-      },
-      "35375": {
-        "type": "",
-        "value": null
-      },
-      "35376": {
-        "type": "",
-        "value": null
-      },
-      "35377": {
-        "type": "",
-        "value": null
-      },
-      "35379": {
-        "type": "",
-        "value": null
-      },
-      "35380": {
-        "type": "",
-        "value": null
-      },
-      "35657": {
-        "type": "",
-        "value": null
-      },
-      "35658": {
-        "type": "",
-        "value": null
-      },
-      "35659": {
-        "type": "",
-        "value": null
-      },
-      "35660": {
-        "type": "Number",
-        "value": 16
-      },
-      "35661": {
-        "type": "Number",
-        "value": 32
-      },
-      "35724": {
-        "type": "String",
-        "value": "WebGL GLSL ES 1.0 (1.0)"
-      },
-      "35725": {
-        "type": "",
-        "value": null
-      },
-      "35968": {
-        "type": "",
-        "value": null
-      },
-      "35978": {
-        "type": "",
-        "value": null
-      },
-      "35979": {
-        "type": "",
-        "value": null
-      },
-      "36003": {
-        "type": "",
-        "value": 0
-      },
-      "36004": {
-        "type": "Number",
-        "value": 2147483647
-      },
-      "36005": {
-        "type": "Number",
-        "value": 2147483647
-      },
-      "36006": {
-        "type": "",
-        "value": null
-      },
-      "36007": {
-        "type": "",
-        "value": null
-      },
-      "36063": {
-        "type": "",
-        "value": null
-      },
-      "36183": {
-        "type": "",
-        "value": null
-      },
-      "36347": {
-        "type": "Number",
-        "value": 1024
-      },
-      "36348": {
-        "type": "Number",
-        "value": 31
-      },
-      "36349": {
-        "type": "Number",
-        "value": 1024
-      },
-      "37154": {
-        "type": "",
-        "value": null
-      },
-      "37157": {
-        "type": "",
-        "value": null
-      },
-      "37440": {
-        "type": "",
-        "value": false
-      },
-      "37441": {
-        "type": "",
-        "value": false
-      },
-      "37443": {
-        "type": "Number",
-        "value": 37444
-      }
-    },
-    "shaderPrecisionFormats": [
-      {
-        "shaderType": 35633,
-        "precisionType": 36338,
-        "r": {
-          "rangeMin": 127,
-          "rangeMax": 127,
-          "precision": 23
-        }
-      },
-      {
-        "shaderType": 35633,
-        "precisionType": 36337,
-        "r": {
-          "rangeMin": 127,
-          "rangeMax": 127,
-          "precision": 23
-        }
-      },
-      {
-        "shaderType": 35633,
-        "precisionType": 36336,
-        "r": {
-          "rangeMin": 127,
-          "rangeMax": 127,
-          "precision": 23
-        }
-      },
-      {
-        "shaderType": 35633,
-        "precisionType": 36341,
-        "r": {
-          "rangeMin": 31,
-          "rangeMax": 30,
-          "precision": 0
-        }
-      },
-      {
-        "shaderType": 35633,
-        "precisionType": 36340,
-        "r": {
-          "rangeMin": 31,
-          "rangeMax": 30,
-          "precision": 0
-        }
-      },
-      {
-        "shaderType": 35633,
-        "precisionType": 36339,
-        "r": {
-          "rangeMin": 31,
-          "rangeMax": 30,
-          "precision": 0
-        }
-      },
-      {
-        "shaderType": 35632,
-        "precisionType": 36338,
-        "r": {
-          "rangeMin": 127,
-          "rangeMax": 127,
-          "precision": 23
-        }
-      },
-      {
-        "shaderType": 35632,
-        "precisionType": 36337,
-        "r": {
-          "rangeMin": 127,
-          "rangeMax": 127,
-          "precision": 23
-        }
-      },
-      {
-        "shaderType": 35632,
-        "precisionType": 36336,
-        "r": {
-          "rangeMin": 127,
-          "rangeMax": 127,
-          "precision": 23
-        }
-      },
-      {
-        "shaderType": 35632,
-        "precisionType": 36341,
-        "r": {
-          "rangeMin": 31,
-          "rangeMax": 30,
-          "precision": 0
-        }
-      },
-      {
-        "shaderType": 35632,
-        "precisionType": 36340,
-        "r": {
-          "rangeMin": 31,
-          "rangeMax": 30,
-          "precision": 0
-        }
-      },
-      {
-        "shaderType": 35632,
-        "precisionType": 36339,
-        "r": {
-          "rangeMin": 31,
-          "rangeMax": 30,
-          "precision": 0
-        }
-      }
-    ]
-  },
-  "webgl2": {
-    "supportedExtensions": [
-      "OES_texture_float_linear",
-      "EXT_texture_filter_anisotropic",
-      "WEBGL_compressed_texture_astc",
-      "WEBGL_compressed_texture_etc1",
-      "WEBGL_lose_context",
-      "WEBGL_debug_shaders",
-      "WEBGL_debug_renderer_info",
-      "EXT_color_buffer_float",
-      "EXT_color_buffer_half_float",
-      "EXT_float_blend",
-      "KHR_parallel_shader_compile",
-      "WEBGL_multi_draw"
-    ],
-    "contextAttributes": {
-      "alpha": true,
-      "antialias": true,
-      "depth": true,
-      "failIfMajorPerformanceCaveat": false,
-      "powerPreference": "default",
-      "premultipliedAlpha": true,
-      "preserveDrawingBuffer": false,
-      "stencil": false
-    },
-    "maxAnisotropy": 16,
-    "params": {
-      "2849": {
-        "type": "Number",
-        "value": 1
-      },
-      "2884": {
-        "type": "",
-        "value": false
-      },
-      "2885": {
-        "type": "Number",
-        "value": 1029
-      },
-      "2886": {
-        "type": "Number",
-        "value": 2305
-      },
-      "2928": {
-        "type": "Float32Array",
-        "value": {
-          "0": 0,
-          "1": 1
-        }
-      },
-      "2929": {
-        "type": "",
-        "value": false
-      },
-      "2930": {
-        "type": "Boolean",
-        "value": true
-      },
-      "2931": {
-        "type": "Number",
-        "value": 1
-      },
-      "2932": {
-        "type": "Number",
-        "value": 513
-      },
-      "2960": {
-        "type": "",
-        "value": false
-      },
-      "2961": {
-        "type": "",
-        "value": 0
-      },
-      "2962": {
-        "type": "Number",
-        "value": 519
-      },
-      "2963": {
-        "type": "Number",
-        "value": 2147483647
-      },
-      "2964": {
-        "type": "Number",
-        "value": 7680
-      },
-      "2965": {
-        "type": "Number",
-        "value": 7680
-      },
-      "2966": {
-        "type": "Number",
-        "value": 7680
-      },
-      "2967": {
-        "type": "",
-        "value": 0
-      },
-      "2968": {
-        "type": "Number",
-        "value": 2147483647
-      },
-      "2978": {
-        "type": "Int32Array",
-        "value": {
-          "0": 0,
-          "1": 0,
-          "2": 300,
-          "3": 150
-        }
-      },
-      "3024": {
-        "type": "Boolean",
-        "value": true
-      },
-      "3042": {
-        "type": "",
-        "value": false
-      },
-      "3088": {
-        "type": "Int32Array",
-        "value": {
-          "0": 0,
-          "1": 0,
-          "2": 300,
-          "3": 150
-        }
-      },
-      "3089": {
-        "type": "",
-        "value": false
-      },
-      "3106": {
-        "type": "Float32Array",
-        "value": {
-          "0": 0,
-          "1": 0,
-          "2": 0,
-          "3": 0
-        }
-      },
-      "3107": {
-        "type": "Array",
-        "value": [
-          true,
-          true,
-          true,
-          true
-        ]
-      },
-      "3317": {
-        "type": "Number",
-        "value": 4
-      },
-      "3333": {
-        "type": "Number",
-        "value": 4
-      },
-      "3379": {
-        "type": "Number",
-        "value": 16384
-      },
-      "3386": {
-        "type": "Int32Array",
-        "value": {
-          "0": 16384,
-          "1": 16384
-        }
-      },
-      "3408": {
-        "type": "Number",
-        "value": 4
-      },
-      "3410": {
-        "type": "Number",
-        "value": 8
-      },
-      "3411": {
-        "type": "Number",
-        "value": 8
-      },
-      "3412": {
-        "type": "Number",
-        "value": 8
-      },
-      "3413": {
-        "type": "Number",
-        "value": 8
-      },
-      "3414": {
-        "type": "Number",
-        "value": 24
-      },
-      "3415": {
-        "type": "",
-        "value": 0
-      },
-      "7936": {
-        "type": "String",
-        "value": "WebKit"
-      },
-      "7937": {
-        "type": "String",
-        "value": "WebKit WebGL"
-      },
-      "7938": {
-        "type": "String",
-        "value": "WebGL 2.0"
-      },
-      "10752": {
-        "type": "",
-        "value": 0
-      },
-      "32773": {
-        "type": "Float32Array",
-        "value": {
-          "0": 0,
-          "1": 0,
-          "2": 0,
-          "3": 0
-        }
-      },
-      "32777": {
-        "type": "Number",
-        "value": 32774
-      },
-      "32823": {
-        "type": "",
-        "value": false
-      },
-      "32824": {
-        "type": "",
-        "value": 0
-      },
-      "32873": {
-        "type": "",
-        "value": null
-      },
-      "32883": {
-        "type": "Number",
-        "value": 2048
-      },
-      "32936": {
-        "type": "Number",
-        "value": 1
-      },
-      "32937": {
-        "type": "Number",
-        "value": 4
-      },
-      "32938": {
-        "type": "Number",
-        "value": 1
-      },
-      "32939": {
-        "type": "",
-        "value": false
-      },
-      "32968": {
-        "type": "",
-        "value": 0
-      },
-      "32969": {
-        "type": "Number",
-        "value": 1
-      },
-      "32970": {
-        "type": "",
-        "value": 0
-      },
-      "32971": {
-        "type": "Number",
-        "value": 1
-      },
-      "33170": {
-        "type": "Number",
-        "value": 4352
-      },
-      "33901": {
-        "type": "Float32Array",
-        "value": {
-          "0": 1,
-          "1": 64
-        }
-      },
-      "33902": {
-        "type": "Float32Array",
-        "value": {
-          "0": 1,
-          "1": 1
-        }
-      },
-      "34016": {
-        "type": "Number",
-        "value": 33984
-      },
-      "34024": {
-        "type": "Number",
-        "value": 16384
-      },
-      "34045": {
-        "type": "Number",
-        "value": 2
-      },
-      "34047": {
-        "type": "Number",
-        "value": 16
-      },
-      "34068": {
-        "type": "",
-        "value": null
-      },
-      "34076": {
-        "type": "Number",
-        "value": 16384
-      },
-      "34467": {
-        "type": "Uint32Array",
-        "value": {}
-      },
-      "34816": {
-        "type": "Number",
-        "value": 519
-      },
-      "34817": {
-        "type": "Number",
-        "value": 7680
-      },
-      "34818": {
-        "type": "Number",
-        "value": 7680
-      },
-      "34819": {
-        "type": "Number",
-        "value": 7680
-      },
-      "34852": {
-        "type": "Number",
-        "value": 4
-      },
-      "34877": {
-        "type": "Number",
-        "value": 32774
-      },
-      "34921": {
-        "type": "Number",
-        "value": 16
-      },
-      "34930": {
-        "type": "Number",
-        "value": 16
-      },
-      "34964": {
-        "type": "",
-        "value": null
-      },
-      "34965": {
-        "type": "",
-        "value": null
-      },
-      "35071": {
-        "type": "Number",
-        "value": 2048
-      },
-      "35076": {
-        "type": "Number",
-        "value": -8
-      },
-      "35077": {
-        "type": "Number",
-        "value": 7
-      },
-      "35371": {
-        "type": "Number",
-        "value": 12
-      },
-      "35373": {
-        "type": "Number",
-        "value": 12
-      },
-      "35374": {
-        "type": "Number",
-        "value": 24
-      },
-      "35375": {
-        "type": "Number",
-        "value": 24
-      },
-      "35376": {
-        "type": "Number",
-        "value": 16384
-      },
-      "35377": {
-        "type": "Number",
-        "value": 50176
-      },
-      "35379": {
-        "type": "Number",
-        "value": 50176
-      },
-      "35380": {
-        "type": "Number",
-        "value": 16
-      },
-      "35657": {
-        "type": "Number",
-        "value": 1024
-      },
-      "35658": {
-        "type": "Number",
-        "value": 1024
-      },
-      "35659": {
-        "type": "Number",
-        "value": 124
-      },
-      "35660": {
-        "type": "Number",
-        "value": 16
-      },
-      "35661": {
-        "type": "Number",
-        "value": 32
-      },
-      "35724": {
-        "type": "String",
-        "value": "WebGL GLSL ES 3.00"
-      },
-      "35725": {
-        "type": "",
-        "value": null
-      },
-      "35968": {
-        "type": "Number",
-        "value": 4
-      },
-      "35978": {
-        "type": "Number",
-        "value": 128
-      },
-      "35979": {
-        "type": "Number",
-        "value": 4
-      },
-      "36003": {
-        "type": "",
-        "value": 0
-      },
-      "36004": {
-        "type": "Number",
-        "value": 2147483647
-      },
-      "36005": {
-        "type": "Number",
-        "value": 2147483647
-      },
-      "36006": {
-        "type": "",
-        "value": null
-      },
-      "36007": {
-        "type": "",
-        "value": null
-      },
-      "36063": {
-        "type": "Number",
-        "value": 4
-      },
-      "36183": {
-        "type": "Number",
-        "value": 4
-      },
-      "36347": {
-        "type": "Number",
-        "value": 1024
-      },
-      "36348": {
-        "type": "Number",
-        "value": 31
-      },
-      "36349": {
-        "type": "Number",
-        "value": 1024
-      },
-      "37154": {
-        "type": "Number",
-        "value": 124
-      },
-      "37157": {
-        "type": "Number",
-        "value": 124
-      },
-      "37440": {
-        "type": "",
-        "value": false
-      },
-      "37441": {
-        "type": "",
-        "value": false
-      },
-      "37443": {
-        "type": "Number",
-        "value": 37444
-      }
-    },
-    "shaderPrecisionFormats": [
-      {
-        "shaderType": 35633,
-        "precisionType": 36338,
-        "r": {
-          "rangeMin": 127,
-          "rangeMax": 127,
-          "precision": 23
-        }
-      },
-      {
-        "shaderType": 35633,
-        "precisionType": 36337,
-        "r": {
-          "rangeMin": 127,
-          "rangeMax": 127,
-          "precision": 23
-        }
-      },
-      {
-        "shaderType": 35633,
-        "precisionType": 36336,
-        "r": {
-          "rangeMin": 127,
-          "rangeMax": 127,
-          "precision": 23
-        }
-      },
-      {
-        "shaderType": 35633,
-        "precisionType": 36341,
-        "r": {
-          "rangeMin": 31,
-          "rangeMax": 30,
-          "precision": 0
-        }
-      },
-      {
-        "shaderType": 35633,
-        "precisionType": 36340,
-        "r": {
-          "rangeMin": 31,
-          "rangeMax": 30,
-          "precision": 0
-        }
-      },
-      {
-        "shaderType": 35633,
-        "precisionType": 36339,
-        "r": {
-          "rangeMin": 31,
-          "rangeMax": 30,
-          "precision": 0
-        }
-      },
-      {
-        "shaderType": 35632,
-        "precisionType": 36338,
-        "r": {
-          "rangeMin": 127,
-          "rangeMax": 127,
-          "precision": 23
-        }
-      },
-      {
-        "shaderType": 35632,
-        "precisionType": 36337,
-        "r": {
-          "rangeMin": 127,
-          "rangeMax": 127,
-          "precision": 23
-        }
-      },
-      {
-        "shaderType": 35632,
-        "precisionType": 36336,
-        "r": {
-          "rangeMin": 127,
-          "rangeMax": 127,
-          "precision": 23
-        }
-      },
-      {
-        "shaderType": 35632,
-        "precisionType": 36341,
-        "r": {
-          "rangeMin": 31,
-          "rangeMax": 30,
-          "precision": 0
-        }
-      },
-      {
-        "shaderType": 35632,
-        "precisionType": 36340,
-        "r": {
-          "rangeMin": 31,
-          "rangeMax": 30,
-          "precision": 0
-        }
-      },
-      {
-        "shaderType": 35632,
-        "precisionType": 36339,
-        "r": {
-          "rangeMin": 31,
-          "rangeMax": 30,
-          "precision": 0
-        }
-      }
-    ]
-  },
+    {
+      "deviceId": "",
+      "kind": "videoinput",
+      "label": "",
+      "groupId": ""
+    }
+  ],
   "voices": [
     {
       "default": true,
@@ -4415,25 +4481,352 @@
       "voiceURI": "com.apple.ttsbundle.Mei-Jia-compact"
     }
   ],
-  "rtc": [
-    {
-      "candidate": "candidate:3828831070 1 udp 2122260223 24f5b8f7-a0d7-4949-8345-677658c1031f.local 54456 typ host generation 0 ufrag eG3v network-id 1 network-cost 10",
-      "reg": null
+  "webRTC": {
+    "capabilities": {
+      "sender": {
+        "audio": {
+          "codecs": [
+            {
+              "channels": 2,
+              "clockRate": 48000,
+              "mimeType": "audio/opus",
+              "sdpFmtpLine": "minptime=10;useinbandfec=1"
+            },
+            {
+              "channels": 1,
+              "clockRate": 16000,
+              "mimeType": "audio/ISAC"
+            },
+            {
+              "channels": 1,
+              "clockRate": 8000,
+              "mimeType": "audio/G722"
+            },
+            {
+              "channels": 1,
+              "clockRate": 8000,
+              "mimeType": "audio/PCMU"
+            },
+            {
+              "channels": 1,
+              "clockRate": 8000,
+              "mimeType": "audio/PCMA"
+            },
+            {
+              "channels": 1,
+              "clockRate": 16000,
+              "mimeType": "audio/CN"
+            },
+            {
+              "channels": 1,
+              "clockRate": 8000,
+              "mimeType": "audio/CN"
+            },
+            {
+              "channels": 1,
+              "clockRate": 48000,
+              "mimeType": "audio/telephone-event"
+            },
+            {
+              "channels": 1,
+              "clockRate": 16000,
+              "mimeType": "audio/telephone-event"
+            },
+            {
+              "channels": 1,
+              "clockRate": 8000,
+              "mimeType": "audio/telephone-event"
+            }
+          ],
+          "headerExtensions": [
+            {
+              "uri": "urn:ietf:params:rtp-hdrext:ssrc-audio-level"
+            },
+            {
+              "uri": "http://www.webrtc.org/experiments/rtp-hdrext/abs-send-time"
+            },
+            {
+              "uri": "http://www.ietf.org/id/draft-holmer-rmcat-transport-wide-cc-extensions-01"
+            },
+            {
+              "uri": "urn:ietf:params:rtp-hdrext:sdes:mid"
+            },
+            {
+              "uri": "urn:ietf:params:rtp-hdrext:sdes:rtp-stream-id"
+            },
+            {
+              "uri": "urn:ietf:params:rtp-hdrext:sdes:repaired-rtp-stream-id"
+            }
+          ]
+        },
+        "video": {
+          "codecs": [
+            {
+              "clockRate": 90000,
+              "mimeType": "video/H264",
+              "sdpFmtpLine": "level-asymmetry-allowed=1;packetization-mode=1;profile-level-id=640c1f"
+            },
+            {
+              "clockRate": 90000,
+              "mimeType": "video/rtx"
+            },
+            {
+              "clockRate": 90000,
+              "mimeType": "video/H264",
+              "sdpFmtpLine": "level-asymmetry-allowed=1;packetization-mode=1;profile-level-id=42e01f"
+            },
+            {
+              "clockRate": 90000,
+              "mimeType": "video/H264",
+              "sdpFmtpLine": "level-asymmetry-allowed=1;packetization-mode=0;profile-level-id=640c1f"
+            },
+            {
+              "clockRate": 90000,
+              "mimeType": "video/H264",
+              "sdpFmtpLine": "level-asymmetry-allowed=1;packetization-mode=0;profile-level-id=42e01f"
+            },
+            {
+              "clockRate": 90000,
+              "mimeType": "video/VP8"
+            },
+            {
+              "clockRate": 90000,
+              "mimeType": "video/VP9",
+              "sdpFmtpLine": "profile-id=0"
+            },
+            {
+              "clockRate": 90000,
+              "mimeType": "video/red"
+            },
+            {
+              "clockRate": 90000,
+              "mimeType": "video/ulpfec"
+            }
+          ],
+          "headerExtensions": [
+            {
+              "uri": "urn:ietf:params:rtp-hdrext:toffset"
+            },
+            {
+              "uri": "http://www.webrtc.org/experiments/rtp-hdrext/abs-send-time"
+            },
+            {
+              "uri": "urn:3gpp:video-orientation"
+            },
+            {
+              "uri": "http://www.ietf.org/id/draft-holmer-rmcat-transport-wide-cc-extensions-01"
+            },
+            {
+              "uri": "http://www.webrtc.org/experiments/rtp-hdrext/playout-delay"
+            },
+            {
+              "uri": "http://www.webrtc.org/experiments/rtp-hdrext/video-content-type"
+            },
+            {
+              "uri": "http://www.webrtc.org/experiments/rtp-hdrext/video-timing"
+            },
+            {
+              "uri": "http://www.webrtc.org/experiments/rtp-hdrext/color-space"
+            },
+            {
+              "uri": "urn:ietf:params:rtp-hdrext:sdes:mid"
+            },
+            {
+              "uri": "urn:ietf:params:rtp-hdrext:sdes:rtp-stream-id"
+            },
+            {
+              "uri": "urn:ietf:params:rtp-hdrext:sdes:repaired-rtp-stream-id"
+            }
+          ]
+        }
+      },
+      "receiver": {
+        "audio": {
+          "codecs": [
+            {
+              "channels": 2,
+              "clockRate": 48000,
+              "mimeType": "audio/opus",
+              "sdpFmtpLine": "minptime=10;useinbandfec=1"
+            },
+            {
+              "channels": 1,
+              "clockRate": 16000,
+              "mimeType": "audio/ISAC"
+            },
+            {
+              "channels": 1,
+              "clockRate": 8000,
+              "mimeType": "audio/G722"
+            },
+            {
+              "channels": 1,
+              "clockRate": 8000,
+              "mimeType": "audio/PCMU"
+            },
+            {
+              "channels": 1,
+              "clockRate": 8000,
+              "mimeType": "audio/PCMA"
+            },
+            {
+              "channels": 1,
+              "clockRate": 16000,
+              "mimeType": "audio/CN"
+            },
+            {
+              "channels": 1,
+              "clockRate": 8000,
+              "mimeType": "audio/CN"
+            },
+            {
+              "channels": 1,
+              "clockRate": 48000,
+              "mimeType": "audio/telephone-event"
+            },
+            {
+              "channels": 1,
+              "clockRate": 16000,
+              "mimeType": "audio/telephone-event"
+            },
+            {
+              "channels": 1,
+              "clockRate": 8000,
+              "mimeType": "audio/telephone-event"
+            }
+          ],
+          "headerExtensions": [
+            {
+              "uri": "urn:ietf:params:rtp-hdrext:ssrc-audio-level"
+            },
+            {
+              "uri": "http://www.webrtc.org/experiments/rtp-hdrext/abs-send-time"
+            },
+            {
+              "uri": "http://www.ietf.org/id/draft-holmer-rmcat-transport-wide-cc-extensions-01"
+            },
+            {
+              "uri": "urn:ietf:params:rtp-hdrext:sdes:mid"
+            },
+            {
+              "uri": "urn:ietf:params:rtp-hdrext:sdes:rtp-stream-id"
+            },
+            {
+              "uri": "urn:ietf:params:rtp-hdrext:sdes:repaired-rtp-stream-id"
+            }
+          ]
+        },
+        "video": {
+          "codecs": [
+            {
+              "clockRate": 90000,
+              "mimeType": "video/H264",
+              "sdpFmtpLine": "level-asymmetry-allowed=1;packetization-mode=1;profile-level-id=640c1f"
+            },
+            {
+              "clockRate": 90000,
+              "mimeType": "video/rtx"
+            },
+            {
+              "clockRate": 90000,
+              "mimeType": "video/H264",
+              "sdpFmtpLine": "level-asymmetry-allowed=1;packetization-mode=1;profile-level-id=42e01f"
+            },
+            {
+              "clockRate": 90000,
+              "mimeType": "video/H264",
+              "sdpFmtpLine": "level-asymmetry-allowed=1;packetization-mode=0;profile-level-id=640c1f"
+            },
+            {
+              "clockRate": 90000,
+              "mimeType": "video/H264",
+              "sdpFmtpLine": "level-asymmetry-allowed=1;packetization-mode=0;profile-level-id=42e01f"
+            },
+            {
+              "clockRate": 90000,
+              "mimeType": "video/VP8"
+            },
+            {
+              "clockRate": 90000,
+              "mimeType": "video/VP9",
+              "sdpFmtpLine": "profile-id=0"
+            },
+            {
+              "clockRate": 90000,
+              "mimeType": "video/red"
+            },
+            {
+              "clockRate": 90000,
+              "mimeType": "video/ulpfec"
+            },
+            {
+              "clockRate": 90000,
+              "mimeType": "video/flexfec-03",
+              "sdpFmtpLine": "repair-window=10000000"
+            }
+          ],
+          "headerExtensions": [
+            {
+              "uri": "urn:ietf:params:rtp-hdrext:toffset"
+            },
+            {
+              "uri": "http://www.webrtc.org/experiments/rtp-hdrext/abs-send-time"
+            },
+            {
+              "uri": "urn:3gpp:video-orientation"
+            },
+            {
+              "uri": "http://www.ietf.org/id/draft-holmer-rmcat-transport-wide-cc-extensions-01"
+            },
+            {
+              "uri": "http://www.webrtc.org/experiments/rtp-hdrext/playout-delay"
+            },
+            {
+              "uri": "http://www.webrtc.org/experiments/rtp-hdrext/video-content-type"
+            },
+            {
+              "uri": "http://www.webrtc.org/experiments/rtp-hdrext/video-timing"
+            },
+            {
+              "uri": "http://www.webrtc.org/experiments/rtp-hdrext/color-space"
+            },
+            {
+              "uri": "urn:ietf:params:rtp-hdrext:sdes:mid"
+            },
+            {
+              "uri": "urn:ietf:params:rtp-hdrext:sdes:rtp-stream-id"
+            },
+            {
+              "uri": "urn:ietf:params:rtp-hdrext:sdes:repaired-rtp-stream-id"
+            }
+          ]
+        }
+      },
+      "sdp": {
+        "sdp": "v=0\r\no=- 2507674200958234928 3 IN IP4 127.0.0.1\r\ns=-\r\nt=0 0\r\na=group:BUNDLE 1\r\na=extmap-allow-mixed\r\na=msid-semantic: WMS\r\nm=application 9 UDP/DTLS/SCTP webrtc-datachannel\r\nc=IN IP4 0.0.0.0\r\na=ice-ufrag:XKHJ\r\na=ice-pwd:v3diADS3NEkb3g/Jf/9/3HTy\r\na=ice-options:trickle\r\na=fingerprint:sha-256 D1:A2:55:27:83:4D:F4:DF:12:FC:6C:36:CC:5A:90:70:2D:AF:3C:0C:91:F2:C7:34:5D:EE:E7:12:A8:0B:95:D0\r\na=setup:actpass\r\na=mid:1\r\na=sctp-port:5000\r\na=max-message-size:262144\r\n",
+        "type": "offer"
+      }
     },
-    {
-      "candidate": "candidate:1702843882 1 udp 1686052607 76.67.143.197 54456 typ srflx raddr 0.0.0.0 rport 0 generation 0 ufrag eG3v network-id 1 network-cost 10",
-      "reg": [
-        "76.67.143.197",
-        "76.67.143.197",
-        ".197",
-        null
-      ]
+    "localDescription": {
+      "type": "offer",
+      "sdp": "v=0\r\no=- 2507674200958234928 2 IN IP4 127.0.0.1\r\ns=-\r\nt=0 0\r\na=group:BUNDLE 0\r\na=extmap-allow-mixed\r\na=msid-semantic: WMS\r\nm=application 51379 UDP/DTLS/SCTP webrtc-datachannel\r\nc=IN IP4 0.0.0.0\r\na=candidate:2902949684 1 udp 2122260223 a41e661a-d887-474a-9db6-8815536dc3a1.local 51379 typ host generation 0 network-id 1 network-cost 10\r\na=candidate:3817112516 1 tcp 1518280447 a41e661a-d887-474a-9db6-8815536dc3a1.local 9 typ host tcptype active generation 0 network-id 1 network-cost 10\r\na=candidate:743405952 1 udp 1686052607 76.67.143.197 51379 typ srflx raddr 0.0.0.0 rport 0 generation 0 network-id 1 network-cost 10\r\na=ice-ufrag:Z0cI\r\na=ice-pwd:G/epJ6fChycEyBSeoyG83beh\r\na=ice-options:trickle\r\na=fingerprint:sha-256 D1:A2:55:27:83:4D:F4:DF:12:FC:6C:36:CC:5A:90:70:2D:AF:3C:0C:91:F2:C7:34:5D:EE:E7:12:A8:0B:95:D0\r\na=setup:actpass\r\na=mid:0\r\na=sctp-port:5000\r\na=max-message-size:262144\r\n"
     },
-    {
-      "candidate": "candidate:2863968174 1 tcp 1518280447 24f5b8f7-a0d7-4949-8345-677658c1031f.local 9 typ host tcptype active generation 0 ufrag eG3v network-id 1 network-cost 10",
-      "reg": null
+    "candidate": {
+      "candidate": "candidate:743405952 1 udp 1686052607 76.67.143.197 51379 typ srflx raddr 0.0.0.0 rport 0 generation 0 ufrag Z0cI network-id 1 network-cost 10",
+      "sdpMid": "0",
+      "sdpMLineIndex": 0,
+      "foundation": "743405952",
+      "component": "rtp",
+      "priority": 1686052607,
+      "address": "76.67.143.197",
+      "protocol": "udp",
+      "port": 51379,
+      "type": "srflx",
+      "relatedAddress": "0.0.0.0",
+      "relatedPort": 0,
+      "usernameFragment": "Z0cI"
     }
-  ],
+  },
   "allFonts": [
     {
       "name": "sans-serif",

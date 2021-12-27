@@ -664,25 +664,36 @@ utils.replaceWithProxy = (obj, propName, handler) => {
  * @param {object} handler - The JS Proxy handler to use
  */
 utils.replaceGetterWithProxy = (obj, propName, handler) => {
-    const fn = utils.cache.Object.getOwnPropertyDescriptor(obj, propName).get;
-    const fnStr = fn.toString(); // special getter function string
-    const proxyObj = utils.newProxyInstance(fn, utils.stripProxyFromErrors(handler));
+    const desc = utils.cache.Object.getOwnPropertyDescriptor(obj, propName)
+    if (desc) {
+        const fn = utils.cache.Object.getOwnPropertyDescriptor(obj, propName).get;
+        const fnStr = fn.toString(); // special getter function string
+        const proxyObj = utils.newProxyInstance(fn, utils.stripProxyFromErrors(handler));
 
-    utils.replaceProperty(obj, propName, {get: proxyObj});
-    utils.patchToString(proxyObj, fnStr);
+        utils.replaceProperty(obj, propName, {get: proxyObj});
+        utils.patchToString(proxyObj, fnStr);
 
-    return true;
+        return true;
+    } else {
+        return false;
+    }
 };
 
 utils.replaceSetterWithProxy = (obj, propName, handler) => {
-    const fn = utils.cache.Object.getOwnPropertyDescriptor(obj, propName).set;
-    const fnStr = fn.toString(); // special setter function string
-    const proxyObj = utils.newProxyInstance(fn, utils.stripProxyFromErrors(handler));
+    const desc = utils.cache.Object.getOwnPropertyDescriptor(obj, propName)
 
-    utils.replaceProperty(obj, propName, {set: proxyObj});
-    utils.patchToString(proxyObj, fnStr);
+    if (desc) {
+        const fn = utils.cache.Object.getOwnPropertyDescriptor(obj, propName).set;
+        const fnStr = fn.toString(); // special setter function string
+        const proxyObj = utils.newProxyInstance(fn, utils.stripProxyFromErrors(handler));
 
-    return true;
+        utils.replaceProperty(obj, propName, {set: proxyObj});
+        utils.patchToString(proxyObj, fnStr);
+
+        return true;
+    } else {
+        return false;
+    }
 };
 
 /**
@@ -1172,5 +1183,36 @@ utils.findRenderingContextIndex = (canvas) => {
     return {context: null, contextIndex: -1};
 };
 
+utils.osType = (userAgent) => {
+    // https://wicg.github.io/ua-client-hints/#sec-ch-ua-platform
+    let result = 'Unknown'
+    const OSArray = {
+        'Windows': false,
+        'macOS': false,
+        'Linux': false,
+        'iPhone': false,
+        'iPod': false,
+        'iPad': false,
+        'Android': false,
+    }
+
+    userAgent = userAgent.toLowerCase()
+
+    OSArray['Windows'] = userAgent.includes('win32') || userAgent.includes('win64') || userAgent.includes('windows')
+    OSArray['macOS'] = userAgent.includes('macintosh') || userAgent.includes('mac68k') || userAgent.includes('macppc') || userAgent.includes('macintosh')
+    OSArray['Linux'] = userAgent.includes('linux')
+    OSArray['iPhone'] = userAgent.includes('iphone')
+    OSArray['iPod'] = userAgent.includes('ipod')
+    OSArray['iPad'] = userAgent.includes('ipad')
+    OSArray['Android'] = userAgent.includes('android')
+
+    for (const i in OSArray) {
+        if (OSArray[i]) {
+            result = i
+        }
+    }
+
+    return result
+}
 
 module.exports = utils;
