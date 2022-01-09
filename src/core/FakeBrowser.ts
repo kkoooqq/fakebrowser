@@ -168,7 +168,7 @@ export class FakeBrowser {
             this._zombie = true
             await BrowserLauncher._forceShutdown(this)
         } else {
-            console.warn('This instance has been shutdown and turned into a zombie.')
+            // console.warn('This instance has been shutdown and turned into a zombie.')
         }
     }
 
