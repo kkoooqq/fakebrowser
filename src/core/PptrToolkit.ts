@@ -165,7 +165,11 @@ export class PptrToolkit {
         const start = new Date().getTime()
 
         while (new Date().getTime() - start < timeout) {
-            const pages = await browser.pages()
+            const pages = await Promise.all(
+                browser.targets()
+                  .filter((target) => target.type() === 'page')
+                  .map((target) => target.page())
+            );
             const arr = []
 
             for (const p of pages) {
