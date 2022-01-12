@@ -161,7 +161,7 @@ export class PptrToolkit {
         return null
     }
 
-    static async getActivePage(browser: Browser, timeout = 10 * 1000): Promise<Page> {
+    static async getActivePage(browser: Browser, timeout = 10 * 1000): Promise<Page | null> {
         const start = new Date().getTime()
 
         while (new Date().getTime() - start < timeout) {
@@ -173,10 +173,12 @@ export class PptrToolkit {
             const arr = []
 
             for (const p of pages) {
-                if (await p.evaluate(() => {
-                    return document.visibilityState == 'visible'
-                })) {
-                    arr.push(p)
+                if (p) {
+                    if (await p.evaluate(() => {
+                        return document.visibilityState == 'visible'
+                    })) {
+                        arr.push(p)
+                    }
                 }
             }
 
