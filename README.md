@@ -115,6 +115,12 @@ Some websites track user mouse movements and listen for keyup events of fn keys.
 
 [demo4-proxy.js](demo/demo4-proxy.js), Support socks5, http, https proxy.
 
+---
+
+#### ✅ Demo7: Use other puppeteer-extra plugins
+
+[demo7-use-plugin.js](demo/demo7-use-plugin.js), Other popular plugins can be used e.g: [puppeteer-extra-plugin-recaptcha](https://www.npmjs.com/package/puppeteer-extra-plugin-recaptcha)
+
 ----
 
 ## 🐱 Bot / Fingerprint detection sites 

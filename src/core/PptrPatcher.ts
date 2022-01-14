@@ -1,16 +1,16 @@
 // noinspection JSUnusedLocalSymbols,JSUnusedGlobalSymbols
 
 import * as path from 'path'
-import {strict as assert} from 'assert'
+import { strict as assert } from 'assert'
 
 import axios from 'axios'
-import {CDPSession, Protocol} from 'puppeteer'
-import {PuppeteerExtra, PuppeteerExtraPlugin} from 'puppeteer-extra'
+import { CDPSession, Protocol } from 'puppeteer'
+import { PuppeteerExtra, PuppeteerExtraPlugin } from 'puppeteer-extra'
 
-import {helper} from './helper'
-import {DriverParameters} from './Driver'
-import {FakeBrowser} from './FakeBrowser'
-import {FakeDeviceDescriptor} from './DeviceDescriptor'
+import { helper } from './helper'
+import { DriverParameters } from './Driver'
+import { FakeBrowser } from './FakeBrowser'
+import { FakeDeviceDescriptor } from './DeviceDescriptor'
 
 interface PptrExtraEvasionOpts {
     browserUUID: string,
@@ -46,6 +46,11 @@ export class PptrPatcher {
         for (const evasionPath of params.evasionPaths) {
             const Plugin = require(evasionPath)
             const plugin = Plugin(opts)
+            pptr.use(plugin)
+        }
+
+        // other plugins
+        for (const plugin of params.usePlugins) {
             pptr.use(plugin)
         }
 
@@ -153,18 +158,18 @@ tmpVarNames.forEach(e => {
 
             if (responseHeaders && responseHeaders.length) {
                 let body: string
-                ;({body, base64Encoded} = await client.send('Fetch.getResponseBody', {requestId}))
+                ;({ body, base64Encoded } = await client.send('Fetch.getResponseBody', { requestId }))
                 jsContent = base64Encoded ? Buffer.from(body, 'base64').toString('utf-8') : body
             } else {
                 // TODO: get through proxy
-                const jsResp = await axios.get(request.url, {headers: request.headers})
+                const jsResp = await axios.get(request.url, { headers: request.headers })
                 jsContent = jsResp.data
 
                 responseHeaders =
                     Object.entries(
                         jsResp.headers,
                     ).map(
-                        e => ({name: e[0], value: e[1] as string}),
+                        e => ({ name: e[0], value: e[1] as string }),
                     )
             }
 
@@ -181,7 +186,7 @@ tmpVarNames.forEach(e => {
             return true
         } catch (ex: any) {
             console.error('SW inject failed', ex)
-            await client.send('Fetch.failRequest', {requestId, errorReason: 'Aborted'})
+            await client.send('Fetch.failRequest', { requestId, errorReason: 'Aborted' })
         }
 
         return false

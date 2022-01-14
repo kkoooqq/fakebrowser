@@ -1,12 +1,12 @@
-import {strict as assert} from 'assert'
+import { strict as assert } from 'assert'
 import * as fs from 'fs-extra'
 
-import {addExtra, PuppeteerExtra} from 'puppeteer-extra'
-import {Browser, BrowserConnectOptions, BrowserLaunchArgumentOptions, ConnectOptions, LaunchOptions} from 'puppeteer'
+import { addExtra, PuppeteerExtra, PuppeteerExtraPlugin } from 'puppeteer-extra'
+import { Browser, BrowserConnectOptions, BrowserLaunchArgumentOptions, ConnectOptions, LaunchOptions } from 'puppeteer'
 
-import DeviceDescriptorHelper, {DeviceDescriptor, FakeDeviceDescriptor} from './DeviceDescriptor.js'
-import {UserAgentHelper} from './UserAgentHelper.js'
-import {PptrPatcher} from './PptrPatcher'
+import DeviceDescriptorHelper, { DeviceDescriptor, FakeDeviceDescriptor } from './DeviceDescriptor.js'
+import { UserAgentHelper } from './UserAgentHelper.js'
+import { PptrPatcher } from './PptrPatcher'
 
 export interface ProxyServer {
     proxyType: 'socks5' | 'socks4' | 'http' | 'https',
@@ -29,6 +29,7 @@ export interface DriverParameters {
     proxy?: ProxyServer,
     userDataDir?: string,
     evasionPaths: string[],
+    usePlugins: PuppeteerExtraPlugin[],
 }
 
 export interface LaunchParameters extends DriverParameters {
@@ -221,7 +222,7 @@ export default class Driver {
 
         const userDataDir = launchParams.userDataDir
         assert(userDataDir)
-        fs.mkdirSync(userDataDir, {recursive: true}) // throw exception
+        fs.mkdirSync(userDataDir, { recursive: true }) // throw exception
 
         args.push(
             `--user-data-dir=${userDataDir}`,

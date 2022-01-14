@@ -11,9 +11,10 @@ import {
     VanillaLaunchOptions,
 } from './Driver.js'
 
-import {DeviceDescriptor} from './DeviceDescriptor.js'
-import {BrowserLauncher} from './BrowserLauncher'
-import {FakeBrowser, kDefaultWindowsDD} from './FakeBrowser'
+import { DeviceDescriptor } from './DeviceDescriptor.js'
+import { BrowserLauncher } from './BrowserLauncher'
+import { FakeBrowser, kDefaultWindowsDD } from './FakeBrowser'
+import { PuppeteerExtraPlugin } from 'puppeteer-extra'
 
 export class BrowserBuilder {
 
@@ -52,6 +53,7 @@ export class BrowserBuilder {
                 'workers',
                 'keyboard',
             ].map(e => path.resolve(__dirname, `../plugins/evasions/${e}`)),
+            usePlugins: [],
         }
     }
 
@@ -116,6 +118,11 @@ export class BrowserBuilder {
 
     evasionPaths(value: string[]) {
         this.driverParams.evasionPaths = value
+        return this
+    }
+
+    usePlugins(value: PuppeteerExtraPlugin[]) {
+        this.driverParams.usePlugins = value
         return this
     }
 
