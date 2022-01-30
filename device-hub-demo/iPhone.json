@@ -11,11 +11,11 @@
     "languages": [
       "zh-CN"
     ],
-    "userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/96.0.4664.101 Mobile/15E148 Safari/604.1",
+    "userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/97.0.4692.84 Mobile/15E148 Safari/604.1",
     "appCodeName": "Mozilla",
     "appMinorVersion": "_$obj!_undefined_//+_",
     "appName": "Netscape",
-    "appVersion": "5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/96.0.4664.101 Mobile/15E148 Safari/604.1",
+    "appVersion": "5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/97.0.4692.84 Mobile/15E148 Safari/604.1",
     "buildID": "_$obj!_undefined_//+_",
     "platform": "iPhone",
     "product": "Gecko",
@@ -36,8 +36,7 @@
     "bluetooth": "_$obj!_undefined_//+_",
     "language": "zh-CN",
     "systemLanguage": "_$obj!_undefined_//+_",
-    "userLanguage": "_$obj!_undefined_//+_",
-    "pdfViewerEnabled": "_$obj!_undefined_//+_"
+    "userLanguage": "_$obj!_undefined_//+_"
   },
   "window": {
     "innerWidth": 980,
@@ -81,6 +80,10 @@
     "height": 896,
     "colorDepth": 32,
     "pixelDepth": 32
+  },
+  "body": {
+    "clientWidth": 964,
+    "clientHeight": 43
   },
   "webgl": {
     "supportedExtensions": [
@@ -3906,7 +3909,8 @@
     "ontouchforcechange",
     "visualViewport",
     "caches",
-    "createImageBitmap"
+    "createImageBitmap",
+    "webkit"
   ],
   "htmlElementVersion": [
     "version",
@@ -4481,352 +4485,25 @@
       "voiceURI": "com.apple.ttsbundle.Mei-Jia-compact"
     }
   ],
-  "webRTC": {
-    "capabilities": {
-      "sender": {
-        "audio": {
-          "codecs": [
-            {
-              "channels": 2,
-              "clockRate": 48000,
-              "mimeType": "audio/opus",
-              "sdpFmtpLine": "minptime=10;useinbandfec=1"
-            },
-            {
-              "channels": 1,
-              "clockRate": 16000,
-              "mimeType": "audio/ISAC"
-            },
-            {
-              "channels": 1,
-              "clockRate": 8000,
-              "mimeType": "audio/G722"
-            },
-            {
-              "channels": 1,
-              "clockRate": 8000,
-              "mimeType": "audio/PCMU"
-            },
-            {
-              "channels": 1,
-              "clockRate": 8000,
-              "mimeType": "audio/PCMA"
-            },
-            {
-              "channels": 1,
-              "clockRate": 16000,
-              "mimeType": "audio/CN"
-            },
-            {
-              "channels": 1,
-              "clockRate": 8000,
-              "mimeType": "audio/CN"
-            },
-            {
-              "channels": 1,
-              "clockRate": 48000,
-              "mimeType": "audio/telephone-event"
-            },
-            {
-              "channels": 1,
-              "clockRate": 16000,
-              "mimeType": "audio/telephone-event"
-            },
-            {
-              "channels": 1,
-              "clockRate": 8000,
-              "mimeType": "audio/telephone-event"
-            }
-          ],
-          "headerExtensions": [
-            {
-              "uri": "urn:ietf:params:rtp-hdrext:ssrc-audio-level"
-            },
-            {
-              "uri": "http://www.webrtc.org/experiments/rtp-hdrext/abs-send-time"
-            },
-            {
-              "uri": "http://www.ietf.org/id/draft-holmer-rmcat-transport-wide-cc-extensions-01"
-            },
-            {
-              "uri": "urn:ietf:params:rtp-hdrext:sdes:mid"
-            },
-            {
-              "uri": "urn:ietf:params:rtp-hdrext:sdes:rtp-stream-id"
-            },
-            {
-              "uri": "urn:ietf:params:rtp-hdrext:sdes:repaired-rtp-stream-id"
-            }
-          ]
-        },
-        "video": {
-          "codecs": [
-            {
-              "clockRate": 90000,
-              "mimeType": "video/H264",
-              "sdpFmtpLine": "level-asymmetry-allowed=1;packetization-mode=1;profile-level-id=640c1f"
-            },
-            {
-              "clockRate": 90000,
-              "mimeType": "video/rtx"
-            },
-            {
-              "clockRate": 90000,
-              "mimeType": "video/H264",
-              "sdpFmtpLine": "level-asymmetry-allowed=1;packetization-mode=1;profile-level-id=42e01f"
-            },
-            {
-              "clockRate": 90000,
-              "mimeType": "video/H264",
-              "sdpFmtpLine": "level-asymmetry-allowed=1;packetization-mode=0;profile-level-id=640c1f"
-            },
-            {
-              "clockRate": 90000,
-              "mimeType": "video/H264",
-              "sdpFmtpLine": "level-asymmetry-allowed=1;packetization-mode=0;profile-level-id=42e01f"
-            },
-            {
-              "clockRate": 90000,
-              "mimeType": "video/VP8"
-            },
-            {
-              "clockRate": 90000,
-              "mimeType": "video/VP9",
-              "sdpFmtpLine": "profile-id=0"
-            },
-            {
-              "clockRate": 90000,
-              "mimeType": "video/red"
-            },
-            {
-              "clockRate": 90000,
-              "mimeType": "video/ulpfec"
-            }
-          ],
-          "headerExtensions": [
-            {
-              "uri": "urn:ietf:params:rtp-hdrext:toffset"
-            },
-            {
-              "uri": "http://www.webrtc.org/experiments/rtp-hdrext/abs-send-time"
-            },
-            {
-              "uri": "urn:3gpp:video-orientation"
-            },
-            {
-              "uri": "http://www.ietf.org/id/draft-holmer-rmcat-transport-wide-cc-extensions-01"
-            },
-            {
-              "uri": "http://www.webrtc.org/experiments/rtp-hdrext/playout-delay"
-            },
-            {
-              "uri": "http://www.webrtc.org/experiments/rtp-hdrext/video-content-type"
-            },
-            {
-              "uri": "http://www.webrtc.org/experiments/rtp-hdrext/video-timing"
-            },
-            {
-              "uri": "http://www.webrtc.org/experiments/rtp-hdrext/color-space"
-            },
-            {
-              "uri": "urn:ietf:params:rtp-hdrext:sdes:mid"
-            },
-            {
-              "uri": "urn:ietf:params:rtp-hdrext:sdes:rtp-stream-id"
-            },
-            {
-              "uri": "urn:ietf:params:rtp-hdrext:sdes:repaired-rtp-stream-id"
-            }
-          ]
-        }
-      },
-      "receiver": {
-        "audio": {
-          "codecs": [
-            {
-              "channels": 2,
-              "clockRate": 48000,
-              "mimeType": "audio/opus",
-              "sdpFmtpLine": "minptime=10;useinbandfec=1"
-            },
-            {
-              "channels": 1,
-              "clockRate": 16000,
-              "mimeType": "audio/ISAC"
-            },
-            {
-              "channels": 1,
-              "clockRate": 8000,
-              "mimeType": "audio/G722"
-            },
-            {
-              "channels": 1,
-              "clockRate": 8000,
-              "mimeType": "audio/PCMU"
-            },
-            {
-              "channels": 1,
-              "clockRate": 8000,
-              "mimeType": "audio/PCMA"
-            },
-            {
-              "channels": 1,
-              "clockRate": 16000,
-              "mimeType": "audio/CN"
-            },
-            {
-              "channels": 1,
-              "clockRate": 8000,
-              "mimeType": "audio/CN"
-            },
-            {
-              "channels": 1,
-              "clockRate": 48000,
-              "mimeType": "audio/telephone-event"
-            },
-            {
-              "channels": 1,
-              "clockRate": 16000,
-              "mimeType": "audio/telephone-event"
-            },
-            {
-              "channels": 1,
-              "clockRate": 8000,
-              "mimeType": "audio/telephone-event"
-            }
-          ],
-          "headerExtensions": [
-            {
-              "uri": "urn:ietf:params:rtp-hdrext:ssrc-audio-level"
-            },
-            {
-              "uri": "http://www.webrtc.org/experiments/rtp-hdrext/abs-send-time"
-            },
-            {
-              "uri": "http://www.ietf.org/id/draft-holmer-rmcat-transport-wide-cc-extensions-01"
-            },
-            {
-              "uri": "urn:ietf:params:rtp-hdrext:sdes:mid"
-            },
-            {
-              "uri": "urn:ietf:params:rtp-hdrext:sdes:rtp-stream-id"
-            },
-            {
-              "uri": "urn:ietf:params:rtp-hdrext:sdes:repaired-rtp-stream-id"
-            }
-          ]
-        },
-        "video": {
-          "codecs": [
-            {
-              "clockRate": 90000,
-              "mimeType": "video/H264",
-              "sdpFmtpLine": "level-asymmetry-allowed=1;packetization-mode=1;profile-level-id=640c1f"
-            },
-            {
-              "clockRate": 90000,
-              "mimeType": "video/rtx"
-            },
-            {
-              "clockRate": 90000,
-              "mimeType": "video/H264",
-              "sdpFmtpLine": "level-asymmetry-allowed=1;packetization-mode=1;profile-level-id=42e01f"
-            },
-            {
-              "clockRate": 90000,
-              "mimeType": "video/H264",
-              "sdpFmtpLine": "level-asymmetry-allowed=1;packetization-mode=0;profile-level-id=640c1f"
-            },
-            {
-              "clockRate": 90000,
-              "mimeType": "video/H264",
-              "sdpFmtpLine": "level-asymmetry-allowed=1;packetization-mode=0;profile-level-id=42e01f"
-            },
-            {
-              "clockRate": 90000,
-              "mimeType": "video/VP8"
-            },
-            {
-              "clockRate": 90000,
-              "mimeType": "video/VP9",
-              "sdpFmtpLine": "profile-id=0"
-            },
-            {
-              "clockRate": 90000,
-              "mimeType": "video/red"
-            },
-            {
-              "clockRate": 90000,
-              "mimeType": "video/ulpfec"
-            },
-            {
-              "clockRate": 90000,
-              "mimeType": "video/flexfec-03",
-              "sdpFmtpLine": "repair-window=10000000"
-            }
-          ],
-          "headerExtensions": [
-            {
-              "uri": "urn:ietf:params:rtp-hdrext:toffset"
-            },
-            {
-              "uri": "http://www.webrtc.org/experiments/rtp-hdrext/abs-send-time"
-            },
-            {
-              "uri": "urn:3gpp:video-orientation"
-            },
-            {
-              "uri": "http://www.ietf.org/id/draft-holmer-rmcat-transport-wide-cc-extensions-01"
-            },
-            {
-              "uri": "http://www.webrtc.org/experiments/rtp-hdrext/playout-delay"
-            },
-            {
-              "uri": "http://www.webrtc.org/experiments/rtp-hdrext/video-content-type"
-            },
-            {
-              "uri": "http://www.webrtc.org/experiments/rtp-hdrext/video-timing"
-            },
-            {
-              "uri": "http://www.webrtc.org/experiments/rtp-hdrext/color-space"
-            },
-            {
-              "uri": "urn:ietf:params:rtp-hdrext:sdes:mid"
-            },
-            {
-              "uri": "urn:ietf:params:rtp-hdrext:sdes:rtp-stream-id"
-            },
-            {
-              "uri": "urn:ietf:params:rtp-hdrext:sdes:repaired-rtp-stream-id"
-            }
-          ]
-        }
-      },
-      "sdp": {
-        "sdp": "v=0\r\no=- 2507674200958234928 3 IN IP4 127.0.0.1\r\ns=-\r\nt=0 0\r\na=group:BUNDLE 1\r\na=extmap-allow-mixed\r\na=msid-semantic: WMS\r\nm=application 9 UDP/DTLS/SCTP webrtc-datachannel\r\nc=IN IP4 0.0.0.0\r\na=ice-ufrag:XKHJ\r\na=ice-pwd:v3diADS3NEkb3g/Jf/9/3HTy\r\na=ice-options:trickle\r\na=fingerprint:sha-256 D1:A2:55:27:83:4D:F4:DF:12:FC:6C:36:CC:5A:90:70:2D:AF:3C:0C:91:F2:C7:34:5D:EE:E7:12:A8:0B:95:D0\r\na=setup:actpass\r\na=mid:1\r\na=sctp-port:5000\r\na=max-message-size:262144\r\n",
-        "type": "offer"
-      }
+  "rtc": [
+    {
+      "candidate": "candidate:2902949684 1 udp 2122260223 d1225c6d-f251-4af7-98af-13ea6635b49e.local 61666 typ host generation 0 ufrag WGJ+ network-id 1 network-cost 10",
+      "reg": null
     },
-    "localDescription": {
-      "type": "offer",
-      "sdp": "v=0\r\no=- 2507674200958234928 2 IN IP4 127.0.0.1\r\ns=-\r\nt=0 0\r\na=group:BUNDLE 0\r\na=extmap-allow-mixed\r\na=msid-semantic: WMS\r\nm=application 51379 UDP/DTLS/SCTP webrtc-datachannel\r\nc=IN IP4 0.0.0.0\r\na=candidate:2902949684 1 udp 2122260223 a41e661a-d887-474a-9db6-8815536dc3a1.local 51379 typ host generation 0 network-id 1 network-cost 10\r\na=candidate:3817112516 1 tcp 1518280447 a41e661a-d887-474a-9db6-8815536dc3a1.local 9 typ host tcptype active generation 0 network-id 1 network-cost 10\r\na=candidate:743405952 1 udp 1686052607 76.67.143.197 51379 typ srflx raddr 0.0.0.0 rport 0 generation 0 network-id 1 network-cost 10\r\na=ice-ufrag:Z0cI\r\na=ice-pwd:G/epJ6fChycEyBSeoyG83beh\r\na=ice-options:trickle\r\na=fingerprint:sha-256 D1:A2:55:27:83:4D:F4:DF:12:FC:6C:36:CC:5A:90:70:2D:AF:3C:0C:91:F2:C7:34:5D:EE:E7:12:A8:0B:95:D0\r\na=setup:actpass\r\na=mid:0\r\na=sctp-port:5000\r\na=max-message-size:262144\r\n"
+    {
+      "candidate": "candidate:743405952 1 udp 1686052607 71.67.113.137 61666 typ srflx raddr 0.0.0.0 rport 0 generation 0 ufrag WGJ+ network-id 1 network-cost 10",
+      "reg": [
+        "71.67.113.137",
+        "71.67.113.137",
+        ".137",
+        null
+      ]
     },
-    "candidate": {
-      "candidate": "candidate:743405952 1 udp 1686052607 76.67.143.197 51379 typ srflx raddr 0.0.0.0 rport 0 generation 0 ufrag Z0cI network-id 1 network-cost 10",
-      "sdpMid": "0",
-      "sdpMLineIndex": 0,
-      "foundation": "743405952",
-      "component": "rtp",
-      "priority": 1686052607,
-      "address": "76.67.143.197",
-      "protocol": "udp",
-      "port": 51379,
-      "type": "srflx",
-      "relatedAddress": "0.0.0.0",
-      "relatedPort": 0,
-      "usernameFragment": "Z0cI"
+    {
+      "candidate": "candidate:3817112516 1 tcp 1518280447 d1225c6d-f251-4af7-98af-13ea6635b49e.local 9 typ host tcptype active generation 0 ufrag WGJ+ network-id 1 network-cost 10",
+      "reg": null
     }
-  },
+  ],
   "allFonts": [
     {
       "name": "sans-serif",

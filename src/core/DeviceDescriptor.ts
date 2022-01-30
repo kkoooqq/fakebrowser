@@ -16,8 +16,8 @@ export enum FontExistTypes {
  * Source information for browser fingerprint.
  * Includes plugins, gpu, fonts, webgl, etc.
  *
- * How do we get this information?
- * Use dumpDD.js to collect fingerprints.
+ * Q: How do we get this information?
+ * A: Use dumpDD.js to collect fingerprints.
  */
 export interface DeviceDescriptor {
     plugins: {

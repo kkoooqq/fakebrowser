@@ -64,7 +64,7 @@
   },
   "gpu": {
     "vendor": "Google Inc. (Intel)",
-    "renderer": "ANGLE (Intel, Intel(R) HD Graphics 4600 Direct3D11 vs_5_0 ps_5_0, D3D11-10.18.10.3262)"
+    "renderer": "ANGLE (Intel, Intel(R) Iris(R) Xe Graphics Direct3D11 vs_5_0 ps_5_0, D3D11-27.20.100.9749)"
   },
   "defaultCS": {
     "0": "accent-color",
@@ -189,216 +189,219 @@
     "119": "font-size",
     "120": "font-stretch",
     "121": "font-style",
-    "122": "font-variant",
-    "123": "font-variant-caps",
-    "124": "font-variant-east-asian",
-    "125": "font-variant-ligatures",
-    "126": "font-variant-numeric",
-    "127": "font-weight",
-    "128": "grid-auto-columns",
-    "129": "grid-auto-flow",
-    "130": "grid-auto-rows",
-    "131": "grid-column-end",
-    "132": "grid-column-start",
-    "133": "grid-row-end",
-    "134": "grid-row-start",
-    "135": "grid-template-areas",
-    "136": "grid-template-columns",
-    "137": "grid-template-rows",
-    "138": "height",
-    "139": "hyphens",
-    "140": "image-orientation",
-    "141": "image-rendering",
-    "142": "inline-size",
-    "143": "inset-block-end",
-    "144": "inset-block-start",
-    "145": "inset-inline-end",
-    "146": "inset-inline-start",
-    "147": "isolation",
-    "148": "justify-content",
-    "149": "justify-items",
-    "150": "justify-self",
-    "151": "left",
-    "152": "letter-spacing",
-    "153": "lighting-color",
-    "154": "line-break",
-    "155": "line-height",
-    "156": "list-style-image",
-    "157": "list-style-position",
-    "158": "list-style-type",
-    "159": "margin-block-end",
-    "160": "margin-block-start",
-    "161": "margin-bottom",
-    "162": "margin-inline-end",
-    "163": "margin-inline-start",
-    "164": "margin-left",
-    "165": "margin-right",
-    "166": "margin-top",
-    "167": "marker-end",
-    "168": "marker-mid",
-    "169": "marker-start",
-    "170": "mask-type",
-    "171": "max-block-size",
-    "172": "max-height",
-    "173": "max-inline-size",
-    "174": "max-width",
-    "175": "min-block-size",
-    "176": "min-height",
-    "177": "min-inline-size",
-    "178": "min-width",
-    "179": "mix-blend-mode",
-    "180": "object-fit",
-    "181": "object-position",
-    "182": "offset-distance",
-    "183": "offset-path",
-    "184": "offset-rotate",
-    "185": "opacity",
-    "186": "order",
-    "187": "orphans",
-    "188": "outline-color",
-    "189": "outline-offset",
-    "190": "outline-style",
-    "191": "outline-width",
-    "192": "overflow-anchor",
-    "193": "overflow-clip-margin",
-    "194": "overflow-wrap",
-    "195": "overflow-x",
-    "196": "overflow-y",
-    "197": "overscroll-behavior-block",
-    "198": "overscroll-behavior-inline",
-    "199": "padding-block-end",
-    "200": "padding-block-start",
-    "201": "padding-bottom",
-    "202": "padding-inline-end",
-    "203": "padding-inline-start",
-    "204": "padding-left",
-    "205": "padding-right",
-    "206": "padding-top",
-    "207": "paint-order",
-    "208": "perspective",
-    "209": "perspective-origin",
-    "210": "pointer-events",
-    "211": "position",
-    "212": "r",
-    "213": "resize",
-    "214": "right",
-    "215": "row-gap",
-    "216": "ruby-position",
-    "217": "rx",
-    "218": "ry",
-    "219": "scroll-behavior",
-    "220": "scroll-margin-block-end",
-    "221": "scroll-margin-block-start",
-    "222": "scroll-margin-inline-end",
-    "223": "scroll-margin-inline-start",
-    "224": "scroll-padding-block-end",
-    "225": "scroll-padding-block-start",
-    "226": "scroll-padding-inline-end",
-    "227": "scroll-padding-inline-start",
-    "228": "scrollbar-gutter",
-    "229": "shape-image-threshold",
-    "230": "shape-margin",
-    "231": "shape-outside",
-    "232": "shape-rendering",
-    "233": "speak",
-    "234": "stop-color",
-    "235": "stop-opacity",
-    "236": "stroke",
-    "237": "stroke-dasharray",
-    "238": "stroke-dashoffset",
-    "239": "stroke-linecap",
-    "240": "stroke-linejoin",
-    "241": "stroke-miterlimit",
-    "242": "stroke-opacity",
-    "243": "stroke-width",
-    "244": "tab-size",
-    "245": "table-layout",
-    "246": "text-align",
-    "247": "text-align-last",
-    "248": "text-anchor",
-    "249": "text-decoration",
-    "250": "text-decoration-color",
-    "251": "text-decoration-line",
-    "252": "text-decoration-skip-ink",
-    "253": "text-decoration-style",
-    "254": "text-indent",
-    "255": "text-overflow",
-    "256": "text-rendering",
-    "257": "text-shadow",
-    "258": "text-size-adjust",
-    "259": "text-transform",
-    "260": "text-underline-position",
-    "261": "top",
-    "262": "touch-action",
-    "263": "transform",
-    "264": "transform-origin",
-    "265": "transform-style",
-    "266": "transition-delay",
-    "267": "transition-duration",
-    "268": "transition-property",
-    "269": "transition-timing-function",
-    "270": "unicode-bidi",
-    "271": "user-select",
-    "272": "vector-effect",
-    "273": "vertical-align",
-    "274": "visibility",
-    "275": "white-space",
-    "276": "widows",
-    "277": "width",
-    "278": "will-change",
-    "279": "word-break",
-    "280": "word-spacing",
-    "281": "writing-mode",
-    "282": "x",
-    "283": "y",
-    "284": "z-index",
-    "285": "zoom",
-    "286": "-webkit-border-horizontal-spacing",
-    "287": "-webkit-border-image",
-    "288": "-webkit-border-vertical-spacing",
-    "289": "-webkit-box-align",
-    "290": "-webkit-box-decoration-break",
-    "291": "-webkit-box-direction",
-    "292": "-webkit-box-flex",
-    "293": "-webkit-box-ordinal-group",
-    "294": "-webkit-box-orient",
-    "295": "-webkit-box-pack",
-    "296": "-webkit-box-reflect",
-    "297": "-webkit-font-smoothing",
-    "298": "-webkit-highlight",
-    "299": "-webkit-hyphenate-character",
-    "300": "-webkit-line-break",
-    "301": "-webkit-line-clamp",
-    "302": "-webkit-locale",
-    "303": "-webkit-mask-box-image",
-    "304": "-webkit-mask-box-image-outset",
-    "305": "-webkit-mask-box-image-repeat",
-    "306": "-webkit-mask-box-image-slice",
-    "307": "-webkit-mask-box-image-source",
-    "308": "-webkit-mask-box-image-width",
-    "309": "-webkit-mask-clip",
-    "310": "-webkit-mask-composite",
-    "311": "-webkit-mask-image",
-    "312": "-webkit-mask-origin",
-    "313": "-webkit-mask-position",
-    "314": "-webkit-mask-repeat",
-    "315": "-webkit-mask-size",
-    "316": "-webkit-print-color-adjust",
-    "317": "-webkit-rtl-ordering",
-    "318": "-webkit-tap-highlight-color",
-    "319": "-webkit-text-combine",
-    "320": "-webkit-text-decorations-in-effect",
-    "321": "-webkit-text-emphasis-color",
-    "322": "-webkit-text-emphasis-position",
-    "323": "-webkit-text-emphasis-style",
-    "324": "-webkit-text-fill-color",
-    "325": "-webkit-text-orientation",
-    "326": "-webkit-text-security",
-    "327": "-webkit-text-stroke-color",
-    "328": "-webkit-text-stroke-width",
-    "329": "-webkit-user-drag",
-    "330": "-webkit-user-modify",
-    "331": "-webkit-writing-mode",
+    "122": "font-synthesis-small-caps",
+    "123": "font-synthesis-style",
+    "124": "font-synthesis-weight",
+    "125": "font-variant",
+    "126": "font-variant-caps",
+    "127": "font-variant-east-asian",
+    "128": "font-variant-ligatures",
+    "129": "font-variant-numeric",
+    "130": "font-weight",
+    "131": "grid-auto-columns",
+    "132": "grid-auto-flow",
+    "133": "grid-auto-rows",
+    "134": "grid-column-end",
+    "135": "grid-column-start",
+    "136": "grid-row-end",
+    "137": "grid-row-start",
+    "138": "grid-template-areas",
+    "139": "grid-template-columns",
+    "140": "grid-template-rows",
+    "141": "height",
+    "142": "hyphens",
+    "143": "image-orientation",
+    "144": "image-rendering",
+    "145": "inline-size",
+    "146": "inset-block-end",
+    "147": "inset-block-start",
+    "148": "inset-inline-end",
+    "149": "inset-inline-start",
+    "150": "isolation",
+    "151": "justify-content",
+    "152": "justify-items",
+    "153": "justify-self",
+    "154": "left",
+    "155": "letter-spacing",
+    "156": "lighting-color",
+    "157": "line-break",
+    "158": "line-height",
+    "159": "list-style-image",
+    "160": "list-style-position",
+    "161": "list-style-type",
+    "162": "margin-block-end",
+    "163": "margin-block-start",
+    "164": "margin-bottom",
+    "165": "margin-inline-end",
+    "166": "margin-inline-start",
+    "167": "margin-left",
+    "168": "margin-right",
+    "169": "margin-top",
+    "170": "marker-end",
+    "171": "marker-mid",
+    "172": "marker-start",
+    "173": "mask-type",
+    "174": "max-block-size",
+    "175": "max-height",
+    "176": "max-inline-size",
+    "177": "max-width",
+    "178": "min-block-size",
+    "179": "min-height",
+    "180": "min-inline-size",
+    "181": "min-width",
+    "182": "mix-blend-mode",
+    "183": "object-fit",
+    "184": "object-position",
+    "185": "offset-distance",
+    "186": "offset-path",
+    "187": "offset-rotate",
+    "188": "opacity",
+    "189": "order",
+    "190": "orphans",
+    "191": "outline-color",
+    "192": "outline-offset",
+    "193": "outline-style",
+    "194": "outline-width",
+    "195": "overflow-anchor",
+    "196": "overflow-clip-margin",
+    "197": "overflow-wrap",
+    "198": "overflow-x",
+    "199": "overflow-y",
+    "200": "overscroll-behavior-block",
+    "201": "overscroll-behavior-inline",
+    "202": "padding-block-end",
+    "203": "padding-block-start",
+    "204": "padding-bottom",
+    "205": "padding-inline-end",
+    "206": "padding-inline-start",
+    "207": "padding-left",
+    "208": "padding-right",
+    "209": "padding-top",
+    "210": "paint-order",
+    "211": "perspective",
+    "212": "perspective-origin",
+    "213": "pointer-events",
+    "214": "position",
+    "215": "r",
+    "216": "resize",
+    "217": "right",
+    "218": "row-gap",
+    "219": "ruby-position",
+    "220": "rx",
+    "221": "ry",
+    "222": "scroll-behavior",
+    "223": "scroll-margin-block-end",
+    "224": "scroll-margin-block-start",
+    "225": "scroll-margin-inline-end",
+    "226": "scroll-margin-inline-start",
+    "227": "scroll-padding-block-end",
+    "228": "scroll-padding-block-start",
+    "229": "scroll-padding-inline-end",
+    "230": "scroll-padding-inline-start",
+    "231": "scrollbar-gutter",
+    "232": "shape-image-threshold",
+    "233": "shape-margin",
+    "234": "shape-outside",
+    "235": "shape-rendering",
+    "236": "speak",
+    "237": "stop-color",
+    "238": "stop-opacity",
+    "239": "stroke",
+    "240": "stroke-dasharray",
+    "241": "stroke-dashoffset",
+    "242": "stroke-linecap",
+    "243": "stroke-linejoin",
+    "244": "stroke-miterlimit",
+    "245": "stroke-opacity",
+    "246": "stroke-width",
+    "247": "tab-size",
+    "248": "table-layout",
+    "249": "text-align",
+    "250": "text-align-last",
+    "251": "text-anchor",
+    "252": "text-decoration",
+    "253": "text-decoration-color",
+    "254": "text-decoration-line",
+    "255": "text-decoration-skip-ink",
+    "256": "text-decoration-style",
+    "257": "text-indent",
+    "258": "text-overflow",
+    "259": "text-rendering",
+    "260": "text-shadow",
+    "261": "text-size-adjust",
+    "262": "text-transform",
+    "263": "text-underline-position",
+    "264": "top",
+    "265": "touch-action",
+    "266": "transform",
+    "267": "transform-origin",
+    "268": "transform-style",
+    "269": "transition-delay",
+    "270": "transition-duration",
+    "271": "transition-property",
+    "272": "transition-timing-function",
+    "273": "unicode-bidi",
+    "274": "user-select",
+    "275": "vector-effect",
+    "276": "vertical-align",
+    "277": "visibility",
+    "278": "white-space",
+    "279": "widows",
+    "280": "width",
+    "281": "will-change",
+    "282": "word-break",
+    "283": "word-spacing",
+    "284": "writing-mode",
+    "285": "x",
+    "286": "y",
+    "287": "z-index",
+    "288": "zoom",
+    "289": "-webkit-border-horizontal-spacing",
+    "290": "-webkit-border-image",
+    "291": "-webkit-border-vertical-spacing",
+    "292": "-webkit-box-align",
+    "293": "-webkit-box-decoration-break",
+    "294": "-webkit-box-direction",
+    "295": "-webkit-box-flex",
+    "296": "-webkit-box-ordinal-group",
+    "297": "-webkit-box-orient",
+    "298": "-webkit-box-pack",
+    "299": "-webkit-box-reflect",
+    "300": "-webkit-font-smoothing",
+    "301": "-webkit-highlight",
+    "302": "-webkit-hyphenate-character",
+    "303": "-webkit-line-break",
+    "304": "-webkit-line-clamp",
+    "305": "-webkit-locale",
+    "306": "-webkit-mask-box-image",
+    "307": "-webkit-mask-box-image-outset",
+    "308": "-webkit-mask-box-image-repeat",
+    "309": "-webkit-mask-box-image-slice",
+    "310": "-webkit-mask-box-image-source",
+    "311": "-webkit-mask-box-image-width",
+    "312": "-webkit-mask-clip",
+    "313": "-webkit-mask-composite",
+    "314": "-webkit-mask-image",
+    "315": "-webkit-mask-origin",
+    "316": "-webkit-mask-position",
+    "317": "-webkit-mask-repeat",
+    "318": "-webkit-mask-size",
+    "319": "-webkit-print-color-adjust",
+    "320": "-webkit-rtl-ordering",
+    "321": "-webkit-tap-highlight-color",
+    "322": "-webkit-text-combine",
+    "323": "-webkit-text-decorations-in-effect",
+    "324": "-webkit-text-emphasis-color",
+    "325": "-webkit-text-emphasis-position",
+    "326": "-webkit-text-emphasis-style",
+    "327": "-webkit-text-fill-color",
+    "328": "-webkit-text-orientation",
+    "329": "-webkit-text-security",
+    "330": "-webkit-text-stroke-color",
+    "331": "-webkit-text-stroke-width",
+    "332": "-webkit-user-drag",
+    "333": "-webkit-user-modify",
+    "334": "-webkit-writing-mode",
     "accentColor": "auto",
     "additiveSymbols": "",
     "alignContent": "normal",
@@ -570,6 +573,10 @@
     "fontSize": "16px",
     "fontStretch": "100%",
     "fontStyle": "normal",
+    "fontSynthesis": "weight style small-caps",
+    "fontSynthesisSmallCaps": "auto",
+    "fontSynthesisStyle": "auto",
+    "fontSynthesisWeight": "auto",
     "fontVariant": "normal",
     "fontVariantCaps": "normal",
     "fontVariantEastAsian": "normal",
@@ -971,13 +978,11 @@
     "zIndex": "auto",
     "zoom": "1",
     "cssText": "",
-    "length": 332,
+    "length": 335,
     "parentRule": null,
     "cssFloat": "none"
   },
   "windowVersion": [
-    "0",
-    "1",
     "Object",
     "Function",
     "Array",
@@ -1670,9 +1675,11 @@
     "onreset",
     "onresize",
     "onscroll",
+    "onsecuritypolicyviolation",
     "onseeked",
     "onseeking",
     "onselect",
+    "onslotchange",
     "onstalled",
     "onsubmit",
     "onsuspend",
@@ -1840,6 +1847,13 @@
     "AuthenticatorAttestationResponse",
     "AuthenticatorResponse",
     "PublicKeyCredential",
+    "Bluetooth",
+    "BluetoothCharacteristicProperties",
+    "BluetoothDevice",
+    "BluetoothRemoteGATTCharacteristic",
+    "BluetoothRemoteGATTDescriptor",
+    "BluetoothRemoteGATTServer",
+    "BluetoothRemoteGATTService",
     "EyeDropper",
     "FileSystemDirectoryHandle",
     "FileSystemFileHandle",
@@ -1887,6 +1901,10 @@
     "VirtualKeyboard",
     "WakeLock",
     "WakeLockSentinel",
+    "WebTransport",
+    "WebTransportBidirectionalStream",
+    "WebTransportDatagramDuplexStream",
+    "WebTransportError",
     "XRAnchor",
     "XRAnchorSet",
     "XRBoundedReferenceSpace",
@@ -1935,6 +1953,7 @@
     "BackgroundFetchManager",
     "BackgroundFetchRecord",
     "BackgroundFetchRegistration",
+    "BluetoothUUID",
     "CustomStateSet",
     "DelegatedInkTrailPresenter",
     "Ink",
@@ -1981,53 +2000,7 @@
     "webkitSpeechRecognitionEvent",
     "openDatabase",
     "webkitRequestFileSystem",
-    "webkitResolveLocalFileSystemURL",
-    "IE",
-    "lozadObserver",
-    "getParam",
-    "removeParam",
-    "getScript",
-    "renderGameIconsHTML",
-    "adsOnDetectedNew",
-    "adsOnNotDetectedNew",
-    "newDetectFunc",
-    "Zepto",
-    "$",
-    "lozad",
-    "isMobile",
-    "nas",
-    "winHeight",
-    "winWidth",
-    "winDevice",
-    "isSpoFx",
-    "adsbygoogle",
-    "adConfig",
-    "adBreak",
-    "LikeFn",
-    "FavFn",
-    "RecordFn",
-    "StatFn",
-    "GameListFn",
-    "BaseFn",
-    "TransFn",
-    "xiaoya",
-    "pagespeed",
-    "favs",
-    "lanlib",
-    "gtag",
-    "dataLayer",
-    "FontAwesomeKitConfig",
-    "$exclude",
-    "$major",
-    "GoogleAnalyticsObject",
-    "ga",
-    "GooglemKTybQhCsO",
-    "GooglebQhCsO",
-    "gaplugins",
-    "gaGlobal",
-    "gaData",
-    "GooglevevNYA",
-    "GoogleTyFxhY"
+    "webkitResolveLocalFileSystemURL"
   ],
   "htmlElementVersion": [
     "version",
@@ -2101,9 +2074,11 @@
     "onreset",
     "onresize",
     "onscroll",
+    "onsecuritypolicyviolation",
     "onseeked",
     "onseeking",
     "onselect",
+    "onslotchange",
     "onstalled",
     "onsubmit",
     "onsuspend",
@@ -3446,7 +3421,7 @@
       },
       "36183": {
         "type": "Number",
-        "value": 8
+        "value": 16
       },
       "36347": {
         "type": "Number",
@@ -3597,16 +3572,16 @@
       "en-US",
       "en"
     ],
-    "userAgent": "Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36",
     "appCodeName": "Mozilla",
     "appMinorVersion": "_$obj!_undefined_//+_",
     "appName": "Netscape",
-    "appVersion": "5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36",
+    "appVersion": "5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36",
     "buildID": "_$obj!_undefined_//+_",
     "platform": "Win32",
     "product": "Gecko",
     "productSub": "20030107",
-    "hardwareConcurrency": 4,
+    "hardwareConcurrency": 8,
     "cpuClass": "_$obj!_undefined_//+_",
     "maxTouchPoints": 0,
     "oscpu": "_$obj!_undefined_//+_",
@@ -3619,17 +3594,16 @@
     "credentials": "_$obj!_//+_",
     "storage": "_$obj!_//+_",
     "requestMediaKeySystemAccess": "_$obj!_//+_",
-    "bluetooth": "_$obj!_undefined_//+_",
+    "bluetooth": "_$obj!_//+_",
     "language": "en-US",
     "systemLanguage": "_$obj!_undefined_//+_",
-    "userLanguage": "_$obj!_undefined_//+_",
-    "pdfViewerEnabled": true
+    "userLanguage": "_$obj!_undefined_//+_"
   },
   "window": {
-    "innerWidth": 1360,
-    "innerHeight": 625,
-    "outerWidth": 1360,
-    "outerHeight": 728,
+    "innerWidth": 1846,
+    "innerHeight": 1009,
+    "outerWidth": 0,
+    "outerHeight": 0,
     "screenX": 0,
     "screenY": 0,
     "pageXOffset": 0,
@@ -3644,7 +3618,7 @@
     "mozRTCPeerConnection": "_$obj!_undefined_//+_",
     "postMessage": "_$obj!_//+_",
     "webkitRequestAnimationFrame": "_$obj!_//+_",
-    "BluetoothUUID": "_$obj!_undefined_//+_",
+    "BluetoothUUID": "_$obj!_//+_",
     "netscape": "_$obj!_undefined_//+_",
     "localStorage": "_$obj!_//+_",
     "sessionStorage": "_$obj!_//+_",
@@ -3659,28 +3633,24 @@
     "images": "_$obj!_//+_"
   },
   "screen": {
-    "availWidth": 1360,
-    "availHeight": 728,
-    "availLeft": 0,
+    "availWidth": 1846,
+    "availHeight": 1080,
+    "availLeft": 74,
     "availTop": 0,
-    "width": 1360,
-    "height": 768,
+    "width": 1920,
+    "height": 1080,
     "colorDepth": 24,
     "pixelDepth": 24
   },
-  "mediaDevices": [
-    {
-      "deviceId": "",
-      "kind": "audiooutput",
-      "label": "",
-      "groupId": "698d545722b0140278b1fe5aea1354e611a1103ec31db13bebc46ae92b40b8d5"
-    }
-  ],
+  "body": {
+    "clientWidth": 1830,
+    "clientHeight": 40
+  },
   "battery": {
-    "charging": true,
-    "chargingTime": 0,
-    "dischargingTime": null,
-    "level": 1
+    "charging": false,
+    "chargingTime": null,
+    "dischargingTime": 3473,
+    "level": 0.8
   },
   "keyboard": {
     "KeyA": "a",
@@ -3735,27 +3705,6 @@
   "voices": [
     {
       "default": true,
-      "lang": "en-US",
-      "localService": true,
-      "name": "Microsoft David Desktop - English (United States)",
-      "voiceURI": "Microsoft David Desktop - English (United States)"
-    },
-    {
-      "default": false,
-      "lang": "en-GB",
-      "localService": true,
-      "name": "Microsoft Hazel Desktop - English (Great Britain)",
-      "voiceURI": "Microsoft Hazel Desktop - English (Great Britain)"
-    },
-    {
-      "default": false,
-      "lang": "en-US",
-      "localService": true,
-      "name": "Microsoft Zira Desktop - English (United States)",
-      "voiceURI": "Microsoft Zira Desktop - English (United States)"
-    },
-    {
-      "default": false,
       "lang": "de-DE",
       "localService": false,
       "name": "Google Deutsch",
@@ -3992,459 +3941,41 @@
       "state": "prompt"
     }
   },
-  "webRTC": {
-    "capabilities": {
-      "sender": {
-        "audio": {
-          "codecs": [
-            {
-              "channels": 2,
-              "clockRate": 48000,
-              "mimeType": "audio/opus",
-              "sdpFmtpLine": "minptime=10;useinbandfec=1"
-            },
-            {
-              "channels": 2,
-              "clockRate": 48000,
-              "mimeType": "audio/red",
-              "sdpFmtpLine": "111/111"
-            },
-            {
-              "channels": 1,
-              "clockRate": 16000,
-              "mimeType": "audio/ISAC"
-            },
-            {
-              "channels": 1,
-              "clockRate": 32000,
-              "mimeType": "audio/ISAC"
-            },
-            {
-              "channels": 1,
-              "clockRate": 8000,
-              "mimeType": "audio/G722"
-            },
-            {
-              "channels": 1,
-              "clockRate": 8000,
-              "mimeType": "audio/PCMU"
-            },
-            {
-              "channels": 1,
-              "clockRate": 8000,
-              "mimeType": "audio/PCMA"
-            },
-            {
-              "channels": 1,
-              "clockRate": 32000,
-              "mimeType": "audio/CN"
-            },
-            {
-              "channels": 1,
-              "clockRate": 16000,
-              "mimeType": "audio/CN"
-            },
-            {
-              "channels": 1,
-              "clockRate": 8000,
-              "mimeType": "audio/CN"
-            },
-            {
-              "channels": 1,
-              "clockRate": 48000,
-              "mimeType": "audio/telephone-event"
-            },
-            {
-              "channels": 1,
-              "clockRate": 32000,
-              "mimeType": "audio/telephone-event"
-            },
-            {
-              "channels": 1,
-              "clockRate": 16000,
-              "mimeType": "audio/telephone-event"
-            },
-            {
-              "channels": 1,
-              "clockRate": 8000,
-              "mimeType": "audio/telephone-event"
-            }
-          ],
-          "headerExtensions": [
-            {
-              "direction": "sendrecv",
-              "uri": "urn:ietf:params:rtp-hdrext:ssrc-audio-level"
-            },
-            {
-              "direction": "sendrecv",
-              "uri": "http://www.webrtc.org/experiments/rtp-hdrext/abs-send-time"
-            },
-            {
-              "direction": "sendrecv",
-              "uri": "http://www.ietf.org/id/draft-holmer-rmcat-transport-wide-cc-extensions-01"
-            },
-            {
-              "direction": "sendrecv",
-              "uri": "urn:ietf:params:rtp-hdrext:sdes:mid"
-            },
-            {
-              "direction": "sendrecv",
-              "uri": "urn:ietf:params:rtp-hdrext:sdes:rtp-stream-id"
-            },
-            {
-              "direction": "sendrecv",
-              "uri": "urn:ietf:params:rtp-hdrext:sdes:repaired-rtp-stream-id"
-            }
-          ]
-        },
-        "video": {
-          "codecs": [
-            {
-              "clockRate": 90000,
-              "mimeType": "video/VP8"
-            },
-            {
-              "clockRate": 90000,
-              "mimeType": "video/rtx"
-            },
-            {
-              "clockRate": 90000,
-              "mimeType": "video/VP9",
-              "sdpFmtpLine": "profile-id=0"
-            },
-            {
-              "clockRate": 90000,
-              "mimeType": "video/VP9",
-              "sdpFmtpLine": "profile-id=2"
-            },
-            {
-              "clockRate": 90000,
-              "mimeType": "video/H264",
-              "sdpFmtpLine": "level-asymmetry-allowed=1;packetization-mode=1;profile-level-id=42001f"
-            },
-            {
-              "clockRate": 90000,
-              "mimeType": "video/H264",
-              "sdpFmtpLine": "level-asymmetry-allowed=1;packetization-mode=0;profile-level-id=42001f"
-            },
-            {
-              "clockRate": 90000,
-              "mimeType": "video/H264",
-              "sdpFmtpLine": "level-asymmetry-allowed=1;packetization-mode=1;profile-level-id=42e01f"
-            },
-            {
-              "clockRate": 90000,
-              "mimeType": "video/H264",
-              "sdpFmtpLine": "level-asymmetry-allowed=1;packetization-mode=0;profile-level-id=42e01f"
-            },
-            {
-              "clockRate": 90000,
-              "mimeType": "video/AV1"
-            },
-            {
-              "clockRate": 90000,
-              "mimeType": "video/red"
-            },
-            {
-              "clockRate": 90000,
-              "mimeType": "video/ulpfec"
-            }
-          ],
-          "headerExtensions": [
-            {
-              "direction": "sendrecv",
-              "uri": "urn:ietf:params:rtp-hdrext:toffset"
-            },
-            {
-              "direction": "sendrecv",
-              "uri": "http://www.webrtc.org/experiments/rtp-hdrext/abs-send-time"
-            },
-            {
-              "direction": "sendrecv",
-              "uri": "urn:3gpp:video-orientation"
-            },
-            {
-              "direction": "sendrecv",
-              "uri": "http://www.ietf.org/id/draft-holmer-rmcat-transport-wide-cc-extensions-01"
-            },
-            {
-              "direction": "sendrecv",
-              "uri": "http://www.webrtc.org/experiments/rtp-hdrext/playout-delay"
-            },
-            {
-              "direction": "sendrecv",
-              "uri": "http://www.webrtc.org/experiments/rtp-hdrext/video-content-type"
-            },
-            {
-              "direction": "sendrecv",
-              "uri": "http://www.webrtc.org/experiments/rtp-hdrext/video-timing"
-            },
-            {
-              "direction": "sendrecv",
-              "uri": "http://www.webrtc.org/experiments/rtp-hdrext/color-space"
-            },
-            {
-              "direction": "sendrecv",
-              "uri": "urn:ietf:params:rtp-hdrext:sdes:mid"
-            },
-            {
-              "direction": "sendrecv",
-              "uri": "urn:ietf:params:rtp-hdrext:sdes:rtp-stream-id"
-            },
-            {
-              "direction": "sendrecv",
-              "uri": "urn:ietf:params:rtp-hdrext:sdes:repaired-rtp-stream-id"
-            }
-          ]
-        }
-      },
-      "receiver": {
-        "audio": {
-          "codecs": [
-            {
-              "channels": 2,
-              "clockRate": 48000,
-              "mimeType": "audio/opus",
-              "sdpFmtpLine": "minptime=10;useinbandfec=1"
-            },
-            {
-              "channels": 2,
-              "clockRate": 48000,
-              "mimeType": "audio/red",
-              "sdpFmtpLine": "111/111"
-            },
-            {
-              "channels": 1,
-              "clockRate": 16000,
-              "mimeType": "audio/ISAC"
-            },
-            {
-              "channels": 1,
-              "clockRate": 32000,
-              "mimeType": "audio/ISAC"
-            },
-            {
-              "channels": 1,
-              "clockRate": 8000,
-              "mimeType": "audio/G722"
-            },
-            {
-              "channels": 1,
-              "clockRate": 8000,
-              "mimeType": "audio/PCMU"
-            },
-            {
-              "channels": 1,
-              "clockRate": 8000,
-              "mimeType": "audio/PCMA"
-            },
-            {
-              "channels": 1,
-              "clockRate": 32000,
-              "mimeType": "audio/CN"
-            },
-            {
-              "channels": 1,
-              "clockRate": 16000,
-              "mimeType": "audio/CN"
-            },
-            {
-              "channels": 1,
-              "clockRate": 8000,
-              "mimeType": "audio/CN"
-            },
-            {
-              "channels": 1,
-              "clockRate": 48000,
-              "mimeType": "audio/telephone-event"
-            },
-            {
-              "channels": 1,
-              "clockRate": 32000,
-              "mimeType": "audio/telephone-event"
-            },
-            {
-              "channels": 1,
-              "clockRate": 16000,
-              "mimeType": "audio/telephone-event"
-            },
-            {
-              "channels": 1,
-              "clockRate": 8000,
-              "mimeType": "audio/telephone-event"
-            }
-          ],
-          "headerExtensions": [
-            {
-              "direction": "sendrecv",
-              "uri": "urn:ietf:params:rtp-hdrext:ssrc-audio-level"
-            },
-            {
-              "direction": "sendrecv",
-              "uri": "http://www.webrtc.org/experiments/rtp-hdrext/abs-send-time"
-            },
-            {
-              "direction": "sendrecv",
-              "uri": "http://www.ietf.org/id/draft-holmer-rmcat-transport-wide-cc-extensions-01"
-            },
-            {
-              "direction": "sendrecv",
-              "uri": "urn:ietf:params:rtp-hdrext:sdes:mid"
-            },
-            {
-              "direction": "sendrecv",
-              "uri": "urn:ietf:params:rtp-hdrext:sdes:rtp-stream-id"
-            },
-            {
-              "direction": "sendrecv",
-              "uri": "urn:ietf:params:rtp-hdrext:sdes:repaired-rtp-stream-id"
-            }
-          ]
-        },
-        "video": {
-          "codecs": [
-            {
-              "clockRate": 90000,
-              "mimeType": "video/VP8"
-            },
-            {
-              "clockRate": 90000,
-              "mimeType": "video/rtx"
-            },
-            {
-              "clockRate": 90000,
-              "mimeType": "video/VP9",
-              "sdpFmtpLine": "profile-id=0"
-            },
-            {
-              "clockRate": 90000,
-              "mimeType": "video/VP9",
-              "sdpFmtpLine": "profile-id=2"
-            },
-            {
-              "clockRate": 90000,
-              "mimeType": "video/VP9",
-              "sdpFmtpLine": "profile-id=1"
-            },
-            {
-              "clockRate": 90000,
-              "mimeType": "video/H264",
-              "sdpFmtpLine": "level-asymmetry-allowed=1;packetization-mode=1;profile-level-id=42001f"
-            },
-            {
-              "clockRate": 90000,
-              "mimeType": "video/H264",
-              "sdpFmtpLine": "level-asymmetry-allowed=1;packetization-mode=0;profile-level-id=42001f"
-            },
-            {
-              "clockRate": 90000,
-              "mimeType": "video/H264",
-              "sdpFmtpLine": "level-asymmetry-allowed=1;packetization-mode=1;profile-level-id=42e01f"
-            },
-            {
-              "clockRate": 90000,
-              "mimeType": "video/H264",
-              "sdpFmtpLine": "level-asymmetry-allowed=1;packetization-mode=0;profile-level-id=42e01f"
-            },
-            {
-              "clockRate": 90000,
-              "mimeType": "video/AV1"
-            },
-            {
-              "clockRate": 90000,
-              "mimeType": "video/H264",
-              "sdpFmtpLine": "level-asymmetry-allowed=1;packetization-mode=1;profile-level-id=4d001f"
-            },
-            {
-              "clockRate": 90000,
-              "mimeType": "video/H264",
-              "sdpFmtpLine": "level-asymmetry-allowed=1;packetization-mode=1;profile-level-id=64001f"
-            },
-            {
-              "clockRate": 90000,
-              "mimeType": "video/red"
-            },
-            {
-              "clockRate": 90000,
-              "mimeType": "video/ulpfec"
-            },
-            {
-              "clockRate": 90000,
-              "mimeType": "video/flexfec-03",
-              "sdpFmtpLine": "repair-window=10000000"
-            }
-          ],
-          "headerExtensions": [
-            {
-              "direction": "sendrecv",
-              "uri": "urn:ietf:params:rtp-hdrext:toffset"
-            },
-            {
-              "direction": "sendrecv",
-              "uri": "http://www.webrtc.org/experiments/rtp-hdrext/abs-send-time"
-            },
-            {
-              "direction": "sendrecv",
-              "uri": "urn:3gpp:video-orientation"
-            },
-            {
-              "direction": "sendrecv",
-              "uri": "http://www.ietf.org/id/draft-holmer-rmcat-transport-wide-cc-extensions-01"
-            },
-            {
-              "direction": "sendrecv",
-              "uri": "http://www.webrtc.org/experiments/rtp-hdrext/playout-delay"
-            },
-            {
-              "direction": "sendrecv",
-              "uri": "http://www.webrtc.org/experiments/rtp-hdrext/video-content-type"
-            },
-            {
-              "direction": "sendrecv",
-              "uri": "http://www.webrtc.org/experiments/rtp-hdrext/video-timing"
-            },
-            {
-              "direction": "sendrecv",
-              "uri": "http://www.webrtc.org/experiments/rtp-hdrext/color-space"
-            },
-            {
-              "direction": "sendrecv",
-              "uri": "urn:ietf:params:rtp-hdrext:sdes:mid"
-            },
-            {
-              "direction": "sendrecv",
-              "uri": "urn:ietf:params:rtp-hdrext:sdes:rtp-stream-id"
-            },
-            {
-              "direction": "sendrecv",
-              "uri": "urn:ietf:params:rtp-hdrext:sdes:repaired-rtp-stream-id"
-            }
-          ]
-        }
-      },
-      "sdp": {
-        "type": "offer",
-        "sdp": "v=0\r\no=- 9131166972967456175 3 IN IP4 127.0.0.1\r\ns=-\r\nt=0 0\r\na=group:BUNDLE 1 2 3\r\na=extmap-allow-mixed\r\na=msid-semantic: WMS\r\nm=audio 9 UDP/TLS/RTP/SAVPF 111 63 103 104 9 0 8 106 105 13 110 112 113 126\r\nc=IN IP4 0.0.0.0\r\na=rtcp:9 IN IP4 0.0.0.0\r\na=ice-ufrag:4mpc\r\na=ice-pwd:S+PNJH4FBku3+pb0NT8gnfuD\r\na=ice-options:trickle\r\na=fingerprint:sha-256 7E:3E:DD:2B:66:95:07:F6:23:D0:35:4A:CE:C4:24:86:C3:01:7D:83:81:DF:09:F1:95:00:5E:3D:5E:89:FC:21\r\na=setup:actpass\r\na=mid:1\r\na=extmap:1 urn:ietf:params:rtp-hdrext:ssrc-audio-level\r\na=extmap:2 http://www.webrtc.org/experiments/rtp-hdrext/abs-send-time\r\na=extmap:3 http://www.ietf.org/id/draft-holmer-rmcat-transport-wide-cc-extensions-01\r\na=extmap:4 urn:ietf:params:rtp-hdrext:sdes:mid\r\na=extmap:5 urn:ietf:params:rtp-hdrext:sdes:rtp-stream-id\r\na=extmap:6 urn:ietf:params:rtp-hdrext:sdes:repaired-rtp-stream-id\r\na=recvonly\r\na=rtcp-mux\r\na=rtpmap:111 opus/48000/2\r\na=rtcp-fb:111 transport-cc\r\na=fmtp:111 minptime=10;useinbandfec=1\r\na=rtpmap:63 red/48000/2\r\na=fmtp:63 111/111\r\na=rtpmap:103 ISAC/16000\r\na=rtpmap:104 ISAC/32000\r\na=rtpmap:9 G722/8000\r\na=rtpmap:0 PCMU/8000\r\na=rtpmap:8 PCMA/8000\r\na=rtpmap:106 CN/32000\r\na=rtpmap:105 CN/16000\r\na=rtpmap:13 CN/8000\r\na=rtpmap:110 telephone-event/48000\r\na=rtpmap:112 telephone-event/32000\r\na=rtpmap:113 telephone-event/16000\r\na=rtpmap:126 telephone-event/8000\r\nm=video 9 UDP/TLS/RTP/SAVPF 96 97 98 99 100 101 123 102 121 127 120 125 107 108 109 35 36 122 114 115 119 118 124 37\r\nc=IN IP4 0.0.0.0\r\na=rtcp:9 IN IP4 0.0.0.0\r\na=ice-ufrag:4mpc\r\na=ice-pwd:S+PNJH4FBku3+pb0NT8gnfuD\r\na=ice-options:trickle\r\na=fingerprint:sha-256 7E:3E:DD:2B:66:95:07:F6:23:D0:35:4A:CE:C4:24:86:C3:01:7D:83:81:DF:09:F1:95:00:5E:3D:5E:89:FC:21\r\na=setup:actpass\r\na=mid:2\r\na=extmap:14 urn:ietf:params:rtp-hdrext:toffset\r\na=extmap:2 http://www.webrtc.org/experiments/rtp-hdrext/abs-send-time\r\na=extmap:13 urn:3gpp:video-orientation\r\na=extmap:3 http://www.ietf.org/id/draft-holmer-rmcat-transport-wide-cc-extensions-01\r\na=extmap:12 http://www.webrtc.org/experiments/rtp-hdrext/playout-delay\r\na=extmap:11 http://www.webrtc.org/experiments/rtp-hdrext/video-content-type\r\na=extmap:7 http://www.webrtc.org/experiments/rtp-hdrext/video-timing\r\na=extmap:8 http://www.webrtc.org/experiments/rtp-hdrext/color-space\r\na=extmap:4 urn:ietf:params:rtp-hdrext:sdes:mid\r\na=extmap:5 urn:ietf:params:rtp-hdrext:sdes:rtp-stream-id\r\na=extmap:6 urn:ietf:params:rtp-hdrext:sdes:repaired-rtp-stream-id\r\na=recvonly\r\na=rtcp-mux\r\na=rtcp-rsize\r\na=rtpmap:96 VP8/90000\r\na=rtcp-fb:96 goog-remb\r\na=rtcp-fb:96 transport-cc\r\na=rtcp-fb:96 ccm fir\r\na=rtcp-fb:96 nack\r\na=rtcp-fb:96 nack pli\r\na=rtpmap:97 rtx/90000\r\na=fmtp:97 apt=96\r\na=rtpmap:98 VP9/90000\r\na=rtcp-fb:98 goog-remb\r\na=rtcp-fb:98 transport-cc\r\na=rtcp-fb:98 ccm fir\r\na=rtcp-fb:98 nack\r\na=rtcp-fb:98 nack pli\r\na=fmtp:98 profile-id=0\r\na=rtpmap:99 rtx/90000\r\na=fmtp:99 apt=98\r\na=rtpmap:100 VP9/90000\r\na=rtcp-fb:100 goog-remb\r\na=rtcp-fb:100 transport-cc\r\na=rtcp-fb:100 ccm fir\r\na=rtcp-fb:100 nack\r\na=rtcp-fb:100 nack pli\r\na=fmtp:100 profile-id=2\r\na=rtpmap:101 rtx/90000\r\na=fmtp:101 apt=100\r\na=rtpmap:123 VP9/90000\r\na=rtcp-fb:123 goog-remb\r\na=rtcp-fb:123 transport-cc\r\na=rtcp-fb:123 ccm fir\r\na=rtcp-fb:123 nack\r\na=rtcp-fb:123 nack pli\r\na=fmtp:123 profile-id=1\r\na=rtpmap:102 H264/90000\r\na=rtcp-fb:102 goog-remb\r\na=rtcp-fb:102 transport-cc\r\na=rtcp-fb:102 ccm fir\r\na=rtcp-fb:102 nack\r\na=rtcp-fb:102 nack pli\r\na=fmtp:102 level-asymmetry-allowed=1;packetization-mode=1;profile-level-id=42001f\r\na=rtpmap:121 rtx/90000\r\na=fmtp:121 apt=102\r\na=rtpmap:127 H264/90000\r\na=rtcp-fb:127 goog-remb\r\na=rtcp-fb:127 transport-cc\r\na=rtcp-fb:127 ccm fir\r\na=rtcp-fb:127 nack\r\na=rtcp-fb:127 nack pli\r\na=fmtp:127 level-asymmetry-allowed=1;packetization-mode=0;profile-level-id=42001f\r\na=rtpmap:120 rtx/90000\r\na=fmtp:120 apt=127\r\na=rtpmap:125 H264/90000\r\na=rtcp-fb:125 goog-remb\r\na=rtcp-fb:125 transport-cc\r\na=rtcp-fb:125 ccm fir\r\na=rtcp-fb:125 nack\r\na=rtcp-fb:125 nack pli\r\na=fmtp:125 level-asymmetry-allowed=1;packetization-mode=1;profile-level-id=42e01f\r\na=rtpmap:107 rtx/90000\r\na=fmtp:107 apt=125\r\na=rtpmap:108 H264/90000\r\na=rtcp-fb:108 goog-remb\r\na=rtcp-fb:108 transport-cc\r\na=rtcp-fb:108 ccm fir\r\na=rtcp-fb:108 nack\r\na=rtcp-fb:108 nack pli\r\na=fmtp:108 level-asymmetry-allowed=1;packetization-mode=0;profile-level-id=42e01f\r\na=rtpmap:109 rtx/90000\r\na=fmtp:109 apt=108\r\na=rtpmap:35 AV1/90000\r\na=rtcp-fb:35 goog-remb\r\na=rtcp-fb:35 transport-cc\r\na=rtcp-fb:35 ccm fir\r\na=rtcp-fb:35 nack\r\na=rtcp-fb:35 nack pli\r\na=rtpmap:36 rtx/90000\r\na=fmtp:36 apt=35\r\na=rtpmap:122 H264/90000\r\na=rtcp-fb:122 goog-remb\r\na=rtcp-fb:122 transport-cc\r\na=rtcp-fb:122 ccm fir\r\na=rtcp-fb:122 nack\r\na=rtcp-fb:122 nack pli\r\na=fmtp:122 level-asymmetry-allowed=1;packetization-mode=1;profile-level-id=4d001f\r\na=rtpmap:114 H264/90000\r\na=rtcp-fb:114 goog-remb\r\na=rtcp-fb:114 transport-cc\r\na=rtcp-fb:114 ccm fir\r\na=rtcp-fb:114 nack\r\na=rtcp-fb:114 nack pli\r\na=fmtp:114 level-asymmetry-allowed=1;packetization-mode=1;profile-level-id=64001f\r\na=rtpmap:115 rtx/90000\r\na=fmtp:115 apt=114\r\na=rtpmap:119 red/90000\r\na=rtpmap:118 rtx/90000\r\na=fmtp:118 apt=119\r\na=rtpmap:124 ulpfec/90000\r\na=rtpmap:37 flexfec-03/90000\r\na=rtcp-fb:37 goog-remb\r\na=rtcp-fb:37 transport-cc\r\na=fmtp:37 repair-window=10000000\r\nm=application 9 UDP/DTLS/SCTP webrtc-datachannel\r\nc=IN IP4 0.0.0.0\r\na=ice-ufrag:4mpc\r\na=ice-pwd:S+PNJH4FBku3+pb0NT8gnfuD\r\na=ice-options:trickle\r\na=fingerprint:sha-256 7E:3E:DD:2B:66:95:07:F6:23:D0:35:4A:CE:C4:24:86:C3:01:7D:83:81:DF:09:F1:95:00:5E:3D:5E:89:FC:21\r\na=setup:actpass\r\na=mid:3\r\na=sctp-port:5000\r\na=max-message-size:262144\r\n"
-      }
+  "mediaDevices": [
+    {
+      "deviceId": "",
+      "kind": "audioinput",
+      "label": "",
+      "groupId": "ee6800ef105511921269b5e38d2f426ef959c8ad720e9b2ceeea8d164f65f07a"
     },
-    "localDescription": {
-      "type": "offer",
-      "sdp": "v=0\r\no=- 9131166972967456175 2 IN IP4 127.0.0.1\r\ns=-\r\nt=0 0\r\na=group:BUNDLE 0\r\na=extmap-allow-mixed\r\na=msid-semantic: WMS\r\nm=application 9 UDP/DTLS/SCTP webrtc-datachannel\r\nc=IN IP4 0.0.0.0\r\na=candidate:2386336190 1 udp 2113937151 d9035f07-cd60-4f70-b364-fee356c6e171.local 64554 typ host generation 0 network-cost 999\r\na=candidate:842163049 1 udp 1677729535 184.65.164.90 64554 typ srflx raddr 0.0.0.0 rport 0 generation 0 network-cost 999\r\na=candidate:2025246279 1 udp 2113939711 17328b93-6297-4a88-8e53-b2862bb01f24.local 64555 typ host generation 0 network-cost 999\r\na=ice-ufrag:VR9N\r\na=ice-pwd:mtYTunP9xGwGJwDCGeKYUH6g\r\na=ice-options:trickle\r\na=fingerprint:sha-256 7E:3E:DD:2B:66:95:07:F6:23:D0:35:4A:CE:C4:24:86:C3:01:7D:83:81:DF:09:F1:95:00:5E:3D:5E:89:FC:21\r\na=setup:actpass\r\na=mid:0\r\na=sctp-port:5000\r\na=max-message-size:262144\r\n"
+    {
+      "deviceId": "",
+      "kind": "videoinput",
+      "label": "",
+      "groupId": "d917669c0d7931e9c5854c1587dc227fc24e3723c2c6e1f4672d69f765a45679"
     },
-    "candidate": {
-      "candidate": "candidate:2025246279 1 udp 2113939711 17328b93-6297-4a88-8e53-b2862bb01f24.local 64555 typ host generation 0 ufrag VR9N network-cost 999",
-      "sdpMid": "0",
-      "sdpMLineIndex": 0,
-      "foundation": "2025246279",
-      "component": "rtp",
-      "priority": 2113939711,
-      "address": "17328b93-6297-4a88-8e53-b2862bb01f24.local",
-      "protocol": "udp",
-      "port": 64555,
-      "type": "host",
-      "usernameFragment": "VR9N"
+    {
+      "deviceId": "",
+      "kind": "audiooutput",
+      "label": "",
+      "groupId": "ee6800ef105511921269b5e38d2f426ef959c8ad720e9b2ceeea8d164f65f07a"
     }
-  },
+  ],
+  "rtc": [
+    {
+      "candidate": "candidate:2473407895 1 udp 2113937151 248b2ee5-fcfb-4c4d-afee-26c036cc3c16.local 52048 typ host generation 0 ufrag uXD4 network-cost 999",
+      "reg": null
+    },
+    {
+      "candidate": "candidate:842163049 1 udp 1677729535 71.67.113.137 52048 typ srflx raddr 0.0.0.0 rport 0 generation 0 ufrag uXD4 network-cost 999",
+      "reg": [
+        "71.67.113.137",
+        "71.67.113.137",
+        ".137",
+        null
+      ]
+    }
+  ],
   "mimeTypes": [
     {
       "mimeType": "application/ogg",
@@ -7807,35 +7338,7 @@
       "exists": 1
     },
     {
-      "name": "Gulim",
-      "exists": 1
-    },
-    {
       "name": "Leelawadee",
-      "exists": 1
-    },
-    {
-      "name": "Tunga",
-      "exists": 1
-    },
-    {
-      "name": "Meiryo",
-      "exists": 1
-    },
-    {
-      "name": "Vrinda",
-      "exists": 1
-    },
-    {
-      "name": "CordiaUPC",
-      "exists": 1
-    },
-    {
-      "name": "Aparajita",
-      "exists": 1
-    },
-    {
-      "name": "IrisUPC",
       "exists": 1
     },
     {
@@ -7871,14 +7374,6 @@
       "exists": 1
     },
     {
-      "name": "Arial Unicode MS",
-      "exists": 1
-    },
-    {
-      "name": "Batang",
-      "exists": 1
-    },
-    {
       "name": "Bell MT",
       "exists": 1
     },
@@ -7907,15 +7402,7 @@
       "exists": 1
     },
     {
-      "name": "Levenim MT",
-      "exists": 1
-    },
-    {
       "name": "Marlett",
-      "exists": 1
-    },
-    {
-      "name": "Meiryo UI",
       "exists": 1
     },
     {
@@ -7924,10 +7411,6 @@
     },
     {
       "name": "Microsoft YaHei UI",
-      "exists": 1
-    },
-    {
-      "name": "MS Mincho",
       "exists": 1
     },
     {
@@ -7943,19 +7426,7 @@
       "exists": 1
     },
     {
-      "name": "PMingLiU",
-      "exists": 1
-    },
-    {
       "name": "SimHei",
-      "exists": 1
-    },
-    {
-      "name": "Traditional Arabic",
-      "exists": 1
-    },
-    {
-      "name": "Urdu Typesetting",
       "exists": 1
     },
     {
@@ -7992,10 +7463,6 @@
     },
     {
       "name": "Microsoft Sans Serif",
-      "exists": 1
-    },
-    {
-      "name": "Plantagenet Cherokee",
       "exists": 1
     },
     {
@@ -8183,6 +7650,10 @@
       "exists": 1
     },
     {
+      "name": "Bahnschrift",
+      "exists": 1
+    },
+    {
       "name": "sans-serif",
       "exists": 1
     },
@@ -8279,35 +7750,11 @@
       "exists": 1
     },
     {
-      "name": "Aharoni",
-      "exists": 1
-    },
-    {
       "name": "Algerian",
       "exists": 1
     },
     {
-      "name": "Andalus",
-      "exists": 1
-    },
-    {
-      "name": "Angsana New",
-      "exists": 1
-    },
-    {
-      "name": "AngsanaUPC",
-      "exists": 1
-    },
-    {
-      "name": "Arabic Typesetting",
-      "exists": 1
-    },
-    {
       "name": "Baskerville Old Face",
-      "exists": 1
-    },
-    {
-      "name": "BatangChe",
       "exists": 1
     },
     {
@@ -8363,14 +7810,6 @@
       "exists": 1
     },
     {
-      "name": "Browallia New",
-      "exists": 1
-    },
-    {
-      "name": "BrowalliaUPC",
-      "exists": 1
-    },
-    {
       "name": "Californian FB",
       "exists": 1
     },
@@ -8399,38 +7838,6 @@
       "exists": 1
     },
     {
-      "name": "Cordia New",
-      "exists": 1
-    },
-    {
-      "name": "DaunPenh",
-      "exists": 1
-    },
-    {
-      "name": "David",
-      "exists": 1
-    },
-    {
-      "name": "DFKai-SB",
-      "exists": 1
-    },
-    {
-      "name": "DilleniaUPC",
-      "exists": 1
-    },
-    {
-      "name": "DokChampa",
-      "exists": 1
-    },
-    {
-      "name": "Dotum",
-      "exists": 1
-    },
-    {
-      "name": "DotumChe",
-      "exists": 1
-    },
-    {
       "name": "Edwardian Script ITC",
       "exists": 1
     },
@@ -8447,14 +7854,6 @@
       "exists": 1
     },
     {
-      "name": "EucrosiaUPC",
-      "exists": 1
-    },
-    {
-      "name": "Euphemia",
-      "exists": 1
-    },
-    {
       "name": "FangSong",
       "exists": 1
     },
@@ -8467,23 +7866,11 @@
       "exists": 1
     },
     {
-      "name": "FrankRuehl",
-      "exists": 1
-    },
-    {
-      "name": "FreesiaUPC",
-      "exists": 1
-    },
-    {
       "name": "Freestyle Script",
       "exists": 1
     },
     {
       "name": "French Script MT",
-      "exists": 1
-    },
-    {
-      "name": "Gautami",
       "exists": 1
     },
     {
@@ -8507,27 +7894,11 @@
       "exists": 1
     },
     {
-      "name": "Gisha",
-      "exists": 1
-    },
-    {
       "name": "Goudy Old Style",
       "exists": 1
     },
     {
       "name": "Goudy Stout",
-      "exists": 1
-    },
-    {
-      "name": "GulimChe",
-      "exists": 1
-    },
-    {
-      "name": "Gungsuh",
-      "exists": 1
-    },
-    {
-      "name": "GungsuhChe",
       "exists": 1
     },
     {
@@ -8555,39 +7926,11 @@
       "exists": 1
     },
     {
-      "name": "Iskoola Pota",
-      "exists": 1
-    },
-    {
-      "name": "JasmineUPC",
-      "exists": 1
-    },
-    {
       "name": "Juice ITC",
       "exists": 1
     },
     {
       "name": "KaiTi",
-      "exists": 1
-    },
-    {
-      "name": "Kalinga",
-      "exists": 1
-    },
-    {
-      "name": "Kartika",
-      "exists": 1
-    },
-    {
-      "name": "Khmer UI",
-      "exists": 1
-    },
-    {
-      "name": "KodchiangUPC",
-      "exists": 1
-    },
-    {
-      "name": "Kokila",
       "exists": 1
     },
     {
@@ -8599,18 +7942,6 @@
       "exists": 1
     },
     {
-      "name": "Lao UI",
-      "exists": 1
-    },
-    {
-      "name": "Latha",
-      "exists": 1
-    },
-    {
-      "name": "LilyUPC",
-      "exists": 1
-    },
-    {
       "name": "Magneto",
       "exists": 1
     },
@@ -8619,27 +7950,7 @@
       "exists": 1
     },
     {
-      "name": "Mangal",
-      "exists": 1
-    },
-    {
       "name": "Matura MT Script Capitals",
-      "exists": 1
-    },
-    {
-      "name": "MingLiU",
-      "exists": 1
-    },
-    {
-      "name": "MingLiU_HKSCS",
-      "exists": 1
-    },
-    {
-      "name": "Miriam",
-      "exists": 1
-    },
-    {
-      "name": "Miriam Fixed",
       "exists": 1
     },
     {
@@ -8651,19 +7962,7 @@
       "exists": 1
     },
     {
-      "name": "MoolBoran",
-      "exists": 1
-    },
-    {
-      "name": "MS PMincho",
-      "exists": 1
-    },
-    {
       "name": "MS Reference Specialty",
-      "exists": 1
-    },
-    {
-      "name": "Narkisim",
       "exists": 1
     },
     {
@@ -8676,10 +7975,6 @@
     },
     {
       "name": "NSimSun",
-      "exists": 1
-    },
-    {
-      "name": "Nyala",
       "exists": 1
     },
     {
@@ -8711,10 +8006,6 @@
       "exists": 1
     },
     {
-      "name": "Raavi",
-      "exists": 1
-    },
-    {
       "name": "Ravie",
       "exists": 1
     },
@@ -8723,31 +8014,7 @@
       "exists": 1
     },
     {
-      "name": "Rod",
-      "exists": 1
-    },
-    {
-      "name": "Sakkal Majalla",
-      "exists": 1
-    },
-    {
-      "name": "Shonar Bangla",
-      "exists": 1
-    },
-    {
       "name": "Showcard Gothic",
-      "exists": 1
-    },
-    {
-      "name": "Shruti",
-      "exists": 1
-    },
-    {
-      "name": "Simplified Arabic",
-      "exists": 1
-    },
-    {
-      "name": "Simplified Arabic Fixed",
       "exists": 1
     },
     {
@@ -8768,18 +8035,6 @@
     },
     {
       "name": "Univers CE 55 Medium",
-      "exists": 1
-    },
-    {
-      "name": "Utsaah",
-      "exists": 1
-    },
-    {
-      "name": "Vani",
-      "exists": 1
-    },
-    {
-      "name": "Vijaya",
       "exists": 1
     },
     {
@@ -8843,15 +8098,15 @@
       "exists": 1
     },
     {
+      "name": "Rationale",
+      "exists": 1
+    },
+    {
       "name": "Slabo 13px",
       "exists": 1
     },
     {
       "name": "Slabo 27px",
-      "exists": 1
-    },
-    {
-      "name": "Aldhabi",
       "exists": 1
     },
     {
@@ -8868,6 +8123,14 @@
     },
     {
       "name": "Apple Braille Pinpoint 8 Dot",
+      "exists": 1
+    },
+    {
+      "name": "Bahnschrift Light",
+      "exists": 1
+    },
+    {
+      "name": "Bahnschrift SemiBold",
       "exists": 1
     },
     {
@@ -8915,11 +8178,23 @@
       "exists": 1
     },
     {
-      "name": "Estrangelo Edessa",
+      "name": "DengXian",
+      "exists": 1
+    },
+    {
+      "name": "DengXian Light",
       "exists": 1
     },
     {
       "name": "Franklin Gothic Medium",
+      "exists": 1
+    },
+    {
+      "name": "HoloLens MDL2 Assets",
+      "exists": 1
+    },
+    {
+      "name": "Ink Free",
       "exists": 1
     },
     {
@@ -8963,7 +8238,15 @@
       "exists": 1
     },
     {
+      "name": "Segoe MDL2 Assets",
+      "exists": 1
+    },
+    {
       "name": "Segoe UI Black",
+      "exists": 1
+    },
+    {
+      "name": "Segoe UI Historic",
       "exists": 1
     },
     {
@@ -9007,19 +8290,19 @@
       "exists": 1
     },
     {
-      "name": "Yu Mincho",
+      "name": "Yu Gothic UI",
       "exists": 1
     },
     {
-      "name": "Yu Mincho Demibold",
+      "name": "Yu Gothic UI Light",
       "exists": 1
     },
     {
-      "name": "Yu Mincho Light",
+      "name": "Yu Gothic UI Regular",
       "exists": 1
     },
     {
-      "name": "Yu Mincho Regular",
+      "name": "Yu Gothic UI Semibold",
       "exists": 1
     },
     {
@@ -9047,31 +8330,11 @@
       "exists": 1
     },
     {
-      "name": "굴림",
-      "exists": 1
-    },
-    {
-      "name": "굴림체",
-      "exists": 1
-    },
-    {
-      "name": "바탕",
-      "exists": 1
-    },
-    {
       "name": "ＭＳ ゴシック",
       "exists": 1
     },
     {
-      "name": "ＭＳ 明朝",
-      "exists": 1
-    },
-    {
       "name": "ＭＳ Ｐゴシック",
-      "exists": 1
-    },
-    {
-      "name": "ＭＳ Ｐ明朝",
       "exists": 1
     }
   ]
