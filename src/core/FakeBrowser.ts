@@ -1,20 +1,19 @@
 // noinspection JSUnusedGlobalSymbols,JSUnusedLocalSymbols
 
-import * as path from 'path'
-import {strict as assert} from 'assert'
+import * as path from 'path';
+import { strict as assert } from 'assert';
 
-import {Browser, CDPSession, Page, Target, WebWorker} from 'puppeteer'
-import {PuppeteerExtra} from 'puppeteer-extra'
+import { Browser, CDPSession, Page, Target, WebWorker } from 'puppeteer';
+import { PuppeteerExtra } from 'puppeteer-extra';
 
-import {UserAgentHelper} from './UserAgentHelper'
-import {PptrToolkit} from './PptrToolkit'
-import {ConnectParameters, DriverParameters, LaunchParameters} from './Driver.js'
-import {ChromeUACHHeaders} from './DeviceDescriptor.js'
-import {PptrPatcher} from './PptrPatcher'
-import {FakeUserAction} from './FakeUserAction'
-import {BrowserLauncher} from './BrowserLauncher'
-import {BrowserBuilder} from './BrowserBuilder'
-import {Touchscreen} from './TouchScreen'
+import { UserAgentHelper } from './UserAgentHelper';
+import { PptrToolkit } from './PptrToolkit';
+import { ConnectParameters, DriverParameters, LaunchParameters } from './Driver.js';
+import { PptrPatcher } from './PptrPatcher';
+import { FakeUserAction } from './FakeUserAction';
+import { BrowserLauncher } from './BrowserLauncher';
+import { BrowserBuilder } from './BrowserBuilder';
+import { Touchscreen } from './TouchScreen';
 
 export const kDefaultWindowsDD = require(path.resolve(__dirname, '../../device-hub-demo/Windows.json'))
 
@@ -312,24 +311,6 @@ export class FakeBrowser {
         assert(chromeMajorVersion)
         assert(os)
 
-        const extraHTTPHeaders: ChromeUACHHeaders = {
-            // MUST NOT SET ACCEPT-LANGUAGE!!!! : https://github.com/puppeteer/puppeteer/issues/1984
-            // 'Accept-Language': UserAgentHelper.buildAcceptLanguage(fakeDD),
-            // error occurs after the referer is set
-            // 'referer': FakeBrowser.globalConfig.defaultReferers[sh.rd(0, referers.length - 1)],
-            'sec-ch-ua':
-                UserAgentHelper.browserType(ua) === 'Edge'
-                    ? `"Microsoft Edge";v="${chromeMajorVersion}", "Chromium";v="${chromeMajorVersion}", ";Not A Brand";v="99"`
-                    : `"Google Chrome";v="${chromeMajorVersion}", "Chromium";v="${chromeMajorVersion}", ";Not A Brand";v="99"`,
-            'sec-ch-ua-mobile': '?0',
-            // 'sec-fetch-site': 'cross-site',
-        }
-
-        if (chromeMajorVersion >= 93) {
-            extraHTTPHeaders['sec-ch-ua-platform'] = `"${os}"`
-        }
-
-        await page.setExtraHTTPHeaders(extraHTTPHeaders)
         await page.setUserAgent(fakeDD.navigator.userAgent)
         await page.setViewport({
             width: fakeDD.window.innerWidth,
