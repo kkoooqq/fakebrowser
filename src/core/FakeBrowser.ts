@@ -50,8 +50,9 @@ export const kDefaultLaunchArgs = [
     '--enable-webgl',
     '--prerender-from-omnibox=disabled',
     '--enable-web-bluetooth',
-    '--ignore-certificate-errors',
-    '--ignore-certificate-errors-spki-list',
+    // cannot be turned on because it will cause Chromium to ignore the certificate error
+    // '--ignore-certificate-errors',
+    // '--ignore-certificate-errors-spki-list',
     '--disable-site-isolation-trials',
     '--disable-features=AudioServiceOutOfProcess,IsolateOrigins,site-per-process,TranslateUI,BlinkGenPropertyTrees', // do not disable UserAgentClientHint
     '--aggressive-cache-discard',
@@ -80,7 +81,8 @@ export const kDefaultLaunchArgs = [
     '--disable-crash-reporter',
     '--disable-dev-shm-usage',
     '--force-color-profile=srgb',
-    '--disable-accelerated-2d-canvas',
+    // Cannot be turned on, as it will cause the canvas hashcode to be different from the normal browser
+    // '--disable-accelerated-2d-canvas',
     '--disable-translate',
     '--disable-background-networking',
     '--disable-background-timer-throttling',
@@ -237,7 +239,7 @@ export class FakeBrowser {
     private async interceptTarget(target: Target, client: CDPSession) {
         assert(!!client)
 
-        // FIXME: Worker & SharedWorker does not work with this way
+        // TODO: Worker & SharedWorker does not work with this way
         // console.log('intercept', target.url())
         const injectJs: string = await PptrPatcher.evasionsCode(this)
 
@@ -313,7 +315,7 @@ export class FakeBrowser {
         const extraHTTPHeaders: ChromeUACHHeaders = {
             // MUST NOT SET ACCEPT-LANGUAGE!!!! : https://github.com/puppeteer/puppeteer/issues/1984
             // 'Accept-Language': UserAgentHelper.buildAcceptLanguage(fakeDD),
-            // FIXME: error occurs after the referer is set
+            // error occurs after the referer is set
             // 'referer': FakeBrowser.globalConfig.defaultReferers[sh.rd(0, referers.length - 1)],
             'sec-ch-ua':
                 UserAgentHelper.browserType(ua) === 'Edge'
