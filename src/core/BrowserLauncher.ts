@@ -260,6 +260,7 @@ export class BrowserLauncher {
 
                 const p: Promise<void>[] = []
                 for (const fb of killThese) {
+                    console.warn('WARNING: Killing a browser instance because maxSurvivalTime was reached.')
                     p.push(fb.shutdown())
                 }
 
