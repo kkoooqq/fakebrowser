@@ -276,32 +276,17 @@ export default class Driver {
      * @param browser
      */
     static async shutdown(browser: Browser) {
-        try {
-            const pages = await browser.pages()
-            for (const page of pages) {
-                await page.close()
-            }
-        } catch (ignored) {
-        }
-
-        const browserProcess = browser.process()
-        if (browserProcess) {
-            const pid = browserProcess.pid
-
-            if (pid) {
-                const pids = await this.getPids(pid)
-                pids.forEach(pid => {
-                    try {
-                        process.kill(pid, 'SIGKILL')
-                    } catch (ignored) {
-                    }
-                })
-            }
-        }
+        const pid = browser.process()?.pid;
+        const pids = pid ? await helper.getPids(pid) : [];
 
         try {
-            await browser.close()
-        } catch (ignored) {
-        }
+            await browser.close();
+        } catch (ignored) {}
+
+        pids.forEach((pid) => {
+            try {
+                process.kill(pid, 'SIGKILL');
+            } catch (ignored) {}
+        });
     }
 }
