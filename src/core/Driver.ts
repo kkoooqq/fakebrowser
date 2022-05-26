@@ -277,7 +277,7 @@ export default class Driver {
      */
     static async shutdown(browser: Browser) {
         const pid = browser.process()?.pid;
-        const pids = pid ? await helper.getPids(pid) : [];
+        const pids = pid ? await this.getPids(pid) : [];
 
         try {
             await browser.close();
