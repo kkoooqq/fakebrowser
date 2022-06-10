@@ -1,8 +1,6 @@
 // noinspection JSUnusedGlobalSymbols
 
-import * as crypto from 'crypto'
 import {strict as assert} from 'assert'
-
 import {UserAgentHelper} from './UserAgentHelper.js'
 import {helper} from './helper'
 
@@ -347,9 +345,8 @@ export default class DeviceDescriptorHelper {
      * @param e
      */
     static deviceUUID(e: DeviceDescriptor): string {
-        return crypto.createHash('md5')
-            .update(JSON.stringify(e))
-            .digest('hex')
+        // TODO sort e before serialize
+        return helper.md5(JSON.stringify(e))
     }
 
     static buildFakeDeviceDescriptor(

@@ -6,7 +6,6 @@ import crypto from 'crypto'
 function md5(data: string): string {
     const md5 = crypto.createHash('md5')
     const result = md5.update(data).digest('hex')
-
     return result
 }
 

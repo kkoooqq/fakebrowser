@@ -16,7 +16,9 @@ import { BrowserBuilder } from './BrowserBuilder';
 import { Touchscreen } from './TouchScreen';
 
 export const kDefaultWindowsDD = require(path.resolve(__dirname, '../../device-hub-demo/Windows.json'))
-
+export { DeviceDescriptor } from './DeviceDescriptor'
+export { UserAgentHelper, OSTypes, BrowserTypes } from './UserAgentHelper';
+export { default as DeviceDescriptorHelper } from './DeviceDescriptor';
 const kBrowserMaxSurvivalTime = 60 * 1000 * 15
 const kDefaultReferers = ['https://www.google.com', 'https://www.bing.com']
 const kInternalHttpServerPort = 17311

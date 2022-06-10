@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+
+<body>
+    <script src="dumpDD.js"></script>
+    <script>
+        const dd = window['__$dd']().then((body) => {
+            fetch('/api/dd', { method: 'POST', cache: 'no-cache', headers: { 'Content-Type': 'application/json' }, body })
+                .then((r) => { console.log(r) });
+        });
+    </script>
+</body>
+</html>
