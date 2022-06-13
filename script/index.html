@@ -5,8 +5,10 @@
     <script>
         const dd = window['__$dd']().then((body) => {
             fetch('/api/dd', { method: 'POST', cache: 'no-cache', headers: { 'Content-Type': 'application/json' }, body })
-                .then((r) => { console.log(r) });
+                .then((r) => { document.querySelector('h2').textContent = 'Done' });
         });
     </script>
+    <h1>Wait for fingerprint dump</h1>
+    <h2></h2>
 </body>
 </html>

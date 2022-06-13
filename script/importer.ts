@@ -14,9 +14,11 @@ app.use(async ctx => {
         const os = UserAgentHelper.os(body.navigator.userAgent);
         const browser = UserAgentHelper.browserType(body.navigator.userAgent);
         const hash = DeviceDescriptorHelper.deviceUUID(body);
-        await fs.promises.writeFile(`${os}-${browser}-${hash}.json`, JSON.stringify(body, null, 2));
+        const dest = `${os}-${browser}-${hash}.json`;
+        await fs.promises.writeFile(dest, JSON.stringify(body, null, 2));
         ctx.body = 'ok';
+        console.log(`${dest} saved`);
     }
 });
-
-app.listen(3000);
+const port = 3000;
+app.listen(port, () => console.log(`Server ready in port ${port}`));
