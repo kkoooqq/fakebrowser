@@ -268,7 +268,7 @@ export class FakeBrowser {
 
         // cdp
         try {
-            await page['_client'].send('ServiceWorker.setForceUpdateOnPageLoad', {forceUpdateOnPageLoad: true})
+            await page._client().send('ServiceWorker.setForceUpdateOnPageLoad', {forceUpdateOnPageLoad: true})
         } catch (ex: any) {
             console.warn('CDP ServiceWorker.setForceUpdateOnPageLoad exception', ex)
         }
@@ -276,7 +276,7 @@ export class FakeBrowser {
         // touch
         if (this.isMobileBrowser) {
             try {
-                await page['_client'].send('Emulation.setEmitTouchEventsForMouse', {
+                await page._client().send('Emulation.setEmitTouchEventsForMouse', {
                     enabled: true,
                 })
             } catch (ex: any) {
@@ -284,7 +284,7 @@ export class FakeBrowser {
             }
 
             Object.defineProperty(page, '_patchTouchscreen', {
-                value: new Touchscreen(page['_client'], page.keyboard),
+                value: new Touchscreen(page._client(), page.keyboard),
             })
         }
 
