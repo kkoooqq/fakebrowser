@@ -36,6 +36,7 @@ export interface DeviceDescriptor {
         name: string,
         exists: FontExistTypes,
     }>,
+    rtc?: Array<{candidate: string, reg: Array<string| null>}>,
     gpu: {
         vendor: string,
         renderer: string,

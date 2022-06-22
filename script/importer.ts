@@ -15,8 +15,28 @@ app.use(async ctx => {
         const browser = UserAgentHelper.browserType(body.navigator.userAgent);
         const hash = DeviceDescriptorHelper.deviceUUID(body);
         const dest = `${os}-${browser}-${hash}.json`;
-        await fs.promises.writeFile(dest, JSON.stringify(body, null, 2));
-        ctx.body = 'ok';
+        const fpKeys = Object.keys(body).sort() as Array<keyof(DeviceDescriptor)>;
+        const sortedfs = {} as any;
+
+        // TODO
+        // const rtc = body.rtc;
+        // if (rtc) {
+        //     for (const entry of rtc) {
+        //         let {candidate} = entry
+        //         if (!candidate)
+        //             continue;
+        //         // anonymize candidate       
+        //     }
+        // }
+
+        for (const key of fpKeys) {
+            // do not keep
+            if (key == 'mediaDevices')
+                continue;
+            sortedfs[key] = body[key];
+        }
+        await fs.promises.writeFile(dest, JSON.stringify(sortedfs, null, 2));
+        ctx.body = dest;
         console.log(`${dest} saved`);
     }
 });
