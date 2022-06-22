@@ -9,8 +9,8 @@ import { UserAgentHelper } from './UserAgentHelper.js'
 import { PptrPatcher } from './PptrPatcher'
 
 export interface ProxyServer {
-    proxyType: 'socks5' | 'socks4' | 'http' | 'https',
-    ipType: 'host' | 'pppoe' | 'resident' | 'tor',
+    proxyType?: 'socks5' | 'socks4' | 'http' | 'https',
+    ipType?: 'host' | 'pppoe' | 'resident' | 'tor',
     proxy: string,
     exportIP: string,
     username?: string,

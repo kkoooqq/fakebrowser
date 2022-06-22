@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+
+<body>
+    <script src="dumpDD.js"></script>
+    <script>
+        let time = Date.now();
+        const dd = window['__$dd']()
+            .then((body) => {
+                time = Date.now() - time;
+                document.querySelector('h2.import').textContent = 'Fingerprint generated in ' + Number(time / 1000).toFixed(1) + 'Seconds';
+                document.querySelector('h2.upload').textContent = 'Uploading Result';
+                return fetch('/api/dd', { method: 'POST', cache: 'no-cache', headers: { 'Content-Type': 'application/json' }, body })
+            })
+            .then(response => response.text())
+            .then(text => {
+                document.querySelector('h2.upload').textContent = 'Fingerprint saved as ' + text;
+                document.querySelector('h2.end').textContent += 'You\'re Welcome';
+            });
+    </script>
+    <h1>Fingerprint importer</h1>
+    <h2 class="welcome"></h2>
+    <h2 class="import">Start generating your browser fingerprint</h2>
+    <h2 class="upload">Please wait</h2>
+    <h2 class="end"></h2>
+</body>
+
+</html>
