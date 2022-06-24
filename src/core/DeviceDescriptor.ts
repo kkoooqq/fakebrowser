@@ -243,22 +243,25 @@ export default class DeviceDescriptorHelper {
         if (!dd.navigator) {
             throw new Error('navigator empty')
         }
-
+        const { innerHeight, innerWidth } = dd.window;
+        const { availHeight, availWidth } = dd.screen;
         if (!UserAgentHelper.isMobile(dd.navigator.userAgent)) {
             // If not mobile phone, but screen is too small, filter it out
-            if (dd.window.innerWidth < 900 || dd.window.innerHeight < 450) {
+            if (innerWidth < 900 || innerHeight < 450) {
                 throw new Error('width and height of windows is too small')
             }
 
             // Screen height greater than width, remove it
-            if (dd.window.innerHeight > dd.window.innerWidth) {
+            if (innerHeight > innerWidth) {
                 throw new Error('Height of window is greater than width of window, non-normal browser')
             }
 
-            if (dd.window.innerHeight > dd.screen.availHeight
-                || dd.window.innerWidth > dd.screen.availWidth) {
+            if (innerWidth > availWidth) {
+                throw new Error(`Width of browser(${innerWidth}) window cannot be greater than width of screen(${availWidth})`)
+            }
 
-                throw new Error('Width of browser window cannot be greater than width of screen and height cannot be greater than height of screen')
+            if (innerHeight > availHeight) {
+                throw new Error(`Height of browser(${innerHeight}) window cannot be greater than height of screen(${availHeight})`)
             }
 
             // No plugins and mineType information, remove

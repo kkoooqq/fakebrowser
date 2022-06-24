@@ -81,7 +81,8 @@ function myRealExportIP(): Promise<string> {
         axios.get('https://httpbin.org/ip').then(response => {
             resolve(response.data.origin)
         }).catch(ex => {
-            reject(ex)
+            reject(Error(`failed to detect self IP using https://httpbin.org/ip ${(ex as Error).message}`))
+            // reject(ex)
         })
     })
 }

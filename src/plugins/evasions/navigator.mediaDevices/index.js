@@ -6,6 +6,25 @@ const {PuppeteerExtraPlugin} = require('puppeteer-extra-plugin');
 const withUtils = require('../_utils/withUtils');
 const withWorkerUtils = require('../_utils/withWorkerUtils');
 
+/**
+ * @typedef UtilsCache
+ * @type {object}
+ * @property {object} Object - 
+ * @property {object} global - 
+ * @property {object} Descriptor - 
+ * @property {function} Reflect - 
+ */
+
+/**
+ * @typedef Utils
+ * @type {object}
+ * @property {UtilsCache} cache -
+ * @property {function} mockWithProxy -
+ * @property {function} replaceObjPathWithProxy -
+ * @property {function} newProxyInstance -
+ * @property {function} replaceWithProxy -
+ */
+
 class Plugin extends PuppeteerExtraPlugin {
     constructor(opts = {}) {
         super(opts);
@@ -22,11 +41,16 @@ class Plugin extends PuppeteerExtraPlugin {
     onServiceWorkerContent(jsContent) {
         return withWorkerUtils(this, jsContent).evaluate(this.mainFunction, this.opts.fakeDD.mediaDevices);
     }
-
+    /**
+     * 
+     * @param {Utils} utils 
+     * @param {object[]} fakeMediaDevices 
+     */
     mainFunction = (utils, fakeMediaDevices) => {
+        debugger;
         const _Object = utils.cache.Object;
         const _Reflect = utils.cache.Reflect;
-
+        
         if ('undefined' !== typeof MediaDevices) {
             // The original value is changed only once at beginning
             const hex = '01234567890abcdef';
