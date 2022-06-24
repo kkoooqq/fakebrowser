@@ -1,4 +1,5 @@
-const utils = require('./index');
+import { PuppeteerPage } from 'puppeteer-extra-plugin';
+import { utils } from './'
 
 /**
  * Wrap a page with utilities.
@@ -6,16 +7,16 @@ const utils = require('./index');
  * @param {PuppeteerExtraPlugin} plugin
  * @param {Page} page
  */
-module.exports = (plugin, page) => ({
+ export const withUtils = (plugin: any, page: PuppeteerPage) => ({
     /**
      * Simple `page.evaluate` replacement to preload utils
      */
-    evaluate: async function (mainFunction, ...args) {
+    evaluate: async function (mainFunction: Function, ...args: any[]) {
         return page.evaluate(
             ({_utilsFns, _mainFunction, _args}) => {
                 // Add this point we cannot use our utililty functions as they're just strings, we need to materialize them first
                 const utils = Object.fromEntries(
-                    Object.entries(_utilsFns).map(([key, value]) => [key, eval(value)]), // eslint-disable-line no-eval
+                    Object.entries(_utilsFns).map(([key, value]) => [key, eval(value as string)]), // eslint-disable-line no-eval
                 );
 
                 utils.init();
@@ -31,7 +32,7 @@ module.exports = (plugin, page) => ({
     /**
      * Simple `page.evaluateOnNewDocument` replacement to preload utils
      */
-    evaluateOnNewDocument: async function (mainFunction, ...args) {
+    evaluateOnNewDocument: async function (mainFunction: any, ...args: any[]) {
         return page.evaluateOnNewDocument(
             ({
                  _utilsFns,
@@ -42,7 +43,7 @@ module.exports = (plugin, page) => ({
                 // Add this point we cannot use our utililty functions as they're just strings, we need to materialize them first
                 const utils = Object.fromEntries(
                     Object.entries(_utilsFns).map(
-                        ([key, value]) => [key, eval(value)],
+                        ([key, value]) => [key, eval(value as any)],
                     ), // eslint-disable-line no-eval
                 );
 
@@ -58,3 +59,5 @@ module.exports = (plugin, page) => ({
         );
     },
 });
+
+export default withUtils;

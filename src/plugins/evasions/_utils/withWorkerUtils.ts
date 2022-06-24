@@ -1,7 +1,7 @@
-const utils = require('./index');
+// import { utils } from './'
 
-module.exports = (plugin, jsContent) => ({
-    evaluate: async function (mainFunction, ...args) {
+export const withWorkerUtils = (plugin: any, jsContent: any) => ({
+    evaluate: async function (mainFunction: Function, ...args: any[]) {
         const thisJsContent = `
 (function() {
     const mainFunction = ${mainFunction.toString()};
@@ -13,3 +13,5 @@ module.exports = (plugin, jsContent) => ({
         return result;
     },
 });
+
+export default withWorkerUtils;

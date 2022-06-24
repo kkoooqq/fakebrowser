@@ -1,10 +1,7 @@
-// noinspection JSUnusedLocalSymbols
-
-'use strict';
-
-const {PuppeteerExtraPlugin} = require('puppeteer-extra-plugin');
-const withUtils = require('../_utils/withUtils');
-const withWorkerUtils = require('../_utils/withWorkerUtils');
+import { PuppeteerExtraPlugin, PuppeteerPage } from 'puppeteer-extra-plugin';
+import Utils from '../_utils/'
+import withUtils from '../_utils/withUtils';
+// import withWorkerUtils from '../_utils/withWorkerUtils';
 
 // bluetooth can only be supported in linux by turning on the switch "--enable-experimental-web-platform-features"
 // However, when the experimental turns on, the properties of window, document, navigator will be polluted by new parameters
@@ -28,16 +25,48 @@ const withWorkerUtils = require('../_utils/withWorkerUtils');
 // thanks to:
 // https://github.com/thegecko/webbluetooth/blob/master/src/helpers.ts
 
-class Plugin extends PuppeteerExtraPlugin {
-    constructor(opts = {}) {
+export interface PluginOptions {
+}
+
+interface PropOver {
+    name: string,
+    descriptor: {
+        configurable: boolean,
+        writable?: boolean,
+        enumerable: boolean,
+    },
+    visit: {
+        get?: {
+            length: number,
+            name: string,
+        },
+        value?: {
+            length: number,
+            name: string,
+        },
+        set?: {
+            length: number,
+            name: string,
+        },
+    },
+}
+interface ObjectDesc {
+    name: string,
+    props: Array<PropOver>
+}
+
+
+
+class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
+    constructor(opts?: Partial<PluginOptions>) {
         super(opts);
     }
 
-    get name() {
+    get name(): 'evasions/bluetooth' {
         return 'evasions/bluetooth';
     }
 
-    async onPageCreated(page) {
+    async onPageCreated(page: PuppeteerPage) {
         await withUtils(this, page).evaluateOnNewDocument(this.mainFunction);
     }
 
@@ -45,8 +74,8 @@ class Plugin extends PuppeteerExtraPlugin {
     //     return withWorkerUtils(this, jsContent).evaluate(this.mainFunction);
     // }
 
-    mainFunction = (utils) => {
-        if ('undefined' !== typeof window.Bluetooth) {
+    mainFunction = (utils: typeof Utils) => {
+        if ('undefined' !== typeof (window as any).Bluetooth) {
             return;
         }
 
@@ -284,11 +313,11 @@ class Plugin extends PuppeteerExtraPlugin {
          * @param uuid The partial UUID
          * @returns canonical UUID
          */
-        function getCanonicalUUID(uuid) {
+        function getCanonicalUUID(uuid: string | Number) {
             if (typeof uuid === 'number') uuid = uuid.toString(16);
-            uuid = uuid.toLowerCase();
+            uuid = (uuid as string).toLowerCase();
             if (uuid.length <= 8) uuid = ('00000000' + uuid).slice(-8) + '-0000-1000-8000-00805f9b34fb';
-            if (uuid.length === 32) uuid = uuid.match(/^([0-9a-f]{8})([0-9a-f]{4})([0-9a-f]{4})([0-9a-f]{4})([0-9a-f]{12})$/).splice(1).join('-');
+            if (uuid.length === 32) uuid = (uuid as string).match(/^([0-9a-f]{8})([0-9a-f]{4})([0-9a-f]{4})([0-9a-f]{4})([0-9a-f]{12})$/)!.splice(1).join('-');
             return uuid;
         }
 
@@ -297,7 +326,7 @@ class Plugin extends PuppeteerExtraPlugin {
          * @param service The known service name
          * @returns canonical UUID
          */
-        function getServiceUUID(service) {
+        function getServiceUUID(service: keyof typeof bluetoothServices | number) {
             // Check for string as enums also allow a reverse lookup which will match any numbers passed in
             if (typeof service === 'string' && bluetoothServices[service]) {
                 service = bluetoothServices[service];
@@ -311,7 +340,7 @@ class Plugin extends PuppeteerExtraPlugin {
          * @param characteristic The known characteristic name
          * @returns canonical UUID
          */
-        function getCharacteristicUUID(characteristic) {
+        function getCharacteristicUUID(characteristic: keyof typeof bluetoothCharacteristics | number) {
             // Check for string as enums also allow a reverse lookup which will match any numbers passed in
             if (typeof characteristic === 'string' && bluetoothCharacteristics[characteristic]) {
                 characteristic = bluetoothCharacteristics[characteristic];
@@ -325,7 +354,7 @@ class Plugin extends PuppeteerExtraPlugin {
          * @param descriptor The known descriptor name
          * @returns canonical UUID
          */
-        function getDescriptorUUID(descriptor) {
+        function getDescriptorUUID(descriptor: keyof typeof bluetoothDescriptors | number) {
             // Check for string as enums also allow a reverse lookup which will match any numbers passed in
             if (typeof descriptor === 'string' && bluetoothDescriptors[descriptor]) {
                 descriptor = bluetoothDescriptors[descriptor];
@@ -353,7 +382,7 @@ class Plugin extends PuppeteerExtraPlugin {
             }
         };
 
-        const fakeBluetoothInstance = new BluetoothPseudo();
+        const fakeBluetoothInstance = BluetoothPseudo(); // new removed
 
         utils.makePseudoClass(window, 'Bluetooth', BluetoothPseudo, EventTarget);
         utils.makePseudoClass(window, 'BluetoothCharacteristicProperties', null, null);
@@ -373,7 +402,7 @@ class Plugin extends PuppeteerExtraPlugin {
         // BluetoothUUID.prototype.[Symbol.toStringTag]
 
         utils.mockWithProxy(
-            window.BluetoothUUID,
+            (window as any).BluetoothUUID,
             'canonicalUUID',
             _Object.create,
             {
@@ -413,7 +442,7 @@ class Plugin extends PuppeteerExtraPlugin {
         );
 
         utils.mockWithProxy(
-            window.BluetoothUUID,
+            (window as any).BluetoothUUID,
             'getCharacteristic',
             _Object.create,
             {
@@ -466,7 +495,7 @@ class Plugin extends PuppeteerExtraPlugin {
         );
 
         utils.mockWithProxy(
-            window.BluetoothUUID,
+            (window as any).BluetoothUUID,
             'getDescriptor',
             _Object.create,
             {
@@ -519,7 +548,7 @@ class Plugin extends PuppeteerExtraPlugin {
         );
 
         utils.mockWithProxy(
-            window.BluetoothUUID,
+            (window as any).BluetoothUUID,
             'getService',
             _Object.create,
             {
@@ -578,7 +607,7 @@ class Plugin extends PuppeteerExtraPlugin {
         // Bluetooth.prototype.[Symbol.toStringTag]
 
         utils.mockWithProxy(
-            window.Bluetooth.prototype,
+            (window as any).Bluetooth.prototype,
             'getAvailability',
             _Object.create,
             {
@@ -598,7 +627,7 @@ class Plugin extends PuppeteerExtraPlugin {
                     return _Reflect.get(target, property, receiver);
                 },
                 apply(target, thisArg, args) {
-                    if (thisArg === window.Bluetooth.prototype) {
+                    if (thisArg === (window as any).Bluetooth.prototype) {
                         // Want to call it directly from window.Bluetooth.prototype.getAvailability()? No way!
                         return Promise.reject(utils.patchError(
                             new TypeError(`Failed to execute 'getAvailability' on 'Bluetooth': Illegal invocation`),
@@ -612,7 +641,7 @@ class Plugin extends PuppeteerExtraPlugin {
         );
 
         utils.mockWithProxy(
-            window.Bluetooth.prototype,
+            (window as any).Bluetooth.prototype,
             'requestDevice',
             _Object.create,
             {
@@ -633,7 +662,7 @@ class Plugin extends PuppeteerExtraPlugin {
                 },
                 apply(target, thisArg, args) {
                     return new utils.cache.Promise((resolve, reject) => {
-                        if (thisArg === window.Bluetooth.prototype) {
+                        if (thisArg === (window as any).Bluetooth.prototype) {
                             // Want to call it directly from window.Bluetooth.prototype.requestDevice()? No way!
                             return reject(utils.patchError(
                                 new TypeError(`Failed to execute 'requestDevice' on 'Bluetooth': Illegal invocation`),
@@ -850,22 +879,22 @@ class Plugin extends PuppeteerExtraPlugin {
                 apply(target, thisArg, args) {
                     return new Proxy(
                         fakeBluetoothInstance, {
-                            getOwnPropertyDescriptor: (target, propertyKey) => {
-                                if (eventTargetFuncNames.includes(propertyKey)) {
-                                    return undefined;
-                                }
+                        getOwnPropertyDescriptor: (target, propertyKey) => {
+                            if (eventTargetFuncNames.includes(propertyKey)) {
+                                return undefined;
+                            }
 
-                                return _Reflect.getOwnPropertyDescriptor(target, propertyKey);
-                            },
-                            ownKeys: (target) => {
-                                let result = _Reflect.ownKeys(target);
-                                result = Array.from(
-                                    utils.differenceABSet(result, eventTargetFuncNames),
-                                );
-
-                                return result;
-                            },
+                            return _Reflect.getOwnPropertyDescriptor(target, propertyKey);
                         },
+                        ownKeys: (target) => {
+                            let result = _Reflect.ownKeys(target);
+                            result = Array.from(
+                                utils.differenceABSet(result, eventTargetFuncNames),
+                            );
+
+                            return result;
+                        },
+                    },
                     );
                 },
             },
@@ -944,10 +973,9 @@ class Plugin extends PuppeteerExtraPlugin {
         }
 
         console.log(JSON.stringify(map, null, 4));
-
         */
 
-        const map = [
+        const map: ObjectDesc[] = [
             {
                 'name': 'BluetoothDevice',
                 'props': [
@@ -1428,22 +1456,22 @@ class Plugin extends PuppeteerExtraPlugin {
             },
         ];
 
-        for (const {name, props} of map) {
-            for (const {name: propName, descriptor, visit} of props) {
+        for (const { name, props } of map) {
+            for (const { name: propName, descriptor, visit } of props) {
                 if (visit.get) {
                     utils.mockGetterWithProxy(
-                        window[name].prototype,
+                        (window as any)[name].prototype,
                         propName,
                         _Object.create,
                         descriptor,
                         {
                             get: (target, property, receiver) => {
                                 if (property === 'name') {
-                                    return visit.get.name;
+                                    return visit.get!.name;
                                 }
 
                                 if (property === 'length') {
-                                    return visit.get.length;
+                                    return visit.get!.length;
                                 }
 
                                 return _Reflect.get(target, property, receiver);
@@ -1460,18 +1488,18 @@ class Plugin extends PuppeteerExtraPlugin {
 
                 if (visit.value) {
                     utils.mockWithProxy(
-                        window[name].prototype,
+                        (window as any)[name].prototype,
                         propName,
                         _Object.create,
                         descriptor,
                         {
                             get: (target, property, receiver) => {
                                 if (property === 'name') {
-                                    return visit.value.name;
+                                    return visit.value!.name;
                                 }
 
                                 if (property === 'length') {
-                                    return visit.value.length;
+                                    return visit.value!.length;
                                 }
 
                                 return _Reflect.get(target, property, receiver);
@@ -1488,18 +1516,18 @@ class Plugin extends PuppeteerExtraPlugin {
 
                 if (visit.set) {
                     utils.mockSetterWithProxy(
-                        window[name].prototype,
+                        (window as any)[name].prototype,
                         propName,
                         _Object.create,
                         descriptor,
                         {
                             get: (target, property, receiver) => {
                                 if (property === 'name') {
-                                    return visit.set.name;
+                                    return visit.set!.name;
                                 }
 
                                 if (property === 'length') {
-                                    return visit.set.length;
+                                    return visit.set!.length;
                                 }
 
                                 return _Reflect.get(target, property, receiver);
@@ -1523,6 +1551,4 @@ class Plugin extends PuppeteerExtraPlugin {
 
 }
 
-module.exports = function (pluginConfig) {
-    return new Plugin(pluginConfig);
-};
+export default (pluginConfig?: Partial<PluginOptions>) => new Plugin(pluginConfig)
