@@ -1,11 +1,9 @@
-// noinspection JSUnusedLocalSymbols
+import { PuppeteerExtraPlugin, PuppeteerPage } from 'puppeteer-extra-plugin';
+import Utils from '../_utils/'
+import withUtils from '../_utils/withUtils';
 
-'use strict';
-
-const {PuppeteerExtraPlugin} = require('puppeteer-extra-plugin');
-
-const withUtils = require('../_utils/withUtils');
-const withWorkerUtils = require('../_utils/withWorkerUtils');
+export interface PluginOptions {
+}
 
 /**
  * Mock the `chrome.loadTimes` function if not available (e.g. when running headless).
@@ -22,21 +20,21 @@ const withWorkerUtils = require('../_utils/withWorkerUtils');
  * @see `chrome.csi` evasion
  *
  */
-class Plugin extends PuppeteerExtraPlugin {
-    constructor(opts = {}) {
+class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
+    constructor(opts?: Partial<PluginOptions>) {
         super(opts);
     }
 
-    get name() {
+    get name(): 'evasions/chrome.loadTimes' {
         return 'evasions/chrome.loadTimes';
     }
 
-    async onPageCreated(page) {
+    async onPageCreated(page: PuppeteerPage) {
         await withUtils(this, page).evaluateOnNewDocument(this.mainFunction);
     }
 
-    mainFunction = (utils) => {
-        if (!window.chrome) {
+    mainFunction = (utils: typeof Utils) => {
+        if (!(window as any).chrome) {
             // Use the exact property descriptor found in headful Chrome
             // fetch it via `Object.getOwnPropertyDescriptor(window, 'chrome')`
             utils.cache.Object.defineProperty(window, 'chrome', {
@@ -48,7 +46,7 @@ class Plugin extends PuppeteerExtraPlugin {
         }
 
         // That means we're running headful and don't need to mock anything
-        if ('loadTimes' in window.chrome) {
+        if ('loadTimes' in (window as any).chrome) {
             return; // Nothing to do here
         }
 
@@ -116,9 +114,9 @@ class Plugin extends PuppeteerExtraPlugin {
         const {timing} = window.performance;
 
         // Truncate number to specific number of decimals, most of the `loadTimes` stuff has 3
-        function toFixed(num, fixed) {
+        function toFixed(num: number, fixed: number) {
             var re = new RegExp('^-?\\d+(?:.\\d{0,' + (fixed || -1) + '})?');
-            return num.toString().match(re)[0];
+            return num.toString().match(re)![0];
         }
 
         const timingInfo = {

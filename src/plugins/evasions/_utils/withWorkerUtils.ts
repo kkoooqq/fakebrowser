@@ -1,6 +1,6 @@
 // import { utils } from './'
 
-export const withWorkerUtils = (plugin: any, jsContent: any) => ({
+export const withWorkerUtils = (plugin: any, jsContent: string) => ({
     evaluate: async function (mainFunction: Function, ...args: any[]) {
         const thisJsContent = `
 (function() {

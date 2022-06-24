@@ -1,28 +1,29 @@
-'use strict';
+import { PuppeteerExtraPlugin, PuppeteerPage } from 'puppeteer-extra-plugin';
+import Utils from '../_utils/'
+import withUtils from '../_utils/withUtils';
+import withWorkerUtils from '../_utils/withWorkerUtils';
 
-const {PuppeteerExtraPlugin} = require('puppeteer-extra-plugin');
-
-const withUtils = require('../_utils/withUtils');
-const withWorkerUtils = require('../_utils/withWorkerUtils');
+export interface PluginOptions {
+}
 
 /**
  * Mock the `chrome.app` object if not available (e.g. when running headless).
  */
-class Plugin extends PuppeteerExtraPlugin {
+class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
     constructor(opts = {}) {
         super(opts);
     }
 
-    get name() {
+    get name(): 'evasions/chrome.app' {
         return 'evasions/chrome.app';
     }
 
-    async onPageCreated(page) {
+    async onPageCreated(page: PuppeteerPage) {
         await withUtils(this, page).evaluateOnNewDocument(this.mainFunction);
     }
 
-    mainFunction = (utils) => {
-        if (!window.chrome) {
+    mainFunction = (utils: typeof Utils) => {
+        if (!(window as any).chrome) {
             // Use the exact property descriptor found in headful Chrome
             // fetch it via `Object.getOwnPropertyDescriptor(window, 'chrome')`
             utils.cache.Object.defineProperty(window, 'chrome', {
@@ -34,12 +35,12 @@ class Plugin extends PuppeteerExtraPlugin {
         }
 
         // That means we're running headful and don't need to mock anything
-        if ('app' in window.chrome) {
+        if ('app' in (window as any).chrome) {
             return; // Nothing to do here
         }
 
         const makeError = {
-            ErrorInInvocation: fn => {
+            ErrorInInvocation: (fn: string) => {
                 const err = new TypeError(`Error in invocation of app.${fn}()`);
                 return utils.stripErrorWithAnchor(
                     err,
@@ -68,7 +69,7 @@ class Plugin extends PuppeteerExtraPlugin {
         `.trim(),
         );
 
-        window.chrome.app = {
+        (window as any).chrome.app = {
             ...STATIC_DATA,
 
             get isInstalled() {
@@ -95,11 +96,9 @@ class Plugin extends PuppeteerExtraPlugin {
             },
         };
 
-        utils.patchToStringNested(window.chrome.app);
+        utils.patchToStringNested((window as any).chrome.app);
     };
 
 }
 
-module.exports = function (pluginConfig) {
-    return new Plugin(pluginConfig);
-};
+export default (pluginConfig?: Partial<PluginOptions>) => new Plugin(pluginConfig)

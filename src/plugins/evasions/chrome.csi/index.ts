@@ -1,9 +1,9 @@
-'use strict';
+import { PuppeteerExtraPlugin, PuppeteerPage } from 'puppeteer-extra-plugin';
+import Utils from '../_utils/'
+import withUtils from '../_utils/withUtils';
 
-const {PuppeteerExtraPlugin} = require('puppeteer-extra-plugin');
-
-const withUtils = require('../_utils/withUtils');
-const withWorkerUtils = require('../_utils/withWorkerUtils');
+export interface PluginOptions {
+}
 
 /**
  * Mock the `chrome.csi` function if not available (e.g. when running headless).
@@ -22,21 +22,21 @@ const withWorkerUtils = require('../_utils/withWorkerUtils');
  * @see `chrome.loadTimes` evasion
  *
  */
-class Plugin extends PuppeteerExtraPlugin {
-    constructor(opts = {}) {
+class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
+    constructor(opts?: Partial<PluginOptions>) {
         super(opts);
     }
 
-    get name() {
+    get name(): 'evasions/chrome.csi' {
         return 'evasions/chrome.csi';
     }
 
-    async onPageCreated(page) {
+    async onPageCreated(page: PuppeteerPage) {
         await withUtils(this, page).evaluateOnNewDocument(this.mainFunction);
     }
 
-    mainFunction = (utils) => {
-        if (!window.chrome) {
+    mainFunction = (utils: typeof Utils) => {
+        if (!(window as any).chrome) {
             // Use the exact property descriptor found in headful Chrome
             // fetch it via `Object.getOwnPropertyDescriptor(window, 'chrome')`
             utils.cache.Object.defineProperty(window, 'chrome', {
@@ -48,7 +48,7 @@ class Plugin extends PuppeteerExtraPlugin {
         }
 
         // That means we're running headful and don't need to mock anything
-        if ('csi' in window.chrome) {
+        if ('csi' in (window as any).chrome) {
             return; // Nothing to do here
         }
 
@@ -59,7 +59,7 @@ class Plugin extends PuppeteerExtraPlugin {
 
         const {timing} = window.performance;
 
-        window.chrome.csi = function () {
+        (window as any).chrome.csi = function () {
             return {
                 onloadT: timing.domContentLoadedEventEnd,
                 startE: timing.navigationStart,
@@ -68,11 +68,9 @@ class Plugin extends PuppeteerExtraPlugin {
             };
         };
 
-        utils.patchToString(window.chrome.csi);
+        utils.patchToString((window as any).chrome.csi);
     };
 
 }
 
-module.exports = function (pluginConfig) {
-    return new Plugin(pluginConfig);
-};
+export default (pluginConfig?: Partial<PluginOptions>) => new Plugin(pluginConfig)

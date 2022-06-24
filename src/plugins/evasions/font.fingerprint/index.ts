@@ -1,34 +1,41 @@
-// noinspection JSUnusedLocalSymbols
+import { PluginRequirements, PuppeteerExtraPlugin, PuppeteerPage } from 'puppeteer-extra-plugin';
+import Utils from '../_utils/'
+import withUtils from '../_utils/withUtils';
+import withWorkerUtils from '../_utils/withWorkerUtils';
 
-'use strict';
+export interface PluginOptions {
+}
 
-const {PuppeteerExtraPlugin} = require('puppeteer-extra-plugin');
-const withUtils = require('../_utils/withUtils');
-const withWorkerUtils = require('../_utils/withWorkerUtils');
+interface FontDesc {
+    style: string;
+    weight: string;
+    size: string;
+    family: string;
+}
 
-class Plugin extends PuppeteerExtraPlugin {
-    constructor(opts = {}) {
+class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
+    constructor(opts?: Partial<PluginOptions>) {
         super(opts);
     }
 
-    get name() {
+    get name(): 'evasions/font.fingerprint' {
         return 'evasions/font.fingerprint';
     }
 
     // noinspection JSUnusedGlobalSymbols
-    get requirements() {
+    get requirements(): PluginRequirements {
         return new Set(['runLast']);
     }
 
-    async onPageCreated(page) {
+    async onPageCreated(page: PuppeteerPage): Promise<void> {
         await withUtils(this, page).evaluateOnNewDocument(this.mainFunction, this.opts.fakeDD.fontSalt);
     }
 
-    onServiceWorkerContent(jsContent) {
+    onServiceWorkerContent(jsContent: string) {
         return withWorkerUtils(this, jsContent).evaluate(this.mainFunction, this.opts.fakeDD.fontSalt);
     }
 
-    mainFunction = (utils, fontSalt) => {
+    mainFunction = (utils: typeof Utils, fontSalt) => {
         // Thanks to: https://github.com/dy/css-font
         function parseFont(value) {
             if (typeof value !== 'string') throw new Error('Font argument must be a string.');
@@ -105,7 +112,7 @@ class Plugin extends PuppeteerExtraPlugin {
                 'smaller',
             ];
 
-            function unquote(str) {
+            function unquote(str: string) {
                 // noinspection RegExpRedundantEscape
                 const reg = /[\'\"]/;
 
@@ -121,7 +128,7 @@ class Plugin extends PuppeteerExtraPlugin {
                 return str;
             }
 
-            function parse(str, opts) {
+            function parse(str: string, opts?: string | string[] | {brackets?: string | string[], escape?: string, flat?: boolean}) {
                 // pretend non-string parsed per-se
                 if (typeof str !== 'string') return [str];
 
@@ -141,9 +148,9 @@ class Plugin extends PuppeteerExtraPlugin {
                     // create parenthesis regex
                     const pRE = new RegExp(['\\', bracket[0], '[^\\', bracket[0], '\\', bracket[1], ']*\\', bracket[1]].join(''));
 
-                    let ids = [];
+                    let ids: number[] = [];
 
-                    function replaceToken(token, idx, str) {
+                    function replaceToken(token: string, idx: number[], str: string) {
                         // save token to res
                         const refId = res.push(token.slice(bracket[0].length, -bracket[1].length)) - 1;
 
@@ -182,9 +189,9 @@ class Plugin extends PuppeteerExtraPlugin {
                 const re = new RegExp('\\' + escape + '([0-9]+)' + '\\' + escape);
 
                 // transform references to tree
-                function nest(str, refs, escape) {
-                    const res = [];
-                    let match;
+                function nest(str: string, refs: {[key: string]: string}, escape?: boolean): string[] {
+                    const res: string[] = [];
+                    let match: RegExpExecArray | null;
 
                     let a = 0;
                     while (match = re.exec(str)) {
@@ -205,7 +212,7 @@ class Plugin extends PuppeteerExtraPlugin {
                 return flat ? res : nest(res[0], res);
             }
 
-            function stringify(arg, opts) {
+            function stringify(arg: any[], opts: any) {
                 if (opts && opts.flat) {
                     const escape = opts && opts.escape || '___';
 
@@ -236,7 +243,7 @@ class Plugin extends PuppeteerExtraPlugin {
                     return prev + curr;
                 }, '');
 
-                function replaceRef(match, idx) {
+                function replaceRef(match, idx: number) {
                     if (arg[idx] == null) throw Error('Reference ' + idx + 'is undefined');
                     return arg[idx];
                 }
@@ -255,7 +262,7 @@ class Plugin extends PuppeteerExtraPlugin {
 
             const paren = parenthesis;
 
-            function splitBy(string, separator, o) {
+            function splitBy(string: string, separator: string, o ?: any) {
                 let i;
                 if (string == null) throw Error('First argument should be a string');
                 if (separator == null) throw Error('Separator should be a string or a RegExp');
@@ -272,7 +279,7 @@ class Plugin extends PuppeteerExtraPlugin {
                         o.ignore = [o.ignore];
                     }
 
-                    o.ignore = o.ignore.map(function (pair) {
+                    o.ignore = o.ignore.map(function (pair: string) {
                         // '"' → '""'
                         if (pair.length === 1) pair = pair + pair;
                         return pair;
@@ -310,7 +317,7 @@ class Plugin extends PuppeteerExtraPlugin {
                 return parts;
             }
 
-            function parseLineHeight(value) {
+            function parseLineHeight(value: string) {
                 const parsed = parseFloat(value);
                 if (parsed.toString() === value) {
                     return parsed;
@@ -318,7 +325,7 @@ class Plugin extends PuppeteerExtraPlugin {
                 return value;
             }
 
-            const isSize = function isSize(value) {
+            const isSize = function isSize(value: string) {
                 // noinspection RegExpRedundantEscape
                 return /^[\d\.]/.test(value)
                     || value.indexOf('/') !== -1
@@ -438,8 +445,8 @@ class Plugin extends PuppeteerExtraPlugin {
         // ==> not exist:
         // Replace the font back to the default font
 
-        const setFontList = [];
-        const fakeFontConfigMaps = [];
+        const setFontList: Array<{orgFont: any}> = [];
+        const fakeFontConfigMaps: Array<{org: FontDesc, dest: FontDesc}> = [];
 
         // fakeFontConfigMaps
         // const item = {
@@ -459,17 +466,17 @@ class Plugin extends PuppeteerExtraPlugin {
             console.log(`hook font Total fonts present ${existFonts.length}`);
         }
 
-        const hookFonts = [];
+        const hookFonts: string[] = [];
         let hookCount = 0;
 
         // All lowercase
-        const fontSaltWithLowerCaseName = _Object.fromEntries(
+        const fontSaltWithLowerCaseName: {[key: string]: { style: string; weight: string; size: string; }} = _Object.fromEntries(
             _Object.entries(fontSalt).map(e => {
                 e[0] = e[0].toLowerCase();
                 return e;
-            }));
+            })) as any;
 
-        const calcNewFont = (font, domNode) => {
+        const calcNewFont = (font: string, domNode?: HTMLElement) => {
             let newFont = null;
 
             // If the default font is set to trick us, we don't have to pay attention to it
@@ -480,7 +487,7 @@ class Plugin extends PuppeteerExtraPlugin {
 
                 try {
                     let style = '', variant, weight = '', stretch,
-                        lineHeight, size = '', family;
+                        lineHeight, size = '', family: string[];
 
                     try {
                         // noinspection JSUnusedAssignment
@@ -505,7 +512,7 @@ class Plugin extends PuppeteerExtraPlugin {
                     }
 
                     if (family.length) {
-                        let targetFontFamily = null;
+                        let targetFontFamily: string | null = null;
                         let fCount = 0;
 
                         for (let f of family) {
@@ -685,15 +692,15 @@ class Plugin extends PuppeteerExtraPlugin {
 
         if (1) {
             // hook style
-            const needsToHookStyles = [];
+            const needsToHookStyles: Array<{domNode: any; styleDeclaration: any, userSettings: {[key: string]: string}, computedStyles: any}> = [];
 
             // hook these properties
-            const hookAttribs = [
+            const hookAttribs: Array<string> = [
                 'font', 'fontFamily', 'fontFeatureSettings', 'fontKerning',
                 'fontOpticalSizing', 'fontSize', 'fontSizeAdjust',
                 'fontStretch', 'fontStyle', 'fontSynthesis', 'fontVariant', 'lineHeight'];
 
-            const hookAttribsMap = {
+            const hookAttribsMap: {[key: string]: string} = {
                 'font': 'font',
                 'font-family': 'fontFamily',
                 'fontFamily': 'fontFamily',
@@ -722,7 +729,7 @@ class Plugin extends PuppeteerExtraPlugin {
             };
 
             // Final Write
-            const finallyAttribsMap = {
+            const finallyAttribsMap: {[key: string]: string} = {
                 'font': 'font',
                 'font-family': 'fontFamily',
                 'font-style': 'fontStyle',
@@ -731,10 +738,10 @@ class Plugin extends PuppeteerExtraPlugin {
             };
 
             // Property Blacklist
-            const hookAttribBlackList = [];
+            const hookAttribBlackList: string[] = [];
 
             const hookStyle = (domNode) => {
-                let hookConfig = needsToHookStyles.find(e => e.domNode === domNode);
+                let hookConfig: {domNode: any; styleDeclaration: any, userSettings: {[key: string]: string}, computedStyles: any} = needsToHookStyles.find(e => e.domNode === domNode);
 
                 if (!hookConfig) {
                     // Get the original value
@@ -754,16 +761,16 @@ class Plugin extends PuppeteerExtraPlugin {
                     needsToHookStyles.push(hookConfig);
 
                     // Get the first calculated value
-                    const cs = _window.getComputedStyle.call(null, domNode);
+                    const cs = _window.getComputedStyle.call(null, domNode) as unknown as {[key: string]: string};
 
-                    const handler = {
+                    const handler: ProxyHandler<any> = {
                         get: (target, property, receiver) => {
                             const orgResult = _Reflect.get(utils.getProxyTarget(target), property);
                             let result;
 
                             if (_Object.getOwnPropertyDescriptor(target, property)) {
-                                if (hookAttribs.includes(property)) {
-                                    result = hookConfig.userSettings[property];
+                                if (hookAttribs.includes(property as string)) {
+                                    result = hookConfig.userSettings[property as string];
                                 } else {
                                     result = orgResult;
                                 }
@@ -783,14 +790,14 @@ class Plugin extends PuppeteerExtraPlugin {
                                 let handle = false;
                                 let setterInvoked = false;
 
-                                if (hookAttribs.includes(property)) {
+                                if (hookAttribs.includes(property as string)) {
                                     handle = handleUserSetFontStyle(
                                         () => {
                                             setterInvoked = true;
                                             return _Reflect.set(utils.getProxyTarget(target), property, value);
                                         },
                                         styleDeclaration,
-                                        property,
+                                        property as string,
                                         value);
                                 }
 
@@ -836,7 +843,7 @@ class Plugin extends PuppeteerExtraPlugin {
              * @param value
              * @returns boolean
              */
-            const handleUserSetFontStyle = (cb, styleDeclaration, attr, value) => {
+            const handleUserSetFontStyle = (cb: () => void, styleDeclaration: any, attr: string, value: string): boolean => {
                 const hookConfig = needsToHookStyles.find(e => e.styleDeclaration === styleDeclaration);
                 if (hookConfig && attr && value) {
                     let domNode = hookConfig.domNode;
@@ -860,18 +867,18 @@ class Plugin extends PuppeteerExtraPlugin {
                         // Browser compatibility may vary.
                         const pseudos = ['', '::before', '::after'];
 
-                        const cs = [];
-                        const csBefore = [];
-                        const csAfter = [];
+                        const cs: Array<{[key: string]: string}> = [];
+                        const csBefore: Array<{[key: string]: string}> = [];
+                        const csAfter: Array<{[key: string]: string}> = [];
 
                         for (let n = 0; n < pseudos.length; ++n) {
                             const pseudo = pseudos[n];
-                            cs[n] = _window.getComputedStyle.call(null, domNode, pseudo);
+                            cs[n] = _window.getComputedStyle.call(null, domNode, pseudo) as unknown as {[key: string]: string};
                             csBefore[n] = {};
                             csAfter[n] = {};
 
                             for (const attr of hookAttribs) {
-                                csBefore[n][attr] = cs[n][attr];
+                                csBefore[n][attr as string] = cs[n][attr as string];
                             }
                         }
 
@@ -885,7 +892,7 @@ class Plugin extends PuppeteerExtraPlugin {
                         }
 
                         // Find the properties that change
-                        const changedAttrs = [];
+                        const changedAttrs: string[] = [];
 
                         for (let n = 0; n < pseudos.length; ++n) {
                             for (const attr of hookAttribs) {
@@ -1062,7 +1069,7 @@ class Plugin extends PuppeteerExtraPlugin {
         // font-face
         // noinspection JSUnresolvedVariable
         if ('undefined' !== utils.cache.global.FontFace) {
-            const fontFaceConfigCache = [];
+            const fontFaceConfigCache: Array<{fontFace: any, args: any, fontFamily: string}> = [];
 
             utils.replaceWithProxy(utils.cache.global, 'FontFace', {
                 construct(target, args) {
@@ -1105,8 +1112,8 @@ class Plugin extends PuppeteerExtraPlugin {
                         err = ex;
 
                         // If the descriptor is messed up, this error is thrown
-                        if (!err.message.includes('A network error occurred')) {
-                            return Promise.reject(utils.patchError(ex, 'load'));
+                        if (!(err as Error).message.includes('A network error occurred')) {
+                            return Promise.reject(utils.patchError(ex as Error, 'load'));
                         }
                     }
 
@@ -1144,8 +1151,8 @@ class Plugin extends PuppeteerExtraPlugin {
         }
 
         // FontFaceSet
-        if ('undefined' !== typeof globalThis && 'undefined' !== typeof globalThis.fonts) {
-            const _FontFaceSet_prototype = _Object.getPrototypeOf(globalThis.fonts);
+        if ('undefined' !== typeof globalThis && 'undefined' !== typeof (globalThis as any).fonts) {
+            const _FontFaceSet_prototype = _Object.getPrototypeOf((globalThis as any).fonts);
 
             utils.replaceWithProxy(_FontFaceSet_prototype, 'check', {
                 apply(target, thisArg, args) {
@@ -1179,6 +1186,4 @@ class Plugin extends PuppeteerExtraPlugin {
 
 }
 
-module.exports = function (pluginConfig) {
-    return new Plugin(pluginConfig);
-};
+export default (pluginConfig?: Partial<PluginOptions>) => new Plugin(pluginConfig)
