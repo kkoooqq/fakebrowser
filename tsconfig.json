@@ -15,7 +15,7 @@
     "noUnusedParameters": false,
     "stripInternal": true,
     "types": [
-      "node"
+      "node", "offscreencanvas", "chrome"
     ],
     "skipLibCheck": false,
     "declarationMap": true,

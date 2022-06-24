@@ -102,6 +102,22 @@ export declare const utils: {
      */
     replaceGetterWithProxy: (obj: any, propName: string, handler:ProxyHandler<any>) => boolean;
 
+    /**
+     * Wraps a JS Proxy Handler and strips it's presence from error stacks, in case the traps throw.
+     *
+     * The presence of a JS Proxy can be revealed as it shows up in error stack traces.
+     *
+     * @param {object} handler - The JS Proxy handler to wrap
+     */
+    stripProxyFromErrors: (handler: any) => any;
+
+    /**
+     * Redirect toString requests from one object to another.
+     *
+     * @param {object} proxyObj - The object that toString will be called on
+     * @param {object} originalObj - The object which toString result we wan to return
+     */
+    redirectToString: <T>(proxyObj : T, originalObj: T) => void;
 }
 
 export default utils;

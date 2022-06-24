@@ -36,7 +36,7 @@ class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
     }
 
     mainFunction = (utils: typeof Utils) => {
-        if (!(window as any).chrome) {
+        if (!window.chrome) {
             // Use the exact property descriptor found in headful Chrome
             // fetch it via `Object.getOwnPropertyDescriptor(window, 'chrome')`
             utils.cache.Object.defineProperty(window, 'chrome', {
@@ -48,7 +48,7 @@ class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
         }
 
         // That means we're running headful and don't need to mock anything
-        if ('csi' in (window as any).chrome) {
+        if ('csi' in window.chrome) {
             return; // Nothing to do here
         }
 
@@ -59,7 +59,7 @@ class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
 
         const {timing} = window.performance;
 
-        (window as any).chrome.csi = function () {
+        (window.chrome as any).csi = function () {
             return {
                 onloadT: timing.domContentLoadedEventEnd,
                 startE: timing.navigationStart,

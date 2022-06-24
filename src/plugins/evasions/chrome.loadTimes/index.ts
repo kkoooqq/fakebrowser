@@ -34,7 +34,7 @@ class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
     }
 
     mainFunction = (utils: typeof Utils) => {
-        if (!(window as any).chrome) {
+        if (!window.chrome) {
             // Use the exact property descriptor found in headful Chrome
             // fetch it via `Object.getOwnPropertyDescriptor(window, 'chrome')`
             utils.cache.Object.defineProperty(window, 'chrome', {
@@ -46,7 +46,7 @@ class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
         }
 
         // That means we're running headful and don't need to mock anything
-        if ('loadTimes' in (window as any).chrome) {
+        if ('loadTimes' in window.chrome) {
             return; // Nothing to do here
         }
 

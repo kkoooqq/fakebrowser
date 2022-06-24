@@ -23,7 +23,7 @@ class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
     }
 
     mainFunction = (utils: typeof Utils) => {
-        if (!(window as any).chrome) {
+        if (!window.chrome) {
             // Use the exact property descriptor found in headful Chrome
             // fetch it via `Object.getOwnPropertyDescriptor(window, 'chrome')`
             utils.cache.Object.defineProperty(window, 'chrome', {
@@ -35,7 +35,7 @@ class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
         }
 
         // That means we're running headful and don't need to mock anything
-        if ('app' in (window as any).chrome) {
+        if ('app' in window.chrome) {
             return; // Nothing to do here
         }
 
@@ -69,7 +69,7 @@ class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
         `.trim(),
         );
 
-        (window as any).chrome.app = {
+        (window.chrome as any).app = {
             ...STATIC_DATA,
 
             get isInstalled() {
@@ -96,7 +96,7 @@ class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
             },
         };
 
-        utils.patchToStringNested((window as any).chrome.app);
+        utils.patchToStringNested((window.chrome as any).app);
     };
 
 }
