@@ -164,31 +164,31 @@ export interface DeviceDescriptor {
 }
 
 export interface WebGLDescriptor {
-    'supportedExtensions': string[],
-    'contextAttributes': {
-        'alpha': boolean,
-        'antialias': boolean,
-        'depth': boolean,
-        'desynchronized': boolean,
-        'failIfMajorPerformanceCaveat': boolean,
-        'powerPreference': string,
-        'premultipliedAlpha': boolean,
-        'preserveDrawingBuffer': boolean,
-        'stencil': boolean,
-        'xrCompatible': boolean
+    supportedExtensions: string[],
+    contextAttributes: {
+        alpha: boolean,
+        antialias: boolean,
+        depth: boolean,
+        desynchronized: boolean,
+        failIfMajorPerformanceCaveat: boolean,
+        powerPreference: string,
+        premultipliedAlpha: boolean,
+        preserveDrawingBuffer: boolean,
+        stencil: boolean,
+        xrCompatible: boolean
     },
-    'maxAnisotropy': number,
-    'params': Record<string, {
-        'type': string,
-        'value': null | string | number | number[] | Record<string, number>
+    maxAnisotropy: number,
+    params: Record<string, {
+        type: string,
+        value: null | string | number | number[] | Record<string, number>
     }>,
-    'shaderPrecisionFormats': Array<{
-        'shaderType': number,
-        'precisionType': number,
-        'r': {
-            'rangeMin': number,
-            'rangeMax': number,
-            'precision': number,
+    shaderPrecisionFormats: Array<{
+        shaderType: number,
+        precisionType: number,
+        r: {
+            rangeMin: number,
+            rangeMax: number,
+            precision: number,
         }
     }>
 }

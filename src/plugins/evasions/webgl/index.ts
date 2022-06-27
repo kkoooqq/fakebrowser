@@ -6,8 +6,16 @@ import withWorkerUtils from '../_utils/withWorkerUtils';
 
 export interface PluginOptions {
     fakeDD: FakeDeviceDescriptor;
-    // internalHttpServerPort: any;
-    // browserUUID: any;
+}
+
+interface ShadderCache {
+    shaderPrecisionFormat: string,
+    webglPropName: 'webgl' | 'webgl2',
+    shaderType: number,
+    precisionType: number,
+    rangeMin: number,
+    rangeMax: number,
+    precision: number,
 }
 
 export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
@@ -37,7 +45,7 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
     }
 
     mainFunction = (utils: typeof Utils, fakeDD: FakeDeviceDescriptor) => {
-        const _Object = utils.cache.Object;
+        // const _Object = utils.cache.Object;
         const _Reflect = utils.cache.Reflect;
 
         // shaderPrecisionFormat: shaderPrecisionFormat itself
@@ -47,16 +55,16 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
         // rangeMin
         // rangeMax
         // precision
-        const shaderPrecisionFormats = [];
+        const shaderPrecisionFormats: ShadderCache[] = [];
 
         const WebGLShaderPrecisionFormat_prototype_rangeMin_get = utils.cache.Descriptor.WebGLShaderPrecisionFormat.prototype.rangeMin.get;
         const WebGLShaderPrecisionFormat_prototype_rangeMax_get = utils.cache.Descriptor.WebGLShaderPrecisionFormat.prototype.rangeMax.get;
         const WebGLShaderPrecisionFormat_prototype_precision_get = utils.cache.Descriptor.WebGLShaderPrecisionFormat.prototype.precision.get;
 
-        const bindContext = (_WebGLRenderingContext, fakeDDPropName) => {
+        const bindContext = (_WebGLRenderingContext: any, fakeDDPropName: 'webgl' | 'webgl2') => {
             // getParameter
             utils.replaceWithProxy(_WebGLRenderingContext.prototype, 'getParameter', {
-                apply(target, thisArg, args) {
+                apply(target: any, thisArg, args: [number]) {
                     // We must call this primitive method, and akamai will listen to see if this primitive method is called
                     const orgResult = _Reflect.apply(target, thisArg, args);
                     const type = args[0];
@@ -99,7 +107,7 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
 
             // noinspection JSUnusedLocalSymbols
             utils.replaceWithProxy(_WebGLRenderingContext.prototype, 'getSupportedExtensions', {
-                apply(target, thisArg, args) {
+                apply(target: any, thisArg, args) {
                     _Reflect.apply(target, thisArg, args);
                     return fakeDD[fakeDDPropName].supportedExtensions;
                 },
@@ -107,7 +115,7 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
 
             // getContextAttributes
             utils.replaceWithProxy(_WebGLRenderingContext.prototype, 'getContextAttributes', {
-                apply(target, thisArg, args) {
+                apply(target: any, thisArg, args) {
                     const result = _Reflect.apply(target, thisArg, args);
 
                     result.alpha = fakeDD[fakeDDPropName].contextAttributes.alpha;
@@ -127,7 +135,7 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
 
             // getShaderPrecisionFormat
             utils.replaceWithProxy(_WebGLRenderingContext.prototype, 'getShaderPrecisionFormat', {
-                apply(target, thisArg, args) {
+                apply(target: any, thisArg, args: any[]) {
                     const shaderPrecisionFormat = _Reflect.apply(target, thisArg, args);
 
                     shaderPrecisionFormats.push({
@@ -172,7 +180,7 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
                     rangeMin,
                     rangeMax,
                     precision,
-                } = r;
+                } = r!;
 
                 const fake_r = fakeDD[webglPropName].shaderPrecisionFormats.find(
                     e => e.shaderType === shaderType
@@ -200,7 +208,7 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
                     rangeMin,
                     rangeMax,
                     precision,
-                } = r;
+                } = r!;
 
                 const fake_r = fakeDD[webglPropName].shaderPrecisionFormats.find(
                     e => e.shaderType === shaderType
@@ -228,7 +236,7 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
                     rangeMin,
                     rangeMax,
                     precision,
-                } = r;
+                } = r!;
 
                 const fake_r = fakeDD[webglPropName].shaderPrecisionFormats.find(
                     e => e.shaderType === shaderType

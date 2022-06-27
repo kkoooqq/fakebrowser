@@ -22,6 +22,13 @@ export declare const utils: {
             CSSStyleDeclaration: any;
             Navigator: any;
             WorkerNavigator: any;
+            WebGLShaderPrecisionFormat: {
+                prototype: {
+                    rangeMin: {get: () => number},
+                    rangeMax: {get: () => number},
+                    precision: {get: () => number},
+                }
+            };
         };
     };
     patchError: (err: Error, trap: string) => Error;
@@ -143,7 +150,7 @@ export declare const utils: {
     /**
     * Find the context created by the external based on the canvas
     */
-    findRenderingContextIndex: (canvas: any) => {context: any, contextIndex: number} | {context: null, contextIndex: number}
+    findRenderingContextIndex: (canvas: any) => { context: any, contextIndex: number } | { context: null, contextIndex: number }
 
     variables: {
         proxies: any[],
