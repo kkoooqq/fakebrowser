@@ -87,7 +87,7 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
                                 if (paramValue && paramValue.constructor.name === 'Object') {
                                     const classType = param.type;
                                     // Float32Array, Int32Array, ...
-                                    result = new utils.cache.global[classType](Object.values(paramValue));
+                                    result = new (utils.cache as any).global[classType](Object.values(paramValue));
                                 } else {
                                     // including: null, number, string, array
                                     result = paramValue;
@@ -177,9 +177,9 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
                     webglPropName,
                     shaderType,
                     precisionType,
-                    rangeMin,
-                    rangeMax,
-                    precision,
+                    // rangeMin,
+                    // rangeMax,
+                    // precision,
                 } = r!;
 
                 const fake_r = fakeDD[webglPropName].shaderPrecisionFormats.find(
@@ -206,8 +206,8 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
                     shaderType,
                     precisionType,
                     rangeMin,
-                    rangeMax,
-                    precision,
+                    // rangeMax,
+                    // precision,
                 } = r!;
 
                 const fake_r = fakeDD[webglPropName].shaderPrecisionFormats.find(
@@ -233,9 +233,9 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
                     webglPropName,
                     shaderType,
                     precisionType,
-                    rangeMin,
+                    // rangeMin,
                     rangeMax,
-                    precision,
+                    // precision,
                 } = r!;
 
                 const fake_r = fakeDD[webglPropName].shaderPrecisionFormats.find(

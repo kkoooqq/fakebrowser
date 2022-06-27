@@ -34,7 +34,7 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
             HTMLMediaElement.prototype,
             'canPlayType',
             {
-                apply: function (target: any, thisArg, args) {
+                apply: function (target: any, thisArg, args: [string]) {
                     const orgResult = _Reflect.apply(target, thisArg, args);
 
                     if (!args || !args.length) {
@@ -127,7 +127,6 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
             );
         }
     };
-
 }
 
 export default (pluginConfig?: Partial<PluginOptions>) => new Plugin(pluginConfig)

@@ -123,7 +123,7 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
                                 }, PermissionStatus.prototype));
                             }
                         }
-
+                        // @ts-ignore
                         _Reflect.apply(...arguments).then((result: any) => {
                             return resolve(result);
                         }).catch((ex: Error) => {

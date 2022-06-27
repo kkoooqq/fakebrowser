@@ -97,7 +97,6 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
 
         utils.patchToStringNested((window.chrome as any).app);
     };
-
 }
 
 export default (pluginConfig?: Partial<PluginOptions>) => new Plugin(pluginConfig)

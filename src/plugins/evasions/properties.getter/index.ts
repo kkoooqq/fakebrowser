@@ -1,6 +1,6 @@
-import DeviceDescriptorHelper, { DeviceDescriptorNavigator, FakeDeviceDescriptor, IFontSalt } from 'DeviceDescriptor';
+import { DeviceDescriptorNavigator, FakeDeviceDescriptor } from 'DeviceDescriptor';
 import { BrowserEventOptions } from 'puppeteer-extra';
-import { PluginRequirements, PuppeteerBrowser, PuppeteerExtraPlugin, PuppeteerPage } from 'puppeteer-extra-plugin';
+import { PuppeteerBrowser, PuppeteerExtraPlugin, PuppeteerPage } from 'puppeteer-extra-plugin';
 import Utils from '../_utils/'
 import withUtils from '../_utils/withUtils';
 import withWorkerUtils from '../_utils/withWorkerUtils';

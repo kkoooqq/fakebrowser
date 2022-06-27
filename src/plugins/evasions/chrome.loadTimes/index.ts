@@ -5,6 +5,12 @@ import withUtils from '../_utils/withUtils';
 export interface PluginOptions {
 }
 
+interface NtEntryFallback {
+    nextHopProtocol: string,
+    type: string,
+};
+
+
 /**
  * Mock the `chrome.loadTimes` function if not available (e.g. when running headless).
  * It's a deprecated (but unfortunately still existing) chrome specific API to fetch browser timings and connection info.
@@ -71,22 +77,22 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
         // The API exposes some funky info regarding the connection
         const protocolInfo = {
             get connectionInfo() {
-                const ntEntry =
-                    performance.getEntriesByType('navigation')[0] || ntEntryFallback;
+                const ntEntry: NtEntryFallback =
+                    performance.getEntriesByType('navigation')[0] as unknown as NtEntryFallback || ntEntryFallback;
                 return ntEntry.nextHopProtocol;
             },
             get npnNegotiatedProtocol() {
                 // NPN is deprecated in favor of ALPN, but this implementation returns the
                 // HTTP/2 or HTTP2+QUIC/39 requests negotiated via ALPN.
                 const ntEntry =
-                    performance.getEntriesByType('navigation')[0] || ntEntryFallback;
+                    performance.getEntriesByType('navigation')[0] as unknown as NtEntryFallback || ntEntryFallback;
                 return ['h2', 'hq'].includes(ntEntry.nextHopProtocol)
                     ? ntEntry.nextHopProtocol
                     : 'unknown';
             },
             get navigationType() {
                 const ntEntry =
-                    performance.getEntriesByType('navigation')[0] || ntEntryFallback;
+                    performance.getEntriesByType('navigation')[0] as unknown as NtEntryFallback || ntEntryFallback;
                 return ntEntry.type;
             },
             get wasAlternateProtocolAvailable() {
@@ -99,14 +105,14 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
                 // SPDY is deprecated in favor of HTTP/2, but this implementation returns
                 // true for HTTP/2 or HTTP2+QUIC/39 as well.
                 const ntEntry =
-                    performance.getEntriesByType('navigation')[0] || ntEntryFallback;
+                    performance.getEntriesByType('navigation')[0] as unknown as NtEntryFallback || ntEntryFallback;
                 return ['h2', 'hq'].includes(ntEntry.nextHopProtocol);
             },
             get wasNpnNegotiated() {
                 // NPN is deprecated in favor of ALPN, but this implementation returns true
                 // for HTTP/2 or HTTP2+QUIC/39 requests negotiated via ALPN.
                 const ntEntry =
-                    performance.getEntriesByType('navigation')[0] || ntEntryFallback;
+                    performance.getEntriesByType('navigation')[0] as unknown as NtEntryFallback || ntEntryFallback;
                 return ['h2', 'hq'].includes(ntEntry.nextHopProtocol);
             },
         };
@@ -150,17 +156,15 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
             },
         };
 
-        window.chrome.loadTimes = function () {
+        (window.chrome as any).loadTimes = function () {
             return {
                 ...protocolInfo,
                 ...timingInfo,
             };
         };
-        utils.patchToString(window.chrome.loadTimes);
+        utils.patchToString((window.chrome as any).loadTimes);
     };
 
 }
 
-module.exports = function (pluginConfig) {
-    return new Plugin(pluginConfig);
-};
+export default (pluginConfig?: Partial<PluginOptions>) => new Plugin(pluginConfig)

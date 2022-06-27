@@ -1,8 +1,6 @@
-import { FakeDeviceDescriptor, IFontSalt } from 'DeviceDescriptor';
-import { PluginRequirements, PuppeteerExtraPlugin, PuppeteerPage } from 'puppeteer-extra-plugin';
+import { PuppeteerExtraPlugin, PuppeteerPage } from 'puppeteer-extra-plugin';
 import Utils from '../_utils/'
 import withUtils from '../_utils/withUtils';
-import withWorkerUtils from '../_utils/withWorkerUtils';
 
 export interface PluginOptions {
     internalHttpServerPort: any;

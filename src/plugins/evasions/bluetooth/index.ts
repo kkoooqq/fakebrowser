@@ -459,7 +459,7 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
 
                     return _Reflect.get(target, property, receiver);
                 },
-                apply(target, thisArg, args) {
+                apply(target, thisArg, args: [string?]) {
                     if (args.length === 0) {
                         throw utils.patchError(
                             new TypeError(`Failed to execute 'getCharacteristic' on 'BluetoothUUID': 1 argument required, but only 0 present.`),
@@ -478,7 +478,7 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
                         }
 
                         // In the known Bluetooth Characteristic names：
-                        const alias = bluetoothCharacteristics[args[0]];
+                        const alias = bluetoothCharacteristics[args[0] as keyof typeof bluetoothCharacteristics];
                         if (alias) {
                             return getCanonicalUUID(alias);
                         }
@@ -512,7 +512,7 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
 
                     return _Reflect.get(target, property, receiver);
                 },
-                apply(target, thisArg, args) {
+                apply(target, thisArg, args: [string?]) {
                     if (args.length === 0) {
                         throw utils.patchError(
                             new TypeError(`Failed to execute 'getDescriptor' on 'BluetoothUUID': 1 argument required, but only 0 present.`),
@@ -531,7 +531,7 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
                         }
 
                         // In the known Bluetooth Descriptors names：
-                        const alias = bluetoothDescriptors[args[0]];
+                        const alias = bluetoothDescriptors[args[0] as keyof typeof bluetoothDescriptors];
                         if (alias) {
                             return getCanonicalUUID(alias);
                         }
@@ -565,7 +565,7 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
 
                     return _Reflect.get(target, property, receiver);
                 },
-                apply(target, thisArg, args) {
+                apply(target, thisArg, args: [string?]) {
                     if (args.length === 0) {
                         throw utils.patchError(
                             new TypeError(`Failed to execute 'getService' on 'BluetoothUUID': 1 argument required, but only 0 present.`),
@@ -584,7 +584,7 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
                         }
 
                         // In the known Bluetooth Services names：
-                        const alias = bluetoothServices[args[0]];
+                        const alias = bluetoothServices[args[0] as keyof typeof bluetoothServices];
                         if (alias) {
                             return getCanonicalUUID(alias);
                         }
@@ -752,7 +752,7 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
                             }
 
                             for (const key in filter) {
-                                const value = filter[key];
+                                const value: string[] = filter[key];
 
                                 if (
                                     key === 'services'
@@ -815,7 +815,7 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
                                             }
 
                                             // In the known Bluetooth Services names：
-                                            const alias = bluetoothServices[serviceValue];
+                                            const alias = bluetoothServices[serviceValue as keyof typeof bluetoothServices];
                                             if (alias) {
                                                 continue;
                                             }
@@ -857,10 +857,13 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
         const eventTarget = new EventTarget();
 
         // noinspection JSUndefinedPropertyAssignment
+        // @ts-ignore
         fakeBluetoothInstance.addEventListener = eventTarget.addEventListener.bind(eventTarget);
         // noinspection JSUndefinedPropertyAssignment
+        // @ts-ignore
         fakeBluetoothInstance.dispatchEvent = eventTarget.dispatchEvent.bind(eventTarget);
         // noinspection JSUndefinedPropertyAssignment
+        // @ts-ignore
         fakeBluetoothInstance.removeEventListener = eventTarget.removeEventListener.bind(eventTarget);
 
         const eventTargetFuncNames = ['addEventListener', 'dispatchEvent', 'removeEventListener'];
@@ -876,9 +879,9 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
             {
                 apply(target, thisArg, args) {
                     return new Proxy(
-                        fakeBluetoothInstance, {
+                        fakeBluetoothInstance as any, {
                         getOwnPropertyDescriptor: (target, propertyKey) => {
-                            if (eventTargetFuncNames.includes(propertyKey)) {
+                            if (eventTargetFuncNames.includes(propertyKey as string)) {
                                 return undefined;
                             }
 

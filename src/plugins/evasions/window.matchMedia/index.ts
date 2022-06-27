@@ -10,7 +10,7 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
         super(opts);
     }
 
-    get name() {
+    get name(): 'evasions/window.matchMedia' {
         return 'evasions/window.matchMedia';
     }
 

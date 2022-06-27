@@ -70,11 +70,10 @@ export interface PluginOptions {
                     });
 
                     _Object.defineProperty(iframe, 'contentWindow', {
-                        get(target: any, key: any) {
+                        get() {
                             if (!iframe.parentElement) {
                                 return null;
                             }
-
                             return proxy;
                         },
                         set(newValue) {
@@ -93,7 +92,7 @@ export interface PluginOptions {
                 // We need to keep the originals around
                 const _iframe = iframe;
                 const _srcdoc = _iframe.srcdoc;
-                const _src = _iframe.src;
+                // const _src = _iframe.src;
 
                 // Add hook for the srcdoc property
                 // We need to be very surgical here to not break other iframes by accident
@@ -130,7 +129,7 @@ export interface PluginOptions {
                         get(target, key) {
                             return _Reflect.get(target, key);
                         },
-                        apply: function (target, thisArg, args) {
+                        apply: function (target: Function, thisArg, args) {
                             const isIframe = args && args.length && `${args[0]}`.toLowerCase() === 'iframe';
                             if (!isIframe) {
                                 return target.apply(thisArg, args);

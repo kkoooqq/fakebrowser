@@ -293,7 +293,7 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
 
                 let newContext =
                     _Object.getPrototypeOf(canvas) === (('undefined' !== typeof OffscreenCanvas) && OffscreenCanvas.prototype)
-                        ? _OffscreenCanvas_prototype_getContext!.call(canvasWithNoise as OffscreenCanvas, '2d')
+                        ? _OffscreenCanvas_prototype_getContext!.call(canvasWithNoise as OffscreenCanvas, '2d' as any)
                         : _HTMLCanvasElement_prototype_getContext!.call(canvasWithNoise as HTMLCanvasElement, '2d');
 
                 // Get the original ImageData
@@ -331,7 +331,7 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
                     }
                 }
 
-                newContext!.putImageData(new ImageData(imageUint8Data, canvasWidth, canvasHeight), 0, 0);
+                (newContext as any).putImageData(new ImageData(imageUint8Data, canvasWidth, canvasHeight), 0, 0);
 
                 return canvasWithNoise;
             };

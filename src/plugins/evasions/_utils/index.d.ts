@@ -159,6 +159,8 @@ export declare const utils: {
         renderingContextWithOperators: any[],
         taskData: any,
     };
+
+    isInt: (str: string) => boolean;
 }
 
 export default utils;
