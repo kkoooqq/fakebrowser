@@ -8,8 +8,8 @@
   },
   "author": "kkoooqqq",
   "license": "LGPLv3",
-  "main": "dist/cjs/FakeBrowser.js",
-  "module": "dist/esm/FakeBrowser.js",
+  "main": "dist/cjs/core/FakeBrowser.js",
+  "module": "dist/esm/core/FakeBrowser.js",
   "scripts": {
     "clean-dist": "rimraf dist",
     "test": "jest --force-exit --detectOpenHandles --config=./jest.config.js",
@@ -17,7 +17,7 @@
     "tsc": "npm run clean-dist && npm run tsc-cjs && npm run tsc-esm",
     "tsc-cjs": "tsc -b src/tsconfig.cjs.json",
     "tsc-esm": "tsc -b src/tsconfig.esm.json",
-    "postbuild": "cpy --cwd=src --parents plugins ../dist"
+    "postbuild": "cpy src/plugins/evasions/_utils/index.js dist/cjs/plugins/evasions/_utils/ && cpy src/plugins/evasions/_utils/index.js dist/esm/plugins/evasions/_utils/"
   },
   "keywords": [
     "bot",
