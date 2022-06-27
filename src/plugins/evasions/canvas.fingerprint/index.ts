@@ -1,8 +1,12 @@
-'use strict';
+import { FakeDeviceDescriptor, IFontSalt } from 'DeviceDescriptor';
+import { PluginRequirements, PuppeteerExtraPlugin, PuppeteerPage } from 'puppeteer-extra-plugin';
+import Utils from '../_utils/'
+import withUtils from '../_utils/withUtils';
+import withWorkerUtils from '../_utils/withWorkerUtils';
 
-const {PuppeteerExtraPlugin} = require('puppeteer-extra-plugin');
-const withUtils = require('../_utils/withUtils');
-const withWorkerUtils = require('../_utils/withWorkerUtils');
+export interface PluginOptions {
+    fakeDD: FakeDeviceDescriptor;
+}
 
 // the results of toDataURL are not the same for the same OS version, same GPU, same chrome version:
 // After looking at the source code for quite a while, I found that including png generation, LZ77 zlib compression, there are no random values,
@@ -57,16 +61,16 @@ const withWorkerUtils = require('../_utils/withWorkerUtils');
 // png_write_end
 // https://github.com/glennrp/libpng/blob/master/pngwrite.c#L358
 
-class Plugin extends PuppeteerExtraPlugin {
-    constructor(opts = {}) {
+export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
+    constructor(opts?: Partial<PluginOptions>) {
         super(opts);
     }
 
-    get name() {
+    get name(): 'evasions/canvas.fingerprint' {
         return 'evasions/canvas.fingerprint';
     }
 
-    mainFunction = (utils, canvasSalt) => {
+    mainFunction = (utils: typeof Utils, canvasSalt: number[]) => {
         const _Object = utils.cache.Object;
         const _Reflect = utils.cache.Reflect;
 
@@ -87,22 +91,31 @@ class Plugin extends PuppeteerExtraPlugin {
         ];
 
         // Ready to hook
-        let _OffscreenCanvas_prototype_getContext = null;
-        let _HTMLCanvasElement_prototype_getContext = null;
+        let _OffscreenCanvas_prototype_getContext: OmitThisParameter<OffscreenCanvas["getContext"]> | null = null;
+        let _HTMLCanvasElement_prototype_getContext: OmitThisParameter<HTMLCanvasElement["getContext"]> | null = null;
 
-        let _WebGLRenderingContext_prototype_readPixels = null;
-        let _WebGL2RenderingContext_prototype_readPixels = null;
-        let _OffscreenCanvasRenderingContext2D_prototype_getImageData = null;
-        let _CanvasRenderingContext2D_prototype_getImageData = null;
+        let _WebGLRenderingContext_prototype_readPixels: OmitThisParameter<WebGLRenderingContext["readPixels"]> | null = null;
+        // let _WebGLRenderingContext_prototype_readPixels: ((x: GLint, y: GLint, width: GLsizei, height: GLsizei, format: GLenum, type: GLenum, pixels: ArrayBufferView | null) => void) | null = null;
+        // 
+        // let _WebGL2RenderingContext_prototype_readPixels: ((x: GLint, y: GLint, width: GLsizei, height: GLsizei, format: GLenum, type: GLenum, dstData: ArrayBufferView, dstOffset: GLuint) => void) | null = null;
+        let _WebGL2RenderingContext_prototype_readPixels: OmitThisParameter<WebGL2RenderingContext["readPixels"]> | null = null;
+        // OmitThisParameter
+        let _OffscreenCanvasRenderingContext2D_prototype_getImageData: OmitThisParameter<OffscreenCanvasRenderingContext2D['getImageData']> | null = null;
+        let _CanvasRenderingContext2D_prototype_getImageData: OmitThisParameter<CanvasRenderingContext2D["getImageData"]> | null = null;
 
         // The HTMLCanvas in the page and the OffscreenCanvas in the worker can be processed at the same time
-        const classes = [];
+        const classes: Array<{
+            _Canvas: any;
+            _CanvasRenderingContext2D: any;
+            _Canvas_prototype_getContext: any; //(contextId: string, options?: any) => any | null;
+            _Canvas_prototype_toDataURL: (type?: string, quality?: any) => string
+        }> = [];
         if ('undefined' !== typeof OffscreenCanvas) {
             classes.push({
                 _Canvas: OffscreenCanvas,
                 _CanvasRenderingContext2D: OffscreenCanvasRenderingContext2D,
                 _Canvas_prototype_getContext: OffscreenCanvas.prototype.getContext,
-                _Canvas_prototype_toDataURL: OffscreenCanvas.prototype.toDataURL,
+                _Canvas_prototype_toDataURL: (OffscreenCanvas as any).prototype.toDataURL,
             });
 
             _OffscreenCanvas_prototype_getContext = OffscreenCanvas.prototype.getContext;
@@ -134,7 +147,7 @@ class Plugin extends PuppeteerExtraPlugin {
          * @param context
          * @returns {null}
          */
-        const getContextImageUint8Data = (context) => {
+        const getContextImageUint8Data = (context: any) => {
             let result = null;
             const contextPrototype = _Object.getPrototypeOf(context);
 
@@ -143,7 +156,7 @@ class Plugin extends PuppeteerExtraPlugin {
                 && contextPrototype === CanvasRenderingContext2D.prototype
             ) {
                 // CanvasRenderingContext2D
-                result = _CanvasRenderingContext2D_prototype_getImageData.call(
+                result = _CanvasRenderingContext2D_prototype_getImageData!.call(
                     context,
                     0, 0,
                     context.canvas.width, context.canvas.height,
@@ -153,7 +166,7 @@ class Plugin extends PuppeteerExtraPlugin {
                 && contextPrototype === OffscreenCanvasRenderingContext2D.prototype
             ) {
                 // OffscreenCanvasRenderingContext2D
-                result = _OffscreenCanvasRenderingContext2D_prototype_getImageData.call(
+                result = _OffscreenCanvasRenderingContext2D_prototype_getImageData!.call(
                     context,
                     0, 0,
                     context.canvas.width, context.canvas.height,
@@ -165,7 +178,7 @@ class Plugin extends PuppeteerExtraPlugin {
                 // WebGLRenderingContext
                 result = new Uint8ClampedArray(context.drawingBufferWidth * context.drawingBufferHeight * 4);
 
-                _WebGLRenderingContext_prototype_readPixels.call(
+                _WebGLRenderingContext_prototype_readPixels!.call(
                     context,
                     0,
                     0,
@@ -181,7 +194,7 @@ class Plugin extends PuppeteerExtraPlugin {
                 // WebGL2RenderingContext
                 result = new Uint8ClampedArray(context.drawingBufferWidth * context.drawingBufferHeight * 4);
 
-                _WebGL2RenderingContext_prototype_readPixels.call(
+                _WebGL2RenderingContext_prototype_readPixels!.call(
                     context,
                     0,
                     0,
@@ -189,7 +202,8 @@ class Plugin extends PuppeteerExtraPlugin {
                     context.drawingBufferHeight,
                     context.RGBA,
                     context.UNSIGNED_BYTE,
-                    result);
+                    result,
+                    0); // dstOffset
             }
 
             return result;
@@ -204,7 +218,7 @@ class Plugin extends PuppeteerExtraPlugin {
         } of classes) {
             // noinspection JSUnusedLocalSymbols
             utils.replaceWithProxy(_Canvas.prototype, 'getContext', {
-                apply(target, thisArg, args) {
+                apply(target: any, thisArg, args) {
                     // noinspection JSUnusedLocalSymbols
                     const [contextId, options] = args;
                     const context = _Reflect.apply(target, thisArg, args);
@@ -226,7 +240,7 @@ class Plugin extends PuppeteerExtraPlugin {
             // When making these calls, we record them and then add the noise at the end
             for (const noiseOper of kNoiseOpers) {
                 utils.replaceWithProxy(_CanvasRenderingContext2D.prototype, noiseOper, {
-                    apply(target, thisArg, args) {
+                    apply(target: any, thisArg, args) {
                         utils.markRenderingContextOperator(thisArg, noiseOper);
                         return _Reflect.apply(target, thisArg, args);
                     },
@@ -238,7 +252,7 @@ class Plugin extends PuppeteerExtraPlugin {
              * @param canvas
              * @returns {OffscreenCanvas|HTMLCanvasElement|*}
              */
-            const getNoisifyCanvas = (canvas) => {
+            const getNoisifyCanvas = (canvas: any) => {
                 const {
                     context: originalContext,
                     contextIndex,
@@ -279,12 +293,12 @@ class Plugin extends PuppeteerExtraPlugin {
 
                 let newContext =
                     _Object.getPrototypeOf(canvas) === (('undefined' !== typeof OffscreenCanvas) && OffscreenCanvas.prototype)
-                        ? _OffscreenCanvas_prototype_getContext.call(canvasWithNoise, '2d')
-                        : _HTMLCanvasElement_prototype_getContext.call(canvasWithNoise, '2d');
+                        ? _OffscreenCanvas_prototype_getContext!.call(canvasWithNoise as OffscreenCanvas, '2d')
+                        : _HTMLCanvasElement_prototype_getContext!.call(canvasWithNoise as HTMLCanvasElement, '2d');
 
                 // Get the original ImageData
                 const imageUint8DataOriginal = getContextImageUint8Data(originalContext);
-                const imageUint8Data = Uint8ClampedArray.from(imageUint8DataOriginal);
+                const imageUint8Data = Uint8ClampedArray.from(imageUint8DataOriginal!);
 
                 let saltIndex = 0;
                 for (let y = 0; y < canvasHeight - 1; y += 2) {
@@ -298,11 +312,11 @@ class Plugin extends PuppeteerExtraPlugin {
                         // bottom right
                         // 4 pixel points
                         const
-                            p00 = imageUint8DataOriginal[pos],
-                            p01 = imageUint8DataOriginal[pos + 1];
+                            p00 = imageUint8DataOriginal![pos],
+                            p01 = imageUint8DataOriginal![pos + 1];
                         const
-                            p10 = imageUint8DataOriginal[pos + canvasWidth],
-                            p11 = imageUint8DataOriginal[pos + canvasWidth + 1];
+                            p10 = imageUint8DataOriginal![pos + canvasWidth],
+                            p11 = imageUint8DataOriginal![pos + canvasWidth + 1];
 
                         // The surrounding 4 pixels are not the same color before adding the noise.
                         if (p00 !== p01 || p00 !== p10 || p00 !== p11) {
@@ -317,13 +331,13 @@ class Plugin extends PuppeteerExtraPlugin {
                     }
                 }
 
-                newContext.putImageData(new ImageData(imageUint8Data, canvasWidth, canvasHeight), 0, 0);
+                newContext!.putImageData(new ImageData(imageUint8Data, canvasWidth, canvasHeight), 0, 0);
 
                 return canvasWithNoise;
             };
 
             utils.replaceWithProxy(_Canvas.prototype, 'toDataURL', {
-                apply(target, thisArg, args) {
+                apply(target: any, thisArg, args) {
                     let canvas = thisArg;
 
                     // noinspection JSUnusedLocalSymbols
@@ -338,7 +352,7 @@ class Plugin extends PuppeteerExtraPlugin {
             });
 
             utils.replaceWithProxy(_Canvas.prototype, 'toBlob', {
-                apply(target, thisArg, args) {
+                apply(target: any, thisArg, args) {
                     let canvas = thisArg;
                     const {contextIndex} = utils.findRenderingContextIndex(canvas);
 
@@ -356,7 +370,7 @@ class Plugin extends PuppeteerExtraPlugin {
             });
 
             utils.replaceWithProxy(_Canvas.prototype, 'convertToBlob', {
-                apply(target, thisArg, args) {
+                apply(target: any, thisArg, args) {
                     let canvas = thisArg;
                     const {contextIndex} = utils.findRenderingContextIndex(canvas);
 
@@ -374,7 +388,7 @@ class Plugin extends PuppeteerExtraPlugin {
             });
 
             utils.replaceWithProxy(_CanvasRenderingContext2D.prototype, 'getImageData', {
-                apply(target, thisArg, args) {
+                apply(target: any, thisArg, args) {
                     let context = thisArg;
                     const contextIndex = utils.variables.renderingContextWithOperators.findIndex(e => e.context === context);
 
@@ -395,16 +409,13 @@ class Plugin extends PuppeteerExtraPlugin {
         }
     };
 
-    async onPageCreated(page) {
+    async onPageCreated(page: PuppeteerPage) {
         await withUtils(this, page).evaluateOnNewDocument(this.mainFunction, this.opts.fakeDD.canvasSalt);
     }
 
-    onServiceWorkerContent(jsContent) {
+    onServiceWorkerContent(jsContent: any) {
         return withWorkerUtils(this, jsContent).evaluate(this.mainFunction, this.opts.fakeDD.canvasSalt);
     }
 }
 
-module.exports = function (pluginConfig) {
-    return new Plugin(pluginConfig);
-};
-
+export default (pluginConfig?: Partial<PluginOptions>) => new Plugin(pluginConfig)

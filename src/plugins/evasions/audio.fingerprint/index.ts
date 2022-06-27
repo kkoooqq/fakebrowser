@@ -6,7 +6,7 @@ import withWorkerUtils from '../_utils/withWorkerUtils';
 export interface PluginOptions {
 }
 
-class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
+export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
     constructor(opts?: Partial<PluginOptions>) {
         super(opts);
     }

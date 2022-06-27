@@ -1,10 +1,14 @@
-'use strict';
+import { FakeDeviceDescriptor } from 'DeviceDescriptor';
+import { PuppeteerExtraPlugin, PuppeteerPage } from 'puppeteer-extra-plugin';
+import Utils from '../evasions/_utils/'
+import withUtils from '../evasions/_utils/withUtils';
 
-const {PuppeteerExtraPlugin} = require('puppeteer-extra-plugin');
-const withUtils = require('../evasions/_utils/withUtils');
+export interface PluginOptions {
+    fakeDD: FakeDeviceDescriptor;
+}
 
-class Plugin extends PuppeteerExtraPlugin {
-    constructor(opts = {}) {
+export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
+    constructor(opts?: Partial<PluginOptions>) {
         super(opts);
     }
 
@@ -12,9 +16,9 @@ class Plugin extends PuppeteerExtraPlugin {
         return 'evasions/user-action-layer';
     }
 
-    async onPageCreated(page) {
+    async onPageCreated(page: PuppeteerPage) {
         await withUtils(this, page).evaluateOnNewDocument(
-            (utils) => {
+            (utils: typeof Utils) => {
                 window.addEventListener('DOMContentLoaded', () => {
                     // Add a canvas on top of the document.body
                     const canvas = document.createElement('canvas');
@@ -31,7 +35,7 @@ class Plugin extends PuppeteerExtraPlugin {
                     // noinspection JSCheckFunctionSignatures
                     document.body.appendChild(canvas);
 
-                    const cxt = canvas.getContext('2d');
+                    const cxt = canvas.getContext('2d')!;
 
                     // Listening user events and draw
                     document.addEventListener('keydown', (e) => {
@@ -71,6 +75,4 @@ class Plugin extends PuppeteerExtraPlugin {
     }
 }
 
-module.exports = function (pluginConfig) {
-    return new Plugin(pluginConfig);
-};
+export default (pluginConfig?: Partial<PluginOptions>) => new Plugin(pluginConfig)

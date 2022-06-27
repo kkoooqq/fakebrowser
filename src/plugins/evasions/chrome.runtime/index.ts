@@ -1,11 +1,11 @@
-// noinspection JSUnusedLocalSymbols
+import { PuppeteerExtraPlugin, PuppeteerPage } from 'puppeteer-extra-plugin';
+import Utils from '../_utils/'
+import withUtils from '../_utils/withUtils';
 
-'use strict';
-
-const {PuppeteerExtraPlugin} = require('puppeteer-extra-plugin');
-
-const withUtils = require('../_utils/withUtils');
-const withWorkerUtils = require('../_utils/withWorkerUtils');
+export interface PluginOptions {
+    // fakeDD: FakeDeviceDescriptor;
+    runOnInsecureOrigins: boolean;
+}
 
 const STATIC_DATA = {
         'OnInstalledReason': {
@@ -50,15 +50,20 @@ const STATIC_DATA = {
     }
 ;
 
+interface PluginInternalOpts {
+    opts: PluginOptions;
+    STATIC_DATA: typeof STATIC_DATA;
+}
+
 /**
  * Mock the `chrome.runtime` object if not available (e.g. when running headless) and on a secure site.
  */
-class Plugin extends PuppeteerExtraPlugin {
-    constructor(opts = {}) {
+export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
+    constructor(opts?: Partial<PluginOptions>) {
         super(opts);
     }
 
-    get name() {
+    get name(): string {
         return 'evasions/chrome.runtime';
     }
 
@@ -66,7 +71,7 @@ class Plugin extends PuppeteerExtraPlugin {
         return {runOnInsecureOrigins: false}; // Override for testing
     }
 
-    async onPageCreated(page) {
+    async onPageCreated(page: PuppeteerPage) {
         await withUtils(this, page).evaluateOnNewDocument(
             this.mainFunction,
             {
@@ -76,7 +81,8 @@ class Plugin extends PuppeteerExtraPlugin {
         );
     }
 
-    mainFunction = (utils, {opts, STATIC_DATA}) => {
+    mainFunction = (utils: typeof Utils, args: PluginInternalOpts) => {
+        const {opts, STATIC_DATA} = args;
         const _Object = utils.cache.Object;
         const _Reflect = utils.cache.Reflect;
 
@@ -101,7 +107,7 @@ class Plugin extends PuppeteerExtraPlugin {
         // `chrome.runtime` is only exposed on secure origins
         let isNotSecure = false;
         try {
-            isNotSecure = !window.top.location.protocol.startsWith('https');
+            isNotSecure = !window.top!.location.protocol.startsWith('https');
         } catch (ex) {
             try {
                 isNotSecure = !window.location.protocol.startsWith('https');
@@ -131,7 +137,7 @@ class Plugin extends PuppeteerExtraPlugin {
             writable: true,
         });
 
-        const makeCustomRuntimeErrors = (preamble, method, extensionId) => ({
+        const makeCustomRuntimeErrors = (preamble: string, method: string, extensionId: string) => ({
             NoMatchingSignature: new TypeError(
                 preamble + `No matching signature.`,
             ),
@@ -146,12 +152,12 @@ class Plugin extends PuppeteerExtraPlugin {
 
         // Valid Extension IDs are 32 characters in length and use the letter `a` to `p`:
         // https://source.chromium.org/chromium/chromium/src/+/master:components/crx_file/id_util.cc;drc=14a055ccb17e8c8d5d437fe080faba4c6f07beac;l=90
-        const isValidExtensionID = str =>
+        const isValidExtensionID = (str: string) =>
             str.length === 32 && str.toLowerCase().match(/^[a-p]+$/);
 
         /** Mock `chrome.runtime.sendMessage` */
         const sendMessageHandler = {
-            get: (target, property, receiver) => {
+            get: (target: any, property: string, receiver: any) => {
                 // I use Object.create as a prototype native function to disguise our js function
                 // However, Object.create contains two call parameters
                 // So we have to hook length and return 0
@@ -163,7 +169,7 @@ class Plugin extends PuppeteerExtraPlugin {
 
                 return _Reflect.get(target, property, receiver);
             },
-            apply: function (target, thisArg, args) {
+            apply: function (target: string, thisArg: any, args: any[]) {
                 const [extensionId, options, responseCallback] = args || [];
 
                 // Define custom errors
@@ -221,7 +227,7 @@ class Plugin extends PuppeteerExtraPlugin {
          * @see https://developer.chrome.com/apps/runtime#method-connect
          */
         const connectHandler = {
-            get: (target, property, receiver) => {
+            get: (target: any, property: string, receiver: any) => {
                 if (property === 'name') {
                     return 'connect';
                 } else if (property === 'length') {
@@ -230,7 +236,7 @@ class Plugin extends PuppeteerExtraPlugin {
 
                 return _Reflect.get(target, property, receiver);
             },
-            apply: function (target, thisArg, args) {
+            apply: function (target: any, thisArg: any, args: any[]) {
                 const [extensionId, connectInfo] = args || [];
 
                 // Define custom errors
@@ -265,7 +271,7 @@ class Plugin extends PuppeteerExtraPlugin {
                 }
 
                 // There's another edge-case here: exteensionId is optional so we might find a connectInfo object as first param, which we need to validate
-                const validateConnectInfo = ci => {
+                const validateConnectInfo = (ci: {name: string, includeTlsChannelId: boolean}) => {
                     // More than a first param connectInfo as been provided
                     if (args.length > 1) {
                         throw Errors.NoMatchingSignature;
@@ -282,7 +288,7 @@ class Plugin extends PuppeteerExtraPlugin {
                                 errorPreamble + `Unexpected property: '${k}'.`,
                             );
                         }
-                        const MismatchError = (propName, expected, found) =>
+                        const MismatchError = (propName: string, expected: string, found: string) =>
                             TypeError(
                                 errorPreamble +
                                 `Error at property '${propName}': Invalid type: expected ${expected}, found ${found}.`,
@@ -346,9 +352,6 @@ class Plugin extends PuppeteerExtraPlugin {
             return response;
         }
     };
-
 }
 
-module.exports = function (pluginConfig) {
-    return new Plugin(pluginConfig);
-};
+export default (pluginConfig?: Partial<PluginOptions>) => new Plugin(pluginConfig)

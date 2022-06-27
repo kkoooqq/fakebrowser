@@ -135,11 +135,23 @@ export declare const utils: {
 
     osType(userAgent: string): string;
 
-
     // Proxy handler templates for re-usability
     makeHandler(): {
         getterValue: (value: any) => any;
     }
+
+    /**
+    * Find the context created by the external based on the canvas
+    */
+    findRenderingContextIndex: (canvas: any) => {context: any, contextIndex: number} | {context: null, contextIndex: number}
+
+    variables: {
+        proxies: any[],
+        toStringPatchObjs: any[],
+        toStringRedirectObjs: any[],
+        renderingContextWithOperators: any[],
+        taskData: any,
+    };
 }
 
 export default utils;
