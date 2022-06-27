@@ -59,8 +59,8 @@ export class PptrPatcher {
 
         // evasions
         for (const evasionPath of params.evasionPaths) {
-            const Plugin = requireFix(evasionPath)
-            const plugin = Plugin(opts)
+            const { Plugin } = requireFix(evasionPath)
+            const plugin = new Plugin(opts)
             pptr.use(plugin)
         }
 
@@ -80,8 +80,8 @@ export class PptrPatcher {
         opts: PptrExtraEvasionOpts,
     ) {
         if (params.displayUserActionLayer) {
-            const Plugin = requireFix(path.resolve(__dirname, '../plugins/user-action-layer'))
-            const plugin = Plugin(opts)
+            const { Plugin } = requireFix(path.resolve(__dirname, '../plugins/user-action-layer'))
+            const plugin = new Plugin(opts)
             pptr.use(plugin)
         }
     }
@@ -92,8 +92,8 @@ export class PptrPatcher {
         params: DriverParameters,
         opts: PptrExtraEvasionOpts,
     ) {
-        let Plugin = requireFix(path.resolve(__dirname, '../plugins/evasions/zzzzzzzz.last'))
-        let plugin = Plugin(opts)
+        const { Plugin } = requireFix(path.resolve(__dirname, '../plugins/evasions/zzzzzzzz.last'))
+        let plugin = new Plugin(opts)
         pptr.use(plugin)
     }
 

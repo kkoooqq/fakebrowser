@@ -1,4 +1,4 @@
-const {FakeBrowser} = require('../dist/cjs/FakeBrowser');
+const {FakeBrowser} = require('../dist/cjs/core/FakeBrowser');
 
 const fs = require('fs-extra');
 const mkdirp = require('mkdirp');
