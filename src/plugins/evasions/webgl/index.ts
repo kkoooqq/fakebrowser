@@ -1,23 +1,26 @@
-// noinspection JSUnusedLocalSymbols
+import { FakeDeviceDescriptor } from 'DeviceDescriptor';
+import { PuppeteerExtraPlugin, PuppeteerPage } from 'puppeteer-extra-plugin';
+import Utils from '../_utils/'
+import withUtils from '../_utils/withUtils';
+import withWorkerUtils from '../_utils/withWorkerUtils';
 
-'use strict';
+export interface PluginOptions {
+    fakeDD: FakeDeviceDescriptor;
+    // internalHttpServerPort: any;
+    // browserUUID: any;
+}
 
-const {PuppeteerExtraPlugin} = require('puppeteer-extra-plugin');
-
-const withUtils = require('../_utils/withUtils');
-const withWorkerUtils = require('../_utils/withWorkerUtils');
-
-class Plugin extends PuppeteerExtraPlugin {
-    constructor(opts = {}) {
+export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
+    constructor(opts?: Partial<PluginOptions>) {
         super(opts);
     }
 
-    get name() {
+    get name(): 'evasions/webgl' {
         return 'evasions/webgl';
     }
 
     /* global WebGLRenderingContext WebGL2RenderingContext */
-    async onPageCreated(page) {
+    async onPageCreated(page: PuppeteerPage) {
         await withUtils(this, page).evaluateOnNewDocument(this.mainFunction, {
             gpu: this.opts.fakeDD.gpu,
             webgl: this.opts.fakeDD.webgl,
@@ -25,7 +28,7 @@ class Plugin extends PuppeteerExtraPlugin {
         });
     }
 
-    onServiceWorkerContent(jsContent) {
+    onServiceWorkerContent(jsContent: any) {
         return withWorkerUtils(this, jsContent).evaluate(this.mainFunction, {
             gpu: this.opts.fakeDD.gpu,
             webgl: this.opts.fakeDD.webgl,
@@ -33,7 +36,7 @@ class Plugin extends PuppeteerExtraPlugin {
         });
     }
 
-    mainFunction = (utils, fakeDD) => {
+    mainFunction = (utils: typeof Utils, fakeDD: FakeDeviceDescriptor) => {
         const _Object = utils.cache.Object;
         const _Reflect = utils.cache.Reflect;
 
@@ -240,6 +243,4 @@ class Plugin extends PuppeteerExtraPlugin {
 
 }
 
-module.exports = function (pluginConfig) {
-    return new Plugin(pluginConfig);
-};
+export default (pluginConfig?: Partial<PluginOptions>) => new Plugin(pluginConfig)

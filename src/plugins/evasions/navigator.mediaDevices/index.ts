@@ -1,44 +1,27 @@
-// noinspection JSUnusedLocalSymbols
+import { DeviceDescriptorMediaDevices, FakeDeviceDescriptor } from 'DeviceDescriptor';
+import { PuppeteerExtraPlugin, PuppeteerPage } from 'puppeteer-extra-plugin';
+import Utils from '../_utils/'
+import withUtils from '../_utils/withUtils';
+import withWorkerUtils from '../_utils/withWorkerUtils';
 
-'use strict';
+export interface PluginOptions {
+    fakeDD: FakeDeviceDescriptor;
+}
 
-const {PuppeteerExtraPlugin} = require('puppeteer-extra-plugin');
-const withUtils = require('../_utils/withUtils');
-const withWorkerUtils = require('../_utils/withWorkerUtils');
-
-/**
- * @typedef UtilsCache
- * @type {object}
- * @property {object} Object - 
- * @property {object} global - 
- * @property {object} Descriptor - 
- * @property {function} Reflect - 
- */
-
-/**
- * @typedef Utils
- * @type {object}
- * @property {UtilsCache} cache -
- * @property {function} mockWithProxy -
- * @property {function} replaceObjPathWithProxy -
- * @property {function} newProxyInstance -
- * @property {function} replaceWithProxy -
- */
-
-class Plugin extends PuppeteerExtraPlugin {
-    constructor(opts = {}) {
+class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
+    constructor(opts?: Partial<PluginOptions>) {
         super(opts);
     }
 
-    get name() {
+    get name(): 'evasions/navigator.mediaDevices' {
         return 'evasions/navigator.mediaDevices';
     }
 
-    async onPageCreated(page) {
+    async onPageCreated(page: PuppeteerPage) {
         await withUtils(this, page).evaluateOnNewDocument(this.mainFunction, this.opts.fakeDD.mediaDevices);
     }
 
-    onServiceWorkerContent(jsContent) {
+    onServiceWorkerContent(jsContent: any) {
         return withWorkerUtils(this, jsContent).evaluate(this.mainFunction, this.opts.fakeDD.mediaDevices);
     }
     /**
@@ -46,9 +29,9 @@ class Plugin extends PuppeteerExtraPlugin {
      * @param {Utils} utils 
      * @param {object[]} fakeMediaDevices 
      */
-    mainFunction = (utils, fakeMediaDevices) => {
-        debugger;
-        const _Object = utils.cache.Object;
+    mainFunction = (utils: typeof Utils, fakeMediaDevices: DeviceDescriptorMediaDevices[]) => {
+        // debugger;
+        // const _Object = utils.cache.Object;
         const _Reflect = utils.cache.Reflect;
         
         if ('undefined' !== typeof MediaDevices) {
@@ -57,7 +40,7 @@ class Plugin extends PuppeteerExtraPlugin {
             const to = hex[Math.floor(Math.random() * hex.length)];
             const index = 4 + Math.floor(Math.random() * 32);
 
-            const tempMediaDeviceObjs = [];
+            const tempMediaDeviceObjs: Array<{p: any, v: DeviceDescriptorMediaDevices}> = [];
             for (let mediaDevice of fakeMediaDevices) {
                 const json = JSON.stringify(mediaDevice);
                 mediaDevice.groupId = mediaDevice.groupId.substr(0, index) + to + mediaDevice.groupId.substr(index + 1);
@@ -116,7 +99,7 @@ class Plugin extends PuppeteerExtraPlugin {
                     //     return Reflect.ownKeys(target).filter(k => !blacklist.includes(k));
                     // },
                     getOwnPropertyDescriptor(target, prop) {
-                        if (blacklist.includes(prop)) {
+                        if (blacklist.includes(prop as string)) {
                             return undefined;
                         }
 
@@ -131,9 +114,9 @@ class Plugin extends PuppeteerExtraPlugin {
             }
 
             utils.replaceWithProxy(MediaDevices.prototype, 'enumerateDevices', {
-                apply(target, thisArg, args) {
+                apply(target: any, thisArg, args) {
                     try {
-                        _Reflect.apply(target, thisArg, args).catch(e => e);
+                        _Reflect.apply(target, thisArg, args).catch((e: Error) => e);
                     } catch (ignored) {
                     }
 
@@ -144,6 +127,4 @@ class Plugin extends PuppeteerExtraPlugin {
     };
 }
 
-module.exports = function (pluginConfig) {
-    return new Plugin(pluginConfig);
-};
+export default (pluginConfig?: Partial<PluginOptions>) => new Plugin(pluginConfig)

@@ -1,34 +1,38 @@
-// noinspection HttpUrlsUsage
+import { FakeDeviceDescriptor, IFontSalt } from 'DeviceDescriptor';
+import { PluginRequirements, PuppeteerExtraPlugin, PuppeteerPage } from 'puppeteer-extra-plugin';
+import Utils from '../_utils/'
+import withUtils from '../_utils/withUtils';
+import withWorkerUtils from '../_utils/withWorkerUtils';
 
-'use strict';
+export interface PluginOptions {
+    internalHttpServerPort: any;
+    browserUUID: any;
+}
 
-const {PuppeteerExtraPlugin} = require('puppeteer-extra-plugin');
-
-const withUtils = require('../_utils/withUtils');
-
-class Plugin extends PuppeteerExtraPlugin {
-    constructor(opts = {}) {
+export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
+    constructor(opts?: Partial<PluginOptions>) {
         super(opts);
     }
 
-    get name() {
+    get name(): 'evasions/workers' {
         return 'evasions/workers';
     }
 
-    async onPageCreated(page) {
+    async onPageCreated(page: PuppeteerPage): Promise<void> {
         await withUtils(this, page).evaluateOnNewDocument(this.mainFunction, {
             internalHttpServerPort: this.opts.internalHttpServerPort,
             browserUUID: this.opts.browserUUID,
         });
     }
 
-    mainFunction = (utils, {internalHttpServerPort, browserUUID}) => {
+    mainFunction = (utils: typeof Utils, opts: PluginOptions) => {
+        const {internalHttpServerPort, browserUUID} = opts
         if ('undefined' !== typeof Worker) {
             // noinspection UnnecessaryLocalVariableJS
             const _Worker = Worker;
             const workerConstructor = Object.getOwnPropertyDescriptor(
                 _Worker.prototype, 'constructor',
-            );
+            )!;
 
             utils.replaceWithProxy(utils.cache.global, 'Worker', {
                 construct: function (target, args) {
@@ -69,7 +73,7 @@ class Plugin extends PuppeteerExtraPlugin {
             const _SharedWorker = SharedWorker;
             const sharedWorkerConstructor = Object.getOwnPropertyDescriptor(
                 _SharedWorker.prototype, 'constructor',
-            );
+            )!;
 
             utils.replaceWithProxy(utils.cache.global, 'SharedWorker', {
                 construct: function (target, args) {
@@ -105,6 +109,4 @@ class Plugin extends PuppeteerExtraPlugin {
     };
 }
 
-module.exports = function (pluginConfig) {
-    return new Plugin(pluginConfig);
-};
+export default (pluginConfig?: Partial<PluginOptions>) => new Plugin(pluginConfig)

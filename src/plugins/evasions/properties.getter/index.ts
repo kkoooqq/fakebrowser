@@ -1,26 +1,40 @@
-// noinspection JSCheckFunctionSignatures
+import DeviceDescriptorHelper, { DeviceDescriptorNavigator, FakeDeviceDescriptor, IFontSalt } from 'DeviceDescriptor';
+import { BrowserEventOptions } from 'puppeteer-extra';
+import { PluginRequirements, PuppeteerBrowser, PuppeteerExtraPlugin, PuppeteerPage } from 'puppeteer-extra-plugin';
+import Utils from '../_utils/'
+import withUtils from '../_utils/withUtils';
+import withWorkerUtils from '../_utils/withWorkerUtils';
 
-'use strict';
+declare var WorkerNavigator: any;
 
-const {PuppeteerExtraPlugin} = require('puppeteer-extra-plugin');
+export interface PluginOptions {
+    realUA: string;
+    fakeDD: FakeDeviceDescriptor;
+}
 
-const withUtils = require('../_utils/withUtils');
-const withWorkerUtils = require('../_utils/withWorkerUtils');
+interface PluginInternalArgs {
+    realUA: string,
+    fakeNavigator: DeviceDescriptorNavigator,
+    fakeWindow: string,
+    fakeDocument: string,
+    fakeScreen: string,
+    fakeBody: string,
+}
 
-class Plugin extends PuppeteerExtraPlugin {
-    constructor(opts = {}) {
+export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
+    constructor(opts?: Partial<PluginOptions>) {
         super(opts);
     }
 
-    get name() {
+    get name(): 'evasions/properties.getter' {
         return 'evasions/properties.getter';
     }
 
-    async onBrowser(browser, opts) {
+    async onBrowser(browser: PuppeteerBrowser, opts: BrowserEventOptions): Promise<void> {
         this.opts.realUA = await browser.userAgent();
     }
 
-    async onPageCreated(page) {
+    async onPageCreated(page: PuppeteerPage) {
         await withUtils(this, page).evaluateOnNewDocument(this.mainFunction, {
             realUA: this.opts.realUA,
             fakeNavigator: this.opts.fakeDD.navigator,
@@ -31,7 +45,7 @@ class Plugin extends PuppeteerExtraPlugin {
         });
     }
 
-    onServiceWorkerContent(jsContent) {
+    onServiceWorkerContent(jsContent: any) {
         return withWorkerUtils(this, jsContent).evaluate(this.mainFunction, {
             realUA: this.opts.realUA,
             fakeNavigator: this.opts.fakeDD.navigator,
@@ -42,19 +56,20 @@ class Plugin extends PuppeteerExtraPlugin {
         });
     }
 
-    mainFunction = (utils, {
-        realUA,
-        fakeNavigator,
-        fakeWindow,
-        fakeDocument,
-        fakeScreen,
-        fakeBody,
-    }) => {
+    mainFunction = (utils: typeof Utils, opts: PluginInternalArgs) => {
+        const {
+            realUA,
+            fakeNavigator,
+            fakeWindow,
+            fakeDocument,
+            fakeScreen,
+            fakeBody,
+        } = opts;
         const _Object = utils.cache.Object;
         const _Reflect = utils.cache.Reflect;
 
         // replace Chrome version of fakeDDs' userAgent and appVersion with real version
-        function chromeVersion(userAgent) {
+        function chromeVersion(userAgent: string) {
             const chromeVersionPart = userAgent.match(/Chrome\/(.*?) /);
             if (chromeVersionPart) {
                 return chromeVersionPart[1];
@@ -63,8 +78,8 @@ class Plugin extends PuppeteerExtraPlugin {
             return null;
         }
 
-        const realVersion = chromeVersion(realUA);
-        const fakeVersion = chromeVersion(fakeNavigator.userAgent);
+        const realVersion = chromeVersion(realUA)!;
+        const fakeVersion = chromeVersion(fakeNavigator.userAgent)!;
 
         fakeNavigator.userAgent = fakeNavigator.userAgent.replace(fakeVersion, realVersion);
 
@@ -76,7 +91,7 @@ class Plugin extends PuppeteerExtraPlugin {
         const kObjPlaceHolder = '_$obj!_//+_';
         const kObjUndefinedPlaceHolder = '_$obj!_undefined_//+_';
 
-        const overwriteObjectProperties = function (obj, newPropValues, blackList) {
+        const overwriteObjectProperties = function (obj: any, newPropValues: any, blackList?: string[]) {
             if (!obj) {
                 return;
             }
@@ -163,9 +178,6 @@ class Plugin extends PuppeteerExtraPlugin {
             overwriteObjectProperties(Screen.prototype, fakeScreen);
         }
     };
-
 }
 
-module.exports = function (pluginConfig) {
-    return new Plugin(pluginConfig);
-};
+export default (pluginConfig?: Partial<PluginOptions>) => new Plugin(pluginConfig)

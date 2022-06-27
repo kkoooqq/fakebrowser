@@ -1,11 +1,35 @@
-// noinspection JSUnusedLocalSymbols
+import { FakeDeviceDescriptor } from 'DeviceDescriptor';
+import { BrowserEventOptions } from 'puppeteer-extra';
+import { PuppeteerBrowser, PuppeteerExtraPlugin, PuppeteerPage } from 'puppeteer-extra-plugin';
+import Utils from '../_utils/'
+import withUtils from '../_utils/withUtils';
 
-'use strict';
+export interface PluginOptions {
+    chromeMajorVersion: number | null;
+    fakeDD: FakeDeviceDescriptor;
+}
 
-const {PuppeteerExtraPlugin} = require('puppeteer-extra-plugin');
+interface internalPluginOptions {
+    chromeMajorVersion: number,
+    fakePlugins: KPlugins,
+}
 
-const utils = require('../_utils');
-const withUtils = require('../_utils/withUtils');
+interface KPluginsPlugins {
+    name: string;
+    filename: string;
+    description: string;
+    __mimeTypes: string[];
+};
+
+interface KPlugins {
+    mimeTypes: Array<{
+        type: string;
+        suffixes: string,
+        description: string,
+        __pluginName: string,
+    }>;
+    plugins: Array<KPluginsPlugins>;
+}
 
 /**
  * @see https://developer.mozilla.org/en-US/docs/Web/API/NavigatorPlugins/mimeTypes
@@ -13,22 +37,21 @@ const withUtils = require('../_utils/withUtils');
  * @see https://developer.mozilla.org/en-US/docs/Web/API/NavigatorPlugins/plugins
  * @see https://developer.mozilla.org/en-US/docs/Web/API/PluginArray
  */
-class Plugin extends PuppeteerExtraPlugin {
-    constructor(opts = {}) {
+ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
+    constructor(opts?: Partial<PluginOptions>) {
         super(opts);
     }
 
-    get name() {
+    get name(): 'evasions/navigator.plugins' {
         return 'evasions/navigator.plugins';
     }
 
-    async onBrowser(browser, opts) {
-        function chromeMajorVersion(userAgent) {
+    async onBrowser(browser: PuppeteerBrowser, opts: BrowserEventOptions): Promise<void> {
+        function chromeMajorVersion(userAgent: string): number | null {
             const chromeVersionPart = userAgent.match(/Chrome\/(.*?)\./);
             if (chromeVersionPart) {
                 return parseInt(chromeVersionPart[1]);
             }
-
             return null;
         }
 
@@ -38,7 +61,7 @@ class Plugin extends PuppeteerExtraPlugin {
         this.opts.chromeMajorVersion = chromeMajorVersion(orgUA);
     }
 
-    async onPageCreated(page) {
+    async onPageCreated(page: PuppeteerPage) {
         await withUtils(this, page).evaluateOnNewDocument(
             this.mainFunction,
             {
@@ -48,56 +71,57 @@ class Plugin extends PuppeteerExtraPlugin {
         );
     }
 
-    mainFunction = (utils, {chromeMajorVersion, fakePlugins}) => {
-        const kPluginsLessThen93 = {
-            'mimeTypes': [
+    mainFunction = (utils: typeof Utils, opts: internalPluginOptions) => {
+        const {chromeMajorVersion, fakePlugins} = opts;
+        const kPluginsLessThen93: KPlugins = {
+            mimeTypes: [
                 {
-                    'type': 'application/pdf',
-                    'suffixes': 'pdf',
-                    'description': '',
-                    '__pluginName': 'Chrome PDF Viewer',
+                    type: 'application/pdf',
+                    suffixes: 'pdf',
+                    description: '',
+                    __pluginName: 'Chrome PDF Viewer',
                 },
                 {
-                    'type': 'application/x-google-chrome-pdf',
-                    'suffixes': 'pdf',
-                    'description': 'Portable Document Format',
-                    '__pluginName': 'Chrome PDF Plugin',
+                    type: 'application/x-google-chrome-pdf',
+                    suffixes: 'pdf',
+                    description: 'Portable Document Format',
+                    __pluginName: 'Chrome PDF Plugin',
                 },
                 {
-                    'type': 'application/x-nacl',
-                    'suffixes': '',
-                    'description': 'Native Client Executable',
-                    '__pluginName': 'Native Client',
+                    type: 'application/x-nacl',
+                    suffixes: '',
+                    description: 'Native Client Executable',
+                    __pluginName: 'Native Client',
                 },
                 {
-                    'type': 'application/x-pnacl',
-                    'suffixes': '',
-                    'description': 'Portable Native Client Executable',
-                    '__pluginName': 'Native Client',
+                    type: 'application/x-pnacl',
+                    suffixes: '',
+                    description: 'Portable Native Client Executable',
+                    __pluginName: 'Native Client',
                 },
             ],
-            'plugins': [
+            plugins: [
                 {
-                    'name': 'Chrome PDF Plugin',
-                    'filename': 'internal-pdf-viewer',
-                    'description': 'Portable Document Format',
-                    '__mimeTypes': [
+                    name: 'Chrome PDF Plugin',
+                    filename: 'internal-pdf-viewer',
+                    description: 'Portable Document Format',
+                    __mimeTypes: [
                         'application/x-google-chrome-pdf',
                     ],
                 },
                 {
-                    'name': 'Chrome PDF Viewer',
-                    'filename': 'mhjfbmdgcfjbbpaeojofohoefgiehjai',
-                    'description': '',
-                    '__mimeTypes': [
+                    name: 'Chrome PDF Viewer',
+                    filename: 'mhjfbmdgcfjbbpaeojofohoefgiehjai',
+                    description: '',
+                    __mimeTypes: [
                         'application/pdf',
                     ],
                 },
                 {
-                    'name': 'Native Client',
-                    'filename': 'internal-nacl-plugin',
-                    'description': '',
-                    '__mimeTypes': [
+                    name: 'Native Client',
+                    filename: 'internal-nacl-plugin',
+                    description: '',
+                    __mimeTypes: [
                         'application/x-nacl',
                         'application/x-pnacl',
                     ],
@@ -105,7 +129,7 @@ class Plugin extends PuppeteerExtraPlugin {
             ],
         };
 
-        const kPluginsGreaterThen93 = {
+        const kPluginsGreaterThen93: KPlugins = {
             mimeTypes: [
                 {
                     type: 'application/pdf',
@@ -154,26 +178,26 @@ class Plugin extends PuppeteerExtraPlugin {
             ],
         };
 
-        const pluginsData =
+        const pluginsData: KPlugins =
             chromeMajorVersion > 93
                 ? kPluginsGreaterThen93
                 : fakePlugins;
 
         const _Object = utils.cache.Object;
         const _Reflect = utils.cache.Reflect;
-        const _origPlugins = utils.cache.window.navigator.plugins;
-        const _origMimeTypes = utils.cache.window.navigator.mimeTypes;
+        // const _origPlugins = utils.cache.window.navigator.plugins;
+        // const _origMimeTypes = utils.cache.window.navigator.mimeTypes;
 
         // object correlations
         // pluginsData.plugins => pluginsCorr
         // pluginsData.mimes => mimeTypesCorr
-        const pluginCorrs = [];
-        const mimeTypeCorrs = [];
+        const pluginCorrs: Array<{ nativePlugin: string, nativePluginInner: string, pluginData: KPluginsPlugins}> = [];
+        const mimeTypeCorrs: Array<{nativeMimeType: string, mimeTypeData: any, enabledPlugin: any}> = [];
 
         const nativePluginArray = _Object.create(PluginArray.prototype);
         const nativeMimeTypeArray = _Object.create(MimeTypeArray.prototype);
 
-        const makeNativeMimeType = (mimeType, bindNativePlugin) => {
+        const makeNativeMimeType = (mimeType: string, bindNativePlugin: any) => {
             const mimeTypeData = pluginsData.mimeTypes.find(
                 e => e.type === mimeType,
             );
@@ -194,8 +218,8 @@ class Plugin extends PuppeteerExtraPlugin {
         for (const pluginData of pluginsData.plugins) {
             const {
                 name,
-                filename,
-                description,
+                // filename,
+                // description,
                 __mimeTypes,
             } = pluginData;
 
@@ -204,7 +228,7 @@ class Plugin extends PuppeteerExtraPlugin {
             // navigator.plugins[0][0] NOT EQUALS to navigator.plugins[0][0], weird!
             // needs to proxy it
             const nativePlugin = new Proxy(nativePluginInner, {
-                get: (target, property, receiver) => {
+                get: (target, property: string, receiver) => {
                     const orgResult = _Reflect.get(target, property, receiver);
                     let mimeType = null;
                     const isInteger = property && Number.isInteger(Number(property));
@@ -262,14 +286,16 @@ class Plugin extends PuppeteerExtraPlugin {
         for (const mimeTypeData of pluginsData.mimeTypes) {
             const {
                 type,
-                suffixes,
-                description,
+                // suffixes,
+                // description,
                 __pluginName,
             } = mimeTypeData;
 
             const pluginCorr = pluginCorrs.find(
                 e => e.pluginData.name === __pluginName,
             );
+            if (!pluginCorr)
+                throw Error(`can not find pluginCorrs named: ${__pluginName}`);
 
             const nativeMimeType = makeNativeMimeType(type, pluginCorr.nativePlugin);
 
@@ -301,7 +327,7 @@ class Plugin extends PuppeteerExtraPlugin {
                 const mimeType = __mimeTypes[n];
                 const nativeMimeType = mimeTypeCorrs.find(
                     e => e.mimeTypeData.type === mimeType,
-                ).nativeMimeType;
+                )!.nativeMimeType;
 
                 _Object.defineProperty(nativePluginInner, '' + n, {
                     configurable: true,
@@ -326,13 +352,13 @@ class Plugin extends PuppeteerExtraPlugin {
 
         // PluginArray.prototype.item
         utils.replaceWithProxy(PluginArray.prototype, 'item', {
-            apply(target, thisArg, args) {
+            apply(target: any, thisArg, args) {
                 let orgResult = null;
                 try {
                     orgResult = _Reflect.apply(target, thisArg, args);
                 } catch (ex) {
                     if (thisArg !== nativePluginArray) {
-                        throw utils.patchError(ex, 'item');
+                        throw utils.patchError(ex as Error, 'item');
                     }
                 }
 
@@ -360,7 +386,7 @@ class Plugin extends PuppeteerExtraPlugin {
                     orgResult = _Reflect.apply(target, thisArg, args);
                 } catch (ex) {
                     if (thisArg !== nativePluginArray) {
-                        throw utils.patchError(ex, 'length');
+                        throw utils.patchError(ex as Error, 'length');
                     }
                 }
 
@@ -374,13 +400,13 @@ class Plugin extends PuppeteerExtraPlugin {
 
         // PluginArray.prototype.namedItem
         utils.replaceWithProxy(PluginArray.prototype, 'namedItem', {
-            apply(target, thisArg, args) {
+            apply(target: any, thisArg, args) {
                 let orgResult = null;
                 try {
                     orgResult = _Reflect.apply(target, thisArg, args);
                 } catch (ex) {
                     if (thisArg !== nativePluginArray) {
-                        throw utils.patchError(ex, 'namedItem');
+                        throw utils.patchError(ex as Error, 'namedItem');
                     }
                 }
 
@@ -401,13 +427,13 @@ class Plugin extends PuppeteerExtraPlugin {
 
         // PluginArray.prototype.refresh
         utils.replaceWithProxy(PluginArray.prototype, 'refresh', {
-            apply(target, thisArg, args) {
+            apply(target: any, thisArg, args) {
                 let orgResult = null;
                 try {
                     orgResult = _Reflect.apply(target, thisArg, args);
                 } catch (ex) {
                     if (thisArg !== nativePluginArray) {
-                        throw utils.patchError(ex, 'refresh');
+                        throw utils.patchError(ex as Error, 'refresh');
                     }
                 }
 
@@ -421,13 +447,13 @@ class Plugin extends PuppeteerExtraPlugin {
 
         // PluginArray.prototype.Symbol.iterator
         utils.replaceWithProxy(PluginArray.prototype, Symbol.iterator, {
-            apply(target, thisArg, args) {
+            apply(target: any, thisArg, args) {
                 let orgResult = null;
                 try {
                     orgResult = _Reflect.apply(target, thisArg, args);
                 } catch (ex) {
                     if (thisArg !== nativePluginArray) {
-                        throw utils.patchError(ex, 'Symbol.iterator');
+                        throw utils.patchError(ex as Error, 'Symbol.iterator');
                     }
                 }
 
@@ -442,13 +468,13 @@ class Plugin extends PuppeteerExtraPlugin {
 
         // MimeTypeArray.prototype.item
         utils.replaceWithProxy(MimeTypeArray.prototype, 'item', {
-            apply(target, thisArg, args) {
+            apply(target: any, thisArg, args) {
                 let orgResult = null;
                 try {
                     orgResult = _Reflect.apply(target, thisArg, args);
                 } catch (ex) {
                     if (thisArg !== nativeMimeTypeArray) {
-                        throw utils.patchError(ex, 'item');
+                        throw utils.patchError(ex as Error, 'item');
                     }
                 }
 
@@ -468,13 +494,13 @@ class Plugin extends PuppeteerExtraPlugin {
 
         // MimeTypeArray.prototype.length
         utils.replaceGetterWithProxy(MimeTypeArray.prototype, 'length', {
-            apply(target, thisArg, args) {
+            apply(target: any, thisArg, args) {
                 let orgResult = null;
                 try {
                     orgResult = _Reflect.apply(target, thisArg, args);
                 } catch (ex) {
                     if (thisArg !== nativeMimeTypeArray) {
-                        throw utils.patchError(ex, 'length');
+                        throw utils.patchError(ex as Error, 'length');
                     }
                 }
 
@@ -488,13 +514,13 @@ class Plugin extends PuppeteerExtraPlugin {
 
         // MimeTypeArray.prototype.namedItem
         utils.replaceWithProxy(MimeTypeArray.prototype, 'namedItem', {
-            apply(target, thisArg, args) {
+            apply(target: any, thisArg, args) {
                 let orgResult = null;
                 try {
                     orgResult = _Reflect.apply(target, thisArg, args);
                 } catch (ex) {
                     if (thisArg !== nativeMimeTypeArray) {
-                        throw utils.patchError(ex, 'namedItem');
+                        throw utils.patchError(ex as Error, 'namedItem');
                     }
                 }
 
@@ -515,13 +541,13 @@ class Plugin extends PuppeteerExtraPlugin {
 
         // MimeTypeArray.prototype.Symbol.iterator
         utils.replaceWithProxy(MimeTypeArray.prototype, Symbol.iterator, {
-            apply(target, thisArg, args) {
+            apply(target: any, thisArg, args) {
                 let orgResult = null;
                 try {
                     orgResult = _Reflect.apply(target, thisArg, args);
                 } catch (ex) {
                     if (thisArg !== nativeMimeTypeArray) {
-                        throw utils.patchError(ex, 'Symbol.iterator');
+                        throw utils.patchError(ex as Error, 'Symbol.iterator');
                     }
                 }
 
@@ -535,14 +561,15 @@ class Plugin extends PuppeteerExtraPlugin {
         });
 
         // Plugin.prototype.description.get
-        utils.replaceGetterWithProxy(Plugin.prototype, 'description', {
-            apply(target, thisArg, args) {
+        // do not See the correct Plugin object cast as any
+        utils.replaceGetterWithProxy((Plugin as any).prototype, 'description', {
+            apply(target: any, thisArg, args) {
                 let orgResult = null;
                 try {
                     orgResult = _Reflect.apply(target, thisArg, args);
                 } catch (ex) {
                     if (thisArg === Plugin.prototype) {
-                        throw utils.patchError(ex, 'description');
+                        throw utils.patchError(ex as Error, 'description');
                     }
                 }
 
@@ -557,13 +584,13 @@ class Plugin extends PuppeteerExtraPlugin {
 
         // Plugin.prototype.filename.get
         utils.replaceGetterWithProxy(Plugin.prototype, 'filename', {
-            apply(target, thisArg, args) {
+            apply(target: any, thisArg, args) {
                 let orgResult = null;
                 try {
                     orgResult = _Reflect.apply(target, thisArg, args);
                 } catch (ex) {
                     if (thisArg === Plugin.prototype) {
-                        throw utils.patchError(ex, 'filename');
+                        throw utils.patchError(ex as Error, 'filename');
                     }
                 }
 
@@ -577,14 +604,15 @@ class Plugin extends PuppeteerExtraPlugin {
         });
 
         // Plugin.prototype.item.value
-        utils.replaceWithProxy(Plugin.prototype, 'item', {
-            apply(target, thisArg, args) {
+        // do not See the correct Plugin object cast as any
+        utils.replaceWithProxy((Plugin as any).prototype, 'item', {
+            apply(target: any, thisArg, args) {
                 let orgResult = null;
                 try {
                     orgResult = _Reflect.apply(target, thisArg, args);
                 } catch (ex) {
                     if (thisArg === Plugin.prototype) {
-                        throw utils.patchError(ex, 'item');
+                        throw utils.patchError(ex as Error, 'item');
                     }
                 }
 
@@ -608,13 +636,13 @@ class Plugin extends PuppeteerExtraPlugin {
 
         // Plugin.prototype.length.get
         utils.replaceGetterWithProxy(Plugin.prototype, 'length', {
-            apply(target, thisArg, args) {
+            apply(target: any, thisArg, args) {
                 let orgResult = null;
                 try {
                     orgResult = _Reflect.apply(target, thisArg, args);
                 } catch (ex) {
                     if (thisArg === Plugin.prototype) {
-                        throw utils.patchError(ex, 'length');
+                        throw utils.patchError(ex as Error, 'length');
                     }
                 }
 
@@ -629,13 +657,13 @@ class Plugin extends PuppeteerExtraPlugin {
 
         // Plugin.prototype.name.get
         utils.replaceGetterWithProxy(Plugin.prototype, 'name', {
-            apply(target, thisArg, args) {
+            apply(target: any, thisArg, args) {
                 let orgResult = null;
                 try {
                     orgResult = _Reflect.apply(target, thisArg, args);
                 } catch (ex) {
                     if (thisArg === Plugin.prototype) {
-                        throw utils.patchError(ex, 'name');
+                        throw utils.patchError(ex as Error, 'name');
                     }
                 }
 
@@ -649,14 +677,15 @@ class Plugin extends PuppeteerExtraPlugin {
         });
 
         // Plugin.prototype.namedItem.value
-        utils.replaceWithProxy(Plugin.prototype, 'namedItem', {
-            apply(target, thisArg, args) {
+        // do not See the correct Plugin object cast as any
+        utils.replaceWithProxy((Plugin as any).prototype, 'namedItem', {
+            apply(target: any, thisArg, args) {
                 let orgResult = null;
                 try {
                     orgResult = _Reflect.apply(target, thisArg, args);
                 } catch (ex) {
                     if (thisArg === Plugin.prototype) {
-                        throw utils.patchError(ex, 'namedItem');
+                        throw utils.patchError(ex as Error, 'namedItem');
                     }
                 }
 
@@ -676,14 +705,15 @@ class Plugin extends PuppeteerExtraPlugin {
         });
 
         // Plugin.prototype.[Symbol.iterator].value
-        utils.replaceWithProxy(Plugin.prototype, Symbol.iterator, {
-            apply(target, thisArg, args) {
+        // do not See the correct Plugin object cast as any
+        utils.replaceWithProxy((Plugin as any).prototype, Symbol.iterator, {
+            apply(target: any, thisArg, args) {
                 let orgResult = null;
                 try {
                     orgResult = _Reflect.apply(target, thisArg, args);
                 } catch (ex) {
                     if (thisArg === Plugin.prototype) {
-                        throw utils.patchError(ex, 'Symbol.iterator');
+                        throw utils.patchError(ex as Error, 'Symbol.iterator');
                     }
                 }
 
@@ -704,13 +734,13 @@ class Plugin extends PuppeteerExtraPlugin {
 
         // MimeType.prototype.description.get
         utils.replaceGetterWithProxy(MimeType.prototype, 'description', {
-            apply(target, thisArg, args) {
+            apply(target: any, thisArg, args) {
                 let orgResult = null;
                 try {
                     orgResult = _Reflect.apply(target, thisArg, args);
                 } catch (ex) {
                     if (thisArg === MimeType.prototype) {
-                        throw utils.patchError(ex, 'description');
+                        throw utils.patchError(ex as Error, 'description');
                     }
                 }
 
@@ -725,13 +755,13 @@ class Plugin extends PuppeteerExtraPlugin {
 
         // MimeType.prototype.enabledPlugin.get
         utils.replaceGetterWithProxy(MimeType.prototype, 'enabledPlugin', {
-            apply(target, thisArg, args) {
+            apply(target: any, thisArg, args) {
                 let orgResult = null;
                 try {
                     orgResult = _Reflect.apply(target, thisArg, args);
                 } catch (ex) {
                     if (thisArg === MimeType.prototype) {
-                        throw utils.patchError(ex, 'enabledPlugin');
+                        throw utils.patchError(ex as Error, 'enabledPlugin');
                     }
                 }
 
@@ -746,13 +776,13 @@ class Plugin extends PuppeteerExtraPlugin {
 
         // MimeType.prototype.suffixes.get
         utils.replaceGetterWithProxy(MimeType.prototype, 'suffixes', {
-            apply(target, thisArg, args) {
+            apply(target: any, thisArg, args) {
                 let orgResult = null;
                 try {
                     orgResult = _Reflect.apply(target, thisArg, args);
                 } catch (ex) {
                     if (thisArg === MimeType.prototype) {
-                        throw utils.patchError(ex, 'suffixes');
+                        throw utils.patchError(ex as Error, 'suffixes');
                     }
                 }
 
@@ -767,13 +797,13 @@ class Plugin extends PuppeteerExtraPlugin {
 
         // MimeType.prototype.type.get
         utils.replaceGetterWithProxy(MimeType.prototype, 'type', {
-            apply(target, thisArg, args) {
+            apply(target: any, thisArg, args) {
                 let orgResult = null;
                 try {
                     orgResult = _Reflect.apply(target, thisArg, args);
                 } catch (ex) {
                     if (thisArg === MimeType.prototype) {
-                        throw utils.patchError(ex, 'type');
+                        throw utils.patchError(ex as Error, 'type');
                     }
                 }
 
@@ -788,7 +818,7 @@ class Plugin extends PuppeteerExtraPlugin {
 
         // final return results
         utils.replaceGetterWithProxy(Navigator.prototype, 'plugins', {
-            apply(target, thisArg, args) {
+            apply(target: any, thisArg, args) {
                 const orgResult = _Reflect.apply(target, thisArg, args);
                 if (thisArg === utils.cache.window.navigator) {
                     return nativePluginArray;
@@ -800,7 +830,7 @@ class Plugin extends PuppeteerExtraPlugin {
         });
 
         utils.replaceGetterWithProxy(Navigator.prototype, 'mimeTypes', {
-            apply(target, thisArg, args) {
+            apply(target: any, thisArg, args) {
                 const orgResult = _Reflect.apply(target, thisArg, args);
                 if (thisArg === utils.cache.window.navigator) {
                     return nativeMimeTypeArray;
@@ -814,6 +844,4 @@ class Plugin extends PuppeteerExtraPlugin {
 
 }
 
-module.exports = function (pluginConfig) {
-    return new Plugin(pluginConfig);
-};
+export default (pluginConfig?: Partial<PluginOptions>) => new Plugin(pluginConfig)

@@ -1,24 +1,27 @@
-'use strict';
+import { DeviceDescriptorVoices, FakeDeviceDescriptor } from 'DeviceDescriptor';
+import { PluginRequirements, PuppeteerExtraPlugin, PuppeteerPage } from 'puppeteer-extra-plugin';
+import Utils from '../_utils/'
+import withUtils from '../_utils/withUtils';
+import withWorkerUtils from '../_utils/withWorkerUtils';
 
-const {PuppeteerExtraPlugin} = require('puppeteer-extra-plugin');
+export interface PluginOptions {
+    fakeDD: FakeDeviceDescriptor;
+}
 
-const withUtils = require('../_utils/withUtils');
-const withWorkerUtils = require('../_utils/withWorkerUtils');
-
-class Plugin extends PuppeteerExtraPlugin {
-    constructor(opts = {}) {
+export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
+    constructor(opts?: Partial<PluginOptions>) {
         super(opts);
     }
 
-    get name() {
+    get name(): 'evasions/window.speechSynthesis' {
         return 'evasions/window.speechSynthesis';
     }
 
-    async onPageCreated(page) {
+    async onPageCreated(page: PuppeteerPage) {
         await withUtils(this, page).evaluateOnNewDocument(this.mainFunction, this.opts.fakeDD.voices);
     }
 
-    mainFunction = (utils, fakeVoices) => {
+    mainFunction = (utils: typeof Utils, fakeVoices: Array<DeviceDescriptorVoices>) => {
         const _Object = utils.cache.Object;
         const _Reflect = utils.cache.Reflect;
 
@@ -45,7 +48,7 @@ class Plugin extends PuppeteerExtraPlugin {
 
             // hook
             const props = ['default', 'lang', 'localService', 'name', 'voiceURI'];
-            const voiceObjs = [];
+            const voiceObjs: SpeechSynthesisVoice[] = [];
 
             // With the configuration, construct voices object and then we hook the properties with Proxy
             for (const voice of fakeVoices) {
@@ -118,7 +121,7 @@ class Plugin extends PuppeteerExtraPlugin {
                 'getVoices',
                 {
                     apply(target, thisArg, args) {
-                        _Reflect.apply(target, thisArg, args);
+                        _Reflect.apply(target: any, thisArg, args);
 
                         if (!voicesWarnup) {
                             return [];
@@ -133,7 +136,7 @@ class Plugin extends PuppeteerExtraPlugin {
                 _Object.getPrototypeOf(window.speechSynthesis),
                 'onvoiceschanged',
                 {
-                    apply(target, thisArg, args) {
+                    apply(target: any, thisArg, args) {
                         _Reflect.apply(target, thisArg, args);
 
                         if (args && args[0] instanceof Function) {
@@ -161,9 +164,6 @@ class Plugin extends PuppeteerExtraPlugin {
             }, utils.random(20, 40));
         }
     };
-
 }
 
-module.exports = function (pluginConfig) {
-    return new Plugin(pluginConfig);
-};
+export default (pluginConfig?: Partial<PluginOptions>) => new Plugin(pluginConfig)

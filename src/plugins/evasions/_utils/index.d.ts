@@ -8,14 +8,20 @@ export declare const utils: {
         Promise: typeof Promise;
         Object: typeof Object;
         Function: typeof Function;
-        global: {FontFace: any};
-        window: Pick<typeof window, 'getComputedStyle' | 'eval' | 'navigator' >
+        global: {
+            FontFace: any;
+            Worker: object;
+            SharedWorker: object;
+        };
+        window: Pick<typeof window, 'getComputedStyle' | 'eval' | 'navigator'>
         OffscreenCanvas: any;
         HTMLCanvasElement: any;
         Descriptor: {
             FontFace: any;
             HTMLElement: any;
             CSSStyleDeclaration: any;
+            Navigator: any;
+            WorkerNavigator: any;
         };
     };
     patchError: (err: Error, trap: string) => Error;
@@ -40,10 +46,14 @@ export declare const utils: {
     mockGetterWithProxy: (obj: any, propName: string, pseudoTarget: any, descriptorOverrides: any, handler: ProxyHandler<any>) => true;
     mockSetterWithProxy: (obj: any, propName: string, pseudoTarget: any, descriptorOverrides: any, handler: ProxyHandler<any>) => true;
     newProxyInstance: <T extends object>(target: T, handler: ProxyHandler<T>) => T;
+    /**
+     * Signature Ok
+     */
+    // replaceWithProxy: <PARENT extends { [key in FILED]: T }, FILED extends string, T extends object>(obj: PARENT, propName: FILED, handler: ProxyHandler<T>) => PARENT;
+    replaceWithProxy: <PARENT extends { [key in FILED]: T }, FILED extends (string | symbol), T extends object>(obj: PARENT, propName: FILED, handler: ProxyHandler<T>) => PARENT;
 
-    replaceWithProxy: <PARENT extends { [key in FILED]: T }, FILED extends string, T extends object>(obj: PARENT, propName: FILED, handler: ProxyHandler<T>) => PARENT;
     // replaceWithProxy: <T extends object>(obj: T, propName: string, handler: ProxyHandler<T>);
-    replaceObjPathWithProxy: <T extends object>(objPath: T, handler: ProxyHandler<any>) => T;
+    replaceObjPathWithProxy: <T extends object>(objPath: string, handler: ProxyHandler<any>) => T;
     random: (a: number, b: number) => number;
     sleep: (ms: number) => Promise<void>;
     differenceABSet: <T>(a: Array<T> | Set<T>, b: Array<T> | Set<T>) => Set<T>;
@@ -81,7 +91,7 @@ export declare const utils: {
 
 
     getProxyTarget: <T>(proxy: T) => T;
-    
+
     /**
      * The context is saved when the canvas.getContext is created.
      * @param context
@@ -100,7 +110,7 @@ export declare const utils: {
      * @param {string} propName - The name of the property to replace
      * @param {object} handler - The JS Proxy handler to use
      */
-    replaceGetterWithProxy: (obj: any, propName: string, handler:ProxyHandler<any>) => boolean;
+    replaceGetterWithProxy: (obj: any, propName: string, handler: ProxyHandler<any>) => boolean;
 
     /**
      * Wraps a JS Proxy Handler and strips it's presence from error stacks, in case the traps throw.
@@ -117,10 +127,19 @@ export declare const utils: {
      * @param {object} proxyObj - The object that toString will be called on
      * @param {object} originalObj - The object which toString result we wan to return
      */
-    redirectToString: <T>(proxyObj : T, originalObj: T) => void;
-
+    redirectToString: <T>(proxyObj: T, originalObj: T) => void;
 
     replaceSetterWithProxy: (obj: any, propName: string, handler: any) => boolean;
+
+    removeTempVariables(): void;
+
+    osType(userAgent: string): string;
+
+
+    // Proxy handler templates for re-usability
+    makeHandler(): {
+        getterValue: (value: any) => any;
+    }
 }
 
 export default utils;

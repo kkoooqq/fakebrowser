@@ -1,21 +1,23 @@
-// noinspection JSUnusedLocalSymbols
+import { PuppeteerExtraPlugin, PuppeteerPage } from 'puppeteer-extra-plugin';
+import Utils from '../_utils/'
+import withUtils from '../_utils/withUtils';
 
-'use strict';
+export interface PluginOptions {
+    proxyExportIP: string;
+    myRealExportIP: string;
+}
 
-const {PuppeteerExtraPlugin} = require('puppeteer-extra-plugin');
-const withUtils = require('../_utils/withUtils');
-const withWorkerUtils = require('../_utils/withWorkerUtils');
 
-class Plugin extends PuppeteerExtraPlugin {
-    constructor(opts = {}) {
+class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
+    constructor(opts?: Partial<PluginOptions>) {
         super(opts);
     }
 
-    get name() {
+    get name(): 'evasions/webrtc' {
         return 'evasions/webrtc';
     }
 
-    async onPageCreated(page) {
+    async onPageCreated(page: PuppeteerPage) {
         await withUtils(this, page).evaluateOnNewDocument(this.mainFunction, {
             proxyExportIP: this.opts.proxyExportIP,
             myRealExportIP: this.opts.myRealExportIP,
@@ -27,7 +29,8 @@ class Plugin extends PuppeteerExtraPlugin {
     //     return withWorkerUtils(this, jsContent).evaluate(this.mainFunction);
     // }
 
-    mainFunction = (utils, {proxyExportIP, myRealExportIP}) => {
+    mainFunction = (utils: typeof Utils, opts: PluginOptions) => {
+        const {proxyExportIP, myRealExportIP} = opts;
         // RTCIceCandidate.prototype.candidate get function
         // RTCIceCandidate.prototype.address get function
         // RTCIceCandidate.prototype.toJSON value function
@@ -42,7 +45,7 @@ class Plugin extends PuppeteerExtraPlugin {
 
         const _Reflect = utils.cache.Reflect;
 
-        const replaceIps = (str) => {
+        const replaceIps = (str: string) => {
             if (fakeIPs && proxyExportIP) {
                 for (let fakeIP of fakeIPs) {
                     str = str.replace(new RegExp(fakeIP, 'g'), proxyExportIP);
@@ -53,7 +56,7 @@ class Plugin extends PuppeteerExtraPlugin {
         };
 
         utils.replaceGetterWithProxy(RTCIceCandidate.prototype, 'candidate', {
-            apply(target, thisArg, args) {
+            apply(target: any, thisArg: any, args: any[]) {
                 const org = _Reflect.apply(target, thisArg, args);
                 const dest = replaceIps(org);
 
@@ -64,7 +67,7 @@ class Plugin extends PuppeteerExtraPlugin {
         });
 
         utils.replaceGetterWithProxy(RTCIceCandidate.prototype, 'address', {
-            apply(target, thisArg, args) {
+            apply(target: any, thisArg: any, args: any[]) {
                 const org = _Reflect.apply(target, thisArg, args);
                 const dest = replaceIps(org);
 
@@ -75,7 +78,7 @@ class Plugin extends PuppeteerExtraPlugin {
         });
 
         utils.replaceWithProxy(RTCIceCandidate.prototype, 'toJSON', {
-            apply(target, thisArg, args) {
+            apply(target: any, thisArg: any, args: any[]) {
                 const org = JSON.stringify(_Reflect.apply(target, thisArg, args));
                 const dest = replaceIps(org);
 
@@ -86,7 +89,7 @@ class Plugin extends PuppeteerExtraPlugin {
         });
 
         utils.replaceGetterWithProxy(RTCSessionDescription.prototype, 'sdp', {
-            apply(target, thisArg, args) {
+            apply(target: any, thisArg: any, args: any[]) {
                 const org = _Reflect.apply(target, thisArg, args);
                 const dest = replaceIps(org);
 
@@ -97,7 +100,7 @@ class Plugin extends PuppeteerExtraPlugin {
         });
 
         utils.replaceWithProxy(RTCSessionDescription.prototype, 'toJSON', {
-            apply(target, thisArg, args) {
+            apply(target: any, thisArg: any, args: any[]) {
                 const org = JSON.stringify(_Reflect.apply(target, thisArg, args));
                 const dest = replaceIps(org);
 
@@ -110,6 +113,4 @@ class Plugin extends PuppeteerExtraPlugin {
 
 }
 
-module.exports = function (pluginConfig) {
-    return new Plugin(pluginConfig);
-};
+export default (pluginConfig?: Partial<PluginOptions>) => new Plugin(pluginConfig)

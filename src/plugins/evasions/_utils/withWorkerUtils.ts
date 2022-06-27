@@ -1,7 +1,7 @@
 // import { utils } from './'
 
 export const withWorkerUtils = (plugin: any, jsContent: string) => ({
-    evaluate: async function (mainFunction: Function, ...args: any[]) {
+    evaluate: async function (mainFunction: Function, ...args: any[]): Promise<string> {
         const thisJsContent = `
 (function() {
     const mainFunction = ${mainFunction.toString()};

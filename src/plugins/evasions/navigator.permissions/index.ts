@@ -1,9 +1,12 @@
-'use strict';
+import { FakeDeviceDescriptor } from 'DeviceDescriptor';
+import { PluginRequirements, PuppeteerExtraPlugin, PuppeteerPage } from 'puppeteer-extra-plugin';
+import Utils from '../_utils/'
+import withUtils from '../_utils/withUtils';
+import withWorkerUtils from '../_utils/withWorkerUtils';
 
-const {PuppeteerExtraPlugin} = require('puppeteer-extra-plugin');
-
-const withUtils = require('../_utils/withUtils');
-const withWorkerUtils = require('../_utils/withWorkerUtils');
+export interface PluginOptions {
+    fakeDD: FakeDeviceDescriptor;
+}
 
 /**
  * Fix `Notification.permission` behaving weirdly in headless mode
@@ -11,9 +14,17 @@ const withWorkerUtils = require('../_utils/withWorkerUtils');
  * @see https://bugs.chromium.org/p/chromium/issues/detail?id=1052332
  */
 
-// https://source.chromium.org/chromium/chromium/src/+/master:third_party/blink/renderer/modules/permissions/permission_descriptor.idl
+interface InternalPluginOption {
+    fakePermissions:  Record<string, {
+        state?: string,
+        exType?: string,
+        msg?: string,
+    }>,
+    fakeUA: string,
+}
 
-class Plugin extends PuppeteerExtraPlugin {
+// https://source.chromium.org/chromium/chromium/src/+/master:third_party/blink/renderer/modules/permissions/permission_descriptor.idl
+export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
     constructor(opts = {}) {
         super(opts);
     }
@@ -23,7 +34,7 @@ class Plugin extends PuppeteerExtraPlugin {
     }
 
     /* global Notification Permissions PermissionStatus */
-    async onPageCreated(page) {
+    async onPageCreated(page: PuppeteerPage) {
         // "permissions": Record<string, {
         //     "state"?: string,
         //     "exType"?: string,
@@ -54,7 +65,7 @@ class Plugin extends PuppeteerExtraPlugin {
         // }
     }
 
-    onServiceWorkerContent(jsContent) {
+    onServiceWorkerContent(jsContent: any) {
         return withWorkerUtils(this, jsContent).evaluate(
             this.mainFunction,
             {
@@ -64,7 +75,8 @@ class Plugin extends PuppeteerExtraPlugin {
         );
     }
 
-    mainFunction = (utils, {fakePermissions, fakeUA}) => {
+    mainFunction = (utils: typeof Utils, opts: InternalPluginOption) => {
+        const {fakePermissions, fakeUA} = opts;
         const _Object = utils.cache.Object;
         const _Reflect = utils.cache.Reflect;
 
@@ -94,12 +106,12 @@ class Plugin extends PuppeteerExtraPlugin {
                         if (permission) {
                             let exType = permission.exType;
                             if (exType) {
-                                if (!globalThis[exType]) {
+                                if (!(globalThis as any)[exType]) {
                                     exType = 'Error';
                                 }
 
                                 return reject(
-                                    utils.patchError(new globalThis[exType](permission.msg), 'apply'),
+                                    utils.patchError(new (globalThis as any)[exType](permission.msg), 'apply'),
                                 );
                             }
 
@@ -112,9 +124,9 @@ class Plugin extends PuppeteerExtraPlugin {
                             }
                         }
 
-                        _Reflect.apply(...arguments).then(result => {
+                        _Reflect.apply(...arguments).then((result: any) => {
                             return resolve(result);
-                        }).catch(ex => {
+                        }).catch((ex: Error) => {
                             return reject(utils.patchError(ex, 'apply'));
                         });
                     });
@@ -124,6 +136,4 @@ class Plugin extends PuppeteerExtraPlugin {
     };
 }
 
-module.exports = function (pluginConfig) {
-    return new Plugin(pluginConfig);
-};
+export default (pluginConfig?: Partial<PluginOptions>) => new Plugin(pluginConfig)

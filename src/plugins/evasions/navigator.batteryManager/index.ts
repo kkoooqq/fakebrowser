@@ -1,27 +1,33 @@
-'use strict';
+import { DeviceDescriptorMediaBattery, DeviceDescriptorVoices, FakeDeviceDescriptor } from 'DeviceDescriptor';
+import { PluginRequirements, PuppeteerExtraPlugin, PuppeteerPage } from 'puppeteer-extra-plugin';
+import Utils from '../_utils/'
+import withUtils from '../_utils/withUtils';
+import withWorkerUtils from '../_utils/withWorkerUtils';
 
-const {PuppeteerExtraPlugin} = require('puppeteer-extra-plugin');
-const withUtils = require('../_utils/withUtils');
-const withWorkerUtils = require('../_utils/withWorkerUtils');
+declare var BatteryManager: any;
 
-class Plugin extends PuppeteerExtraPlugin {
-    constructor(opts = {}) {
+export interface PluginOptions {
+    fakeDD: FakeDeviceDescriptor;
+}
+
+export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
+    constructor(opts?: Partial<PluginOptions>) {
         super(opts);
     }
 
-    get name() {
+    get name(): 'evasions/navigator.batteryManager' {
         return 'evasions/navigator.batteryManager';
     }
 
-    async onPageCreated(page) {
+    async onPageCreated(page: PuppeteerPage) {
         await withUtils(this, page).evaluateOnNewDocument(this.mainFunction, this.opts.fakeDD.battery);
     }
 
-    onServiceWorkerContent(jsContent) {
+    onServiceWorkerContent(jsContent: any) {
         return withWorkerUtils(this, jsContent).evaluate(this.mainFunction, this.opts.fakeDD.battery);
     }
 
-    mainFunction = (utils, fakeBattery) => {
+    mainFunction = (utils: typeof Utils, fakeBattery: DeviceDescriptorMediaBattery) => {
         // TODO: If it is a charging state, the user's power should keep increasing to a certain time full.
         // It also needs to simulate the situation that the user has unplugged the power.
         if ('undefined' != typeof BatteryManager) {
@@ -52,6 +58,4 @@ class Plugin extends PuppeteerExtraPlugin {
     };
 }
 
-module.exports = function (pluginConfig) {
-    return new Plugin(pluginConfig);
-};
+export default (pluginConfig?: Partial<PluginOptions>) => new Plugin(pluginConfig)

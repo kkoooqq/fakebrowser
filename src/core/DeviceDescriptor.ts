@@ -10,6 +10,59 @@ export enum FontExistTypes {
     BaseFont,
 }
 
+export interface DeviceDescriptorNavigator {
+    languages: string[],
+    userAgent: string,
+    appCodeName: string,
+    appMinorVersion: string,
+    appName: string,
+    appVersion: string,
+    buildID: string,
+    platform: string,
+    product: string,
+    productSub: string,
+    hardwareConcurrency: number,
+    cpuClass: string,
+    maxTouchPoints: number,
+    oscpu: string,
+    vendor: string,
+    vendorSub: string,
+    deviceMemory: number,
+    doNotTrack: string,
+    msDoNotTrack: string,
+    vibrate: string,
+    credentials: string,
+    storage: string,
+    requestMediaKeySystemAccess: string,
+    bluetooth: string,
+    language: string,
+    systemLanguage: string,
+    userLanguage: string,
+    webdriver: boolean,
+}
+
+export interface DeviceDescriptorVoices {
+    default: boolean;
+    lang: string;
+    localService: boolean;
+    name: string;
+    voiceURI: string;
+}
+
+export interface DeviceDescriptorMediaDevices {
+    deviceId: string;
+    kind: string;
+    label: string;
+    groupId: string;
+}
+
+export interface DeviceDescriptorMediaBattery {
+    charging: boolean;
+    chargingTime: number;
+    dischargingTime: number;
+    level: number;
+}
+
 /**
  * Source information for browser fingerprint.
  * Includes plugins, gpu, fonts, webgl, etc.
@@ -41,84 +94,55 @@ export interface DeviceDescriptor {
         vendor: string,
         renderer: string,
     },
-    navigator: {
-        languages: string[],
-        userAgent: string,
-        'appCodeName': string,
-        'appMinorVersion': string,
-        'appName': string,
-        'appVersion': string,
-        'buildID': string,
-        'platform': string,
-        'product': string,
-        'productSub': string,
-        'hardwareConcurrency': number,
-        'cpuClass': string,
-        'maxTouchPoints': number,
-        'oscpu': string,
-        'vendor': string,
-        'vendorSub': string,
-        'deviceMemory': number,
-        'doNotTrack': string,
-        'msDoNotTrack': string,
-        'vibrate': string,
-        'credentials': string,
-        'storage': string,
-        'requestMediaKeySystemAccess': string,
-        'bluetooth': string,
-        'language': string,
-        'systemLanguage': string,
-        'userLanguage': string,
-        webdriver: boolean,
+    navigator: DeviceDescriptorNavigator,
+    window: {
+        innerWidth: number,
+        innerHeight: number,
+        outerWidth: number,
+        outerHeight: number,
+        screenX: number,
+        screenY: number,
+        pageXOffset: number,
+        pageYOffset: number,
+        Image: string,
+        isSecureContext: boolean,
+        devicePixelRatio: number,
+        toolbar: string,
+        locationbar: string,
+        ActiveXObject: string,
+        external: string,
+        mozRTCPeerConnection: string,
+        postMessage: string,
+        webkitRequestAnimationFrame: string,
+        BluetoothUUID: string,
+        netscape: string,
+        localStorage: string,
+        sessionStorage: string,
+        indexDB: string,
     },
-    'window': {
-        'innerWidth': number,
-        'innerHeight': number,
-        'outerWidth': number,
-        'outerHeight': number,
-        'screenX': number,
-        'screenY': number,
-        'pageXOffset': number,
-        'pageYOffset': number,
-        'Image': string,
-        'isSecureContext': boolean,
-        'devicePixelRatio': number,
-        'toolbar': string,
-        'locationbar': string,
-        'ActiveXObject': string,
-        'external': string,
-        'mozRTCPeerConnection': string,
-        'postMessage': string,
-        'webkitRequestAnimationFrame': string,
-        'BluetoothUUID': string,
-        'netscape': string,
-        'localStorage': string,
-        'sessionStorage': string,
-        'indexDB': string,
+    document: {
+        characterSet: string,
+        compatMode: string,
+        documentMode: string,
+        layers: string,
+        images: string,
     },
-    'document': {
-        'characterSet': string,
-        'compatMode': string,
-        'documentMode': string,
-        'layers': string,
-        'images': string,
+    screen: {
+        availWidth: number,
+        availHeight: number,
+        availLeft: number,
+        availTop: number,
+        width: number,
+        height: number,
+        colorDepth: number,
+        pixelDepth: number
     },
-    'screen': {
-        'availWidth': number,
-        'availHeight': number,
-        'availLeft': number,
-        'availTop': number,
-        'width': number,
-        'height': number,
-        'colorDepth': number,
-        'pixelDepth': number
+    body: {
+        clientWidth: number,
+        clientHeight: number
     },
-    'body': {
-        'clientWidth': number,
-        'clientHeight': number
-    },
-    'webgl': WebGLDescriptor,
-    'webgl2': WebGLDescriptor,
+    webgl: WebGLDescriptor,
+    webgl2: WebGLDescriptor,
     mimeTypes: Array<{
         mimeType: string,
         audioPlayType: string,
@@ -126,32 +150,16 @@ export interface DeviceDescriptor {
         mediaSource: boolean,
         mediaRecorder: boolean,
     }>,
-    'mediaDevices': Array<{
-        'deviceId': string,
-        'kind': string,
-        'label': string,
-        'groupId': string
-    }>,
-    'battery': {
-        charging: boolean,
-        chargingTime: number,
-        dischargingTime: number,
-        level: number,
-    },
-    'voices': Array<{
-        default: boolean,
-        lang: string,
-        localService: boolean,
-        name: string,
-        voiceURI: string,
-    }>,
-    'windowVersion': string[],
-    'htmlElementVersion': string[],
-    'keyboard': Record<string, string>,
-    'permissions': Record<string, {
-        'state'?: string,
-        'exType'?: string,
-        'msg'?: string,
+    mediaDevices: Array<DeviceDescriptorMediaDevices>,
+    battery: DeviceDescriptorMediaBattery,
+    voices: Array<DeviceDescriptorVoices>,
+    windowVersion: string[],
+    htmlElementVersion: string[],
+    keyboard: Record<string, string>,
+    permissions: Record<string, {
+        state?: string,
+        exType?: string,
+        msg?: string,
     }>,
 }
 
