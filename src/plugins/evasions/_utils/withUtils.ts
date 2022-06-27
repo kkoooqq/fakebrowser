@@ -1,5 +1,19 @@
 import { PuppeteerPage } from 'puppeteer-extra-plugin';
-import { utils } from './'
+import utils from './'
+
+interface EvaluateArgs {
+    _utilsFns: (fnObj?: { [key: string]: Function | any }) => { [key: string]: string };
+    _mainFunction: string;
+    _args : any[];
+}
+
+
+interface EvaluateOnNewDocumentArgs {
+    _utilsFns: (fnObj?: { [key: string]: Function | any }) => { [key: string]: string };
+    _mainFunction: string;
+    _args : any[];
+    _pluginName: string;
+}
 
 /**
  * Wrap a page with utilities.
@@ -11,9 +25,10 @@ import { utils } from './'
     /**
      * Simple `page.evaluate` replacement to preload utils
      */
-    evaluate: async function (mainFunction: Function, ...args: any[]) {
+    evaluate: function (mainFunction: Function, ...args: any[]) {
         return page.evaluate(
-            ({_utilsFns, _mainFunction, _args}) => {
+            (ctxt: EvaluateArgs) => {
+                const {_utilsFns, _mainFunction, _args} = ctxt;
                 // Add this point we cannot use our utililty functions as they're just strings, we need to materialize them first
                 const utils = Object.fromEntries(
                     Object.entries(_utilsFns).map(([key, value]) => [key, eval(value as string)]), // eslint-disable-line no-eval
@@ -32,21 +47,16 @@ import { utils } from './'
     /**
      * Simple `page.evaluateOnNewDocument` replacement to preload utils
      */
-    evaluateOnNewDocument: async function (mainFunction: any, ...args: any[]) {
+    evaluateOnNewDocument: function (mainFunction: any, ...args: any[]) {
         return page.evaluateOnNewDocument(
-            ({
-                 _utilsFns,
-                 _mainFunction,
-                 _args,
-                 _pluginName,
-             }) => {
+            (ctxt: EvaluateOnNewDocumentArgs) => {
+                const { _utilsFns, _mainFunction, _args } = ctxt;
                 // Add this point we cannot use our utililty functions as they're just strings, we need to materialize them first
                 const utils = Object.fromEntries(
                     Object.entries(_utilsFns).map(
                         ([key, value]) => [key, eval(value as any)],
                     ), // eslint-disable-line no-eval
                 );
-
                 utils.init();
                 return eval(_mainFunction)(utils, ..._args); // eslint-disable-line no-eval
             },
