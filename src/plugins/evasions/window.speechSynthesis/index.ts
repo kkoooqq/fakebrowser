@@ -1,8 +1,7 @@
 import { DeviceDescriptorVoices, FakeDeviceDescriptor } from 'DeviceDescriptor';
-import { PluginRequirements, PuppeteerExtraPlugin, PuppeteerPage } from 'puppeteer-extra-plugin';
+import { PuppeteerExtraPlugin, PuppeteerPage } from 'puppeteer-extra-plugin';
 import Utils from '../_utils/'
 import withUtils from '../_utils/withUtils';
-import withWorkerUtils from '../_utils/withWorkerUtils';
 
 export interface PluginOptions {
     fakeDD: FakeDeviceDescriptor;
@@ -104,7 +103,7 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
                                 }
                             }
 
-                            return fakeVoices[voiceObjs.indexOf(thisArg)][prop];
+                            return (fakeVoices as any)[voiceObjs.indexOf(thisArg)][prop];
                         },
                     },
                 );
@@ -114,14 +113,14 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
             // In chrome, getVoices can only get values after onvoiceschanged is fired, otherwise you get an empty array
 
             let voicesWarnup = false;
-            let onvoiceschangedHandler = null;
+            let onvoiceschangedHandler: null | Function = null;
 
             utils.replaceWithProxy(
                 _Object.getPrototypeOf(window.speechSynthesis),
                 'getVoices',
                 {
-                    apply(target, thisArg, args) {
-                        _Reflect.apply(target: any, thisArg, args);
+                    apply(target: any, thisArg, args) {
+                        _Reflect.apply(target, thisArg, args);
 
                         if (!voicesWarnup) {
                             return [];
@@ -136,14 +135,14 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
                 _Object.getPrototypeOf(window.speechSynthesis),
                 'onvoiceschanged',
                 {
-                    apply(target: any, thisArg, args) {
+                    apply(target: any, thisArg: any, args: any[]) {
                         _Reflect.apply(target, thisArg, args);
 
                         if (args && args[0] instanceof Function) {
                             onvoiceschangedHandler = args[0];
 
                             if (voicesWarnup) {
-                                onvoiceschangedHandler();
+                                onvoiceschangedHandler!();
                             }
                         }
                     },

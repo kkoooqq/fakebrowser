@@ -15,6 +15,8 @@ interface FontDesc {
     family: string;
 }
 
+type NestNode = string | NestNode[];
+
 export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
     constructor(opts?: Partial<PluginOptions>) {
         super(opts);
@@ -39,7 +41,7 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
 
     mainFunction = (utils: typeof Utils, fontSalt: { [key: string]: IFontSalt }) => {
         // Thanks to: https://github.com/dy/css-font
-        function parseFont(value: string) {
+        function parseFont(this: any, value: string) {
             if (typeof value !== 'string') throw new Error('Font argument must be a string.');
 
             if (value === '') {
@@ -191,8 +193,8 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
                 const re = new RegExp('\\' + escape + '([0-9]+)' + '\\' + escape);
 
                 // transform references to tree
-                function nest(str: string, refs: {[key: string]: string}, escape?: boolean): string[] {
-                    const res: string[] = [];
+                function nest(str: string, refs: {[key: string]: string}, escape?: boolean): Array<NestNode> {
+                    const res: Array<NestNode> = [];
                     let match: RegExpExecArray | null;
 
                     let a = 0;
@@ -211,7 +213,7 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
                     return res;
                 }
 
-                return flat ? res : nest(res[0], res);
+                return flat ? res : nest(res[0], res as any);
             }
 
             function stringify(arg: any[], opts: any) {
@@ -245,13 +247,13 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
                     return prev + curr;
                 }, '');
 
-                function replaceRef(match, idx: number) {
+                function replaceRef(match: any, idx: number) {
                     if (arg[idx] == null) throw Error('Reference ' + idx + 'is undefined');
                     return arg[idx];
                 }
             }
 
-            function parenthesis(arg, opts) {
+            function parenthesis(arg: any, opts: any) {
                 if (Array.isArray(arg)) {
                     return stringify(arg, opts);
                 } else {
@@ -264,7 +266,7 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
 
             const paren = parenthesis;
 
-            function splitBy(string: string, separator: string, o ?: any) {
+            function splitBy(string: string, separator: string | RegExp, o ?: any) {
                 let i;
                 if (string == null) throw Error('First argument should be a string');
                 if (separator == null) throw Error('Separator should be a string or a RegExp');
@@ -289,7 +291,7 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
                 }
 
                 const tokens = paren.parse(string, {flat: true, brackets: o.ignore});
-                const str = tokens[0];
+                const str = tokens[0] as string;
 
                 let parts = str.split(separator);
 
@@ -319,7 +321,7 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
                 return parts;
             }
 
-            function parseLineHeight(value: string) {
+            function parseLineHeight(value: string): string | number {
                 const parsed = parseFloat(value);
                 if (parsed.toString() === value) {
                     return parsed;
@@ -343,17 +345,17 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
                 variant: 'normal',
                 weight: 'normal',
                 stretch: 'normal',
-                lineHeight: 'normal',
+                lineHeight: 'normal' as string | number,
                 size: '1rem',
                 family: ['serif'],
             };
 
             let tokens = splitBy(value, /\s+/);
-            let token;
+            let token: any;
 
             while (token = tokens.shift()) {
                 if (globalKeywords.indexOf(token) !== -1) {
-                    ['style', 'variant', 'weight', 'stretch'].forEach(function (prop) {
+                    (['style', 'variant', 'weight', 'stretch'] as const).forEach(function (prop) {
                         font[prop] = token;
                     });
 
@@ -388,7 +390,7 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
                         font.lineHeight = parseLineHeight(parts[1]);
                     } else if (tokens[0] === '/') {
                         tokens.shift();
-                        font.lineHeight = parseLineHeight(tokens.shift());
+                        font.lineHeight = parseLineHeight(tokens.shift()!);
                     }
 
                     if (!tokens.length) {
@@ -630,7 +632,7 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
                     _Canvas: OffscreenCanvas,
                     _CanvasRenderingContext2D: OffscreenCanvasRenderingContext2D,
                     _Canvas_prototype_getContext: OffscreenCanvas.prototype.getContext,
-                    _Canvas_prototype_toDataURL: OffscreenCanvas.prototype.toDataURL,
+                    _Canvas_prototype_toDataURL: (OffscreenCanvas.prototype as any).toDataURL,
                     _CanvasRenderingContext2D_prototype_getImageData: OffscreenCanvasRenderingContext2D.prototype.getImageData,
                 });
 
@@ -669,7 +671,7 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
                 });
 
                 utils.replaceSetterWithProxy(_CanvasRenderingContext2D.prototype, 'font', {
-                    apply(target, thisArg, args) {
+                    apply(target: any, thisArg: any, args: any[]) {
                         const contextIndex = markRenderingContextOperator(thisArg, 'font');
                         if (0) {
                             console.log(`!!! h00k context:${contextIndex} set font:${Array.from(args).join('|')}`);
@@ -731,7 +733,7 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
             };
 
             // Final Write
-            const finallyAttribsMap: {[key: string]: string} = {
+            const finallyAttribsMap: {[key: string]: 'font' | 'fontFamily' | 'fontStyle' | 'fontWeight' | 'fontSize'} = {
                 'font': 'font',
                 'font-family': 'fontFamily',
                 'font-style': 'fontStyle',
@@ -742,8 +744,14 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
             // Property Blacklist
             const hookAttribBlackList: string[] = [];
 
-            const hookStyle = (domNode) => {
-                let hookConfig: {domNode: any; styleDeclaration: any, userSettings: {[key: string]: string}, computedStyles: any} = needsToHookStyles.find(e => e.domNode === domNode);
+            const hookStyle = (domNode: any) => {
+                let hookConfig: {
+                    domNode: any;
+                    styleDeclaration: any;
+                    userSettings: {[key: string]: string};
+                    computedStyles: any;
+                    proxy?: any;
+                } = needsToHookStyles.find(e => e.domNode === domNode)!;
 
                 if (!hookConfig) {
                     // Get the original value
@@ -855,7 +863,7 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
                     }
 
                     // Find the correspondence of attr
-                    let targetAttr = hookAttribsMap[attr];
+                    let targetAttr = hookAttribsMap[attr] as "font" | "fontFamily" | "fontStyle" | "fontWeight" | "fontSize";
 
                     if (!targetAttr && !hookAttribBlackList.includes(attr)) {
                         // No correspondence found, then set it and get the changes from computedStyle
@@ -912,7 +920,7 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
                                 targetAttr = 'font';
                             } else {
                                 // FIXME: Only the first changed property is taken here
-                                targetAttr = changedAttrs[0];
+                                targetAttr = changedAttrs[0] as "font" | "fontFamily" | "fontStyle" | "fontWeight" | "fontSize";
                             }
 
                             // Write back into the correspondence
@@ -1039,10 +1047,10 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
                 const _CSSStyleDeclaration_prototype_setProperty = CSSStyleDeclaration.prototype.setProperty;
 
                 utils.replaceWithProxy(CSSStyleDeclaration.prototype, 'setProperty', {
-                    apply(target, thisArg, args) {
+                    apply(target: any, thisArg: any, args: any[]) {
                         const handle = handleUserSetFontStyle(
                             () => {
-                                return _CSSStyleDeclaration_prototype_setProperty.apply(utils.getProxyTarget(thisArg), args);
+                                return _CSSStyleDeclaration_prototype_setProperty.apply(utils.getProxyTarget(thisArg), args as any);
                                 // return _Reflect.apply(target, thisArg, args);
                             },
                             thisArg,
@@ -1052,7 +1060,7 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
 
                         if (!handle) {
                             // _Reflect.apply(target, thisArg, args);
-                            return _CSSStyleDeclaration_prototype_setProperty.apply(utils.getProxyTarget(thisArg), args);
+                            return _CSSStyleDeclaration_prototype_setProperty.apply(utils.getProxyTarget(thisArg), args as any);
                         }
                     },
                 });
@@ -1074,7 +1082,7 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
             const fontFaceConfigCache: Array<{fontFace: any, args: any, fontFamily: string}> = [];
 
             utils.replaceWithProxy(utils.cache.global, 'FontFace', {
-                construct(target, args) {
+                construct(target: any, args) {
                     if (0) {
                         console.log('hook font fontFace constructor called', args);
                     }
@@ -1157,7 +1165,7 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
             const _FontFaceSet_prototype = _Object.getPrototypeOf((globalThis as any).fonts);
 
             utils.replaceWithProxy(_FontFaceSet_prototype, 'check', {
-                apply(target, thisArg, args) {
+                apply(target: any, thisArg, args) {
                     _Reflect.apply(target, thisArg, args);
 
                     // args[0] is the font to be checked
