@@ -118,6 +118,9 @@ export declare const utils: {
      * @param {object} originalObj - The object which toString result we wan to return
      */
     redirectToString: <T>(proxyObj : T, originalObj: T) => void;
+
+
+    replaceSetterWithProxy: (obj: any, propName: string, handler: any) => boolean;
 }
 
 export default utils;

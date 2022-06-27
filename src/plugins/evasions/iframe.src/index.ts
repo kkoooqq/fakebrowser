@@ -1,49 +1,47 @@
-// noinspection JSUnusedLocalSymbols
+import { PluginRequirements, PuppeteerExtraPlugin, PuppeteerPage } from 'puppeteer-extra-plugin';
+import Utils from '../_utils/'
+import withUtils from '../_utils/withUtils';
 
-'use strict';
-
-const {PuppeteerExtraPlugin} = require('puppeteer-extra-plugin');
-
-const withUtils = require('../_utils/withUtils');
-const withWorkerUtils = require('../_utils/withWorkerUtils');
+export interface PluginOptions {
+}
 
 // There's a pretty crazy detection that exploits a CDP or puppeteer vulnerability, I forget where I read it: (pixelscan.net?)
 //
 // <iframe src="javascript:alert(navigator.userAgent);" />
 //
 // Here navigator.userAgent is able to get the actual browser information and is not intercepted by any method and has no events.
-class Plugin extends PuppeteerExtraPlugin {
-    constructor(opts = {}) {
+export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
+    constructor(opts?: Partial<PluginOptions>) {
         super(opts);
     }
 
-    get name() {
+    get name(): 'evasions/iframe.src' {
         return 'evasions/iframe.src';
     }
 
-    get requirements() {
+    get requirements(): PluginRequirements {
         return new Set(['runLast']);
     }
 
-    async onPageCreated(page) {
+    async onPageCreated(page: PuppeteerPage) {
         await withUtils(this, page).evaluateOnNewDocument(this.mainFunction);
     }
 
-    mainFunction = (utils) => {
+    mainFunction = (utils: typeof Utils) => {
         const _Reflect = utils.cache.Reflect;
-        const _Object = utils.cache.Object;
+        // const _Object = utils.cache.Object;
 
         const Element_Prototype_remove = Element.prototype.remove;
 
         // Cache actual src of iframe
-        const iframeSrcCache = [];
+        const iframeSrcCache: Array<{v: HTMLIFrameElement, src: string}> = [];
 
-        const getIFrameOriginalSrc = (iframe) => {
+        const getIFrameOriginalSrc = (iframe: HTMLIFrameElement) => {
             const srcCache = iframeSrcCache.find(e => e.v === iframe);
             return srcCache ? srcCache.src : null;
         };
 
-        const interceptPatchIFrameSrc = (iframe, src) => {
+        const interceptPatchIFrameSrc = (iframe: HTMLIFrameElement, src: string) => {
             if (src && src.trim().toLowerCase().startsWith('javascript:')) {
                 // console.log('!!! h00k iframe src: ' + src);
 
@@ -69,7 +67,7 @@ class Plugin extends PuppeteerExtraPlugin {
 
         // hook src of all iFrames
         utils.replaceSetterWithProxy(HTMLIFrameElement.prototype, 'src', {
-            apply(target, thisArg, args) {
+            apply(target: any, thisArg: any, args: any) {
                 const src = args[0];
 
                 if (!interceptPatchIFrameSrc(thisArg, src)) {
@@ -101,12 +99,12 @@ class Plugin extends PuppeteerExtraPlugin {
                     }
                 }
 
-                return _Reflect.apply(target, thisArg, args);
+                return _Reflect.apply(target as any, thisArg, args);
             },
         });
 
         utils.replaceWithProxy(Element.prototype, 'getAttribute', {
-            apply(target, thisArg, args) {
+            apply(target: any, thisArg: any, args: any) {
                 const attr = args && args[0];
                 let result = null;
 
@@ -123,7 +121,7 @@ class Plugin extends PuppeteerExtraPlugin {
         });
 
         utils.replaceWithProxy(Element.prototype, 'appendChild', {
-            apply(target, thisArg, args) {
+            apply(target: any, thisArg: any, args: any) {
                 const result = _Reflect.apply(target, thisArg, args);
 
                 // if an iframe has been added
@@ -145,7 +143,7 @@ class Plugin extends PuppeteerExtraPlugin {
 
                             iframe.addEventListener('load', function () {
                                 // iframe.contentWindow.eval(`console.log('h00k iframe, script executed here');`);
-                                iframe.contentWindow.eval(src);
+                                (iframe.contentWindow as any).eval(src);
                             }, true);
                         } catch (ex) {
                             // console.warn('h00k iframe, contentWindow error', ex);
@@ -158,9 +156,6 @@ class Plugin extends PuppeteerExtraPlugin {
             },
         });
     };
-
 }
 
-module.exports = function (pluginConfig) {
-    return new Plugin(pluginConfig);
-};
+export default (pluginConfig?: Partial<PluginOptions>) => new Plugin(pluginConfig)

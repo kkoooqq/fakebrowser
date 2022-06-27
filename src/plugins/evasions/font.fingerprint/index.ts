@@ -1,9 +1,11 @@
+import { FakeDeviceDescriptor, IFontSalt } from 'DeviceDescriptor';
 import { PluginRequirements, PuppeteerExtraPlugin, PuppeteerPage } from 'puppeteer-extra-plugin';
 import Utils from '../_utils/'
 import withUtils from '../_utils/withUtils';
 import withWorkerUtils from '../_utils/withWorkerUtils';
 
 export interface PluginOptions {
+    fakeDD: FakeDeviceDescriptor;
 }
 
 interface FontDesc {
@@ -13,7 +15,7 @@ interface FontDesc {
     family: string;
 }
 
-class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
+export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
     constructor(opts?: Partial<PluginOptions>) {
         super(opts);
     }
@@ -35,9 +37,9 @@ class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
         return withWorkerUtils(this, jsContent).evaluate(this.mainFunction, this.opts.fakeDD.fontSalt);
     }
 
-    mainFunction = (utils: typeof Utils, fontSalt) => {
+    mainFunction = (utils: typeof Utils, fontSalt: { [key: string]: IFontSalt }) => {
         // Thanks to: https://github.com/dy/css-font
-        function parseFont(value) {
+        function parseFont(value: string) {
             if (typeof value !== 'string') throw new Error('Font argument must be a string.');
 
             if (value === '') {
@@ -1183,7 +1185,6 @@ class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
             });
         }
     };
-
 }
 
 export default (pluginConfig?: Partial<PluginOptions>) => new Plugin(pluginConfig)

@@ -1,11 +1,10 @@
-// noinspection JSUnusedLocalSymbols
+import { PluginRequirements, PuppeteerExtraPlugin, PuppeteerPage } from 'puppeteer-extra-plugin';
+import Utils from '../_utils/'
+import withUtils from '../_utils/withUtils';
+import withWorkerUtils from '../_utils/withWorkerUtils';
 
-'use strict';
-
-const {PuppeteerExtraPlugin} = require('puppeteer-extra-plugin');
-
-const withUtils = require('../_utils/withUtils');
-const withWorkerUtils = require('../_utils/withWorkerUtils');
+export interface PluginOptions {
+}
 
 /**
  * Fix for the HEADCHR_IFRAME detection (iframe.contentWindow.chrome), hopefully this time without breaking iframes.
@@ -13,8 +12,8 @@ const withWorkerUtils = require('../_utils/withWorkerUtils');
  *
  * https://github.com/puppeteer/puppeteer/issues/1106
  */
-class Plugin extends PuppeteerExtraPlugin {
-    constructor(opts = {}) {
+ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
+    constructor(opts?: Partial<PluginOptions>) {
         super(opts);
     }
 
@@ -22,22 +21,22 @@ class Plugin extends PuppeteerExtraPlugin {
         return 'evasions/iframe.contentWindow';
     }
 
-    get requirements() {
+    get requirements(): PluginRequirements {
         // Make sure `chrome.runtime` has ran, we use data defined by it (e.g. `window.chrome`)
         return new Set(['runLast']);
     }
 
-    async onPageCreated(page) {
+    async onPageCreated(page: PuppeteerPage) {
         await withUtils(this, page).evaluateOnNewDocument(this.mainFunction);
     }
 
-    mainFunction = (utils) => {
+    mainFunction = (utils: typeof Utils) => {
         const _Object = utils.cache.Object;
         const _Reflect = utils.cache.Reflect;
 
         try {
             // Adds a contentWindow proxy to the provided iframe element
-            const addContentWindowProxy = iframe => {
+            const addContentWindowProxy = (iframe: HTMLIFrameElement) => {
                 if (!iframe.contentWindow) {
                     const proxy = utils.newProxyInstance(window, {
                         get(target, key) {
@@ -64,7 +63,7 @@ class Plugin extends PuppeteerExtraPlugin {
 
                             let result = _Reflect.get(target, key);
                             if (!result) {
-                                result = target[key];
+                                result = target[key as any];
                             }
 
                             return result;
@@ -72,7 +71,7 @@ class Plugin extends PuppeteerExtraPlugin {
                     });
 
                     _Object.defineProperty(iframe, 'contentWindow', {
-                        get(target, key) {
+                        get(target: any, key: any) {
                             if (!iframe.parentElement) {
                                 return null;
                             }
@@ -89,7 +88,7 @@ class Plugin extends PuppeteerExtraPlugin {
             };
 
             // Handles iframe element creation, augments `srcdoc` property so we can intercept further
-            const handleIframeCreation = (target, thisArg, args) => {
+            const handleIframeCreation = (target: any, thisArg: any, args: any) => {
                 const iframe = target.apply(thisArg, args);
 
                 // We need to keep the originals around
@@ -153,6 +152,4 @@ class Plugin extends PuppeteerExtraPlugin {
 
 }
 
-module.exports = function (pluginConfig) {
-    return new Plugin(pluginConfig);
-};
+export default (pluginConfig?: Partial<PluginOptions>) => new Plugin(pluginConfig)

@@ -1,34 +1,40 @@
-// noinspection JSUnusedLocalSymbols
+import { FakeDeviceDescriptor } from 'DeviceDescriptor';
+import { PuppeteerExtraPlugin, PuppeteerPage } from 'puppeteer-extra-plugin';
+import Utils from '../_utils/'
+import withUtils from '../_utils/withUtils';
 
-'use strict';
+export interface PluginOptions {
+    fakeDD: FakeDeviceDescriptor;
+}
 
-const {PuppeteerExtraPlugin} = require('puppeteer-extra-plugin');
-
-const withUtils = require('../_utils/withUtils');
-const withWorkerUtils = require('../_utils/withWorkerUtils');
-
-class Plugin extends PuppeteerExtraPlugin {
-    constructor(opts = {}) {
+export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
+    constructor(opts?: Partial<PluginOptions>) {
         super(opts);
     }
 
-    get name() {
+    get name(): 'evasions/mimeTypes' {
         return 'evasions/mimeTypes';
     }
 
-    async onPageCreated(page) {
+    async onPageCreated(page: PuppeteerPage) {
         await withUtils(this, page).evaluateOnNewDocument(this.mainFunction, this.opts.fakeDD.mimeTypes);
     }
 
-    mainFunction = (utils, fakeMimeTypes) => {
-        const _Object = utils.cache.Object;
+    mainFunction = (utils: typeof Utils, fakeMimeTypes: Array<{
+        mimeType: string,
+        audioPlayType: string,
+        videoPlayType: string,
+        mediaSource: boolean,
+        mediaRecorder: boolean,
+    }>) => {
+        // const _Object = utils.cache.Object;
         const _Reflect = utils.cache.Reflect;
 
         utils.replaceWithProxy(
             HTMLMediaElement.prototype,
             'canPlayType',
             {
-                apply: function (target, thisArg, args) {
+                apply: function (target: any, thisArg, args) {
                     const orgResult = _Reflect.apply(target, thisArg, args);
 
                     if (!args || !args.length) {
@@ -69,7 +75,7 @@ class Plugin extends PuppeteerExtraPlugin {
             MediaSource,
             'isTypeSupported',
             {
-                apply: function (target, thisArg, args) {
+                apply: function (target: any, thisArg, args) {
                     const orgResult = _Reflect.apply(target, thisArg, args);
 
                     if (!args || !args.length) {
@@ -97,7 +103,7 @@ class Plugin extends PuppeteerExtraPlugin {
                 MediaRecorder,
                 'isTypeSupported',
                 {
-                    apply: function (target, thisArg, args) {
+                    apply: function (target: any, thisArg: any, args: any[]) {
                         const orgResult = _Reflect.apply(target, thisArg, args);
 
                         if (!args || !args.length) {
@@ -124,6 +130,4 @@ class Plugin extends PuppeteerExtraPlugin {
 
 }
 
-module.exports = function (pluginConfig) {
-    return new Plugin(pluginConfig);
-};
+export default (pluginConfig?: Partial<PluginOptions>) => new Plugin(pluginConfig)
