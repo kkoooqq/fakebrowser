@@ -1,4 +1,4 @@
-import { DeviceDescriptorMediaDevices, FakeDeviceDescriptor } from 'DeviceDescriptor';
+import { DeviceDescriptorMediaDevices, FakeDeviceDescriptor } from 'core/DeviceDescriptor';
 import { PuppeteerExtraPlugin, PuppeteerPage } from 'puppeteer-extra-plugin';
 import Utils from '../_utils/'
 import withUtils from '../_utils/withUtils';

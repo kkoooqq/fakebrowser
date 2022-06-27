@@ -324,42 +324,39 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
          * @param service The known service name
          * @returns canonical UUID
          */
-        function getServiceUUID(service: keyof typeof bluetoothServices | number) {
-            // Check for string as enums also allow a reverse lookup which will match any numbers passed in
-            if (typeof service === 'string' && bluetoothServices[service]) {
-                service = bluetoothServices[service];
-            }
-
-            return getCanonicalUUID(service);
-        }
+        // function getServiceUUID(service: keyof typeof bluetoothServices | number) {
+        //     // Check for string as enums also allow a reverse lookup which will match any numbers passed in
+        //     if (typeof service === 'string' && bluetoothServices[service]) {
+        //         service = bluetoothServices[service];
+        //     }
+        //     return getCanonicalUUID(service);
+        // }
 
         /**
          * Gets a canonical characteristic UUID from a known characteristic name or partial UUID in string or hex format
          * @param characteristic The known characteristic name
          * @returns canonical UUID
          */
-        function getCharacteristicUUID(characteristic: keyof typeof bluetoothCharacteristics | number) {
-            // Check for string as enums also allow a reverse lookup which will match any numbers passed in
-            if (typeof characteristic === 'string' && bluetoothCharacteristics[characteristic]) {
-                characteristic = bluetoothCharacteristics[characteristic];
-            }
-
-            return getCanonicalUUID(characteristic);
-        }
+        // function getCharacteristicUUID(characteristic: keyof typeof bluetoothCharacteristics | number) {
+        //     // Check for string as enums also allow a reverse lookup which will match any numbers passed in
+        //     if (typeof characteristic === 'string' && bluetoothCharacteristics[characteristic]) {
+        //         characteristic = bluetoothCharacteristics[characteristic];
+        //     }
+        //     return getCanonicalUUID(characteristic);
+        // }
 
         /**
          * Gets a canonical descriptor UUID from a known descriptor name or partial UUID in string or hex format
          * @param descriptor The known descriptor name
          * @returns canonical UUID
          */
-        function getDescriptorUUID(descriptor: keyof typeof bluetoothDescriptors | number) {
-            // Check for string as enums also allow a reverse lookup which will match any numbers passed in
-            if (typeof descriptor === 'string' && bluetoothDescriptors[descriptor]) {
-                descriptor = bluetoothDescriptors[descriptor];
-            }
-
-            return getCanonicalUUID(descriptor);
-        }
+        // function getDescriptorUUID(descriptor: keyof typeof bluetoothDescriptors | number) {
+        //     // Check for string as enums also allow a reverse lookup which will match any numbers passed in
+        //     if (typeof descriptor === 'string' && bluetoothDescriptors[descriptor]) {
+        //         descriptor = bluetoothDescriptors[descriptor];
+        //     }
+        //     return getCanonicalUUID(descriptor);
+        // }
 
         // Define types
 
@@ -681,7 +678,7 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
 
                         const {
                             filters,
-                            optionalServices,
+                            // optionalServices,
                             acceptAllDevices,
                         } = args[0];
 

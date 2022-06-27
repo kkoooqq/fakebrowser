@@ -1,4 +1,4 @@
-import { FakeDeviceDescriptor } from 'DeviceDescriptor';
+import { FakeDeviceDescriptor } from 'core/DeviceDescriptor';
 import { PuppeteerCDPSession, PuppeteerExtraPlugin, PuppeteerPage } from 'puppeteer-extra-plugin';
 
 export interface PluginOptions {

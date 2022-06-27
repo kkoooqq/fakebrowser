@@ -1,4 +1,4 @@
-import { DeviceDescriptorVoices, FakeDeviceDescriptor } from 'DeviceDescriptor';
+import { DeviceDescriptorVoices, FakeDeviceDescriptor } from 'core/DeviceDescriptor';
 import { PuppeteerExtraPlugin, PuppeteerPage } from 'puppeteer-extra-plugin';
 import Utils from '../_utils/'
 import withUtils from '../_utils/withUtils';
@@ -50,7 +50,7 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
             const voiceObjs: SpeechSynthesisVoice[] = [];
 
             // With the configuration, construct voices object and then we hook the properties with Proxy
-            for (const voice of fakeVoices) {
+            for (const _voice of fakeVoices) {
                 const voiceObj = new SpeechSynthesisVoice();
                 voiceObjs.push(voiceObj);
 

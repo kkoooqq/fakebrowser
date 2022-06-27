@@ -1,4 +1,4 @@
-import { DeviceDescriptorNavigator, FakeDeviceDescriptor } from 'DeviceDescriptor';
+import { DeviceDescriptorNavigator, FakeDeviceDescriptor } from 'core/DeviceDescriptor';
 import { BrowserEventOptions } from 'puppeteer-extra';
 import { PuppeteerBrowser, PuppeteerExtraPlugin, PuppeteerPage } from 'puppeteer-extra-plugin';
 import Utils from '../_utils/'

@@ -1,4 +1,4 @@
-import { FakeDeviceDescriptor } from 'DeviceDescriptor';
+import { FakeDeviceDescriptor } from 'core/DeviceDescriptor';
 import { PuppeteerExtraPlugin, PuppeteerPage } from 'puppeteer-extra-plugin';
 import Utils from '../evasions/_utils/'
 import withUtils from '../evasions/_utils/withUtils';

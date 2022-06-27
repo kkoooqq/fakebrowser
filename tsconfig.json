@@ -22,7 +22,7 @@
     "pretty": true,
     "declaration": true,
     "strict": true,
-    "baseUrl": "src/core",
+    "baseUrl": "src",
     "typeRoots": [
       "./typings",
       "./node_modules/@types"

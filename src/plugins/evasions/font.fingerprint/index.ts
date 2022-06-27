@@ -1,4 +1,4 @@
-import { FakeDeviceDescriptor, IFontSalt } from 'DeviceDescriptor';
+import { FakeDeviceDescriptor, IFontSalt } from 'core/DeviceDescriptor';
 import { PluginRequirements, PuppeteerExtraPlugin, PuppeteerPage } from 'puppeteer-extra-plugin';
 import Utils from '../_utils/'
 import withUtils from '../_utils/withUtils';
@@ -16,6 +16,11 @@ interface FontDesc {
 }
 
 type NestNode = string | NestNode[];
+
+// interface FontDesc2 {
+//     style: string; variant: string; weight: string; stretch: string;
+//     lineHeight: string | number; size: string; family: string[];
+// };
 
 export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
     constructor(opts?: Partial<PluginOptions>) {
@@ -132,14 +137,14 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
                 return str;
             }
 
-            function parse(str: string, opts?: string | string[] | {brackets?: string | string[], escape?: string, flat?: boolean}) {
+            function parse(str: string, opts?: string | string[] | { brackets?: string | string[], escape?: string, flat?: boolean }) {
                 // pretend non-string parsed per-se
                 if (typeof str !== 'string') return [str];
 
                 let res = [str];
 
                 if (typeof opts === 'string' || Array.isArray(opts)) {
-                    opts = {brackets: opts};
+                    opts = { brackets: opts };
                 } else if (!opts) opts = {};
 
                 const brackets = opts.brackets ? (Array.isArray(opts.brackets) ? opts.brackets : [opts.brackets]) : ['{}', '[]', '()'];
@@ -193,7 +198,7 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
                 const re = new RegExp('\\' + escape + '([0-9]+)' + '\\' + escape);
 
                 // transform references to tree
-                function nest(str: string, refs: {[key: string]: string}, escape?: boolean): Array<NestNode> {
+                function nest(str: string, refs: { [key: string]: string }, escape?: boolean): Array<NestNode> {
                     const res: Array<NestNode> = [];
                     let match: RegExpExecArray | null;
 
@@ -266,14 +271,14 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
 
             const paren = parenthesis;
 
-            function splitBy(string: string, separator: string | RegExp, o ?: any) {
+            function splitBy(string: string, separator: string | RegExp, o?: any) {
                 let i;
                 if (string == null) throw Error('First argument should be a string');
                 if (separator == null) throw Error('Separator should be a string or a RegExp');
 
                 if (!o) o = {};
                 else if (typeof o === 'string' || Array.isArray(o)) {
-                    o = {ignore: o};
+                    o = { ignore: o };
                 }
 
                 if (o.escape == null) o.escape = true;
@@ -290,7 +295,7 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
                     });
                 }
 
-                const tokens = paren.parse(string, {flat: true, brackets: o.ignore});
+                const tokens = paren.parse(string, { flat: true, brackets: o.ignore });
                 const str = tokens[0] as string;
 
                 let parts = str.split(separator);
@@ -315,7 +320,7 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
                 // open parens pack & apply unquotes, if any
                 for (i = 0; i < parts.length; i++) {
                     tokens[0] = parts[i];
-                    parts[i] = paren.stringify(tokens, {flat: true});
+                    parts[i] = paren.stringify(tokens, { flat: true });
                 }
 
                 return parts;
@@ -337,7 +342,7 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
             };
 
             if (systemFontKeywords.indexOf(value) !== -1) {
-                return cache[value] = {system: value};
+                return cache[value] = { system: value };
             }
 
             const font = {
@@ -449,8 +454,8 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
         // ==> not exist:
         // Replace the font back to the default font
 
-        const setFontList: Array<{orgFont: any}> = [];
-        const fakeFontConfigMaps: Array<{org: FontDesc, dest: FontDesc}> = [];
+        const setFontList: Array<{ orgFont: any }> = [];
+        const fakeFontConfigMaps: Array<{ org: FontDesc, dest: FontDesc }> = [];
 
         // fakeFontConfigMaps
         // const item = {
@@ -471,10 +476,10 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
         }
 
         const hookFonts: string[] = [];
-        let hookCount = 0;
+        // let hookCount = 0;
 
         // All lowercase
-        const fontSaltWithLowerCaseName: {[key: string]: { style: string; weight: string; size: string; }} = _Object.fromEntries(
+        const fontSaltWithLowerCaseName: { [key: string]: { style: string; weight: string; size: string; } } = _Object.fromEntries(
             _Object.entries(fontSalt).map(e => {
                 e[0] = e[0].toLowerCase();
                 return e;
@@ -490,12 +495,14 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
                 }
 
                 try {
-                    let style = '', variant, weight = '', stretch,
-                        lineHeight, size = '', family: string[];
+                    // variant = '',  stretch = '', lineHeight = '', 
+
+                    let style = '', weight = '',
+                        size = '', family: string[];
 
                     try {
                         // noinspection JSUnusedAssignment
-                        ({style, variant, weight, stretch, lineHeight, size, family} = parseFont(font));
+                        ({ style, /*variant, */ weight, /*stretch, lineHeight,*/ size, family } = parseFont(font));
                     } catch (ex) {
                         family = [font];
 
@@ -506,12 +513,12 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
                         const cs = _window.getComputedStyle.call(null, domNode);
                         style = cs.fontStyle;
                         // noinspection JSUnusedAssignment
-                        variant = cs.fontVariant;
+                        // variant = cs.fontVariant;
                         weight = cs.fontWeight;
                         // noinspection JSUnusedAssignment
-                        stretch = cs.fontStretch;
+                        // stretch = cs.fontStretch;
                         // noinspection JSUnusedAssignment
-                        lineHeight = cs.lineHeight;
+                        // lineHeight = cs.lineHeight;
                         size = cs.fontSize;
                     }
 
@@ -579,7 +586,7 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
                             }
 
                             fakeFontConfig = {
-                                org: {style, weight, size, family: targetFontFamily},
+                                org: { style, weight, size, family: targetFontFamily },
                                 dest: {
                                     style: targetStyle,
                                     weight: targetWeight,
@@ -623,8 +630,8 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
         if (1) {
 
             // noinspection DuplicatedCode
-            let _OffscreenCanvas_prototype_getContext = null;
-            let _HTMLCanvasElement_prototype_getContext = null;
+            // let _OffscreenCanvas_prototype_getContext = null;
+            // let _HTMLCanvasElement_prototype_getContext = null;
 
             const canvasAndContextClass = [];
             if ('undefined' !== typeof OffscreenCanvas) {
@@ -637,7 +644,7 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
                 });
 
                 // noinspection JSUnusedAssignment
-                _OffscreenCanvas_prototype_getContext = OffscreenCanvas.prototype.getContext;
+                // _OffscreenCanvas_prototype_getContext = OffscreenCanvas.prototype.getContext;
             }
 
             if ('undefined' !== typeof HTMLCanvasElement) {
@@ -650,11 +657,11 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
                 });
 
                 // noinspection JSUnusedAssignment
-                _HTMLCanvasElement_prototype_getContext = HTMLCanvasElement.prototype.getContext;
+                // _HTMLCanvasElement_prototype_getContext = HTMLCanvasElement.prototype.getContext;
             }
 
             for (const {
-                _Canvas,
+                // _Canvas,
                 _CanvasRenderingContext2D
             } of canvasAndContextClass) {
 
@@ -696,7 +703,7 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
 
         if (1) {
             // hook style
-            const needsToHookStyles: Array<{domNode: any; styleDeclaration: any, userSettings: {[key: string]: string}, computedStyles: any}> = [];
+            const needsToHookStyles: Array<{ domNode: any; styleDeclaration: any, userSettings: { [key: string]: string }, computedStyles: any }> = [];
 
             // hook these properties
             const hookAttribs: Array<string> = [
@@ -704,7 +711,7 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
                 'fontOpticalSizing', 'fontSize', 'fontSizeAdjust',
                 'fontStretch', 'fontStyle', 'fontSynthesis', 'fontVariant', 'lineHeight'];
 
-            const hookAttribsMap: {[key: string]: string} = {
+            const hookAttribsMap: { [key: string]: string } = {
                 'font': 'font',
                 'font-family': 'fontFamily',
                 'fontFamily': 'fontFamily',
@@ -733,7 +740,7 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
             };
 
             // Final Write
-            const finallyAttribsMap: {[key: string]: 'font' | 'fontFamily' | 'fontStyle' | 'fontWeight' | 'fontSize'} = {
+            const finallyAttribsMap: { [key: string]: 'font' | 'fontFamily' | 'fontStyle' | 'fontWeight' | 'fontSize' } = {
                 'font': 'font',
                 'font-family': 'fontFamily',
                 'font-style': 'fontStyle',
@@ -748,7 +755,7 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
                 let hookConfig: {
                     domNode: any;
                     styleDeclaration: any;
-                    userSettings: {[key: string]: string};
+                    userSettings: { [key: string]: string };
                     computedStyles: any;
                     proxy?: any;
                 } = needsToHookStyles.find(e => e.domNode === domNode)!;
@@ -771,7 +778,7 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
                     needsToHookStyles.push(hookConfig);
 
                     // Get the first calculated value
-                    const cs = _window.getComputedStyle.call(null, domNode) as unknown as {[key: string]: string};
+                    const cs = _window.getComputedStyle.call(null, domNode) as unknown as { [key: string]: string };
 
                     const handler: ProxyHandler<any> = {
                         get: (target, property, receiver) => {
@@ -877,13 +884,13 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
                         // Browser compatibility may vary.
                         const pseudos = ['', '::before', '::after'];
 
-                        const cs: Array<{[key: string]: string}> = [];
-                        const csBefore: Array<{[key: string]: string}> = [];
-                        const csAfter: Array<{[key: string]: string}> = [];
+                        const cs: Array<{ [key: string]: string }> = [];
+                        const csBefore: Array<{ [key: string]: string }> = [];
+                        const csAfter: Array<{ [key: string]: string }> = [];
 
                         for (let n = 0; n < pseudos.length; ++n) {
                             const pseudo = pseudos[n];
-                            cs[n] = _window.getComputedStyle.call(null, domNode, pseudo) as unknown as {[key: string]: string};
+                            cs[n] = _window.getComputedStyle.call(null, domNode, pseudo) as unknown as { [key: string]: string };
                             csBefore[n] = {};
                             csAfter[n] = {};
 
@@ -1079,7 +1086,7 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
         // font-face
         // noinspection JSUnresolvedVariable
         if ('undefined' !== utils.cache.global.FontFace) {
-            const fontFaceConfigCache: Array<{fontFace: any, args: any, fontFamily: string}> = [];
+            const fontFaceConfigCache: Array<{ fontFace: any, args: any, fontFamily: string }> = [];
 
             utils.replaceWithProxy(utils.cache.global, 'FontFace', {
                 construct(target: any, args) {
@@ -1101,7 +1108,7 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
                                 console.log(`hook FontFace font ${fontFamily}`);
                             }
 
-                            fontFaceConfigCache.push({fontFace: result, args, fontFamily});
+                            fontFaceConfigCache.push({ fontFace: result, args, fontFamily });
                         }
                     }
 
@@ -1173,7 +1180,7 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
                     let family = [];
 
                     try {
-                        ({family} = parseFont(font));
+                        ({ family } = parseFont(font));
                     } catch (ex) {
                         family = [font];
                     }

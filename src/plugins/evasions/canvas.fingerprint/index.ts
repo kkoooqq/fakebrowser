@@ -1,4 +1,4 @@
-import { FakeDeviceDescriptor } from 'DeviceDescriptor';
+import { FakeDeviceDescriptor } from 'core/DeviceDescriptor';
 import { PuppeteerExtraPlugin, PuppeteerPage } from 'puppeteer-extra-plugin';
 import Utils from '../_utils/'
 import withUtils from '../_utils/withUtils';
@@ -214,13 +214,13 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
             _Canvas,
             _CanvasRenderingContext2D,
             _Canvas_prototype_getContext,
-            _Canvas_prototype_toDataURL,
+            // _Canvas_prototype_toDataURL,
         } of classes) {
             // noinspection JSUnusedLocalSymbols
             utils.replaceWithProxy(_Canvas.prototype, 'getContext', {
                 apply(target: any, thisArg, args) {
                     // noinspection JSUnusedLocalSymbols
-                    const [contextId, options] = args;
+                    const [contextId/*, options*/] = args;
                     const context = _Reflect.apply(target, thisArg, args);
 
                     // Whenever a program calls getContext, we cache the context and record the program's operations on the context.
@@ -341,7 +341,7 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
                     let canvas = thisArg;
 
                     // noinspection JSUnusedLocalSymbols
-                    const {context, contextIndex} = utils.findRenderingContextIndex(canvas);
+                    const {/*context, */contextIndex} = utils.findRenderingContextIndex(canvas);
 
                     if (contextIndex >= 0) {
                         canvas = getNoisifyCanvas(thisArg);
