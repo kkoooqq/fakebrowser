@@ -1,6 +1,8 @@
 // import { utils } from './'
 
-export const withWorkerUtils = (plugin: any, jsContent: string) => ({
+import { PuppeteerExtraPlugin } from "puppeteer-extra";
+
+export const withWorkerUtils = (plugin: PuppeteerExtraPlugin, jsContent: string) => ({
     evaluate: async function (mainFunction: Function, ...args: any[]): Promise<string> {
         const thisJsContent = `
 (function() {
