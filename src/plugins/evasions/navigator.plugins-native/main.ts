@@ -4,6 +4,13 @@ import Utils from '../_utils/'
 
 export const mainFunction = (utils: typeof Utils, opts: internalPluginOptions) => {
     const {chromeMajorVersion, fakePlugins} = opts;
+    // TODO overwrite navigator.plugins[0].constructor.name
+
+    const isInteger = (value: any): boolean => {
+        const type = typeof (value);
+        return (type === 'number' || (type === 'string' && !isNaN(value as unknown as number)))
+    }
+
     // const kPluginsLessThen93: KPlugins = {
     //     mimeTypes: [
     //         {
@@ -166,11 +173,7 @@ export const mainFunction = (utils: typeof Utils, opts: internalPluginOptions) =
             get: (target, property: string, receiver) => {
                 const orgResult = _Reflect.get(target, property, receiver);
                 let mimeType = null;
-                const type = typeof(property);
-                const isInteger = (type === 'number' || (type === 'string' && !isNaN(property as unknown as number)))
-                // const isInteger = property && Number.isInteger(Number(property));
-
-                if (isInteger) {
+                if (isInteger(property)) {
                     const mimeIndex = Number(property) % Math.pow(2, 32);
                     mimeType = __mimeTypes[mimeIndex];
                 } else {
@@ -300,8 +303,7 @@ export const mainFunction = (utils: typeof Utils, opts: internalPluginOptions) =
             }
 
             if (thisArg === nativePluginArray) {
-                const isInteger = args[0] && Number.isInteger(Number(args[0]));
-                const index = isInteger ? Number(args[0]) % Math.pow(2, 32) : 0;
+                const index = isInteger(args[0]) ? Number(args[0]) % Math.pow(2, 32) : 0;
 
                 // never returns `undefined`
                 if (index < 0 || index >= pluginCorrs.length) {
@@ -420,8 +422,7 @@ export const mainFunction = (utils: typeof Utils, opts: internalPluginOptions) =
             }
 
             if (thisArg === nativeMimeTypeArray) {
-                const isInteger = args[0] && Number.isInteger(Number(args[0]));
-                const index = isInteger ? Number(args[0]) % Math.pow(2, 32) : 0;
+                const index = isInteger(args[0]) ? Number(args[0]) % Math.pow(2, 32) : 0;
                 if (index < 0 || index >= mimeTypeCorrs.length) {
                     return null;
                 }
@@ -559,8 +560,7 @@ export const mainFunction = (utils: typeof Utils, opts: internalPluginOptions) =
 
             const pluginCorr = pluginCorrs.find(e => e.nativePlugin === thisArg);
             if (pluginCorr) {
-                const isInteger = args[0] && Number.isInteger(Number(args[0]));
-                const index = isInteger ? Number(args[0]) % Math.pow(2, 32) : 0;
+                const index = isInteger(args[0]) ? Number(args[0]) % Math.pow(2, 32) : 0;
                 if (index < 0 || index >= pluginCorr.pluginData.__mimeTypes.length) {
                     return null;
                 }
