@@ -645,62 +645,25 @@ export const mainFunction = (utils: typeof Utils, opts: internalPluginOptions) =
         },
     });
 
-    // MimeType.prototype.suffixes.get
-    utils.replaceGetterWithProxy(MimeType.prototype, 'suffixes', {
-        apply(target: any, thisArg, args) {
-            let orgResult = null;
-            try {
-                orgResult = _Reflect.apply(target, thisArg, args);
-            } catch (ex) {
-                if (thisArg === MimeType.prototype) {
-                    throw utils.patchError(ex as Error, 'suffixes');
+    // MimeType.prototype.(description|suffixes|type).get
+    for (const field of ['suffixes', 'type', 'description'] as const)
+        utils.replaceGetterWithProxy(MimeType.prototype, field, {
+            apply(target: any, thisArg, args) {
+                let orgResult = null;
+                try {
+                    orgResult = _Reflect.apply(target, thisArg, args);
+                } catch (ex) {
+                    if (thisArg === MimeType.prototype) {
+                        throw utils.patchError(ex as Error, field);
+                    }
                 }
-            }
-            const mimeTypeCorr = mimeTypeCorrs.find(e => e.nativeMimeType === thisArg);
-            if (mimeTypeCorr) {
-                return mimeTypeCorr.mimeTypeData.suffixes;
-            }
-            return orgResult;
-        },
-    });
-
-    // MimeType.prototype.type.get
-    utils.replaceGetterWithProxy(MimeType.prototype, 'type', {
-        apply(target: any, thisArg, args) {
-            let orgResult = null;
-            try {
-                orgResult = _Reflect.apply(target, thisArg, args);
-            } catch (ex) {
-                if (thisArg === MimeType.prototype) {
-                    throw utils.patchError(ex as Error, 'type');
+                const mimeTypeCorr = mimeTypeCorrs.find(e => e.nativeMimeType === thisArg);
+                if (mimeTypeCorr) {
+                    return mimeTypeCorr.mimeTypeData[field];
                 }
-            }
-            const mimeTypeCorr = mimeTypeCorrs.find(e => e.nativeMimeType === thisArg);
-            if (mimeTypeCorr) {
-                return mimeTypeCorr.mimeTypeData.type;
-            }
-            return orgResult;
-        },
-    });
-
-    // MimeType.prototype.description.get
-    utils.replaceGetterWithProxy(MimeType.prototype, 'description', {
-        apply(target: any, thisArg, args) {
-            let orgResult = null;
-            try {
-                orgResult = _Reflect.apply(target, thisArg, args);
-            } catch (ex) {
-                if (thisArg === MimeType.prototype) {
-                    throw utils.patchError(ex as Error, 'description');
-                }
-            }
-            const mimeTypeCorr = mimeTypeCorrs.find(e => e.nativeMimeType === thisArg);
-            if (mimeTypeCorr) {
-                return mimeTypeCorr.mimeTypeData.description;
-            }
-            return orgResult;
-        },
-    });
+                return orgResult;
+            },
+        });
 
     // final return results
     utils.replaceGetterWithProxy(Navigator.prototype, 'plugins', {
