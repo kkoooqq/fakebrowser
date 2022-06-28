@@ -8,44 +8,44 @@ export interface PluginOptions {
 }
 
 const STATIC_DATA = {
-        'OnInstalledReason': {
-            'CHROME_UPDATE': 'chrome_update',
-            'INSTALL': 'install',
-            'SHARED_MODULE_UPDATE': 'shared_module_update',
-            'UPDATE': 'update',
+        OnInstalledReason: {
+            CHROME_UPDATE: 'chrome_update',
+            INSTALL: 'install',
+            SHARED_MODULE_UPDATE: 'shared_module_update',
+            UPDATE: 'update',
         },
-        'OnRestartRequiredReason': {
-            'APP_UPDATE': 'app_update',
-            'OS_UPDATE': 'os_update',
-            'PERIODIC': 'periodic',
+        OnRestartRequiredReason: {
+            APP_UPDATE: 'app_update',
+            OS_UPDATE: 'os_update',
+            PERIODIC: 'periodic',
         },
-        'PlatformArch': {
-            'ARM': 'arm',
-            'ARM64': 'arm64',
-            'MIPS': 'mips',
-            'MIPS64': 'mips64',
-            'X86_32': 'x86-32',
-            'X86_64': 'x86-64',
+        PlatformArch: {
+            ARM: 'arm',
+            ARM64: 'arm64',
+            MIPS: 'mips',
+            MIPS64: 'mips64',
+            X86_32: 'x86-32',
+            X86_64: 'x86-64',
         },
-        'PlatformNaclArch': {
-            'ARM': 'arm',
-            'MIPS': 'mips',
-            'MIPS64': 'mips64',
-            'X86_32': 'x86-32',
-            'X86_64': 'x86-64',
+        PlatformNaclArch: {
+            ARM: 'arm',
+            MIPS: 'mips',
+            MIPS64: 'mips64',
+            X86_32: 'x86-32',
+            X86_64: 'x86-64',
         },
-        'PlatformOs': {
-            'ANDROID': 'android',
-            'CROS': 'cros',
-            'LINUX': 'linux',
-            'MAC': 'mac',
-            'OPENBSD': 'openbsd',
-            'WIN': 'win',
+        PlatformOs: {
+            ANDROID: 'android',
+            CROS: 'cros',
+            LINUX: 'linux',
+            MAC: 'mac',
+            OPENBSD: 'openbsd',
+            WIN: 'win',
         },
-        'RequestUpdateCheckStatus': {
-            'NO_UPDATE': 'no_update',
-            'THROTTLED': 'throttled',
-            'UPDATE_AVAILABLE': 'update_available',
+        RequestUpdateCheckStatus: {
+            NO_UPDATE: 'no_update',
+            THROTTLED: 'throttled',
+            UPDATE_AVAILABLE: 'update_available',
         },
     }
 ;
@@ -63,18 +63,16 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
         super(opts);
     }
 
-    get name(): string {
+    get name(): 'evasions/chrome.runtime' {
         return 'evasions/chrome.runtime';
     }
 
     get defaults() {
-        return {runOnInsecureOrigins: false}; // Override for testing
+        return { runOnInsecureOrigins: false }; // Override for testing
     }
 
     async onPageCreated(page: PuppeteerPage) {
-        await withUtils(this, page).evaluateOnNewDocument(
-            this.mainFunction,
-            {
+        await withUtils(this, page).evaluateOnNewDocument( this.mainFunction, {
                 opts: this.opts,
                 STATIC_DATA,
             },
@@ -85,7 +83,6 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
         const {opts, STATIC_DATA} = args;
         const _Object = utils.cache.Object;
         const _Reflect = utils.cache.Reflect;
-
         if (!window.chrome) {
             // Use the exact property descriptor found in headful Chrome
             // fetch it via `Object.getOwnPropertyDescriptor(window, 'chrome')`
@@ -100,10 +97,8 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
                 value: {}, // We'll extend that later
             });
         }
-
         // That means we're running headful and don't need to mock anything
         const existsAlready = 'runtime' in window.chrome;
-
         // `chrome.runtime` is only exposed on secure origins
         let isNotSecure = false;
         try {
@@ -113,14 +108,11 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
                 isNotSecure = !window.location.protocol.startsWith('https');
             } catch (ignore) {
             }
-
             // console.warn(ex);
         }
-
         if (existsAlready || (isNotSecure && !opts.runOnInsecureOrigins)) {
             return; // Nothing to do here
         }
-
         _Object.defineProperty(window.chrome, 'runtime', {
             configurable: true,
             enumerable: true,
@@ -136,24 +128,15 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
             },
             writable: true,
         });
-
         const makeCustomRuntimeErrors = (preamble: string, method: string, extensionId: string) => ({
-            NoMatchingSignature: new TypeError(
-                preamble + `No matching signature.`,
-            ),
-            MustSpecifyExtensionID: new TypeError(
-                preamble +
-                `${method} called from a webpage must specify an Extension ID (string) for its first argument.`,
-            ),
-            InvalidExtensionID: new TypeError(
-                preamble + `Invalid extension id: '${extensionId}'`,
-            ),
+            NoMatchingSignature: new TypeError(`${preamble}No matching signature.`),
+            MustSpecifyExtensionID: new TypeError(`${preamble}${method} called from a webpage must specify an Extension ID (string) for its first argument.`),
+            InvalidExtensionID: new TypeError(`${preamble}Invalid extension id: '${extensionId}'`),
         });
 
         // Valid Extension IDs are 32 characters in length and use the letter `a` to `p`:
         // https://source.chromium.org/chromium/chromium/src/+/master:components/crx_file/id_util.cc;drc=14a055ccb17e8c8d5d437fe080faba4c6f07beac;l=90
-        const isValidExtensionID = (str: string) =>
-            str.length === 32 && str.toLowerCase().match(/^[a-p]+$/);
+        const isValidExtensionID = (str: string) => str.length === 32 && str.toLowerCase().match(/^[a-p]+$/);
 
         /** Mock `chrome.runtime.sendMessage` */
         const sendMessageHandler = {
@@ -166,12 +149,10 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
                 } else if (property === 'length') {
                     return 0;
                 }
-
                 return _Reflect.get(target, property, receiver);
             },
             apply: function (target: string, thisArg: any, args: any[]) {
                 const [extensionId, options, responseCallback] = args || [];
-
                 // Define custom errors
                 const errorPreamble = `Error in invocation of runtime.sendMessage(optional string extensionId, any message, optional object options, optional function responseCallback): `;
                 const Errors = makeCustomRuntimeErrors(
@@ -179,7 +160,6 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
                     `chrome.runtime.sendMessage()`,
                     extensionId,
                 );
-
                 // Check if the call signature looks ok
                 const noArguments = args.length === 0;
                 const tooManyArguments = args.length > 4;
@@ -194,29 +174,22 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
                 ) {
                     throw Errors.NoMatchingSignature;
                 }
-
                 // At least 2 arguments are required before we even validate the extension ID
                 if (args.length < 2) {
                     throw Errors.MustSpecifyExtensionID;
                 }
-
                 // Now let's make sure we got a string as extension ID
                 if (typeof extensionId !== 'string') {
                     throw Errors.NoMatchingSignature;
                 }
-
                 if (!isValidExtensionID(extensionId)) {
                     throw Errors.InvalidExtensionID;
                 }
-
                 return undefined; // Normal behavior
             },
         };
 
-        utils.mockWithProxy(
-            window.chrome.runtime,
-            'sendMessage',
-            _Object.create, // We just need a native function
+        utils.mockWithProxy(window.chrome.runtime, 'sendMessage', _Object.create, // We just need a native function
             {},
             sendMessageHandler,
         );
@@ -233,7 +206,6 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
                 } else if (property === 'length') {
                     return 0;
                 }
-
                 return _Reflect.get(target, property, receiver);
             },
             apply: function (target: any, thisArg: any, args: any[]) {
@@ -241,11 +213,7 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
 
                 // Define custom errors
                 const errorPreamble = `Error in invocation of runtime.connect(optional string extensionId, optional object connectInfo): `;
-                const Errors = makeCustomRuntimeErrors(
-                    errorPreamble,
-                    `chrome.runtime.connect()`,
-                    extensionId,
-                );
+                const Errors = makeCustomRuntimeErrors(errorPreamble, `chrome.runtime.connect()`, extensionId);
 
                 // Behavior differs a bit from sendMessage:
                 const noArguments = args.length === 0;
@@ -284,15 +252,10 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
                     _Object.entries(ci).forEach(([k, v]) => {
                         const isExpected = ['name', 'includeTlsChannelId'].includes(k);
                         if (!isExpected) {
-                            throw new TypeError(
-                                errorPreamble + `Unexpected property: '${k}'.`,
-                            );
+                            throw new TypeError(`${errorPreamble}Unexpected property: '${k}'.`);
                         }
                         const MismatchError = (propName: string, expected: string, found: string) =>
-                            TypeError(
-                                errorPreamble +
-                                `Error at property '${propName}': Invalid type: expected ${expected}, found ${found}.`,
-                            );
+                            TypeError(`${errorPreamble}Error at property '${propName}': Invalid type: expected ${expected}, found ${found}.`);
                         if (k === 'name' && typeof v !== 'string') {
                             throw MismatchError(k, 'string', typeof v);
                         }
@@ -305,33 +268,20 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
                     validateConnectInfo(extensionId);
                     throw Errors.MustSpecifyExtensionID;
                 }
-
                 // Unfortunately even when the connect fails Chrome will return an object with methods we need to mock as well
                 return utils.patchToStringNested(makeConnectResponse());
             },
         };
 
-        utils.mockWithProxy(
-            window.chrome.runtime,
-            'connect',
-            _Object.create,
-            {},
-            connectHandler,
-        );
+        utils.mockWithProxy(window.chrome.runtime, 'connect', _Object.create, {}, connectHandler);
 
         function makeConnectResponse() {
             const onSomething = () => ({
-                addListener: function addListener() {
-                },
-                dispatch: function dispatch() {
-                },
-                hasListener: function hasListener() {
-                },
-                hasListeners: function hasListeners() {
-                    return false;
-                },
-                removeListener: function removeListener() {
-                },
+                addListener: function addListener() {},
+                dispatch: function dispatch() {},
+                hasListener: function hasListener() {},
+                hasListeners: function hasListeners() {return false;},
+                removeListener: function removeListener() {},
             });
 
             const response = {
@@ -348,7 +298,6 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
                     throw new Error(`Attempting to use a disconnected port object`);
                 },
             };
-
             return response;
         }
     };

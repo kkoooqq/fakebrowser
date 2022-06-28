@@ -2,6 +2,17 @@ import { DeviceDescriptorPlugins, DeviceDescriptorPluginsMimeTypes, DeviceDescri
 import { internalPluginOptions } from '.';
 import Utils from '../_utils/'
 
+interface PluginCorrs {
+    nativePlugin: string,
+    nativePluginInner: string,
+    pluginData: DeviceDescriptorPluginsPlugins
+};
+interface MimeTypeCorrs {
+    nativeMimeType: string,
+    mimeTypeData: DeviceDescriptorPluginsMimeTypes,
+    enabledPlugin: any;
+}
+
 export const mainFunction = (utils: typeof Utils, opts: internalPluginOptions) => {
     const {chromeMajorVersion, fakePlugins} = opts;
     // TODO overwrite navigator.plugins[0].constructor.name
@@ -10,62 +21,6 @@ export const mainFunction = (utils: typeof Utils, opts: internalPluginOptions) =
         const type = typeof (value);
         return (type === 'number' || (type === 'string' && !isNaN(value as unknown as number)))
     }
-
-    // const kPluginsLessThen93: KPlugins = {
-    //     mimeTypes: [
-    //         {
-    //             type: 'application/pdf',
-    //             suffixes: 'pdf',
-    //             description: '',
-    //             __pluginName: 'Chrome PDF Viewer',
-    //         },
-    //         {
-    //             type: 'application/x-google-chrome-pdf',
-    //             suffixes: 'pdf',
-    //             description: 'Portable Document Format',
-    //             __pluginName: 'Chrome PDF Plugin',
-    //         },
-    //         {
-    //             type: 'application/x-nacl',
-    //             suffixes: '',
-    //             description: 'Native Client Executable',
-    //             __pluginName: 'Native Client',
-    //         },
-    //         {
-    //             type: 'application/x-pnacl',
-    //             suffixes: '',
-    //             description: 'Portable Native Client Executable',
-    //             __pluginName: 'Native Client',
-    //         },
-    //     ],
-    //     plugins: [
-    //         {
-    //             name: 'Chrome PDF Plugin',
-    //             filename: 'internal-pdf-viewer',
-    //             description: 'Portable Document Format',
-    //             __mimeTypes: [
-    //                 'application/x-google-chrome-pdf',
-    //             ],
-    //         },
-    //         {
-    //             name: 'Chrome PDF Viewer',
-    //             filename: 'mhjfbmdgcfjbbpaeojofohoefgiehjai',
-    //             description: '',
-    //             __mimeTypes: [
-    //                 'application/pdf',
-    //             ],
-    //         },
-    //         {
-    //             name: 'Native Client',
-    //             filename: 'internal-nacl-plugin',
-    //             description: '',
-    //             __mimeTypes: [
-    //                 'application/x-nacl',
-    //                 'application/x-pnacl',
-    //             ],
-    //         },
-    //     ],
-    // };
 
     const kPluginsGreaterThen93: DeviceDescriptorPlugins = {
         mimeTypes: [
@@ -129,8 +84,8 @@ export const mainFunction = (utils: typeof Utils, opts: internalPluginOptions) =
     // object correlations
     // pluginsData.plugins => pluginsCorr
     // pluginsData.mimes => mimeTypesCorr
-    const pluginCorrs: Array<{ nativePlugin: string, nativePluginInner: string, pluginData: DeviceDescriptorPluginsPlugins}> = [];
-    const mimeTypeCorrs: Array<{nativeMimeType: string, mimeTypeData: DeviceDescriptorPluginsMimeTypes, enabledPlugin: any}> = [];
+    const pluginCorrs: PluginCorrs[] = [];
+    const mimeTypeCorrs: MimeTypeCorrs[] = [];
 
     const nativePluginArray: PluginArray = _Object.create(PluginArray.prototype);
     const nativeMimeTypeArray: MimeTypeArray = _Object.create(MimeTypeArray.prototype);
@@ -288,19 +243,13 @@ export const mainFunction = (utils: typeof Utils, opts: internalPluginOptions) =
     utils.replaceWithProxy(PluginArray.prototype, 'item', {
         apply(target: any, thisArg, args) {
             let orgResult = null;
-            try {
-                orgResult = _Reflect.apply(target, thisArg, args);
-            } catch (ex) {
-                if (thisArg !== nativePluginArray) {
-                    throw utils.patchError(ex as Error, 'item');
-                }
+            try {orgResult = _Reflect.apply(target, thisArg, args);} catch (ex) {
+                if (thisArg !== nativePluginArray) throw utils.patchError(ex as Error, 'item');
             }
             if (thisArg === nativePluginArray) {
                 const index = isInteger(args[0]) ? Number(args[0]) % Math.pow(2, 32) : 0;
                 // never returns `undefined`
-                if (index < 0 || index >= pluginCorrs.length) {
-                    return null;
-                }
+                if (index < 0 || index >= pluginCorrs.length) return null;
                 return pluginCorrs[index].nativePlugin;
             }
             return orgResult;
@@ -311,20 +260,12 @@ export const mainFunction = (utils: typeof Utils, opts: internalPluginOptions) =
     utils.replaceGetterWithProxy(PluginArray.prototype, 'length', {
         apply(target, thisArg, args) {
             let orgResult = null;
-            try {
-                orgResult = _Reflect.apply(target, thisArg, args);
-            } catch (ex) {
+            try {orgResult = _Reflect.apply(target, thisArg, args);} catch (ex) {
                 // dirty FIX
-                if (thisArg === nativePluginArray) {
-                    return pluginsData.plugins.length;
-                }
-                if (thisArg !== nativePluginArray) {
-                    throw utils.patchError(ex as Error, 'length');
-                }
+                if (thisArg === nativePluginArray) return pluginsData.plugins.length;
+                if (thisArg !== nativePluginArray) throw utils.patchError(ex as Error, 'length');
             }
-            if (thisArg === nativePluginArray) {
-                return pluginsData.plugins.length;
-            }
+            if (thisArg === nativePluginArray) return pluginsData.plugins.length;
             return orgResult;
         },
     });
@@ -333,20 +274,13 @@ export const mainFunction = (utils: typeof Utils, opts: internalPluginOptions) =
     utils.replaceWithProxy(PluginArray.prototype, 'namedItem', {
         apply(target: any, thisArg, args) {
             let orgResult = null;
-            try {
-                orgResult = _Reflect.apply(target, thisArg, args);
-            } catch (ex) {
-                if (thisArg !== nativePluginArray) {
-                    throw utils.patchError(ex as Error, 'namedItem');
-                }
+            try {orgResult = _Reflect.apply(target, thisArg, args);} catch (ex) {
+                if (thisArg !== nativePluginArray) throw utils.patchError(ex as Error, 'namedItem');
             }
             if (thisArg === nativePluginArray) {
                 const name = args[0];
                 const pluginCorr = pluginCorrs.find(e => e.pluginData.name === name);
-
-                if (!pluginCorr) {
-                    return null;
-                }
+                if (!pluginCorr) { return null; }
                 return pluginCorr.nativePlugin;
             }
             return orgResult;
@@ -357,16 +291,10 @@ export const mainFunction = (utils: typeof Utils, opts: internalPluginOptions) =
     utils.replaceWithProxy(PluginArray.prototype, 'refresh', {
         apply(target: any, thisArg, args) {
             let orgResult = null;
-            try {
-                orgResult = _Reflect.apply(target, thisArg, args);
-            } catch (ex) {
-                if (thisArg !== nativePluginArray) {
-                    throw utils.patchError(ex as Error, 'refresh');
-                }
+            try {orgResult = _Reflect.apply(target, thisArg, args);} catch (ex) {
+                if (thisArg !== nativePluginArray) throw utils.patchError(ex as Error, 'refresh');
             }
-            if (thisArg === nativePluginArray) {
-                return undefined;
-            }
+            if (thisArg === nativePluginArray) return undefined;
             return orgResult;
         },
     });
@@ -375,12 +303,8 @@ export const mainFunction = (utils: typeof Utils, opts: internalPluginOptions) =
     utils.replaceWithProxy(PluginArray.prototype, Symbol.iterator, {
         apply(target: any, thisArg, args) {
             let orgResult = null;
-            try {
-                orgResult = _Reflect.apply(target, thisArg, args);
-            } catch (ex) {
-                if (thisArg !== nativePluginArray) {
-                    throw utils.patchError(ex as Error, 'Symbol.iterator');
-                }
+            try {orgResult = _Reflect.apply(target, thisArg, args);} catch (ex) {
+                if (thisArg !== nativePluginArray) throw utils.patchError(ex as Error, 'Symbol.iterator');
             }
             if (thisArg === nativePluginArray) {
                 const nativePluginObjs = pluginCorrs.map(e => e.nativePlugin);
@@ -394,18 +318,12 @@ export const mainFunction = (utils: typeof Utils, opts: internalPluginOptions) =
     utils.replaceWithProxy(MimeTypeArray.prototype, 'item', {
         apply(target: any, thisArg, args) {
             let orgResult = null;
-            try {
-                orgResult = _Reflect.apply(target, thisArg, args);
-            } catch (ex) {
-                if (thisArg !== nativeMimeTypeArray) {
-                    throw utils.patchError(ex as Error, 'item');
-                }
+            try {orgResult = _Reflect.apply(target, thisArg, args);} catch (ex) {
+                if (thisArg !== nativeMimeTypeArray) throw utils.patchError(ex as Error, 'item');
             }
             if (thisArg === nativeMimeTypeArray) {
                 const index = isInteger(args[0]) ? Number(args[0]) % Math.pow(2, 32) : 0;
-                if (index < 0 || index >= mimeTypeCorrs.length) {
-                    return null;
-                }
+                if (index < 0 || index >= mimeTypeCorrs.length) return null;
                 return mimeTypeCorrs[index].nativeMimeType;
             }
             return orgResult;
@@ -416,16 +334,10 @@ export const mainFunction = (utils: typeof Utils, opts: internalPluginOptions) =
     utils.replaceGetterWithProxy(MimeTypeArray.prototype, 'length', {
         apply(target: any, thisArg, args) {
             let orgResult = null;
-            try {
-                orgResult = _Reflect.apply(target, thisArg, args);
-            } catch (ex) {
-                if (thisArg !== nativeMimeTypeArray) {
-                    throw utils.patchError(ex as Error, 'length');
-                }
+            try {orgResult = _Reflect.apply(target, thisArg, args);} catch (ex) {
+                if (thisArg !== nativeMimeTypeArray) {throw utils.patchError(ex as Error, 'length');}
             }
-            if (thisArg === nativeMimeTypeArray) {
-                return pluginsData.mimeTypes.length;
-            }
+            if (thisArg === nativeMimeTypeArray) return pluginsData.mimeTypes.length;
             return orgResult;
         },
     });
@@ -434,20 +346,13 @@ export const mainFunction = (utils: typeof Utils, opts: internalPluginOptions) =
     utils.replaceWithProxy(MimeTypeArray.prototype, 'namedItem', {
         apply(target: any, thisArg, args) {
             let orgResult = null;
-            try {
-                orgResult = _Reflect.apply(target, thisArg, args);
-            } catch (ex) {
-                if (thisArg !== nativeMimeTypeArray) {
-                    throw utils.patchError(ex as Error, 'namedItem');
-                }
+            try {orgResult = _Reflect.apply(target, thisArg, args);} catch (ex) {
+                if (thisArg !== nativeMimeTypeArray) throw utils.patchError(ex as Error, 'namedItem');
             }
             if (thisArg === nativeMimeTypeArray) {
                 const type = args[0];
                 const mimeTypeCorr = mimeTypeCorrs.find(e => e.mimeTypeData.type === type);
-
-                if (!mimeTypeCorr) {
-                    return null;
-                }
+                if (!mimeTypeCorr) return null;
                 return mimeTypeCorr.nativeMimeType;
             }
             return orgResult;
@@ -458,12 +363,8 @@ export const mainFunction = (utils: typeof Utils, opts: internalPluginOptions) =
     utils.replaceWithProxy(MimeTypeArray.prototype, Symbol.iterator, {
         apply(target: any, thisArg, args) {
             let orgResult = null;
-            try {
-                orgResult = _Reflect.apply(target, thisArg, args);
-            } catch (ex) {
-                if (thisArg !== nativeMimeTypeArray) {
-                    throw utils.patchError(ex as Error, 'Symbol.iterator');
-                }
+            try {orgResult = _Reflect.apply(target, thisArg, args);} catch (ex) {
+                if (thisArg !== nativeMimeTypeArray) throw utils.patchError(ex as Error, 'Symbol.iterator');
             }
             if (thisArg === nativeMimeTypeArray) {
                 const nativeMimeTypeObjs = mimeTypeCorrs.map(e => e.nativeMimeType);
@@ -478,17 +379,11 @@ export const mainFunction = (utils: typeof Utils, opts: internalPluginOptions) =
     utils.replaceGetterWithProxy(Plugin.prototype, 'description', {
         apply(target: any, thisArg, args) {
             let orgResult = null;
-            try {
-                orgResult = _Reflect.apply(target, thisArg, args);
-            } catch (ex) {
-                if (thisArg === Plugin.prototype) {
-                    throw utils.patchError(ex as Error, 'description');
-                }
+            try {orgResult = _Reflect.apply(target, thisArg, args);} catch (ex) {
+                if (thisArg === Plugin.prototype) throw utils.patchError(ex as Error, 'description');
             }
             const pluginCorr = pluginCorrs.find(e => e.nativePlugin === thisArg);
-            if (pluginCorr) {
-                return pluginCorr.pluginData.description;
-            }
+            if (pluginCorr) return pluginCorr.pluginData.description;
             return orgResult;
         },
     });
@@ -497,17 +392,11 @@ export const mainFunction = (utils: typeof Utils, opts: internalPluginOptions) =
     utils.replaceGetterWithProxy(Plugin.prototype, 'filename', {
         apply(target: any, thisArg, args) {
             let orgResult = null;
-            try {
-                orgResult = _Reflect.apply(target, thisArg, args);
-            } catch (ex) {
-                if (thisArg === Plugin.prototype) {
-                    throw utils.patchError(ex as Error, 'filename');
-                }
+            try {orgResult = _Reflect.apply(target, thisArg, args);} catch (ex) {
+                if (thisArg === Plugin.prototype) throw utils.patchError(ex as Error, 'filename');
             }
             const pluginCorr = pluginCorrs.find(e => e.nativePlugin === thisArg);
-            if (pluginCorr) {
-                return pluginCorr.pluginData.filename;
-            }
+            if (pluginCorr) return pluginCorr.pluginData.filename;
             return orgResult;
         },
     });
@@ -517,19 +406,13 @@ export const mainFunction = (utils: typeof Utils, opts: internalPluginOptions) =
     utils.replaceWithProxy(Plugin.prototype, 'item', {
         apply(target: any, thisArg, args) {
             let orgResult = null;
-            try {
-                orgResult = _Reflect.apply(target, thisArg, args);
-            } catch (ex) {
-                if (thisArg === Plugin.prototype) {
-                    throw utils.patchError(ex as Error, 'item');
-                }
+            try {orgResult = _Reflect.apply(target, thisArg, args);} catch (ex) {
+                if (thisArg === Plugin.prototype) throw utils.patchError(ex as Error, 'item');
             }
             const pluginCorr = pluginCorrs.find(e => e.nativePlugin === thisArg);
             if (pluginCorr) {
                 const index = isInteger(args[0]) ? Number(args[0]) % Math.pow(2, 32) : 0;
-                if (index < 0 || index >= pluginCorr.pluginData.__mimeTypes.length) {
-                    return null;
-                }
+                if (index < 0 || index >= pluginCorr.pluginData.__mimeTypes.length) { return null; }
                 const mimeType = pluginCorr.pluginData.__mimeTypes[index];
                 const nativeMimeType = makeNativeMimeType(mimeType, thisArg);
                 return nativeMimeType;
@@ -542,17 +425,11 @@ export const mainFunction = (utils: typeof Utils, opts: internalPluginOptions) =
     utils.replaceGetterWithProxy(Plugin.prototype, 'length', {
         apply(target: any, thisArg, args) {
             let orgResult = null;
-            try {
-                orgResult = _Reflect.apply(target, thisArg, args);
-            } catch (ex) {
-                if (thisArg === Plugin.prototype) {
-                    throw utils.patchError(ex as Error, 'length');
-                }
+            try {orgResult = _Reflect.apply(target, thisArg, args);} catch (ex) {
+                if (thisArg === Plugin.prototype) throw utils.patchError(ex as Error, 'length');
             }
             const pluginCorr = pluginCorrs.find(e => e.nativePlugin === thisArg);
-            if (pluginCorr) {
-                return pluginCorr.pluginData.__mimeTypes.length;
-            }
+            if (pluginCorr) return pluginCorr.pluginData.__mimeTypes.length;
             return orgResult;
         },
     });
@@ -561,17 +438,11 @@ export const mainFunction = (utils: typeof Utils, opts: internalPluginOptions) =
     utils.replaceGetterWithProxy(Plugin.prototype, 'name', {
         apply(target: any, thisArg, args) {
             let orgResult = null;
-            try {
-                orgResult = _Reflect.apply(target, thisArg, args);
-            } catch (ex) {
-                if (thisArg === Plugin.prototype) {
-                    throw utils.patchError(ex as Error, 'name');
-                }
+            try {orgResult = _Reflect.apply(target, thisArg, args);} catch (ex) {
+                if (thisArg === Plugin.prototype) throw utils.patchError(ex as Error, 'name');
             }
             const pluginCorr = pluginCorrs.find(e => e.nativePlugin === thisArg);
-            if (pluginCorr) {
-                return pluginCorr.pluginData.name;
-            }
+            if (pluginCorr) return pluginCorr.pluginData.name;
             return orgResult;
         },
     });
@@ -581,19 +452,13 @@ export const mainFunction = (utils: typeof Utils, opts: internalPluginOptions) =
     utils.replaceWithProxy(Plugin.prototype, 'namedItem', {
         apply(target: any, thisArg, args) {
             let orgResult = null;
-            try {
-                orgResult = _Reflect.apply(target, thisArg, args);
-            } catch (ex) {
-                if (thisArg === Plugin.prototype) {
-                    throw utils.patchError(ex as Error, 'namedItem');
-                }
+            try {orgResult = _Reflect.apply(target, thisArg, args);} catch (ex) {
+                if (thisArg === Plugin.prototype) throw utils.patchError(ex as Error, 'namedItem');
             }
             const pluginCorr = pluginCorrs.find(e => e.nativePlugin === thisArg);
             if (pluginCorr) {
                 const mimeType = args[0];
-                if (!pluginCorr.pluginData.__mimeTypes.includes(mimeType)) {
-                    return null;
-                }
+                if (!pluginCorr.pluginData.__mimeTypes.includes(mimeType)) return null;
                 const nativeMimeType = makeNativeMimeType(mimeType, thisArg);
                 return nativeMimeType;
             }
@@ -606,12 +471,8 @@ export const mainFunction = (utils: typeof Utils, opts: internalPluginOptions) =
     utils.replaceWithProxy(Plugin.prototype, Symbol.iterator, {
         apply(target: any, thisArg, args) {
             let orgResult = null;
-            try {
-                orgResult = _Reflect.apply(target, thisArg, args);
-            } catch (ex) {
-                if (thisArg === Plugin.prototype) {
-                    throw utils.patchError(ex as Error, 'Symbol.iterator');
-                }
+            try {orgResult = _Reflect.apply(target, thisArg, args);} catch (ex) {
+                if (thisArg === Plugin.prototype) {throw utils.patchError(ex as Error, 'Symbol.iterator');}
             }
             const pluginCorr = pluginCorrs.find(e => e.nativePlugin === thisArg);
             if (pluginCorr) {
@@ -630,17 +491,11 @@ export const mainFunction = (utils: typeof Utils, opts: internalPluginOptions) =
     utils.replaceGetterWithProxy(MimeType.prototype, 'enabledPlugin', {
         apply(target: any, thisArg, args) {
             let orgResult = null;
-            try {
-                orgResult = _Reflect.apply(target, thisArg, args);
-            } catch (ex) {
-                if (thisArg === MimeType.prototype) {
-                    throw utils.patchError(ex as Error, 'enabledPlugin');
-                }
+            try {orgResult = _Reflect.apply(target, thisArg, args);} catch (ex) {
+                if (thisArg === MimeType.prototype) throw utils.patchError(ex as Error, 'enabledPlugin');
             }
             const mimeTypeCorr = mimeTypeCorrs.find(e => e.nativeMimeType === thisArg);
-            if (mimeTypeCorr) {
-                return mimeTypeCorr.enabledPlugin;
-            }
+            if (mimeTypeCorr) { return mimeTypeCorr.enabledPlugin; }
             return orgResult;
         },
     });
@@ -653,14 +508,10 @@ export const mainFunction = (utils: typeof Utils, opts: internalPluginOptions) =
                 try {
                     orgResult = _Reflect.apply(target, thisArg, args);
                 } catch (ex) {
-                    if (thisArg === MimeType.prototype) {
-                        throw utils.patchError(ex as Error, field);
-                    }
+                    if (thisArg === MimeType.prototype) throw utils.patchError(ex as Error, field);
                 }
                 const mimeTypeCorr = mimeTypeCorrs.find(e => e.nativeMimeType === thisArg);
-                if (mimeTypeCorr) {
-                    return mimeTypeCorr.mimeTypeData[field];
-                }
+                if (mimeTypeCorr) return mimeTypeCorr.mimeTypeData[field];
                 return orgResult;
             },
         });
@@ -669,10 +520,7 @@ export const mainFunction = (utils: typeof Utils, opts: internalPluginOptions) =
     utils.replaceGetterWithProxy(Navigator.prototype, 'plugins', {
         apply(target: any, thisArg, args) {
             const orgResult = _Reflect.apply(target, thisArg, args);
-            if (thisArg === utils.cache.window.navigator) {
-                return nativePluginArray;
-                // return _origPlugins;
-            }
+            if (thisArg === utils.cache.window.navigator) return nativePluginArray;
             return orgResult;
         },
     });
@@ -680,10 +528,7 @@ export const mainFunction = (utils: typeof Utils, opts: internalPluginOptions) =
     utils.replaceGetterWithProxy(Navigator.prototype, 'mimeTypes', {
         apply(target: any, thisArg, args) {
             const orgResult = _Reflect.apply(target, thisArg, args);
-            if (thisArg === utils.cache.window.navigator) {
-                return nativeMimeTypeArray;
-                // return _origMimeTypes;
-            }
+            if (thisArg === utils.cache.window.navigator) return nativeMimeTypeArray;
             return orgResult;
         },
     });

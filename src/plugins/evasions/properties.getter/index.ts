@@ -95,12 +95,8 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
             if (!obj) {
                 return;
             }
-
             for (const name in newPropValues) {
-                if (blackList && blackList.includes(name)) {
-                    continue;
-                }
-
+                if (blackList && blackList.includes(name)) continue;
                 // Check if the original has this property
                 const desc = _Object.getOwnPropertyDescriptor(obj, name);
                 if (!desc) {
@@ -108,12 +104,10 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
                     // console.warn('!!! Property not found:' + o.constructor.name + ' propertyKey:' + key);
                     continue;
                 }
-
                 let newPropValue = newPropValues[name];
                 if (newPropValue === kObjUndefinedPlaceHolder) {
                     newPropValue = undefined;
                 }
-
                 if (newPropValue === kObjPlaceHolder) {
                     // If it contains attribute and has value, exit directly
                     continue;
@@ -123,7 +117,6 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
                 } else {
                     // Other value, direct assignment
                 }
-
                 let func = null;
                 if ('undefined' !== typeof desc['value']) {
                     func = utils.replaceWithProxy;
@@ -138,13 +131,11 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
                         func = utils.replaceSetterWithProxy;
                     }
                 }
-
                 // Consider whether the check for undefined elsewhere contains
                 if ('undefined' == typeof newPropValue) {
                     // TODO: Ignore this property
                     // utils.addIgnoreProperty(o, propertyKey);
                 }
-
                 func(obj, name, {
                     apply(target, thisArgs, args) {
                         _Reflect.apply(target, thisArgs, args);

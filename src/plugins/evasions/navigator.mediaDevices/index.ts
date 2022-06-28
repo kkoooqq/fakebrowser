@@ -31,9 +31,8 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
      */
     mainFunction = (utils: typeof Utils, fakeMediaDevices: DeviceDescriptorMediaDevices[]) => {
         // debugger;
-        // const _Object = utils.cache.Object;
+        const _Object = utils.cache.Object;
         const _Reflect = utils.cache.Reflect;
-        
         if ('undefined' !== typeof MediaDevices) {
             // The original value is changed only once at beginning
             const hex = '01234567890abcdef';
@@ -45,43 +44,16 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
                 const json = JSON.stringify(mediaDevice);
                 mediaDevice.groupId = mediaDevice.groupId.substr(0, index) + to + mediaDevice.groupId.substr(index + 1);
 
-                const o = utils.cache.Object.create(
-                    mediaDevice.kind.includes('output')
-                        ? MediaDeviceInfo.prototype
-                        : InputDeviceInfo.prototype, {
-                        deviceId: {
-                            value: mediaDevice.deviceId,
-                            writable: false,
-                            enumerable: false,
-                            configurable: true,
-                        },
-                        kind: {
-                            value: mediaDevice.kind,
-                            writable: false,
-                            enumerable: false,
-                            configurable: true,
-                        },
-                        label: {
-                            value: mediaDevice.label,
-                            writable: false,
-                            enumerable: false,
-                            configurable: true,
-                        },
-                        groupId: {
-                            value: mediaDevice.groupId,
-                            writable: false,
-                            enumerable: false,
-                            configurable: true,
-                        },
+                const o = _Object.create(
+                    mediaDevice.kind.includes('output') ? MediaDeviceInfo.prototype : InputDeviceInfo.prototype, {
+                        deviceId: { value: mediaDevice.deviceId, writable: false, enumerable: false, configurable: true },
+                        kind:     { value: mediaDevice.kind,     writable: false, enumerable: false, configurable: true },
+                        label:    { value: mediaDevice.label,    writable: false, enumerable: false, configurable: true },
+                        groupId:  { value: mediaDevice.groupId,  writable: false, enumerable: false, configurable: true },
                     });
 
                 const blacklist = ['deviceId', 'kind', 'label', 'groupId', 'toJSON'];
-                utils.mockWithProxy(
-                    o,
-                    'toJSON',
-                    window.alert,
-                    {},
-                    {
+                utils.mockWithProxy(o, 'toJSON', window.alert, {}, {
                         apply(target, thisArg, args) {
                             return json;
                         },
@@ -102,24 +74,20 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
                         if (blacklist.includes(prop as string)) {
                             return undefined;
                         }
-
                         return _Reflect.getOwnPropertyDescriptor(target, prop);
                     },
                 });
-
                 tempMediaDeviceObjs.push({
                     p,
                     v: mediaDevice,
                 });
             }
-
             utils.replaceWithProxy(MediaDevices.prototype, 'enumerateDevices', {
                 apply(target: any, thisArg, args) {
                     try {
                         _Reflect.apply(target, thisArg, args).catch((e: Error) => e);
                     } catch (ignored) {
                     }
-
                     return Promise.resolve(tempMediaDeviceObjs.map(e => e.p));
                 },
             });

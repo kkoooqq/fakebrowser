@@ -53,10 +53,7 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
             for (const _voice of fakeVoices) {
                 const voiceObj = new SpeechSynthesisVoice();
                 voiceObjs.push(voiceObj);
-
-                _Object.setPrototypeOf(
-                    voiceObj,
-                    new Proxy(
+                _Object.setPrototypeOf(voiceObj, new Proxy(
                         SpeechSynthesisVoice.prototype,
                         {
                             ownKeys(target) {
@@ -66,59 +63,43 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
                                 );
                             },
                             get: (target, property, receiver) => {
-                                //
                                 if (property === '__proto__') {
                                     return _Object.getPrototypeOf(voiceObj);
                                 }
-
                                 return _Reflect.get(target, property, receiver);
                             },
                         },
                     ),
                 );
-
                 utils.patchToString(voiceObj.constructor, 'function Object() { [native code] }');
             }
 
             for (const prop of props) {
-                utils.mockGetterWithProxy(
-                    SpeechSynthesisVoice.prototype,
-                    prop,
-                    _Object.create,
-                    {
+                utils.mockGetterWithProxy(SpeechSynthesisVoice.prototype, prop, _Object.create, {
                         configurable: true,
                         enumerable: true,
                     },
                     {
                         apply: (target, thisArg, args) => {
                             if (voiceObjs.map(e => _Object.getPrototypeOf(e)).includes(thisArg)) {
-
                                 // window.speechSynthesis.getVoices()[0].__proto__.default
                                 // throw TypeError
-
                                 if (props.includes(prop)) {
                                     throw utils.patchError(new TypeError('Illegal invocation'), prop);
                                 } else {
                                     return undefined;
                                 }
                             }
-
                             return (fakeVoices as any)[voiceObjs.indexOf(thisArg)][prop];
                         },
                     },
                 );
             }
-
             // https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesis/onvoiceschanged
             // In chrome, getVoices can only get values after onvoiceschanged is fired, otherwise you get an empty array
-
             let voicesWarnup = false;
             let onvoiceschangedHandler: null | Function = null;
-
-            utils.replaceWithProxy(
-                _Object.getPrototypeOf(window.speechSynthesis),
-                'getVoices',
-                {
+            utils.replaceWithProxy(_Object.getPrototypeOf(window.speechSynthesis), 'getVoices', {
                     apply(target: any, thisArg, args) {
                         _Reflect.apply(target, thisArg, args);
 
@@ -130,11 +111,7 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
                     },
                 },
             );
-
-            utils.replaceSetterWithProxy(
-                _Object.getPrototypeOf(window.speechSynthesis),
-                'onvoiceschanged',
-                {
+            utils.replaceSetterWithProxy(_Object.getPrototypeOf(window.speechSynthesis), 'onvoiceschanged', {
                     apply(target: any, thisArg: any, args: any[]) {
                         _Reflect.apply(target, thisArg, args);
 
@@ -148,15 +125,12 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
                     },
                 },
             );
-
             // Simulating delays and triggering events
             setTimeout(function () {
                 voicesWarnup = true;
-
                 // TODO: After testing, the callback order of voiceschanged and onvoiceschanged is the same as the order in which they are called.
                 const event = new Event('voiceschanged');
                 window.speechSynthesis.dispatchEvent(event);
-
                 if (onvoiceschangedHandler) {
                     onvoiceschangedHandler();
                 }

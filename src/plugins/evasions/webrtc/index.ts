@@ -50,7 +50,6 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
                     str = str.replace(new RegExp(fakeIP, 'g'), proxyExportIP);
                 }
             }
-
             return str;
         };
 
@@ -58,9 +57,7 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
             apply(target: any, thisArg: any, args: any[]) {
                 const org = _Reflect.apply(target, thisArg, args);
                 const dest = replaceIps(org);
-
                 // console.log('!!! h00k RTCIceCandidate_prototype_candidate_get:' + org + ' dest:' + dest);
-
                 return dest;
             },
         });
@@ -69,9 +66,7 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
             apply(target: any, thisArg: any, args: any[]) {
                 const org = _Reflect.apply(target, thisArg, args);
                 const dest = replaceIps(org);
-
                 // console.log('!!! h00k RTCIceCandidate_prototype_address_get:' + org + ' dest:' + dest);
-
                 return dest;
             },
         });
@@ -80,9 +75,7 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
             apply(target: any, thisArg: any, args: any[]) {
                 const org = JSON.stringify(_Reflect.apply(target, thisArg, args));
                 const dest = replaceIps(org);
-
                 // console.log('!!! h00k RTCIceCandidate_prototype_toJSON_value:' + org + ' dest:' + dest);
-
                 return JSON.parse(dest);
             },
         });
@@ -91,9 +84,7 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
             apply(target: any, thisArg: any, args: any[]) {
                 const org = _Reflect.apply(target, thisArg, args);
                 const dest = replaceIps(org);
-
                 // console.log('!!! h00k RTCSessionDescription_prototype_sdp_get:' + org + ' dest:' + dest);
-
                 return dest;
             },
         });
@@ -102,14 +93,11 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
             apply(target: any, thisArg: any, args: any[]) {
                 const org = JSON.stringify(_Reflect.apply(target, thisArg, args));
                 const dest = replaceIps(org);
-
                 // console.log('!!! h00k RTCSessionDescription_prototype_toJSON_value:' + org + ' dest:' + dest);
-
                 return JSON.parse(dest);
             },
         });
     };
-
 }
 
 export default (pluginConfig?: Partial<PluginOptions>) => new Plugin(pluginConfig)

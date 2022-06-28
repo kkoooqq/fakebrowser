@@ -31,27 +31,16 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
         // TODO: If it is a charging state, the user's power should keep increasing to a certain time full.
         // It also needs to simulate the situation that the user has unplugged the power.
         if ('undefined' != typeof BatteryManager) {
-            utils.replaceGetterWithProxy(
-                BatteryManager.prototype,
-                'charging',
+            utils.replaceGetterWithProxy(BatteryManager.prototype, 'charging',
                 utils.makeHandler().getterValue(fakeBattery.charging),
             );
-
-            utils.replaceGetterWithProxy(
-                BatteryManager.prototype,
-                'chargingTime',
+            utils.replaceGetterWithProxy(BatteryManager.prototype, 'chargingTime',
                 utils.makeHandler().getterValue(!fakeBattery.chargingTime ? Infinity : fakeBattery.chargingTime),
             );
-
-            utils.replaceGetterWithProxy(
-                BatteryManager.prototype,
-                'dischargingTime',
+            utils.replaceGetterWithProxy(BatteryManager.prototype, 'dischargingTime',
                 utils.makeHandler().getterValue(!fakeBattery.dischargingTime ? Infinity : fakeBattery.dischargingTime),
             );
-
-            utils.replaceGetterWithProxy(
-                BatteryManager.prototype,
-                'level',
+            utils.replaceGetterWithProxy(BatteryManager.prototype, 'level',
                 utils.makeHandler().getterValue(fakeBattery.level),
             );
         }

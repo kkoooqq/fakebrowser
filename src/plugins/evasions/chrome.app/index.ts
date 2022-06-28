@@ -50,23 +50,19 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
 
         // There's a some static data in that property which doesn't seem to change,
         // we should periodically check for updates: `JSON.stringify(window.app, null, 2)`
-        const STATIC_DATA = JSON.parse(
-            `
-{
-  "isInstalled": false,
-  "InstallState": {
-    "DISABLED": "disabled",
-    "INSTALLED": "installed",
-    "NOT_INSTALLED": "not_installed"
-  },
-  "RunningState": {
-    "CANNOT_RUN": "cannot_run",
-    "READY_TO_RUN": "ready_to_run",
-    "RUNNING": "running"
-  }
-}
-        `.trim(),
-        );
+        const STATIC_DATA = {
+            isInstalled: false,
+            InstallState: {
+                DISABLED: "disabled",
+                INSTALLED: "installed",
+                NOT_INSTALLED: "not_installed"
+            },
+            RunningState: {
+                CANNOT_RUN: "cannot_run",
+                READY_TO_RUN: "ready_to_run",
+                RUNNING: "running"
+            }
+        };
 
         (window.chrome as any).app = {
             ...STATIC_DATA,
@@ -94,7 +90,6 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
                 return 'cannot_run';
             },
         };
-
         utils.patchToStringNested((window.chrome as any).app);
     };
 }

@@ -1,6 +1,6 @@
 import { FakeDeviceDescriptor } from 'core/DeviceDescriptor';
 import { BrowserEventOptions, PuppeteerLaunchOption } from 'puppeteer-extra';
-import { PuppeteerBrowser, PuppeteerCDPSession, PuppeteerExtraPlugin, PuppeteerPage } from 'puppeteer-extra-plugin';
+import { PluginDependencies, PuppeteerBrowser, PuppeteerCDPSession, PuppeteerExtraPlugin, PuppeteerPage } from 'puppeteer-extra-plugin';
 import Utils from '../_utils/'
 import withUtils from '../_utils/withUtils';
 import withWorkerUtils from '../_utils/withWorkerUtils';
@@ -36,7 +36,7 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
     private _headless?: boolean | 'chrome' = false;
 
     constructor(opts?: Partial<PluginOptions>) {
-        super(opts);    
+        super(opts);
     }
 
     async onBrowser(browser: PuppeteerBrowser, opts: BrowserEventOptions): Promise<void> {
@@ -89,7 +89,6 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
         // Source in C++: https://source.chromium.org/chromium/chromium/src/+/master:components/embedder_support/user_agent_utils.cc;l=55-100
         const _getBrands = (): { brand: string; version: string; }[] => {
             const seed = uaVersion.split('.')[0]; // the major version number of Chrome
-
             const order = [
                 [0, 1, 2],
                 [0, 2, 1],
@@ -100,9 +99,8 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
             ][Number(seed) % 6];
             const escapedChars = [' ', ' ', ';'];
 
-            const greaseyBrand = `${escapedChars[order[0]]}Not${
-                escapedChars[order[1]]
-            }A${escapedChars[order[2]]}Brand`;
+            const greaseyBrand = `${escapedChars[order[0]]}Not${escapedChars[order[1]]
+                }A${escapedChars[order[2]]}Brand`;
 
             const greasedBrandVersionList = [];
             greasedBrandVersionList[order[0]] = {
@@ -140,8 +138,7 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
             const m = ua.match(/Android.*?;\s([^)]+)/);
             if (m) return m[1]
             return '';
-          }
-      
+        }
 
         const _getMobile = () => ua.includes('Android');
 
@@ -159,14 +156,12 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
                 mobile: _getMobile(),
             },
         };
-
         // In case of headless, override the acceptLanguage in CDP.
         // This is not preferred, as it messed up the header order.
         // On headful, we set the user preference language setting instead.
         if (this._headless) {
             override.acceptLanguage = opts.fakeDD.acceptLanguage || 'en-US,en';
         }
-
         this.debug('onPageCreated - Will set these user agent options', {
             override,
             opts: this.opts,
@@ -175,11 +170,11 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
         return override;
     };
 
-    get name() {
+    get name(): 'evasions/user-agent-override' {
         return 'evasions/user-agent-override';
     }
 
-    get dependencies() {
+    get dependencies(): PluginDependencies {
         return new Set(['user-preferences']);
     }
 
@@ -198,10 +193,10 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
 
 
         const client: PuppeteerCDPSession | undefined =
-        typeof page._client === 'function' ? page._client() : page._client
-  
+            typeof page._client === 'function' ? page._client() : page._client
+
         if (!client) {
-            throw Error ('Failed to acess CDPSession, with the current pptr version.')
+            throw Error('Failed to acess CDPSession, with the current pptr version.')
         }
         try {
             client.send('Network.setUserAgentOverride', override)
@@ -227,13 +222,11 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
                     return JSON.parse(JSON.stringify(override.userAgentMetadata.brands));
                 },
             });
-
             utils.replaceGetterWithProxy(NavigatorUAData.prototype, 'platform', {
                 apply() {
                     return override.userAgentMetadata.platform;
                 },
             });
-
             utils.replaceWithProxy(NavigatorUAData.prototype, 'getHighEntropyValues', {
                 apply(target, thisArg, args) {
                     const result: any = {
@@ -250,11 +243,9 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
                             }
                         }
                     }
-
                     return Promise.resolve(JSON.parse(JSON.stringify(result)));
                 },
             });
-
             // noinspection JSUnresolvedVariable
             utils.replaceWithProxy(NavigatorUAData.prototype, 'toJSON', {
                 apply() {
@@ -262,7 +253,6 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
                         brands: override.userAgentMetadata.brands,
                         mobile: override.userAgentMetadata.mobile,
                     };
-
                     return Promise.resolve(JSON.parse(JSON.stringify(result)));
                 },
             });
@@ -284,7 +274,7 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
             {
                 name: 'userPreferences',
                 value: {
-                    intl: {accept_languages: this.opts.locale || 'en-US,en'},
+                    intl: { accept_languages: this.opts.locale || 'en-US,en' },
                 },
             },
         ];

@@ -62,7 +62,6 @@ export const mainFunction = (utils: typeof Utils, fakeDD: Pick<FakeDeviceDescrip
                         } else {
                             result = undefined; // prevent unregisted value to pass throw
                         }
-
                         break;
                 }
                 console.log(`${msg} remaped as "${result}"`)
@@ -131,10 +130,7 @@ export const mainFunction = (utils: typeof Utils, fakeDD: Pick<FakeDeviceDescrip
     utils.replaceGetterWithProxy(WebGLShaderPrecisionFormat.prototype, 'precision', {
         apply(target, thisArg, args) {
             _Reflect.apply(target, thisArg, args);
-
-            const r = shaderPrecisionFormats.find(
-                e => e.shaderPrecisionFormat === thisArg,
-            );
+            const r = shaderPrecisionFormats.find(e => e.shaderPrecisionFormat === thisArg);
 
             // webglPropName
             // shaderType
@@ -165,11 +161,7 @@ export const mainFunction = (utils: typeof Utils, fakeDD: Pick<FakeDeviceDescrip
     utils.replaceGetterWithProxy(WebGLShaderPrecisionFormat.prototype, 'rangeMin', {
         apply(target, thisArg, args) {
             _Reflect.apply(target, thisArg, args);
-
-            const r = shaderPrecisionFormats.find(
-                e => e.shaderPrecisionFormat === thisArg,
-            );
-
+            const r = shaderPrecisionFormats.find(e => e.shaderPrecisionFormat === thisArg);
             const {
                 webglPropName,
                 shaderType,
@@ -178,12 +170,10 @@ export const mainFunction = (utils: typeof Utils, fakeDD: Pick<FakeDeviceDescrip
                 // rangeMax,
                 // precision,
             } = r!;
-
             const fake_r = fakeDD[webglPropName].shaderPrecisionFormats.find(
                 e => e.shaderType === shaderType
                     && e.precisionType === precisionType,
             );
-
             const result = fake_r ? fake_r.r.rangeMin : rangeMin;
             return result;
         },
@@ -193,11 +183,7 @@ export const mainFunction = (utils: typeof Utils, fakeDD: Pick<FakeDeviceDescrip
     utils.replaceGetterWithProxy(WebGLShaderPrecisionFormat.prototype, 'rangeMax', {
         apply(target, thisArg, args) {
             _Reflect.apply(target, thisArg, args);
-
-            const r = shaderPrecisionFormats.find(
-                e => e.shaderPrecisionFormat === thisArg,
-            );
-
+            const r = shaderPrecisionFormats.find(e => e.shaderPrecisionFormat === thisArg);
             const {
                 webglPropName,
                 shaderType,
@@ -206,12 +192,10 @@ export const mainFunction = (utils: typeof Utils, fakeDD: Pick<FakeDeviceDescrip
                 rangeMax,
                 // precision,
             } = r!;
-
             const fake_r = fakeDD[webglPropName].shaderPrecisionFormats.find(
                 e => e.shaderType === shaderType
                     && e.precisionType === precisionType,
             );
-
             const result = fake_r ? fake_r.r.rangeMax : rangeMax;
             return result;
         },

@@ -25,22 +25,17 @@ interface InternalPluginOption {
 
 // https://source.chromium.org/chromium/chromium/src/+/master:third_party/blink/renderer/modules/permissions/permission_descriptor.idl
 export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
-    constructor(opts = {}) {
+    constructor(opts?: Partial<PluginOptions>) {
         super(opts);
     }
 
-    get name() {
+    get name(): 'evasions/navigator.permissions' {
         return 'evasions/navigator.permissions';
     }
 
     /* global Notification Permissions PermissionStatus */
     async onPageCreated(page: PuppeteerPage) {
-        // "permissions": Record<string, {
-        //     "state"?: string,
-        //     "exType"?: string,
-        //     "msg"?: string,
-        // }>
-
+        // permissions: Record<string, { state?: string, exType?: string, msg?: string,}>
         await withUtils(this, page).evaluateOnNewDocument(
             this.mainFunction,
             {
@@ -93,28 +88,23 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
                     },
                 });
             }
-
             // We need to handle exceptions
             utils.replaceWithProxy(Permissions.prototype, 'query', {
                 apply(target, thisArg, args) {
                     const param = (args || [])[0];
                     const paramName = param && param.name;
-
                     return new utils.cache.Promise((resolve, reject) => {
                         const permission = fakePermissions[paramName];
-
                         if (permission) {
                             let exType = permission.exType;
                             if (exType) {
                                 if (!(globalThis as any)[exType]) {
                                     exType = 'Error';
                                 }
-
                                 return reject(
                                     utils.patchError(new (globalThis as any)[exType](permission.msg), 'apply'),
                                 );
                             }
-
                             let state = permission.state;
                             if (state) {
                                 return resolve(_Object.setPrototypeOf({

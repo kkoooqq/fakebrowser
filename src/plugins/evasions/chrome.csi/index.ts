@@ -46,19 +46,15 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
                 value: {}, // We'll extend that later
             });
         }
-
         // That means we're running headful and don't need to mock anything
         if ('csi' in window.chrome) {
             return; // Nothing to do here
         }
-
         // Check that the Navigation Timing API v1 is available, we need that
         if (!window.performance || !window.performance.timing) {
             return;
         }
-
         const {timing} = window.performance;
-
         (window.chrome as any).csi = function () {
             return {
                 onloadT: timing.domContentLoadedEventEnd,
@@ -67,10 +63,8 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
                 tran: 15, // Transition type or something
             };
         };
-
         utils.patchToString((window as any).chrome.csi);
     };
-
 }
 
 export default (pluginConfig?: Partial<PluginOptions>) => new Plugin(pluginConfig)

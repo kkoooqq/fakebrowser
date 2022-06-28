@@ -73,7 +73,6 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
     mainFunction = (utils: typeof Utils, canvasSalt: number[]) => {
         const _Object = utils.cache.Object;
         const _Reflect = utils.cache.Reflect;
-
         // Define the following Context operations we need to add noise:
         const kNoiseOpers = [
             'createLinearGradient',
@@ -89,11 +88,9 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
             'quadraticCurveTo',
             'rotate',
         ];
-
         // Ready to hook
         let _OffscreenCanvas_prototype_getContext: OmitThisParameter<OffscreenCanvas["getContext"]> | null = null;
         let _HTMLCanvasElement_prototype_getContext: OmitThisParameter<HTMLCanvasElement["getContext"]> | null = null;
-
         let _WebGLRenderingContext_prototype_readPixels: OmitThisParameter<WebGLRenderingContext["readPixels"]> | null = null;
         // let _WebGLRenderingContext_prototype_readPixels: ((x: GLint, y: GLint, width: GLsizei, height: GLsizei, format: GLenum, type: GLenum, pixels: ArrayBufferView | null) => void) | null = null;
         // 
@@ -102,7 +99,6 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
         // OmitThisParameter
         let _OffscreenCanvasRenderingContext2D_prototype_getImageData: OmitThisParameter<OffscreenCanvasRenderingContext2D['getImageData']> | null = null;
         let _CanvasRenderingContext2D_prototype_getImageData: OmitThisParameter<CanvasRenderingContext2D["getImageData"]> | null = null;
-
         // The HTMLCanvas in the page and the OffscreenCanvas in the worker can be processed at the same time
         const classes: Array<{
             _Canvas: any;
@@ -121,7 +117,6 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
             _OffscreenCanvas_prototype_getContext = OffscreenCanvas.prototype.getContext;
             _OffscreenCanvasRenderingContext2D_prototype_getImageData = OffscreenCanvasRenderingContext2D.prototype.getImageData;
         }
-
         if ('undefined' !== typeof HTMLCanvasElement) {
             classes.push({
                 _Canvas: HTMLCanvasElement,
@@ -133,15 +128,12 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
             _HTMLCanvasElement_prototype_getContext = HTMLCanvasElement.prototype.getContext;
             _CanvasRenderingContext2D_prototype_getImageData = CanvasRenderingContext2D.prototype.getImageData;
         }
-
         if ('undefined' !== typeof WebGLRenderingContext) {
             _WebGLRenderingContext_prototype_readPixels = WebGLRenderingContext.prototype.readPixels;
         }
-
         if ('undefined' !== typeof WebGL2RenderingContext) {
             _WebGL2RenderingContext_prototype_readPixels = WebGL2RenderingContext.prototype.readPixels;
         }
-
         /**
          * Get the image data of the context
          * @param context
@@ -150,7 +142,6 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
         const getContextImageUint8Data = (context: any) => {
             let result = null;
             const contextPrototype = _Object.getPrototypeOf(context);
-
             if (
                 'undefined' !== typeof CanvasRenderingContext2D
                 && contextPrototype === CanvasRenderingContext2D.prototype
@@ -177,7 +168,6 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
             ) {
                 // WebGLRenderingContext
                 result = new Uint8ClampedArray(context.drawingBufferWidth * context.drawingBufferHeight * 4);
-
                 _WebGLRenderingContext_prototype_readPixels!.call(
                     context,
                     0,
@@ -193,7 +183,6 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
             ) {
                 // WebGL2RenderingContext
                 result = new Uint8ClampedArray(context.drawingBufferWidth * context.drawingBufferHeight * 4);
-
                 _WebGL2RenderingContext_prototype_readPixels!.call(
                     context,
                     0,
@@ -205,10 +194,8 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
                     result,
                     0); // dstOffset
             }
-
             return result;
         };
-
         // noinspection JSUnusedLocalSymbols
         for (const {
             _Canvas,
@@ -222,7 +209,6 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
                     // noinspection JSUnusedLocalSymbols
                     const [contextId/*, options*/] = args;
                     const context = _Reflect.apply(target, thisArg, args);
-
                     // Whenever a program calls getContext, we cache the context and record the program's operations on the context.
                     utils.variables.renderingContextWithOperators.push({
                         canvas: thisArg,
@@ -230,9 +216,7 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
                         contextId,
                         operators: {},
                     });
-
                     // console.log('!!! h00k getContext context:' + (utils.variables.renderingContextWithOperators.length - 1) + ' args:' + Array.from(args).join('|'));
-
                     return context;
                 },
             });
@@ -257,14 +241,11 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
                     context: originalContext,
                     contextIndex,
                 } = utils.findRenderingContextIndex(canvas);
-
                 if (contextIndex < 0) {
                     return canvas;
                 }
-
                 // if there is a operator that needs to add noise
                 const context = utils.variables.renderingContextWithOperators[contextIndex];
-
                 // If the context is webgl, or if it is a 2d canvas and a specific draw function is called, we need to add noise
                 if (!(
                     (context.contextId === 'webgl' || context.contextId === 'experimental-webgl')
@@ -273,39 +254,30 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
                 )) {
                     return canvas;
                 }
-
                 // console.log('!!! h00k toDataURL toBlob getImageData context:' + contextIndex + JSON.stringify({
                 //     contextId: context.contextId,
                 //     context: context.operators,
                 // }) + ' noise !');
-
                 // Create a new canvas
                 let canvasWithNoise =
                     _Object.getPrototypeOf(canvas) === (('undefined' !== typeof OffscreenCanvas) && OffscreenCanvas.prototype)
                         ? new OffscreenCanvas(canvas.width, canvas.height)
                         : document.createElement('canvas');
-
                 const canvasWidth = canvas.width;
                 const canvasHeight = canvas.height;
-
                 canvasWithNoise.width = canvasWidth;
                 canvasWithNoise.height = canvasHeight;
-
                 let newContext =
                     _Object.getPrototypeOf(canvas) === (('undefined' !== typeof OffscreenCanvas) && OffscreenCanvas.prototype)
                         ? _OffscreenCanvas_prototype_getContext!.call(canvasWithNoise as OffscreenCanvas, '2d' as any)
                         : _HTMLCanvasElement_prototype_getContext!.call(canvasWithNoise as HTMLCanvasElement, '2d');
-
                 // Get the original ImageData
                 const imageUint8DataOriginal = getContextImageUint8Data(originalContext);
                 const imageUint8Data = Uint8ClampedArray.from(imageUint8DataOriginal!);
-
                 let saltIndex = 0;
                 for (let y = 0; y < canvasHeight - 1; y += 2) {
                     for (let x = 0; x < canvasWidth - 1; x += 2) {
                         const pos = y * canvasWidth + x;
-
-                        //
                         // Top left,
                         // top right,
                         // bottom left,
@@ -317,12 +289,10 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
                         const
                             p10 = imageUint8DataOriginal![pos + canvasWidth],
                             p11 = imageUint8DataOriginal![pos + canvasWidth + 1];
-
                         // The surrounding 4 pixels are not the same color before adding the noise.
                         if (p00 !== p01 || p00 !== p10 || p00 !== p11) {
                             const salt = canvasSalt[saltIndex];
                             imageUint8Data[pos] += salt;
-
                             ++saltIndex;
                             if (saltIndex >= canvasSalt.length) {
                                 saltIndex = 0;
@@ -339,14 +309,11 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
             utils.replaceWithProxy(_Canvas.prototype, 'toDataURL', {
                 apply(target: any, thisArg, args) {
                     let canvas = thisArg;
-
                     // noinspection JSUnusedLocalSymbols
                     const {/*context, */contextIndex} = utils.findRenderingContextIndex(canvas);
-
                     if (contextIndex >= 0) {
                         canvas = getNoisifyCanvas(thisArg);
                     }
-
                     return _Reflect.apply(target, canvas, args);
                 },
             });
@@ -355,16 +322,13 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
                 apply(target: any, thisArg, args) {
                     let canvas = thisArg;
                     const {contextIndex} = utils.findRenderingContextIndex(canvas);
-
                     if (contextIndex >= 0) {
                         canvas = getNoisifyCanvas(thisArg);
                     }
-
                     // console.log('!!! h00k context:' + contextIndex + (context ? JSON.stringify({
                     //     contextId: context.contextId,
                     //     context: context.operators,
                     // }) : '') + ' canvas toBlob args:' + Array.from(args).join('|'));
-
                     return _Reflect.apply(target, canvas, args);
                 },
             });
@@ -373,16 +337,13 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
                 apply(target: any, thisArg, args) {
                     let canvas = thisArg;
                     const {contextIndex} = utils.findRenderingContextIndex(canvas);
-
                     if (contextIndex >= 0) {
                         canvas = getNoisifyCanvas(thisArg);
                     }
-
                     // console.log('!!! h00k context:' + contextIndex + (context ? JSON.stringify({
                     //     contextId: context.contextId,
                     //     context: context.operators,
                     // }) : '') + ' canvas convertToBlob args:' + Array.from(args).join('|'));
-
                     return _Reflect.apply(target, canvas, args);
                 },
             });
@@ -391,18 +352,15 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
                 apply(target: any, thisArg, args) {
                     let context = thisArg;
                     const contextIndex = utils.variables.renderingContextWithOperators.findIndex(e => e.context === context);
-
                     if (contextIndex >= 0) {
                         // noinspection JSPotentiallyInvalidUsageOfClassThis
                         const newCanvas = getNoisifyCanvas(thisArg.canvas);
                         context = _Canvas_prototype_getContext.call(newCanvas, '2d');
                     }
-
                     // console.log('!!! h00k context:' + contextIndex + (context ? JSON.stringify({
                     //     contextId: context.contextId,
                     //     context: context.operators,
                     // }) : '') + ' canvas getImageData args:' + Array.from(args).join('|'));
-
                     return _Reflect.apply(target, context, args);
                 },
             });

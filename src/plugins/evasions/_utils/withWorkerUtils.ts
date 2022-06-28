@@ -10,9 +10,7 @@ export const withWorkerUtils = (plugin: PuppeteerExtraPlugin, jsContent: string)
     mainFunction(utils, ${args ? args.map(e => JSON.stringify(e)).join(', ') : 'undefined'});            
 })(); 
 `;
-
-        const result = `${thisJsContent} \n ${jsContent}`;
-        return result;
+        return `${thisJsContent} \n ${jsContent}`;
     },
 });
 

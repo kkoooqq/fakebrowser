@@ -10,7 +10,6 @@ interface NtEntryFallback {
     type: string,
 };
 
-
 /**
  * Mock the `chrome.loadTimes` function if not available (e.g. when running headless).
  * It's a deprecated (but unfortunately still existing) chrome specific API to fetch browser timings and connection info.
@@ -164,7 +163,6 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
         };
         utils.patchToString((window.chrome as any).loadTimes);
     };
-
 }
 
 export default (pluginConfig?: Partial<PluginOptions>) => new Plugin(pluginConfig)

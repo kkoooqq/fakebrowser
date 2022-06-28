@@ -16,7 +16,7 @@ export interface PluginOptions {
         super(opts);
     }
 
-    get name() {
+    get name(): 'evasions/iframe.contentWindow' {
         return 'evasions/iframe.contentWindow';
     }
 
@@ -88,12 +88,10 @@ export interface PluginOptions {
             // Handles iframe element creation, augments `srcdoc` property so we can intercept further
             const handleIframeCreation = (target: any, thisArg: any, args: any) => {
                 const iframe = target.apply(thisArg, args);
-
                 // We need to keep the originals around
                 const _iframe = iframe;
                 const _srcdoc = _iframe.srcdoc;
                 // const _src = _iframe.src;
-
                 // Add hook for the srcdoc property
                 // We need to be very surgical here to not break other iframes by accident
                 _Object.defineProperty(iframe, 'srcdoc', {
@@ -103,7 +101,6 @@ export interface PluginOptions {
                     },
                     set: function (newValue) {
                         addContentWindowProxy(this);
-
                         // Reset property, the hook is only needed once
                         _Object.defineProperty(iframe, 'srcdoc', {
                             configurable: false,
@@ -121,10 +118,7 @@ export interface PluginOptions {
             // Adds a hook to intercept iframe creation events
             const addIframeCreationSniffer = () => {
                 // All this just due to iframes with srcdoc bug
-                utils.replaceWithProxy(
-                    document,
-                    'createElement',
-                    {
+                utils.replaceWithProxy(document, 'createElement', {
                         // Make toString() native
                         get(target, key) {
                             return _Reflect.get(target, key);

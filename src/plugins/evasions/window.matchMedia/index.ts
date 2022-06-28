@@ -18,7 +18,6 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
         await withUtils(this, page).evaluateOnNewDocument((utils: typeof Utils) => {
             // const _Object = utils.cache.Object;
             const _Reflect = utils.cache.Reflect;
-
             utils.replaceWithProxy(window, 'matchMedia', {
                 apply(target: any, thisArg, args) {
                     // console.log(`hook window matchMedia ${args.join('|')}`);
