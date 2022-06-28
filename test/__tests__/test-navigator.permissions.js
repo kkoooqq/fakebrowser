@@ -3,7 +3,9 @@ const timeout = 3000000;
 describe(
     '/ (navigator.permissions)',
     () => {
-        let page;
+        /**
+         * @type {import("puppeteer-extra-plugin/dist/puppeteer").Page}
+         */
         beforeAll(async () => {
             page = await global.vanillaBrowser.newPage();
             await page.goto('https://google.com/');

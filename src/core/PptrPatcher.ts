@@ -13,7 +13,7 @@ import { DriverParameters } from './Driver'
 import { FakeBrowser } from './FakeBrowser'
 import { FakeDeviceDescriptor } from './DeviceDescriptor'
 
-interface PptrExtraEvasionOpts {
+export interface PptrExtraEvasionOpts {
     browserUUID: string,
     internalHttpServerPort: number,
     proxyExportIP?: string,

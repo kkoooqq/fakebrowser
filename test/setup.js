@@ -5,6 +5,9 @@ const mkdirp = require('mkdirp');
 const os = require('os');
 const path = require('path');
 
+const Koa = require('koa');
+const serve = require('koa-static');
+
 const DIR = path.join(os.tmpdir(), 'testFakeBrowserUserData');
 
 module.exports = async function () {
@@ -25,6 +28,13 @@ module.exports = async function () {
 
     const fakeBrowser = await builder.launch();
     global.fakeBrowser = fakeBrowser;
+
+    /** local Webserver */
+    const root = path.join(__dirname, 'static');
+    const app = new Koa();
+    app.use(serve(root, {}));
+    const server = await new Promise((accept) => {const srv = app.listen(3000, () => accept(srv))});
+    global.server = server;
 
     // save context file
     mkdirp.sync(DIR);

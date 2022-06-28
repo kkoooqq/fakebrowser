@@ -15,9 +15,8 @@
     "test": "jest --force-exit --detectOpenHandles --config=./jest.config.js",
     "build": "npm run tsc",
     "tsc": "npm run clean-dist && npm run tsc-cjs && npm run tsc-esm",
-    "tsc-cjs": "tsc -b src/tsconfig.cjs.json",
-    "tsc-esm": "tsc -b src/tsconfig.esm.json",
-    "postbuild": "cpy src/plugins/evasions/_utils/index.js dist/cjs/plugins/evasions/_utils/ && cpy src/plugins/evasions/_utils/index.js dist/esm/plugins/evasions/_utils/"
+    "tsc-cjs": "tsc -b src/tsconfig.cjs.json && cpy src/plugins/evasions/_utils/index.js dist/cjs/plugins/evasions/_utils/",
+    "tsc-esm": "tsc -b src/tsconfig.esm.json && cpy src/plugins/evasions/_utils/index.js dist/esm/plugins/evasions/_utils/"
   },
   "keywords": [
     "bot",
@@ -69,10 +68,12 @@
     "cpy-cli": "^3.1.1",
     "cross-env": "^7.0.3",
     "jest": "^27.3.1",
+    "jest-environment-node": "27.3.1",
     "koa": "^2.13.4",
     "koa-body": "^5.0.0",
     "koa-static": "^5.0.0",
     "mkdirp": "^1.0.4",
+    "npm": "^8.13.1",
     "puppeteer": "^11.0.0",
     "rimraf": "^3.0.2",
     "ts-node": "^10.4.0",

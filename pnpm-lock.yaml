@@ -13,10 +13,12 @@ specifiers:
   font-list: '*'
   fs-extra: '*'
   jest: ^27.3.1
+  jest-environment-node: 27.3.1
   koa: ^2.13.4
   koa-body: ^5.0.0
   koa-static: ^5.0.0
   mkdirp: ^1.0.4
+  npm: ^8.13.1
   pidtree: '*'
   puppeteer: ^11.0.0
   puppeteer-extra: link:..\puppeteer-extra-ts\packages\puppeteer-extra
@@ -47,10 +49,12 @@ devDependencies:
   cpy-cli: 3.1.1
   cross-env: 7.0.3
   jest: 27.5.1_ts-node@10.8.1
+  jest-environment-node: 27.3.1
   koa: 2.13.4
   koa-body: 5.0.0
   koa-static: 5.0.0
   mkdirp: 1.0.4
+  npm: 8.13.1
   puppeteer: 11.0.0
   rimraf: 3.0.2
   ts-node: 10.8.1_f5eqjuxkorpjvs4z7mviievvou
@@ -2740,6 +2744,18 @@ packages:
       - utf-8-validate
     dev: true
 
+  /jest-environment-node/27.3.1:
+    resolution: {integrity: sha512-T89F/FgkE8waqrTSA7/ydMkcc52uYPgZZ6q8OaZgyiZkJb5QNNCF6oPZjH9IfPFfcc9uBWh1574N0kY0pSvTXw==}
+    engines: {node: ^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0}
+    dependencies:
+      '@jest/environment': 27.5.1
+      '@jest/fake-timers': 27.5.1
+      '@jest/types': 27.5.1
+      '@types/node': 17.0.41
+      jest-mock: 27.5.1
+      jest-util: 27.5.1
+    dev: true
+
   /jest-environment-node/27.5.1:
     resolution: {integrity: sha512-Jt4ZUnxdOsTGwSRAfKEnE6BcwsSPNOijjwifq5sDFSA2kesnXTvNqKHYgM0hDq3549Uf/KzdXNYn4wMZJPlFLw==}
     engines: {node: ^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0}
@@ -3509,6 +3525,83 @@ packages:
     dependencies:
       path-key: 3.1.1
     dev: true
+
+  /npm/8.13.1:
+    resolution: {integrity: sha512-Di4hLSvlImxAslovZ8yRXOhwmd6hXzgRFjwfF4QuwuPT9RUvpLIZ5nubhrY34Pc3elqaU0iyBVWgGZ3jELFP8w==}
+    engines: {node: ^12.13.0 || ^14.15.0 || >=16}
+    hasBin: true
+    dev: true
+    bundledDependencies:
+      - '@isaacs/string-locale-compare'
+      - '@npmcli/arborist'
+      - '@npmcli/ci-detect'
+      - '@npmcli/config'
+      - '@npmcli/fs'
+      - '@npmcli/map-workspaces'
+      - '@npmcli/package-json'
+      - '@npmcli/run-script'
+      - abbrev
+      - archy
+      - cacache
+      - chalk
+      - chownr
+      - cli-columns
+      - cli-table3
+      - columnify
+      - fastest-levenshtein
+      - glob
+      - graceful-fs
+      - hosted-git-info
+      - ini
+      - init-package-json
+      - is-cidr
+      - json-parse-even-better-errors
+      - libnpmaccess
+      - libnpmdiff
+      - libnpmexec
+      - libnpmfund
+      - libnpmhook
+      - libnpmorg
+      - libnpmpack
+      - libnpmpublish
+      - libnpmsearch
+      - libnpmteam
+      - libnpmversion
+      - make-fetch-happen
+      - minipass
+      - minipass-pipeline
+      - mkdirp
+      - mkdirp-infer-owner
+      - ms
+      - node-gyp
+      - nopt
+      - npm-audit-report
+      - npm-install-checks
+      - npm-package-arg
+      - npm-pick-manifest
+      - npm-profile
+      - npm-registry-fetch
+      - npm-user-validate
+      - npmlog
+      - opener
+      - pacote
+      - parse-conflict-json
+      - proc-log
+      - qrcode-terminal
+      - read
+      - read-package-json
+      - read-package-json-fast
+      - readdir-scoped-modules
+      - rimraf
+      - semver
+      - ssri
+      - tar
+      - text-table
+      - tiny-relative-date
+      - treeverse
+      - validate-npm-package-name
+      - which
+      - write-file-atomic
 
   /nwsapi/2.2.0:
     resolution: {integrity: sha512-h2AatdwYH+JHiZpv7pt/gSX1XoRGb7L/qSIeuqA6GwYoF9w1vP1cw42TO0aI2pNyshRK5893hNSl+1//vHK7hQ==}

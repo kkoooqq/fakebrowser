@@ -2,11 +2,26 @@
 export declare const utils: {
     init: () => void;
     stringifyFns: (fnObj?: { [key: string]: Function | any }) => { [key: string]: string };
+    /**
+     * filed by _preloadEnv
+     */
+    env: {
+        isWorker: boolean;
+        isSharedWorker: boolean;
+        isServiceWorker: boolean;
+    },
+    /**
+     * filled by _preloadCache
+     */
     cache: {
-        nativeToStringStr: string;
+        nativeToStringStr: string; // `function toString() { [native code] }`
         Reflect: typeof Reflect;
         Promise: typeof Promise;
-        Object: typeof Object;
+        /**
+         * subset of: setPrototypeOf, getPrototypeOf, getOwnPropertyDescriptors, getOwnPropertyDescriptor, entries,
+         * fromEntries, defineProperty, defineProperties, getOwnPropertyNames, create, keys, values
+         */
+        Object: typeof Object;        
         Function: typeof Function;
         global: {
             FontFace: any;
@@ -17,11 +32,18 @@ export declare const utils: {
         OffscreenCanvas: any;
         HTMLCanvasElement: any;
         Descriptor: {
-            FontFace: any;
-            HTMLElement: any;
-            CSSStyleDeclaration: any;
-            Navigator: any;
-            WorkerNavigator: any;
+            window: { alert: ThisType<Window["alert"]> }
+            //Navigator: { prototype: { webdriver: ThisType<Navigator["webdriver"]> }};
+            Navigator: { prototype: { webdriver: any }};
+            // WorkerNavigator: { prototype: { webdriver: ThisType<WorkerNavigator["webdriver"]> }};
+            WorkerNavigator: { prototype: { webdriver: (...args: any[]) => any }};
+            
+            // HTMLElement: { prototype: { style: ThisType<HTMLElement["style"]> }};
+            HTMLElement: { prototype: { style: any }}; // FIXME
+            // CSSStyleDeclaration: { prototype: { setProperty: ThisType<CSSStyleDeclaration["setProperty"]> }};
+            CSSStyleDeclaration: { prototype: { setProperty: any }};
+            // FontFace: { prototype: { load: ThisType<FontFace["load"]> } };
+            FontFace: { prototype: { load: {value: any} } };
             WebGLShaderPrecisionFormat: {
                 prototype: {
                     rangeMin: {get: () => number},
@@ -31,6 +53,22 @@ export declare const utils: {
             };
         };
     };
+    /**
+     * initilized by _preloadGlobalVariables
+     */
+    variables: {
+        proxies: any[],
+        toStringPatchObjs: any[],
+        toStringRedirectObjs: Array<{proxyObj: Object, originalOb: Object}>,
+        renderingContextWithOperators: any[],
+        taskData: {[key: string]: any},
+    };
+    /**
+     * filled by _hookObjectPrototype
+     */
+    objHooked: boolean;
+
+    /** sanitize Error from selft activity */
     patchError: (err: Error, trap: string) => Error;
     makePseudoClass: (root: { [key: string]: any }, name: string, pseudoTarget: any, parentClass: any) => void;
 
@@ -126,7 +164,7 @@ export declare const utils: {
      *
      * @param {object} handler - The JS Proxy handler to wrap
      */
-    stripProxyFromErrors: (handler: any) => any;
+    stripProxyFromErrors: (handler: ProxyHandler<any>) => any;
 
     /**
      * Redirect toString requests from one object to another.
@@ -152,15 +190,27 @@ export declare const utils: {
     */
     findRenderingContextIndex: (canvas: any) => { context: any, contextIndex: number } | { context: null, contextIndex: number }
 
-    variables: {
-        proxies: any[],
-        toStringPatchObjs: any[],
-        toStringRedirectObjs: any[],
-        renderingContextWithOperators: any[],
-        taskData: any,
-    };
-
     isInt: (str: string) => boolean;
+
+
+    /**
+     * Replace the property of an object in a stealthy way.
+     *
+     * Note: You also want to work on the prototype of an object most often,
+     * as you'd otherwise leave traces (e.g. showing up in Object.getOwnPropertyNames(obj)).
+     *
+     * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty
+     *
+     * @example
+     * replaceProperty(WebGLRenderingContext.prototype, 'getParameter', { value: "alice" })
+     * // or
+     * replaceProperty(Object.getPrototypeOf(navigator), 'languages', { get: () => ['en-US', 'en'] })
+     *
+     * @param {object} obj - The object which has the property to replace
+     * @param {string | Symbol} propName - The property name to replace
+     * @param {object} descriptorOverrides - e.g. { value: "alice" }
+     */
+     replaceProperty: <PARENT extends { [key in FILED]: any }, FILED extends (string | symbol)> (obj: PARENT, propName: FILED, descriptorOverrides?: PropertyDescriptor) => PARENT;
 }
 
 export default utils;

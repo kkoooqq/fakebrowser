@@ -6,6 +6,10 @@ import withWorkerUtils from '../_utils/withWorkerUtils';
 export interface PluginOptions {
 }
 
+const mainFunction = (utils: typeof Utils) => {
+    utils.removeTempVariables();
+};
+
 export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
     constructor(opts?: Partial<PluginOptions>) {
         super(opts);
@@ -20,21 +24,12 @@ export class Plugin extends PuppeteerExtraPlugin<PluginOptions> {
     }
 
     async onPageCreated(page: PuppeteerPage) {
-        await withUtils(this, page).evaluateOnNewDocument(
-            this.mainFunction,
-        );
+        await withUtils(this, page).evaluateOnNewDocument(mainFunction);
     }
 
     onServiceWorkerContent(jsContent: any) {
-        return withWorkerUtils(this, jsContent).evaluate(
-            this.mainFunction,
-        );
+        return withWorkerUtils(this, jsContent).evaluate(mainFunction);
     }
-
-    mainFunction = (utils: typeof Utils) => {
-        utils.removeTempVariables();
-    };
-
 }
 
 export default (pluginConfig?: Partial<PluginOptions>) => new Plugin(pluginConfig)

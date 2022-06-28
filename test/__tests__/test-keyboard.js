@@ -3,6 +3,9 @@ const timeout = 30000;
 describe(
     '/ (properties.getter)',
     () => {
+        /**
+         * @type {import("puppeteer-extra-plugin/dist/puppeteer").Page}
+         */
         let page;
         beforeAll(async () => {
             page = await global.vanillaBrowser.newPage();

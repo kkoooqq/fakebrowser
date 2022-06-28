@@ -9,6 +9,6 @@ module.exports = async function () {
 
     // noinspection JSUnresolvedVariable
     await global.fakeBrowser.shutdown();
-
+    global.server.close();
     rimraf.sync(DIR);
 };

@@ -1,5 +1,4 @@
-// noinspection JSUnusedLocalSymbols,JSUnusedGlobalSymbols,JSUnresolvedVariable,JSNonASCIINames,NonAsciiCharacters
-
+// TODO make ɵɵɵɵ prefix dynamic at injection time
 /**
  * A set of shared utility functions specifically for the purpose of modifying native browser APIs without leaving traces.
  *
@@ -12,6 +11,15 @@
  *
  */
 const utils = {};
+
+utils.log = (text) => {
+    console.log(text)
+};
+
+utils.debug = (text) => {
+    debugger;
+    console.log(text)
+};
 
 utils.init = () => {
     utils._preloadCache();
@@ -98,16 +106,16 @@ utils._preloadCache = () => {
     const cacheDescriptors = (objPath, propertyKeys) => {
         // get obj from path
         const objPaths = objPath.split('.');
-        let _global = utils.cache.global;
+        let curssor = utils.cache.global;
         let descObj = utils.cache.Descriptor;
 
         for (const part of objPaths) {
-            if (_global) {
+            if (curssor) {
                 // noinspection JSUnresolvedFunction
-                if (!Object.hasOwn(_global, part)) {
-                    _global = undefined;
+                if (!Object.hasOwn(curssor, part)) {
+                    curssor = undefined;
                 } else {
-                    _global = _global[part];
+                    curssor = curssor[part];
                 }
             }
 
@@ -117,7 +125,7 @@ utils._preloadCache = () => {
         }
 
         for (const key of propertyKeys) {
-            descObj[key] = _global ? Object.getOwnPropertyDescriptor(_global, key) : undefined;
+            descObj[key] = curssor ? Object.getOwnPropertyDescriptor(curssor, key) : undefined;
         }
     };
 
@@ -268,7 +276,8 @@ utils.removeTempVariables = () => {
         Object.getOwnPropertyNames(
             OffscreenCanvas.prototype.constructor,
         ).filter(e => e.startsWith('__$'));
-
+    // should remove 4 variables
+    // utils.log(`${tmpVarNames.length} tmp variable unloaded from OffscreenCanvas.prototype.constructor`);
     tmpVarNames.forEach(e => {
         delete OffscreenCanvas.prototype.constructor[e];
     });
@@ -481,7 +490,6 @@ utils.stripProxyFromErrors = (handler = {}) => {
             if (_Object.getPrototypeOf(target) === _Object.getPrototypeOf(proto)) {
                 throw new TypeError('Cyclic __proto__ value');
             }
-
             return _Reflect.setPrototypeOf(target, proto);
         },
     };
@@ -633,9 +641,8 @@ utils.redirectToString = (proxyObj, originalObj) => {
  */
 utils.replaceWithProxy = (obj, propName, handler) => {
     const originalObj = obj[propName];
-    const _Reflect = utils.cache.Reflect;
-
     if (!originalObj) {
+        // utils.log(`replaceWithProxy Failed, no Prop ${propName} in ${obj}`);
         return false;
     }
 

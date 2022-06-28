@@ -115,3 +115,4 @@ lib
 .npmignore
 fakeBrowserUserData*/__fakebrowser_fakeDD.json
 script/*.json
+test/__tests__/*.png

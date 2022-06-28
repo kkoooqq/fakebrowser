@@ -4,7 +4,7 @@ import { PuppeteerPage } from 'puppeteer-extra-plugin';
 import utils from './'
 
 interface EvaluateArgs {
-    _utilsFns: { [key: string]: string };
+    _utilsFns: { [key: string]: string }; // Map of function name => string content of utils.js
     _mainFunction: string;
     _args: readonly Serializable[];
 }
@@ -12,7 +12,9 @@ interface EvaluateArgs {
 const fnc = (ctxt: EvaluateArgs) => {
     const { _utilsFns, _mainFunction, _args } = ctxt;
     // Add this point we cannot use our utililty functions as they're just strings, we need to materialize them first
-    const utils = Object.fromEntries(Object.entries(_utilsFns).map(([key, value]) => [key, eval(value as string)]));
+    const asArray = Object.entries(_utilsFns);
+    const evaluated = asArray.map(([key, value]) => [key, eval(value as string)]);
+    const utils = Object.fromEntries(evaluated);
     utils.init();
     return eval(_mainFunction)(utils, ..._args);
 }

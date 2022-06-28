@@ -63,6 +63,24 @@ export interface DeviceDescriptorMediaBattery {
     level: number;
 }
 
+export interface DeviceDescriptorPluginsMimeTypes {
+    type: string, // "application/pdf",
+    suffixes: string, //  "pdf",
+    description: string, //  "Portable Document Format",
+    __pluginName: string, //  "Chrome PDF Plugin"
+}
+
+export interface DeviceDescriptorPluginsPlugins {
+    name: string,
+    filename: string,
+    description: string,
+    __mimeTypes: string[],
+}
+
+export interface DeviceDescriptorPlugins {
+    mimeTypes: Array<DeviceDescriptorPluginsMimeTypes>,
+    plugins: Array<DeviceDescriptorPluginsPlugins>
+}
 /**
  * Source information for browser fingerprint.
  * Includes plugins, gpu, fonts, webgl, etc.
@@ -71,20 +89,7 @@ export interface DeviceDescriptorMediaBattery {
  * A: Use dumpDD.js to collect fingerprints.
  */
 export interface DeviceDescriptor {
-    plugins: {
-        mimeTypes: Array<{
-            type: string,
-            suffixes: string,
-            description: string,
-            __pluginName: string,
-        }>,
-        plugins: Array<{
-            name: string,
-            filename: string,
-            description: string,
-            __mimeTypes: string[],
-        }>
-    },
+    plugins: DeviceDescriptorPlugins,
     allFonts: Array<{
         name: string,
         exists: FontExistTypes,
