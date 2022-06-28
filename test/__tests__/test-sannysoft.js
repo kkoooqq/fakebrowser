@@ -32,13 +32,13 @@ describe(
             const fails = (await page.$$('.failed')).length
             const passed = (await page.$$('.passed')).length
             const screenshotPath = path.join(__dirname, `sannysoft.png`)
+            await page.screenshot({ path: screenshotPath, fullPage: true })
             // console.log({ fails, passed })
             // await page.waitForTimeout(25000)
             expect(fails).toBeLessThan(4);
             expect(passed).toBeGreaterThan(28);
             expect(userAgentResult).toContain('Mozilla');
             expect(webglRenderer).toContain('Xe Graphics Direct3D11');
-            await page.screenshot({ path: screenshotPath, fullPage: true })
             // console.log('done', screenshotPath)
         }, timeout);
     },

@@ -16,8 +16,36 @@ import { BrowserLauncher } from './BrowserLauncher'
 import { FakeBrowser, kDefaultWindowsDD } from './FakeBrowser'
 import { PuppeteerExtraPlugin } from 'puppeteer-extra'
 
-export class BrowserBuilder {
+export const ALL_EVASION = [
+    'chrome.app',
+    'chrome.csi',
+    'chrome.loadTimes',
+    'chrome.runtime',
+    'window.history.length',
+    'window.matchMedia',
+    'navigator.webdriver',
+    'sourceurl',
+    'navigator.plugins-native',
+    'webgl',
+    'mimeTypes',
+    'navigator.mediaDevices',
+    'bluetooth',
+    'navigator.permissions',
+    'navigator.batteryManager',
+    'webrtc',
+    'canvas.fingerprint',
+    'user-agent-override',
+    'iframe.contentWindow',
+    'iframe.src',
+    'properties.getter',
+    'font.fingerprint',
+    'emoji.fingerprint',
+    'window.speechSynthesis',
+    'workers',
+    'keyboard',
+] as const;
 
+export class BrowserBuilder {
     public readonly driverParams: DriverParameters
 
     constructor() {
@@ -25,34 +53,7 @@ export class BrowserBuilder {
             doNotHook: false,
             deviceDesc: kDefaultWindowsDD,
             userDataDir: '',
-            evasionPaths: [
-                'chrome.app',
-                'chrome.csi',
-                'chrome.loadTimes',
-                'chrome.runtime',
-                'window.history.length',
-                'window.matchMedia',
-                'navigator.webdriver',
-                'sourceurl',
-                'navigator.plugins-native',
-                'webgl',
-                'mimeTypes',
-                'navigator.mediaDevices',
-                'bluetooth',
-                'navigator.permissions',
-                'navigator.batteryManager',
-                'webrtc',
-                'canvas.fingerprint',
-                'user-agent-override',
-                'iframe.contentWindow',
-                'iframe.src',
-                'properties.getter',
-                'font.fingerprint',
-                'emoji.fingerprint',
-                'window.speechSynthesis',
-                'workers',
-                'keyboard',
-            ].map(e => path.resolve(__dirname, `../plugins/evasions/${e}`)),
+            evasionPaths: ALL_EVASION.map(e => path.resolve(__dirname, `../plugins/evasions/${e}`)),
             usePlugins: [],
         }
     }
@@ -71,57 +72,63 @@ export class BrowserBuilder {
         return result
     }
 
-    doNotHook(value: boolean) {
+    doNotHook(value: boolean): this {
         this.launchParams.doNotHook = value
         return this
     }
 
-    maxSurvivalTime(value: number) {
+    maxSurvivalTime(value: number): this {
         this.launchParams.maxSurvivalTime = value
         return this
     }
 
-    deviceDescriptor(value: DeviceDescriptor) {
+    deviceDescriptor(value: DeviceDescriptor): this {
         this.driverParams.deviceDesc = value
         return this
     }
 
-    displayUserActionLayer(value: boolean) {
+    displayUserActionLayer(value: boolean): this {
         this.driverParams.displayUserActionLayer = value
         return this
     }
 
-    userDataDir(value: string) {
+    userDataDir(value: string): this {
         this.driverParams.userDataDir = value
         return this
     }
 
-    log(value: boolean) {
+    log(value: boolean): this {
         this.driverParams.log = value
         return this
     }
 
-    proxy(value: ProxyServer) {
+    proxy(value: ProxyServer): this {
         this.driverParams.proxy = value
         return this
     }
 
-    vanillaLaunchOptions(value: VanillaLaunchOptions) {
+    vanillaLaunchOptions(value: VanillaLaunchOptions): this {
         this.launchParams.launchOptions = value
         return this
     }
 
-    vanillaConnectOptions(value: VanillaConnectOptions) {
+    vanillaConnectOptions(value: VanillaConnectOptions): this {
         this.connectParams.connectOptions = value
         return this
     }
 
-    evasionPaths(value: string[]) {
+    evasionPaths(value: string[]): this {
         this.driverParams.evasionPaths = value
         return this
     }
 
-    usePlugins(value: PuppeteerExtraPlugin[]) {
+    disableEvasion(evasion: typeof ALL_EVASION[number]): this {
+        this.driverParams.evasionPaths = this.driverParams.evasionPaths.filter(a => !a.endsWith(evasion));
+        return this
+    }
+
+
+    usePlugins(value: PuppeteerExtraPlugin[]): this {
         this.driverParams.usePlugins = value
         return this
     }
@@ -130,7 +137,6 @@ export class BrowserBuilder {
         if ('undefined' === typeof this.launchParams.maxSurvivalTime) {
             this.launchParams.maxSurvivalTime = FakeBrowser.globalConfig.defaultBrowserMaxSurvivalTime
         }
-
         const result = await BrowserLauncher.launch(this.launchParams)
         return result
     }

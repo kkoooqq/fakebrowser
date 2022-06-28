@@ -26,10 +26,10 @@ describe(
             // const fails = (await page.$$('.failed')).length
             const passed = (await page.$$('.passed')).length
             const screenshotPath = path.join(__dirname, `intoli.png`)
+            await page.screenshot({ path: screenshotPath, fullPage: true })
             // console.log({ fails, passed })
             // await page.waitForTimeout(25000)
             expect(passed).toBe(6);
-            await page.screenshot({ path: screenshotPath, fullPage: true })
             // console.log('done', screenshotPath)
         }, timeout);
     },

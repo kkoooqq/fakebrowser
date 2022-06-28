@@ -19,6 +19,7 @@ module.exports = async function () {
     const builder = new FakeBrowser.Builder()
         .deviceDescriptor(windowsDD)
         .displayUserActionLayer(true)
+        // .disableEvasion("navigator.plugins-native")
         .vanillaLaunchOptions({
             pipe: false,
             headless: true,
