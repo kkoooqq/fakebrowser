@@ -209,7 +209,6 @@ export const mainFunction = (utils: typeof Utils, opts: internalPluginOptions) =
             value: nativePlugin,
             writable: false,
         });
-
         // plugin name
         _Object.defineProperty(nativePluginArray, name, {
             configurable: true,
@@ -217,7 +216,6 @@ export const mainFunction = (utils: typeof Utils, opts: internalPluginOptions) =
             value: nativePlugin,
             writable: false,
         });
-
         ++pluginCounter;
     }
 
@@ -236,9 +234,7 @@ export const mainFunction = (utils: typeof Utils, opts: internalPluginOptions) =
         );
         if (!pluginCorr)
             throw Error(`can not find pluginCorrs named: ${__pluginName}`);
-
         const nativeMimeType = makeNativeMimeType(type, pluginCorr.nativePlugin);
-
         // index
         _Object.defineProperty(nativeMimeTypeArray, '' + mimeTypeCounter, {
             configurable: true,
@@ -246,7 +242,6 @@ export const mainFunction = (utils: typeof Utils, opts: internalPluginOptions) =
             value: nativeMimeType,
             writable: false,
         });
-
         // plugin name
         _Object.defineProperty(nativeMimeTypeArray, type, {
             configurable: true,
@@ -254,7 +249,6 @@ export const mainFunction = (utils: typeof Utils, opts: internalPluginOptions) =
             value: nativeMimeType,
             writable: false,
         });
-
         ++mimeTypeCounter;
     }
 
@@ -301,18 +295,14 @@ export const mainFunction = (utils: typeof Utils, opts: internalPluginOptions) =
                     throw utils.patchError(ex as Error, 'item');
                 }
             }
-
             if (thisArg === nativePluginArray) {
                 const index = isInteger(args[0]) ? Number(args[0]) % Math.pow(2, 32) : 0;
-
                 // never returns `undefined`
                 if (index < 0 || index >= pluginCorrs.length) {
                     return null;
                 }
-
                 return pluginCorrs[index].nativePlugin;
             }
-
             return orgResult;
         },
     });
@@ -332,11 +322,9 @@ export const mainFunction = (utils: typeof Utils, opts: internalPluginOptions) =
                     throw utils.patchError(ex as Error, 'length');
                 }
             }
-
             if (thisArg === nativePluginArray) {
                 return pluginsData.plugins.length;
             }
-
             return orgResult;
         },
     });
@@ -352,7 +340,6 @@ export const mainFunction = (utils: typeof Utils, opts: internalPluginOptions) =
                     throw utils.patchError(ex as Error, 'namedItem');
                 }
             }
-
             if (thisArg === nativePluginArray) {
                 const name = args[0];
                 const pluginCorr = pluginCorrs.find(e => e.pluginData.name === name);
@@ -360,10 +347,8 @@ export const mainFunction = (utils: typeof Utils, opts: internalPluginOptions) =
                 if (!pluginCorr) {
                     return null;
                 }
-
                 return pluginCorr.nativePlugin;
             }
-
             return orgResult;
         },
     });
@@ -379,11 +364,9 @@ export const mainFunction = (utils: typeof Utils, opts: internalPluginOptions) =
                     throw utils.patchError(ex as Error, 'refresh');
                 }
             }
-
             if (thisArg === nativePluginArray) {
                 return undefined;
             }
-
             return orgResult;
         },
     });
@@ -399,12 +382,10 @@ export const mainFunction = (utils: typeof Utils, opts: internalPluginOptions) =
                     throw utils.patchError(ex as Error, 'Symbol.iterator');
                 }
             }
-
             if (thisArg === nativePluginArray) {
                 const nativePluginObjs = pluginCorrs.map(e => e.nativePlugin);
                 return nativePluginObjs[Symbol.iterator].bind(nativePluginObjs)();
             }
-
             return orgResult;
         },
     });
@@ -420,16 +401,13 @@ export const mainFunction = (utils: typeof Utils, opts: internalPluginOptions) =
                     throw utils.patchError(ex as Error, 'item');
                 }
             }
-
             if (thisArg === nativeMimeTypeArray) {
                 const index = isInteger(args[0]) ? Number(args[0]) % Math.pow(2, 32) : 0;
                 if (index < 0 || index >= mimeTypeCorrs.length) {
                     return null;
                 }
-
                 return mimeTypeCorrs[index].nativeMimeType;
             }
-
             return orgResult;
         },
     });
@@ -445,11 +423,9 @@ export const mainFunction = (utils: typeof Utils, opts: internalPluginOptions) =
                     throw utils.patchError(ex as Error, 'length');
                 }
             }
-
             if (thisArg === nativeMimeTypeArray) {
                 return pluginsData.mimeTypes.length;
             }
-
             return orgResult;
         },
     });
@@ -465,7 +441,6 @@ export const mainFunction = (utils: typeof Utils, opts: internalPluginOptions) =
                     throw utils.patchError(ex as Error, 'namedItem');
                 }
             }
-
             if (thisArg === nativeMimeTypeArray) {
                 const type = args[0];
                 const mimeTypeCorr = mimeTypeCorrs.find(e => e.mimeTypeData.type === type);
@@ -473,10 +448,8 @@ export const mainFunction = (utils: typeof Utils, opts: internalPluginOptions) =
                 if (!mimeTypeCorr) {
                     return null;
                 }
-
                 return mimeTypeCorr.nativeMimeType;
             }
-
             return orgResult;
         },
     });
@@ -492,12 +465,10 @@ export const mainFunction = (utils: typeof Utils, opts: internalPluginOptions) =
                     throw utils.patchError(ex as Error, 'Symbol.iterator');
                 }
             }
-
             if (thisArg === nativeMimeTypeArray) {
                 const nativeMimeTypeObjs = mimeTypeCorrs.map(e => e.nativeMimeType);
                 return nativeMimeTypeObjs[Symbol.iterator].bind(nativeMimeTypeObjs)();
             }
-
             return orgResult;
         },
     });
@@ -514,12 +485,10 @@ export const mainFunction = (utils: typeof Utils, opts: internalPluginOptions) =
                     throw utils.patchError(ex as Error, 'description');
                 }
             }
-
             const pluginCorr = pluginCorrs.find(e => e.nativePlugin === thisArg);
             if (pluginCorr) {
                 return pluginCorr.pluginData.description;
             }
-
             return orgResult;
         },
     });
@@ -535,12 +504,10 @@ export const mainFunction = (utils: typeof Utils, opts: internalPluginOptions) =
                     throw utils.patchError(ex as Error, 'filename');
                 }
             }
-
             const pluginCorr = pluginCorrs.find(e => e.nativePlugin === thisArg);
             if (pluginCorr) {
                 return pluginCorr.pluginData.filename;
             }
-
             return orgResult;
         },
     });
@@ -557,20 +524,16 @@ export const mainFunction = (utils: typeof Utils, opts: internalPluginOptions) =
                     throw utils.patchError(ex as Error, 'item');
                 }
             }
-
             const pluginCorr = pluginCorrs.find(e => e.nativePlugin === thisArg);
             if (pluginCorr) {
                 const index = isInteger(args[0]) ? Number(args[0]) % Math.pow(2, 32) : 0;
                 if (index < 0 || index >= pluginCorr.pluginData.__mimeTypes.length) {
                     return null;
                 }
-
                 const mimeType = pluginCorr.pluginData.__mimeTypes[index];
                 const nativeMimeType = makeNativeMimeType(mimeType, thisArg);
-
                 return nativeMimeType;
             }
-
             return orgResult;
         },
     });
@@ -586,12 +549,10 @@ export const mainFunction = (utils: typeof Utils, opts: internalPluginOptions) =
                     throw utils.patchError(ex as Error, 'length');
                 }
             }
-
             const pluginCorr = pluginCorrs.find(e => e.nativePlugin === thisArg);
             if (pluginCorr) {
                 return pluginCorr.pluginData.__mimeTypes.length;
             }
-
             return orgResult;
         },
     });
@@ -607,12 +568,10 @@ export const mainFunction = (utils: typeof Utils, opts: internalPluginOptions) =
                     throw utils.patchError(ex as Error, 'name');
                 }
             }
-
             const pluginCorr = pluginCorrs.find(e => e.nativePlugin === thisArg);
             if (pluginCorr) {
                 return pluginCorr.pluginData.name;
             }
-
             return orgResult;
         },
     });
@@ -629,18 +588,15 @@ export const mainFunction = (utils: typeof Utils, opts: internalPluginOptions) =
                     throw utils.patchError(ex as Error, 'namedItem');
                 }
             }
-
             const pluginCorr = pluginCorrs.find(e => e.nativePlugin === thisArg);
             if (pluginCorr) {
                 const mimeType = args[0];
                 if (!pluginCorr.pluginData.__mimeTypes.includes(mimeType)) {
                     return null;
                 }
-
                 const nativeMimeType = makeNativeMimeType(mimeType, thisArg);
                 return nativeMimeType;
             }
-
             return orgResult;
         },
     });
@@ -657,7 +613,6 @@ export const mainFunction = (utils: typeof Utils, opts: internalPluginOptions) =
                     throw utils.patchError(ex as Error, 'Symbol.iterator');
                 }
             }
-
             const pluginCorr = pluginCorrs.find(e => e.nativePlugin === thisArg);
             if (pluginCorr) {
                 const nativeMimeTypes = [];
@@ -665,31 +620,8 @@ export const mainFunction = (utils: typeof Utils, opts: internalPluginOptions) =
                     const nativeMimeType = makeNativeMimeType(mimeType, thisArg);
                     nativeMimeTypes.push(nativeMimeType);
                 }
-
                 return nativeMimeTypes[Symbol.iterator].bind(nativeMimeTypes)();
             }
-
-            return orgResult;
-        },
-    });
-
-    // MimeType.prototype.description.get
-    utils.replaceGetterWithProxy(MimeType.prototype, 'description', {
-        apply(target: any, thisArg, args) {
-            let orgResult = null;
-            try {
-                orgResult = _Reflect.apply(target, thisArg, args);
-            } catch (ex) {
-                if (thisArg === MimeType.prototype) {
-                    throw utils.patchError(ex as Error, 'description');
-                }
-            }
-
-            const mimeTypeCorr = mimeTypeCorrs.find(e => e.nativeMimeType === thisArg);
-            if (mimeTypeCorr) {
-                return mimeTypeCorr.mimeTypeData.description;
-            }
-
             return orgResult;
         },
     });
@@ -705,12 +637,10 @@ export const mainFunction = (utils: typeof Utils, opts: internalPluginOptions) =
                     throw utils.patchError(ex as Error, 'enabledPlugin');
                 }
             }
-
             const mimeTypeCorr = mimeTypeCorrs.find(e => e.nativeMimeType === thisArg);
             if (mimeTypeCorr) {
                 return mimeTypeCorr.enabledPlugin;
             }
-
             return orgResult;
         },
     });
@@ -726,12 +656,10 @@ export const mainFunction = (utils: typeof Utils, opts: internalPluginOptions) =
                     throw utils.patchError(ex as Error, 'suffixes');
                 }
             }
-
             const mimeTypeCorr = mimeTypeCorrs.find(e => e.nativeMimeType === thisArg);
             if (mimeTypeCorr) {
                 return mimeTypeCorr.mimeTypeData.suffixes;
             }
-
             return orgResult;
         },
     });
@@ -747,12 +675,29 @@ export const mainFunction = (utils: typeof Utils, opts: internalPluginOptions) =
                     throw utils.patchError(ex as Error, 'type');
                 }
             }
-
             const mimeTypeCorr = mimeTypeCorrs.find(e => e.nativeMimeType === thisArg);
             if (mimeTypeCorr) {
                 return mimeTypeCorr.mimeTypeData.type;
             }
+            return orgResult;
+        },
+    });
 
+    // MimeType.prototype.description.get
+    utils.replaceGetterWithProxy(MimeType.prototype, 'description', {
+        apply(target: any, thisArg, args) {
+            let orgResult = null;
+            try {
+                orgResult = _Reflect.apply(target, thisArg, args);
+            } catch (ex) {
+                if (thisArg === MimeType.prototype) {
+                    throw utils.patchError(ex as Error, 'description');
+                }
+            }
+            const mimeTypeCorr = mimeTypeCorrs.find(e => e.nativeMimeType === thisArg);
+            if (mimeTypeCorr) {
+                return mimeTypeCorr.mimeTypeData.description;
+            }
             return orgResult;
         },
     });
@@ -765,7 +710,6 @@ export const mainFunction = (utils: typeof Utils, opts: internalPluginOptions) =
                 return nativePluginArray;
                 // return _origPlugins;
             }
-
             return orgResult;
         },
     });
@@ -777,7 +721,6 @@ export const mainFunction = (utils: typeof Utils, opts: internalPluginOptions) =
                 return nativeMimeTypeArray;
                 // return _origMimeTypes;
             }
-
             return orgResult;
         },
     });

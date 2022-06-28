@@ -9,7 +9,7 @@ describe(
         let page;
         beforeAll(async () => {
             page = await global.vanillaBrowser.newPage();
-            await page.goto('https://google.com');
+            await page.goto('http://127.0.0.1:3000/');
         }, timeout);
 
         afterAll(async () => {
@@ -57,6 +57,11 @@ describe(
             });
             const originalPluginValueString = JSON.stringify(global.fakeDeviceDesc['plugins']);
             expect(pluginsValueString).toBe(originalPluginValueString);
+            const classesNames = await page.evaluate(() => {
+                const values = [ navigator.plugins[0].constructor.name, navigator.mimeTypes[0].constructor.name];
+                return JSON.stringify(values)
+            });
+            expect(classesNames).toBe(JSON.stringify([ "Plugin", "MimeType" ]));
         }, timeout);
     },
     timeout,

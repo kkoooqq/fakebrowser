@@ -46,9 +46,9 @@ module.exports = async function () {
     fs.writeJsonSync(
         testFBContextFile,
         {
-            'wsEndpoint': fakeBrowser.vanillaBrowser.wsEndpoint(),
-            'DD': fakeBrowser.driverParams.deviceDesc,
-            'fakeDD': fakeBrowser.driverParams.fakeDeviceDesc,
+            wsEndpoint: fakeBrowser.vanillaBrowser.wsEndpoint(),
+            DD: fakeBrowser.driverParams.deviceDesc,
+            fakeDD: fakeBrowser.driverParams.fakeDeviceDesc,
         },
         {spaces: 2});
 };
