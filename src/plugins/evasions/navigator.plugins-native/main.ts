@@ -147,11 +147,7 @@ export const mainFunction = (utils: typeof Utils, opts: internalPluginOptions) =
             },
         });
 
-        pluginCorrs.push({
-            nativePlugin,
-            nativePluginInner,
-            pluginData,
-        });
+        pluginCorrs.push({ nativePlugin, nativePluginInner, pluginData });
 
         // define own properties of nativePluginArray
         // Object.getOwnPropertyNames(navigator.plugins)
