@@ -13,6 +13,7 @@
   "scripts": {
     "clean-dist": "rimraf dist",
     "test": "jest --force-exit --detectOpenHandles --config=./jest.config.js",
+    "importer": "ts-node script/importer.ts",
     "build": "npm run tsc",
     "tsc": "npm run clean-dist && npm run tsc-cjs && npm run tsc-esm",
     "tsc-cjs": "rimraf dist/cjs && tsc -b src/tsconfig.cjs.json && cpy src/plugins/evasions/_utils/index.js dist/cjs/plugins/evasions/_utils/",

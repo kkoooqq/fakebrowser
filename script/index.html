@@ -13,7 +13,8 @@
             })
             .then(response => response.text())
             .then(text => {
-                document.querySelector('h2.upload').textContent = 'Fingerprint saved as ' + text;
+                document.querySelector('h2.upload').innerHTML  = 'Fingerprint saved as ' + text + '<br>' +
+                'Your fingerprint is available as plain/text <a href="./' + text + '">here</a> so you can keep the proposed json formating.';
                 document.querySelector('h2.end').textContent += 'You\'re Welcome';
             });
     </script>
