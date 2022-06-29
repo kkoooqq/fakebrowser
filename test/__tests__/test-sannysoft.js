@@ -10,7 +10,6 @@ describe(
         let page;
         beforeAll(async () => {
             page = await global.vanillaBrowser.newPage();
-            await page.waitForTimeout(1000)
             await page.goto('http://127.0.0.1:3000/sannysoft/');
             try {
                 await page.waitForFunction(() => $$('.failed, .passed').length === 33, {timeout: 5000})
@@ -39,7 +38,6 @@ describe(
             expect(passed).toBeGreaterThan(28);
             expect(userAgentResult).toContain('Mozilla');
             expect(webglRenderer).toContain('Xe Graphics Direct3D11');
-            // console.log('done', screenshotPath)
         }, timeout);
     },
     timeout,
