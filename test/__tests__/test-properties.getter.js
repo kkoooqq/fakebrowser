@@ -3,10 +3,13 @@ const timeout = 30000;
 describe(
     '/ (properties.getter)',
     () => {
+        /**
+         * @type {import("puppeteer-extra-plugin/dist/puppeteer").Page}
+         */
         let page;
         beforeAll(async () => {
             page = await global.vanillaBrowser.newPage();
-            await page.goto('https://google.com');
+            await page.goto('http://127.0.0.1:3000/');
         }, timeout);
 
         afterAll(async () => {

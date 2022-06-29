@@ -1,9 +1,11 @@
-const vanillaBrowser = require('puppeteer');
 const timeout = 30000;
 
 describe(
     '/ (Home Page)',
     () => {
+        /**
+         * @type {import("puppeteer-extra-plugin/dist/puppeteer").Page}
+         */
         let page;
         beforeAll(async () => {
             page = await global.vanillaBrowser.newPage();

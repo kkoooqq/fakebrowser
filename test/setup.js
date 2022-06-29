@@ -1,9 +1,12 @@
-const {FakeBrowser} = require('../dist/cjs/FakeBrowser');
+const {FakeBrowser} = require('../dist/cjs/core/FakeBrowser');
 
 const fs = require('fs-extra');
 const mkdirp = require('mkdirp');
 const os = require('os');
 const path = require('path');
+
+const Koa = require('koa');
+const serve = require('koa-static');
 
 const DIR = path.join(os.tmpdir(), 'testFakeBrowserUserData');
 
@@ -16,6 +19,7 @@ module.exports = async function () {
     const builder = new FakeBrowser.Builder()
         .deviceDescriptor(windowsDD)
         .displayUserActionLayer(true)
+        // .disableEvasion("navigator.plugins-native")
         .vanillaLaunchOptions({
             pipe: false,
             headless: true,
@@ -26,6 +30,13 @@ module.exports = async function () {
     const fakeBrowser = await builder.launch();
     global.fakeBrowser = fakeBrowser;
 
+    /** local Webserver */
+    const root = path.join(__dirname, 'static');
+    const app = new Koa();
+    app.use(serve(root, {}));
+    const server = await new Promise((accept) => {const srv = app.listen(3000, () => accept(srv))});
+    global.server = server;
+
     // save context file
     mkdirp.sync(DIR);
     const testFBContextFile = path.join(DIR, '__testFBContext.json');
@@ -35,9 +46,9 @@ module.exports = async function () {
     fs.writeJsonSync(
         testFBContextFile,
         {
-            'wsEndpoint': fakeBrowser.vanillaBrowser.wsEndpoint(),
-            'DD': fakeBrowser.driverParams.deviceDesc,
-            'fakeDD': fakeBrowser.driverParams.fakeDeviceDesc,
+            wsEndpoint: fakeBrowser.vanillaBrowser.wsEndpoint(),
+            DD: fakeBrowser.driverParams.deviceDesc,
+            fakeDD: fakeBrowser.driverParams.fakeDeviceDesc,
         },
         {spaces: 2});
 };

@@ -15,14 +15,14 @@
     "noUnusedParameters": false,
     "stripInternal": true,
     "types": [
-      "node"
+      "node", "offscreencanvas", "chrome"
     ],
     "skipLibCheck": false,
     "declarationMap": true,
     "pretty": true,
     "declaration": true,
     "strict": true,
-    "baseUrl": "src/core",
+    "baseUrl": "src",
     "typeRoots": [
       "./typings",
       "./node_modules/@types"

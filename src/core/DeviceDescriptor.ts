@@ -1,8 +1,6 @@
 // noinspection JSUnusedGlobalSymbols
 
-import * as crypto from 'crypto'
 import {strict as assert} from 'assert'
-
 import {UserAgentHelper} from './UserAgentHelper.js'
 import {helper} from './helper'
 
@@ -12,6 +10,77 @@ export enum FontExistTypes {
     BaseFont,
 }
 
+export interface DeviceDescriptorNavigator {
+    languages: string[],
+    userAgent: string,
+    appCodeName: string,
+    appMinorVersion: string,
+    appName: string,
+    appVersion: string,
+    buildID: string,
+    platform: string,
+    product: string,
+    productSub: string,
+    hardwareConcurrency: number,
+    cpuClass: string,
+    maxTouchPoints: number,
+    oscpu: string,
+    vendor: string,
+    vendorSub: string,
+    deviceMemory: number,
+    doNotTrack: string,
+    msDoNotTrack: string,
+    vibrate: string,
+    credentials: string,
+    storage: string,
+    requestMediaKeySystemAccess: string,
+    bluetooth: string,
+    language: string,
+    systemLanguage: string,
+    userLanguage: string,
+    webdriver: boolean,
+}
+
+export interface DeviceDescriptorVoices {
+    default: boolean;
+    lang: string;
+    localService: boolean;
+    name: string;
+    voiceURI: string;
+}
+
+export interface DeviceDescriptorMediaDevices {
+    deviceId: string;
+    kind: string;
+    label: string;
+    groupId: string;
+}
+
+export interface DeviceDescriptorMediaBattery {
+    charging: boolean;
+    chargingTime: number;
+    dischargingTime: number;
+    level: number;
+}
+
+export interface DeviceDescriptorPluginsMimeTypes {
+    type: string, // "application/pdf",
+    suffixes: string, //  "pdf",
+    description: string, //  "Portable Document Format",
+    __pluginName: string, //  "Chrome PDF Plugin"
+}
+
+export interface DeviceDescriptorPluginsPlugins {
+    name: string,
+    filename: string,
+    description: string,
+    __mimeTypes: string[],
+}
+
+export interface DeviceDescriptorPlugins {
+    mimeTypes: Array<DeviceDescriptorPluginsMimeTypes>,
+    plugins: Array<DeviceDescriptorPluginsPlugins>
+}
 /**
  * Source information for browser fingerprint.
  * Includes plugins, gpu, fonts, webgl, etc.
@@ -20,106 +89,65 @@ export enum FontExistTypes {
  * A: Use dumpDD.js to collect fingerprints.
  */
 export interface DeviceDescriptor {
-    plugins: {
-        mimeTypes: Array<{
-            type: string,
-            suffixes: string,
-            description: string,
-            __pluginName: string,
-        }>,
-        plugins: Array<{
-            name: string,
-            filename: string,
-            description: string,
-            __mimeTypes: string[],
-        }>
-    },
+    plugins: DeviceDescriptorPlugins,
     allFonts: Array<{
         name: string,
         exists: FontExistTypes,
     }>,
+    rtc?: Array<{candidate: string, reg: Array<string| null>}>,
     gpu: {
         vendor: string,
         renderer: string,
     },
-    navigator: {
-        languages: string[],
-        userAgent: string,
-        'appCodeName': string,
-        'appMinorVersion': string,
-        'appName': string,
-        'appVersion': string,
-        'buildID': string,
-        'platform': string,
-        'product': string,
-        'productSub': string,
-        'hardwareConcurrency': number,
-        'cpuClass': string,
-        'maxTouchPoints': number,
-        'oscpu': string,
-        'vendor': string,
-        'vendorSub': string,
-        'deviceMemory': number,
-        'doNotTrack': string,
-        'msDoNotTrack': string,
-        'vibrate': string,
-        'credentials': string,
-        'storage': string,
-        'requestMediaKeySystemAccess': string,
-        'bluetooth': string,
-        'language': string,
-        'systemLanguage': string,
-        'userLanguage': string,
-        webdriver: boolean,
+    navigator: DeviceDescriptorNavigator,
+    window: {
+        innerWidth: number,
+        innerHeight: number,
+        outerWidth: number,
+        outerHeight: number,
+        screenX: number,
+        screenY: number,
+        pageXOffset: number,
+        pageYOffset: number,
+        Image: string,
+        isSecureContext: boolean,
+        devicePixelRatio: number,
+        toolbar: string,
+        locationbar: string,
+        ActiveXObject: string,
+        external: string,
+        mozRTCPeerConnection: string,
+        postMessage: string,
+        webkitRequestAnimationFrame: string,
+        BluetoothUUID: string,
+        netscape: string,
+        localStorage: string,
+        sessionStorage: string,
+        indexDB: string,
     },
-    'window': {
-        'innerWidth': number,
-        'innerHeight': number,
-        'outerWidth': number,
-        'outerHeight': number,
-        'screenX': number,
-        'screenY': number,
-        'pageXOffset': number,
-        'pageYOffset': number,
-        'Image': string,
-        'isSecureContext': boolean,
-        'devicePixelRatio': number,
-        'toolbar': string,
-        'locationbar': string,
-        'ActiveXObject': string,
-        'external': string,
-        'mozRTCPeerConnection': string,
-        'postMessage': string,
-        'webkitRequestAnimationFrame': string,
-        'BluetoothUUID': string,
-        'netscape': string,
-        'localStorage': string,
-        'sessionStorage': string,
-        'indexDB': string,
+    document: {
+        characterSet: string,
+        compatMode: string,
+        documentMode: string,
+        layers: string,
+        images: string,
     },
-    'document': {
-        'characterSet': string,
-        'compatMode': string,
-        'documentMode': string,
-        'layers': string,
-        'images': string,
+    screen: {
+        availWidth: number,
+        availHeight: number,
+        availLeft: number,
+        availTop: number,
+        width: number,
+        height: number,
+        colorDepth: number,
+        pixelDepth: number
     },
-    'screen': {
-        'availWidth': number,
-        'availHeight': number,
-        'availLeft': number,
-        'availTop': number,
-        'width': number,
-        'height': number,
-        'colorDepth': number,
-        'pixelDepth': number
+    body: {
+        clientWidth: number,
+        clientHeight: number
     },
-    'body': {
-        'clientWidth': number,
-        'clientHeight': number
-    },
-    'webgl': WebGLDescriptor,
-    'webgl2': WebGLDescriptor,
+    webgl: WebGLDescriptor,
+    webgl2: WebGLDescriptor,
     mimeTypes: Array<{
         mimeType: string,
         audioPlayType: string,
@@ -127,61 +155,45 @@ export interface DeviceDescriptor {
         mediaSource: boolean,
         mediaRecorder: boolean,
     }>,
-    'mediaDevices': Array<{
-        'deviceId': string,
-        'kind': string,
-        'label': string,
-        'groupId': string
-    }>,
-    'battery': {
-        charging: boolean,
-        chargingTime: number,
-        dischargingTime: number,
-        level: number,
-    },
-    'voices': Array<{
-        default: boolean,
-        lang: string,
-        localService: boolean,
-        name: string,
-        voiceURI: string,
-    }>,
-    'windowVersion': string[],
-    'htmlElementVersion': string[],
-    'keyboard': Record<string, string>,
-    'permissions': Record<string, {
-        'state'?: string,
-        'exType'?: string,
-        'msg'?: string,
+    mediaDevices: Array<DeviceDescriptorMediaDevices>,
+    battery: DeviceDescriptorMediaBattery,
+    voices: Array<DeviceDescriptorVoices>,
+    windowVersion: string[],
+    htmlElementVersion: string[],
+    keyboard: Record<string, string>,
+    permissions: Record<string, {
+        state?: string,
+        exType?: string,
+        msg?: string,
     }>,
 }
 
 export interface WebGLDescriptor {
-    'supportedExtensions': string[],
-    'contextAttributes': {
-        'alpha': boolean,
-        'antialias': boolean,
-        'depth': boolean,
-        'desynchronized': boolean,
-        'failIfMajorPerformanceCaveat': boolean,
-        'powerPreference': string,
-        'premultipliedAlpha': boolean,
-        'preserveDrawingBuffer': boolean,
-        'stencil': boolean,
-        'xrCompatible': boolean
+    supportedExtensions: string[],
+    contextAttributes: {
+        alpha: boolean,
+        antialias: boolean,
+        depth: boolean,
+        desynchronized: boolean,
+        failIfMajorPerformanceCaveat: boolean,
+        powerPreference: string,
+        premultipliedAlpha: boolean,
+        preserveDrawingBuffer: boolean,
+        stencil: boolean,
+        xrCompatible: boolean
     },
-    'maxAnisotropy': number,
-    'params': Record<string, {
-        'type': string,
-        'value': null | string | number | number[] | Record<string, number>
+    maxAnisotropy: number,
+    params: Record<string, {
+        type: string,
+        value: null | string | number | number[] | Record<string, number>
     }>,
-    'shaderPrecisionFormats': Array<{
-        'shaderType': number,
-        'precisionType': number,
-        'r': {
-            'rangeMin': number,
-            'rangeMax': number,
-            'precision': number,
+    shaderPrecisionFormats: Array<{
+        shaderType: number,
+        precisionType: number,
+        r: {
+            rangeMin: number,
+            rangeMax: number,
+            precision: number,
         }
     }>
 }
@@ -244,22 +256,25 @@ export default class DeviceDescriptorHelper {
         if (!dd.navigator) {
             throw new Error('navigator empty')
         }
-
+        const { innerHeight, innerWidth } = dd.window;
+        const { availHeight, availWidth } = dd.screen;
         if (!UserAgentHelper.isMobile(dd.navigator.userAgent)) {
             // If not mobile phone, but screen is too small, filter it out
-            if (dd.window.innerWidth < 900 || dd.window.innerHeight < 450) {
+            if (innerWidth < 900 || innerHeight < 450) {
                 throw new Error('width and height of windows is too small')
             }
 
             // Screen height greater than width, remove it
-            if (dd.window.innerHeight > dd.window.innerWidth) {
+            if (innerHeight > innerWidth) {
                 throw new Error('Height of window is greater than width of window, non-normal browser')
             }
 
-            if (dd.window.innerHeight > dd.screen.availHeight
-                || dd.window.innerWidth > dd.screen.availWidth) {
+            if (innerWidth > availWidth) {
+                throw new Error(`Width of browser(${innerWidth}) window cannot be greater than width of screen(${availWidth})`)
+            }
 
-                throw new Error('Width of browser window cannot be greater than width of screen and height cannot be greater than height of screen')
+            if (innerHeight > availHeight) {
+                throw new Error(`Height of browser(${innerHeight}) window cannot be greater than height of screen(${availHeight})`)
             }
 
             // No plugins and mineType information, remove
@@ -347,9 +362,8 @@ export default class DeviceDescriptorHelper {
      * @param e
      */
     static deviceUUID(e: DeviceDescriptor): string {
-        return crypto.createHash('md5')
-            .update(JSON.stringify(e))
-            .digest('hex')
+        // TODO sort e before serialize
+        return helper.md5(JSON.stringify(e))
     }
 
     static buildFakeDeviceDescriptor(

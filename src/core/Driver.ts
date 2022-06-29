@@ -9,8 +9,8 @@ import { UserAgentHelper } from './UserAgentHelper.js'
 import { PptrPatcher } from './PptrPatcher'
 
 export interface ProxyServer {
-    proxyType: 'socks5' | 'socks4' | 'http' | 'https',
-    ipType: 'host' | 'pppoe' | 'resident' | 'tor',
+    proxyType?: 'socks5' | 'socks4' | 'http' | 'https',
+    ipType?: 'host' | 'pppoe' | 'resident' | 'tor',
     proxy: string,
     exportIP: string,
     username?: string,
@@ -35,6 +35,7 @@ export interface DriverParameters {
 export interface LaunchParameters extends DriverParameters {
     maxSurvivalTime: number,
     launchOptions: VanillaLaunchOptions,
+    // launchOptions: PuppeteerLaunchOption,// VanillaLaunchOptions,
 }
 
 export interface ConnectParameters extends DriverParameters {
@@ -90,7 +91,7 @@ export default class Driver {
         const fakeDD = params.fakeDeviceDesc
         assert(!!fakeDD)
 
-        const browser: Browser = await pptr.connect(params.connectOptions)
+        const browser: Browser = await pptr.connect(params.connectOptions) as unknown as Browser
         await this.patchUAFromLaunchedBrowser(browser, fakeDD)
 
         return {
@@ -139,7 +140,7 @@ export default class Driver {
         const fakeDD = params.fakeDeviceDesc
         assert(!!fakeDD)
 
-        const browser: Browser = await pptr.launch(params.launchOptions)
+        const browser: Browser = await pptr.launch(params.launchOptions as any) as unknown as Browser;
         await this.patchUAFromLaunchedBrowser(browser, fakeDD)
 
         return {
@@ -168,7 +169,7 @@ export default class Driver {
 
         const args = [
             ...defaultLaunchArgs,
-            ...(launchParams.launchOptions.args || []),
+            ...(launchParams.launchOptions!.args || []),
         ]
 
         const fakeDD = launchParams.fakeDeviceDesc

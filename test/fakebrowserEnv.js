@@ -8,10 +8,6 @@ const path = require('path');
 const DIR = path.join(os.tmpdir(), 'testFakeBrowserUserData');
 
 class FakeBrowserEnvironment extends NodeEnvironment {
-    constructor(config) {
-        super(config);
-    }
-
     async setup() {
         console.log('Setup Test Environment.');
         await super.setup();
@@ -35,10 +31,6 @@ class FakeBrowserEnvironment extends NodeEnvironment {
     async teardown() {
         console.log('Teardown Test Environment.');
         await super.teardown();
-    }
-
-    runScript(script) {
-        return super.runScript(script);
     }
 }
 

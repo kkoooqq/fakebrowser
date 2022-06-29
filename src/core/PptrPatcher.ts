@@ -1,6 +1,7 @@
 // noinspection JSUnusedLocalSymbols,JSUnusedGlobalSymbols
 
-import * as path from 'path'
+import path from 'path'
+import fs from 'fs'
 import { strict as assert } from 'assert'
 
 import axios from 'axios'
@@ -12,13 +13,27 @@ import { DriverParameters } from './Driver'
 import { FakeBrowser } from './FakeBrowser'
 import { FakeDeviceDescriptor } from './DeviceDescriptor'
 
-interface PptrExtraEvasionOpts {
+export interface PptrExtraEvasionOpts {
     browserUUID: string,
     internalHttpServerPort: number,
     proxyExportIP?: string,
     myRealExportIP: string,
     historyLength: number
     fakeDD: FakeDeviceDescriptor,
+}
+
+function requireFix(name: string) {
+    // start direct loading
+    if (fs.existsSync(name))
+        return require(name)
+    const tested = [name]
+    // replace dist by src so it can work without duplicate evasions files
+    name = name.replace('dist', 'src')
+    if (fs.existsSync(name))
+        return require(name)
+    tested.push(name)
+    console.error(`Try to require ${tested.join(', ')} and Failed`)
+    return require(name)
 }
 
 export class PptrPatcher {
@@ -44,8 +59,8 @@ export class PptrPatcher {
 
         // evasions
         for (const evasionPath of params.evasionPaths) {
-            const Plugin = require(evasionPath)
-            const plugin = Plugin(opts)
+            const { Plugin } = requireFix(evasionPath)
+            const plugin = new Plugin(opts)
             pptr.use(plugin)
         }
 
@@ -65,8 +80,8 @@ export class PptrPatcher {
         opts: PptrExtraEvasionOpts,
     ) {
         if (params.displayUserActionLayer) {
-            const Plugin = require(path.resolve(__dirname, '../plugins/user-action-layer'))
-            const plugin = Plugin(opts)
+            const { Plugin } = requireFix(path.resolve(__dirname, '../plugins/user-action-layer'))
+            const plugin = new Plugin(opts)
             pptr.use(plugin)
         }
     }
@@ -77,8 +92,8 @@ export class PptrPatcher {
         params: DriverParameters,
         opts: PptrExtraEvasionOpts,
     ) {
-        let Plugin = require(path.resolve(__dirname, '../plugins/evasions/zzzzzzzz.last'))
-        let plugin = Plugin(opts)
+        const { Plugin } = requireFix(path.resolve(__dirname, '../plugins/evasions/zzzzzzzz.last'))
+        let plugin = new Plugin(opts)
         pptr.use(plugin)
     }
 
@@ -96,7 +111,7 @@ export class PptrPatcher {
 
     static async evasionsCode(browser: FakeBrowser) {
         let jsPatch = ''
-        const utils = require('../plugins/evasions/_utils')
+        const utils = requireFix(path.resolve(__dirname, '../plugins/evasions/_utils'))
 
         // utils
         let utilsContent = `const utils = {};\n`

@@ -128,7 +128,7 @@ export class BrowserLauncher {
         await this.bootInternalHTTPServer()
 
         // deviceDesc, userDataDir cannot be empty
-        this.checkLaunchOptionsLegal(params.launchOptions)
+        this.checkLaunchOptionsLegal(params.launchOptions as any)
 
         this.prepareFakeDeviceDesc(params)
         assert(params.fakeDeviceDesc)
