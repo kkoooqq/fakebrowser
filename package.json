@@ -56,7 +56,7 @@
   },
   "peerDependencies": {
     "axios": "*",
-    "puppeteer": "*"
+    "puppeteer": "^14.3.0"
   },
   "devDependencies": {
     "@types/axios": "*",
@@ -67,7 +67,7 @@
     "cpy-cli": "^3.1.1",
     "cross-env": "^7.0.3",
     "jest": "^27.3.1",
-    "puppeteer": "^11.0.0",
+    "puppeteer": "14.3.0",
     "rimraf": "^3.0.2",
     "ts-node": "^10.4.0",
     "typescript": "^4.4.4"
